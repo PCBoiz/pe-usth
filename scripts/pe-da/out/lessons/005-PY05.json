@@ -3,13 +3,13 @@
  "sort_order": 5,
  "module": "M1 · Python nền tảng",
  "title": "PY05 · Phép toán và thứ tự tính",
- "subtitle": "Cơ bản · M1 · 12 phút",
- "estimated_minutes": 12,
+ "subtitle": "Cơ bản · M1 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY05 · Phép toán và thứ tự tính",
-  "subtitle": "Cơ bản · M1 · 12 phút",
+  "subtitle": "Cơ bản · M1 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY05",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn bán 3 cốc, mỗi cốc 15 nghìn, rồi giảm 5 nghìn cho cả hóa đơn. Phép tính phải nhân số lượng với giá trước khi trừ giảm giá:"
+      "text": "Số đã về đúng kiểu ở bài trước, giờ tính tiền cho một hoá đơn thật. Một khách gọi 3 cốc, mỗi cốc 15 nghìn, và bạn giảm 5 nghìn cho cả hoá đơn. Thứ tự tính quyết định số tiền thu được:"
      },
      {
       "type": "code",
@@ -34,29 +34,79 @@
     [
      {
       "type": "paragraph",
-      "text": "Hai kết quả khác nhau vì dấu ngoặc thay đổi thứ tự. Cách thứ nhất giảm 5 nghìn một lần; cách thứ hai giảm 5 nghìn cho từng cốc. Trong Python, nhân/chia có ưu tiên hơn cộng/trừ; khi ý nghĩa chưa rõ, thêm ngoặc."
+      "text": "Hai con số khác nhau vì dấu ngoặc đổi thứ tự tính. Cách thứ nhất giảm 5 nghìn một lần cho cả hoá đơn, đúng điều bạn muốn. Cách thứ hai giảm 5 nghìn cho từng cốc, nên quán mất thêm 10 nghìn. Trong Python, nhân và chia tính trước cộng và trừ; khi ý nghĩa chưa rõ, hãy thêm ngoặc."
      },
      {
       "type": "code",
       "code": "print(7 / 2)\nprint(7 // 2, 7 % 2)\nprint(-7 // 2)",
       "expected": "3.5\n3 1\n-4",
       "tryIt": true
+     },
+     {
+      "type": "diagram",
+      "title": "Thứ tự phép tính — hai cách đọc cùng một dãy số",
+      "lanes": [
+       {
+        "label": "Không có ngoặc",
+        "steps": [
+         "3 * 15 - 5",
+         "45 - 5",
+         "40"
+        ],
+        "note": "Nhân chạy trước vì `*` ưu tiên hơn `-`: giảm 5 nghìn MỘT lần cho cả hoá đơn."
+       },
+       {
+        "label": "Có ngoặc",
+        "steps": [
+         "3 * (15 - 5)",
+         "3 * 10",
+         "30"
+        ],
+        "note": "Ngoặc chạy trước mọi thứ: giảm 5 nghìn cho TỪNG cốc, nên hoá đơn rẻ hơn 10 nghìn."
+       },
+       {
+        "label": "Chia thực `/`",
+        "steps": [
+         "7 / 2",
+         "3.5"
+        ],
+        "note": "`/` luôn trả số thực, kể cả khi chia hết — `4 / 2` ra `2.0`."
+       },
+       {
+        "label": "Chia lấy thương `//`",
+        "steps": [
+         "7 // 2",
+         "3"
+        ],
+        "note": "`//` làm tròn XUỐNG, nên `-7 // 2` ra `-4` chứ không phải `-3`."
+       }
+      ]
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "`/` chia thực. `//` lấy thương làm tròn xuống, nên -7 chia 2 được -4 theo hướng âm vô cùng, không phải -3. `%` lấy phần dư; 7 chia 2 có thương 3 và dư 1."
+      "text": "Cuối buổi bạn còn 7 chiếc bánh và 2 khay để xếp. `7 / 2` cho 3.5: đúng về số học, nhưng nửa chiếc bánh không xếp được thành khay. `7 // 2` cho 3, tức mỗi khay 3 chiếc, vì phép này lấy thương rồi làm tròn xuống. `7 % 2` cho 1, tức phần dư — đúng một chiếc còn thừa sau khi chia đều."
+     },
+     {
+      "type": "paragraph",
+      "text": "Hướng làm tròn xuống đáng nhớ vì nó không đổi khi số âm vào cuộc. Nó luôn đi về phía âm vô cùng, nên `-7 // 2` cho -4 chứ không phải -3. Ở sổ của quán, một con âm thường là dấu hiệu bạn đã trừ nhầm chiều."
      },
      {
       "type": "code",
       "code": "total = 10\ntotal += 5\nprint(total)\nprint(2 ** 3)\nprint(99 / 100)",
       "expected": "15\n8\n0.99",
       "tryIt": true
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong lúc bán, bạn cộng dồn vào một biến thay vì tính lại từ đầu. `total += 5` cộng 5 rồi gán lại, tương đương `total = total + 5` với số ở ví dụ này. Trong `total + 5`, giá trị `total` hiện tại và 5 là hai toán hạng. `**` là lũy thừa, nên `2 ** 3` bằng 8."
      },
      {
       "type": "paragraph",
-      "text": "`total += 5` cộng 5 rồi gán lại, tương đương `total = total + 5` với số ở ví dụ này. Trong `total + 5`, giá trị total hiện tại và 5 là hai toán hạng. `**` là lũy thừa, nên 2 ** 3 bằng 8. Python 3 cho 99 / 100 bằng 0.99 dù cả hai toán hạng là int; trộn int và float trong phép tính như 2 + 3.0 thường cho float. Đừng chép nguyên kết quả chia Python 2 từ tài liệu cũ."
+      "text": "Phép chia còn một chi tiết dễ vấp khi bạn đọc tài liệu cũ. Python 3 cho `99 / 100` bằng 0.99 dù hai toán hạng đều là int. Trộn int với float như `2 + 3.0` thường cho float. Đừng chép kết quả chia của Python 2 vào bảng tính của quán."
      }
     ]
    ],

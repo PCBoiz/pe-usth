@@ -3,13 +3,13 @@
  "sort_order": 7,
  "module": "M1 · Python nền tảng",
  "title": "PY07 · Lấy ký tự và một đoạn chuỗi",
- "subtitle": "Cơ bản · M1 · 12 phút",
- "estimated_minutes": 12,
+ "subtitle": "Cơ bản · M1 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY07 · Lấy ký tự và một đoạn chuỗi",
-  "subtitle": "Cơ bản · M1 · 12 phút",
+  "subtitle": "Cơ bản · M1 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY07",
@@ -22,41 +22,41 @@
     [
      {
       "type": "paragraph",
-      "text": "Tên file là \"marks.csv\". Bạn chỉ cần phần đuôi csv để kiểm tra loại dữ liệu:"
+      "text": "Dòng tiêu đề bạn vừa dựng ở bài trước là chữ bạn tự viết ra. Nhưng mỗi tối máy tính tiền lại xuất cho quán một file tên \"doanhthu.csv\", và bạn cần đọc được từng phần của chuỗi đó. Ba ký tự cuối cho biết đây là bảng phân tách bằng dấu phẩy:"
      },
      {
       "type": "code",
-      "code": "filename = \"marks.csv\"\nprint(filename[-3:])\nprint(filename[0])",
-      "expected": "csv\nm",
+      "code": "filename = \"doanhthu.csv\"\nprint(filename[-3:])\nprint(filename[0])",
+      "expected": "csv\nd",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "Chỉ số bắt đầu từ 0; chỉ số âm đếm từ cuối. `filename[-3:]` lấy từ ký tự thứ ba tính từ cuối đến hết chuỗi. Dấu `:` tạo một lát cắt (slice), tức một đoạn liên tiếp của dãy. Với bước dương, bỏ start như `filename[:5]` nghĩa là lấy từ đầu, còn bỏ stop như `filename[2:]` là lấy đến hết."
+      "text": "Chỉ số bắt đầu từ 0, nên `filename[0]` là chữ đầu tiên. Chỉ số âm đếm từ cuối, nên `filename[-3:]` lấy từ ký tự thứ ba tính từ cuối đến hết chuỗi. Dấu `:` tạo một lát cắt (slice), tức một đoạn liên tiếp của dãy. Bỏ điểm đầu như `filename[:5]` là lấy từ đầu; bỏ điểm cuối như `filename[2:]` là lấy đến hết."
      },
      {
       "type": "code",
-      "code": "text = \"Python\"\nprint(text[1:5:2])\nprint(text[::-1])\nprint(\"Py\" in text)",
-      "expected": "yh\nnohtyP\nTrue",
+      "code": "ma = \"CF0312\"\nprint(ma[1:5:2])\nprint(ma[::-1])\nprint(\"CF\" in ma)",
+      "expected": "F3\n2130FC\nTrue",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "Trong `text[start:stop:step]`, điểm dừng không được lấy. `text[1:5:2]` lấy chỉ số 1 và 3, nên được y và h. Bước -1 đảo hướng đọc. `in` kiểm tra có chuỗi con, còn `not in` kiểm tra không có. Việc kiểm tra phân biệt hoa thường: `\"Py\" in \"Python\"` là True, nhưng `\"py\" in \"Python\"` là False."
+      "text": "Mã đơn của quán cũng là một chuỗi, nên cùng mấy phép đọc đó áp được. Trong `ma[start:stop:step]`, điểm dừng không được lấy: `ma[1:5:2]` lấy chỉ số 1 và 3, nên được `\"F3\"`. Bước -1 đọc ngược cả chuỗi. `in` kiểm có chuỗi con, `not in` kiểm không có. Phép kiểm này phân biệt hoa thường, nên `\"CF\" in ma` là True còn `\"cf\" in ma` là False."
      },
      {
       "type": "code",
-      "code": "text = \"data\"\ntry:\n    text[0] = \"D\"\nexcept TypeError as error:\n    print(type(error).__name__)\nprint(\"D\" + text[1:])",
-      "expected": "TypeError\nData",
+      "code": "mon = \"latte\"\ntry:\n    mon[0] = \"L\"\nexcept TypeError as error:\n    print(type(error).__name__)\nprint(\"L\" + mon[1:])",
+      "expected": "TypeError\nLatte",
       "tryIt": true
      },
      {
       "type": "paragraph",
-      "text": "Chuỗi bất biến: không thể gán lại một ký tự trong object chuỗi. Đoạn trên dùng try/except để bắt TypeError và in tên lỗi, nên chương trình vẫn chạy câu lệnh tiếp theo; bạn sẽ học cấu trúc bắt lỗi ở bài ngoại lệ. Bạn tạo chuỗi mới bằng cách ghép \"D\" với đoạn còn lại. Chỉ số vượt phạm vi gây IndexError; slice vượt điểm cuối có thể trả đoạn ngắn hơn thay vì báo lỗi."
+      "text": "Tên món trong sổ viết thường, và bạn muốn hoa chữ đầu khi in ra hoá đơn. Sửa thẳng một ký tự thì không được: chuỗi bất biến, nên không gán lại được một ký tự trong chuỗi đã có. Đoạn trên dùng `try`/`except` để bắt `TypeError` và in tên lỗi, nên chương trình vẫn chạy dòng sau. Cách đúng là tạo một chuỗi mới: ghép `\"L\"` với đoạn còn lại. Chỉ số vượt phạm vi gây `IndexError`, còn lát cắt vượt điểm cuối trả đoạn ngắn hơn thay vì báo lỗi."
      }
     ]
    ],
@@ -127,20 +127,20 @@
    ],
    "practice": [
     {
-     "prompt": "\"Python\"[-1] trả ký tự nào?",
-     "answer": "n."
+     "prompt": "\"latte\"[-1] trả ký tự nào?",
+     "answer": "e."
     },
     {
-     "prompt": "Trong \"Python\"[1:5:2], vì sao không có ký tự ở vị trí 5?",
-     "answer": "Slice không lấy điểm dừng; các chỉ số được lấy là 1 và 3."
+     "prompt": "Trong \"CF0312\"[1:5:2], vì sao không có ký tự ở vị trí 5?",
+     "answer": "Lát cắt không lấy điểm dừng; các chỉ số được lấy là 1 và 3."
     },
     {
-     "prompt": "Lấy 5 ký tự đầu và 3 ký tự cuối của một chuỗi.",
-     "answer": "Dùng s[:5] và s[-3:]. Nếu chuỗi ngắn hơn độ dài yêu cầu, slice trả phần có sẵn."
+     "prompt": "Lấy 5 ký tự đầu và 3 ký tự cuối của tên file \"doanhthu.csv\".",
+     "answer": "Dùng s[:5] cho \"doanh\" và s[-3:] cho \"csv\". Nếu chuỗi ngắn hơn độ dài yêu cầu, lát cắt trả phần có sẵn."
     },
     {
-     "prompt": "Với s=\"Python\", s[0], s[-1], s[:2], s[2:] và \"py\" not in s cho gì?",
-     "answer": "P; n; Py; thon; True. Chỉ số bắt đầu 0, âm từ cuối; bỏ start lấy từ đầu, bỏ stop lấy đến hết. So chuỗi con phân biệt hoa thường."
+     "prompt": "Với s=\"latte\", s[0], s[-1], s[:2], s[2:] và \"LA\" not in s cho gì?",
+     "answer": "l; e; la; tte; True. Chỉ số bắt đầu 0, chỉ số âm đếm từ cuối; bỏ điểm đầu lấy từ đầu, bỏ điểm cuối lấy đến hết. So chuỗi con phân biệt hoa thường."
     }
    ]
   },

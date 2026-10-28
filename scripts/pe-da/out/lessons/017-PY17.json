@@ -3,13 +3,13 @@
  "sort_order": 17,
  "module": "M1 · Python nền tảng",
  "title": "PY17 · Scope, tham chiếu hàm và callback",
- "subtitle": "Cơ bản · M1 · 12 phút",
- "estimated_minutes": 12,
+ "subtitle": "Cơ bản · M1 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY17 · Scope, tham chiếu hàm và callback",
-  "subtitle": "Cơ bản · M1 · 12 phút",
+  "subtitle": "Cơ bản · M1 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY17",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một callback (hàm bạn giao cho thư viện gọi hộ) sẽ chạy khi người dùng bấm nút. Để hiểu vì sao phải truyền tên hàm thay vì gọi ngay, trước hết thử lưu hàm trong một biến:"
+      "text": "Hàm bạn vừa viết được gọi bằng tên, và bạn tự quyết lúc gọi. Màn hình gọi món của quán thì khác: bạn giao hàm cho thư viện, và nó gọi hộ lúc khách bấm nút. Một callback (hàm bạn giao cho thư viện gọi hộ) chạy đúng lúc đó. Để thấy vì sao phải truyền tên hàm thay vì gọi ngay, trước hết thử lưu hàm trong một biến:"
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`greet` là chính object hàm; `greet()` gọi hàm và nhận kết quả. Trong Tkinter (thư viện giao diện đồ hoạ đi kèm Python) dùng `command=greet`, trong threading dùng `target=worker`. Nếu viết `command=greet()`, hàm chạy ngay và giá trị trả về bị dùng thay cho callback."
+      "text": "`greet` là chính object hàm, còn `greet()` là lời gọi và nó cho ra kết quả. Trong Tkinter (thư viện giao diện đồ hoạ đi kèm Python) bạn viết `command=greet`, trong `threading` bạn viết `target=worker`. Nếu viết `command=greet()` thì hàm chạy ngay lúc dựng nút, giá trị trả về bị dùng thay cho callback, và nút đó bấm về sau không ra gì."
      },
      {
       "type": "code",
@@ -46,7 +46,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Biến value trong calculate có phạm vi cục bộ (local scope): nó chỉ thuộc lần gọi hàm đó và che tên value bên ngoài. Vì vậy, gán value = 20 trong hàm không đổi value ở cấp module. Mỗi lần gọi có các biến cục bộ riêng; một khối if hoặc for không tự tạo phạm vi hàm mới."
+      "text": "Giả sử `value` là giá tạm tính đang hiện trên màn hình, và `calculate` là một hàm tính thử. Biến `value` trong `calculate` có phạm vi cục bộ (local scope): nó chỉ thuộc lần gọi hàm đó và che tên `value` bên ngoài. Vì vậy gán `value = 20` trong hàm không đổi `value` ở cấp module, và một phép tính thử không làm hỏng con số của sổ chính."
+     },
+     {
+      "type": "paragraph",
+      "text": "Mỗi lần gọi có các biến cục bộ riêng. Một khối `if` hay `for` không tự tạo một phạm vi hàm mới."
      },
      {
       "type": "code",
@@ -58,11 +62,11 @@
     [
      {
       "type": "paragraph",
-      "text": "`global` cần khi bạn muốn gán lại tên cấp module từ trong hàm. Chỉ đọc tên bên ngoài không tự đòi hỏi global. Trong ứng dụng lớn, ưu tiên truyền dữ liệu và trả kết quả, hoặc giữ trạng thái trong object, để tránh quá nhiều biến dùng chung."
+      "text": "`global` cần khi bạn muốn gán lại một tên cấp module từ trong hàm — ví dụ bộ đếm số cốc đã pha trong ca. Chỉ đọc tên bên ngoài thì không cần `global`. Khi màn hình gọi món lớn dần, hãy ưu tiên truyền dữ liệu vào và trả kết quả ra. Giữ trạng thái trong một object cũng là một cách. Cả hai cách đều tránh một rừng biến dùng chung mà không ai biết ai đang sửa."
      },
      {
       "type": "paragraph",
-      "text": "Khi truyền đối số cho một luồng (thread), `args=(10,)` là tuple một phần tử; dấu phẩy là cần thiết. Bạn sẽ dùng lại phân biệt “truyền hàm” và “gọi hàm” ở cả bài tiến trình, luồng và GUI (giao diện đồ hoạ)."
+      "text": "Cùng cách phân biệt này còn dùng lại ở các bài sau. Khi truyền đối số cho một luồng (thread), `args=(10,)` là tuple một phần tử và dấu phẩy là bắt buộc. Bạn sẽ gặp lại \"truyền hàm\" và \"gọi hàm\" ở cả bài tiến trình, bài luồng và bài GUI (giao diện đồ hoạ) của quán."
      }
     ]
    ],
@@ -138,10 +142,10 @@
     },
     {
      "prompt": "Vì sao calculate() trả 20 nhưng value bên ngoài vẫn là 10?",
-     "answer": "value bên trong là biến local khác với tên cấp module."
+     "answer": "value bên trong là biến cục bộ, khác với tên cùng chữ ở cấp module."
     },
     {
-     "prompt": "Trong Button, command=save và command=save() khác nhau thế nào?",
+     "prompt": "Trên nút In hoá đơn, command=save và command=save() khác nhau thế nào?",
      "answer": "command=save truyền hàm để gọi sau; command=save() gọi ngay khi dựng nút rồi truyền kết quả của lời gọi."
     }
    ]

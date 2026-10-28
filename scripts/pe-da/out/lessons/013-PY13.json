@@ -3,13 +3,13 @@
  "sort_order": 13,
  "module": "M1 · Python nền tảng",
  "title": "PY13 · Set và so sánh hai nhóm",
- "subtitle": "Cơ bản · M1 · 12 phút",
- "estimated_minutes": 12,
+ "subtitle": "Cơ bản · M1 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY13 · Set và so sánh hai nhóm",
-  "subtitle": "Cơ bản · M1 · 12 phút",
+  "subtitle": "Cơ bản · M1 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY13",
@@ -22,41 +22,51 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn có danh sách học viên đã đăng ký và danh sách đã nộp bài. Cần tìm ai chưa nộp, không cần đếm một tên hai lần:"
+      "text": "Bảng giá ở bài trước tra được theo tên món. Nhưng có câu hỏi chỉ cần biết một món thuộc nhóm nào, không cần giá. Bạn có nhóm món trên bảng giá và nhóm món đã bán hôm nay, và muốn biết món nào chưa bán được cốc nào:"
      },
      {
       "type": "code",
-      "code": "registered = {\"An\", \"Mai\", \"Lan\"}\nsubmitted = {\"Mai\", \"Lan\"}\nprint(sorted(registered - submitted))\nprint(len(registered))",
-      "expected": "['An']\n3",
+      "code": "menu = {\"espresso\", \"latte\", \"tra_da\"}\nda_ban = {\"latte\", \"tra_da\"}\nprint(sorted(menu - da_ban))\nprint(len(menu))",
+      "expected": "['espresso']\n3",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "Set chỉ giữ các phần tử khác nhau và không có chỉ số vị trí. Phép hiệu `registered - submitted` giữ người thuộc nhóm đăng ký nhưng không thuộc nhóm nộp. Ví dụ dùng sorted khi in để kết quả có thứ tự ổn định."
+      "text": "Set chỉ giữ các phần tử khác nhau và không có chỉ số vị trí, nên nó trả lời \"có hay không\" rất gọn. Phép hiệu `menu - da_ban` giữ món thuộc bảng giá nhưng không thuộc nhóm đã bán. Ví dụ gọi `sorted` lúc in để thứ tự ổn định giữa các lần chạy, vì bản thân set không giữ thứ tự nào."
      },
      {
       "type": "code",
-      "code": "a, b = {1, 2}, {2, 3}\nprint(sorted(a | b))\nprint(sorted(a & b))\nprint(sorted(a - b))",
-      "expected": "[1, 2, 3]\n[2]\n[1]",
+      "code": "sang = {\"espresso\", \"latte\"}\nchieu = {\"latte\", \"tra_da\"}\nprint(sorted(sang | chieu))\nprint(sorted(sang & chieu))\nprint(sorted(sang - chieu))",
+      "expected": "['espresso', 'latte', 'tra_da']\n['latte']\n['espresso']",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "`|` là hợp, `&` là giao, `-` là hiệu. Các phương thức tương ứng là `union`, `intersection` và `difference`. Thứ tự hai vế quan trọng với hiệu: b - a không giống a - b."
+      "text": "Hai ca trong ngày bán được hai nhóm món, và ba phép dưới đây trả lời ba câu hỏi khác nhau về chúng. `|` là hợp: cả ngày bán được những món nào. `&` là giao: món nào bán được ở cả hai ca. `-` là hiệu: món chỉ ca sáng bán được."
+     },
+     {
+      "type": "paragraph",
+      "text": "Các phương thức tương ứng là `union`, `intersection` và `difference`. Thứ tự hai vế quan trọng với phép hiệu: `chieu - sang` cho món chỉ ca chiều bán được, khác hẳn `sang - chieu`."
      },
      {
       "type": "code",
-      "code": "a, b = {1, 2}, {1, 2, 3}\nprint(a.issubset(b), b.issuperset(a))\nprint(a.isdisjoint({4, 5}))\nprint(len(set([1, 1, 2])))",
+      "code": "da_ban = {\"espresso\", \"latte\"}\nmenu = {\"espresso\", \"latte\", \"tra_da\"}\nprint(da_ban.issubset(menu), menu.issuperset(da_ban))\nprint(da_ban.isdisjoint({\"banh_mi\"}))\nprint(len(set([\"latte\", \"latte\", \"espresso\"])))",
       "expected": "True True\nTrue\n2",
       "tryIt": true
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Bốn phép kiểm quan hệ nói về hai nhóm chứ không về một món. `da_ban.issubset(menu)` hay `da_ban <= menu` hỏi mọi món đã bán có nằm trong bảng giá không — nếu False thì ai đó đã bán một món ngoài bảng. `menu.issuperset(da_ban)` hay `menu >= da_ban` hỏi điều ngược lại. `isdisjoint` hỏi hai nhóm có món chung nào không. Còn `x in da_ban` hỏi về đúng một thành viên."
      },
      {
       "type": "paragraph",
-      "text": "`a.issubset(b)` hay `a <= b` kiểm mọi phần tử của a có trong b. `b.issuperset(a)` hay `b >= a` kiểm quan hệ ngược lại. `isdisjoint` kiểm không có phần tử chung; `x in a` kiểm một thành viên. Tạo set từ list loại phần tử trùng, nhưng không giữ thứ tự bản ghi ban đầu."
+      "text": "Tạo set từ một dãy cũng loại các tên trùng, nên ba lần bán latte chỉ còn một tên. Nhưng nó không giữ thứ tự bản ghi, và không giữ số lần mỗi tên xuất hiện — muốn đếm số cốc mỗi món thì set không làm được."
      }
     ]
    ],
@@ -127,20 +137,20 @@
    ],
    "practice": [
     {
-     "prompt": "Giao của {1, 2} và {2, 3} là gì?",
-     "answer": "{2}."
+     "prompt": "Giao của {\"espresso\",\"latte\"} và {\"latte\",\"tra_da\"} là gì?",
+     "answer": "{\"latte\"}."
     },
     {
-     "prompt": "Muốn biết mọi người đã nộp đều có đăng ký, dùng quan hệ nào?",
-     "answer": "submitted.issubset(registered), hoặc submitted <= registered."
+     "prompt": "Muốn biết mọi món đã bán đều có trong bảng giá, dùng quan hệ nào?",
+     "answer": "da_ban.issubset(menu), hoặc da_ban <= menu."
     },
     {
-     "prompt": "Từ [\"A\", \"A\", \"B\"], đếm mã khác nhau.",
-     "answer": "len(set([\"A\", \"A\", \"B\"])) cho 2. Set không giữ số lần mỗi mã xuất hiện; việc đó cần Counter."
+     "prompt": "Từ [\"latte\", \"latte\", \"espresso\"], đếm số món khác nhau.",
+     "answer": "len(set([\"latte\", \"latte\", \"espresso\"])) cho 2. Set không giữ số lần mỗi món xuất hiện; việc đó cần Counter."
     },
     {
-     "prompt": "Với a={1,2}, b={1,2,3}, kiểm a <= b, b >= a, a.isdisjoint({4}) và 2 in a. Viết tương đương hợp/giao/hiệu bằng method.",
-     "answer": "Cả bốn kiểm tra đều True. a | b tương đương a.union(b); a & b tương đương a.intersection(b); a - b tương đương a.difference(b). Set giữ duy nhất và không có thứ tự xếp hạng."
+     "prompt": "Với a={\"espresso\",\"latte\"}, b={\"espresso\",\"latte\",\"tra_da\"}, kiểm a <= b, b >= a, a.isdisjoint({\"banh_mi\"}) và \"latte\" in a. Viết tương đương hợp/giao/hiệu bằng method.",
+     "answer": "Cả bốn phép kiểm đều True. a | b tương đương a.union(b); a & b tương đương a.intersection(b); a - b tương đương a.difference(b). Set giữ phần tử duy nhất và không có thứ tự xếp hạng."
     }
    ]
   },

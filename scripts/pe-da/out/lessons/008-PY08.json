@@ -3,13 +3,13 @@
  "sort_order": 8,
  "module": "M1 · Python nền tảng",
  "title": "PY08 · Chuẩn hóa và định dạng văn bản",
- "subtitle": "Cơ bản · M1 · 13 phút",
- "estimated_minutes": 13,
+ "subtitle": "Cơ bản · M1 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY08 · Chuẩn hóa và định dạng văn bản",
-  "subtitle": "Cơ bản · M1 · 13 phút",
+  "subtitle": "Cơ bản · M1 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY08",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Tên người nhập có khoảng trắng và chữ hoa/thường lẫn nhau. Bạn muốn hiển thị tên và mã theo một quy tắc chung:"
+      "text": "Mã đơn bạn vừa đọc ở bài trước là chữ do máy sinh, nên nó sạch. Chữ do người gõ thì không: nhân viên ghi tên khách lên cốc với khoảng trắng thừa và chữ hoa lẫn lộn. Trước khi in hay đếm, bạn dọn nó về một khuôn:"
      },
      {
       "type": "code",
@@ -34,7 +34,11 @@
     [
      {
       "type": "paragraph",
-      "text": "`strip()` bỏ khoảng trắng hai đầu, `title()` viết hoa đầu từ và `zfill(4)` thêm số 0 để đủ bốn ký tự. Mỗi phương thức trả một kết quả mới; tên người thật có thể có quy tắc riêng, nên không tự áp title cho mọi danh sách tên mà chưa kiểm tra."
+      "text": "Ba phương thức trên làm ba việc nhỏ trên cùng một chuỗi. `strip()` bỏ khoảng trắng hai đầu, nên `\"  maI  \"` thành `\"maI\"`. `title()` viết hoa đầu mỗi từ, nên nó thành `\"Mai\"`. `zfill(4)` thêm số 0 vào đầu cho đủ bốn ký tự, nên đơn số 23 thành mã `0023` và các mã xếp thẳng cột trong sổ."
+     },
+     {
+      "type": "paragraph",
+      "text": "Mỗi phương thức trả về một kết quả mới và không sửa chuỗi gốc. Tên người thật có quy tắc riêng, nên đừng áp `title()` cho cả danh sách khách mà chưa đọc qua."
      },
      {
       "type": "code",
@@ -46,17 +50,23 @@
     [
      {
       "type": "paragraph",
-      "text": "`split(\",\")` tách theo dấu phẩy và trả list các chuỗi. `splitlines()` tách theo các dấu xuống dòng. `rstrip()` chỉ xử lý phía phải; nó không giống yêu cầu bỏ một hậu tố chính xác."
+      "text": "Số cốc ba ngày từ máy tính tiền về trong một dòng chữ, kèm dấu xuống dòng ở cuối. `rstrip()` bỏ khoảng trắng phía phải, kể cả dấu xuống dòng đó. `split(\",\")` tách theo dấu phẩy và trả một list các chuỗi — vẫn là chuỗi, chưa phải số. `splitlines()` tách theo các dấu xuống dòng, dùng khi cả tệp về trong một chuỗi."
      },
      {
       "type": "code",
       "code": "name, total = \"Mai\", 12.5\nprint(\"{}: {:.1f}\".format(name, total))\nprint(f\"{name.lower()}: {total:.2f}\")",
       "expected": "Mai: 12.5\nmai: 12.50",
       "tryIt": true
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Lúc in hoá đơn, bạn chèn giá trị vào một chuỗi (string), tức một dãy ký tự. `str.format()` và f-string đều làm việc đó. `.2f` hiển thị hai chữ số sau dấu thập phân, nên 12.5 nghìn in ra `12.50`; nó không đổi con số đang lưu."
      },
      {
       "type": "paragraph",
-      "text": "`str.format()` và f-string chèn giá trị vào một chuỗi (string), tức một dãy ký tự. `.2f` hiển thị hai chữ số sau dấu thập phân; nó không thay đổi số đang lưu. `input(\"Gia: \")` hiển thị lời nhắc, đọc một dòng từ luồng đầu vào chuẩn (stdin) và trả str. `print` ghi vào luồng đầu ra chuẩn (stdout), thường là màn hình terminal. Muốn tính với giá nhập, chuyển bằng float hoặc int trước. Các ví dụ dùng chuỗi có sẵn để bạn chạy mà không phải nhập tương tác."
+      "text": "Muốn nhận giá từ người gõ thì cần thêm hai đường vào ra. `input(\"Gia: \")` hiện lời nhắc rồi đọc một dòng từ luồng vào chuẩn (stdin), và nó luôn trả về chuỗi. `print` ghi ra luồng ra chuẩn (stdout), thường là cửa sổ terminal. Vì vậy muốn tính với giá vừa nhập, đổi nó sang số bằng `float` hoặc `int` trước. Các ví dụ ở đây dùng chuỗi có sẵn để bạn chạy mà không phải gõ tay."
      }
     ]
    ],
@@ -131,20 +141,20 @@
      "answer": "List các chuỗi."
     },
     {
-     "prompt": "Viết biểu thức đổi \" Data \" thành \"data\".",
-     "answer": "\" Data \".strip().lower()."
+     "prompt": "Viết biểu thức đổi \" Latte \" thành \"latte\".",
+     "answer": "\" Latte \".strip().lower()."
     },
     {
-     "prompt": "Viết code đọc một giá từ input rồi hiển thị hai chữ số thập phân.",
+     "prompt": "Viết code đọc giá một cốc từ input rồi hiển thị hai chữ số thập phân.",
      "answer": "price = float(input(\"Gia: \")); print(f\"{price:.2f}\"). Khi người nhập chuỗi không phải số, cần xử lý ValueError ở bài ngoại lệ."
     },
     {
-     "prompt": "Viết cùng câu \"Mai: 8\" bằng str.format và f-string. Đổi \"23\" thành mã bốn ký tự, rồi tách \"A\\r\\nB\\nC\" thành ba dòng.",
-     "answer": "\"{}: {}\".format(\"Mai\", 8) và f\"{'Mai'}: {8}\" đều tạo Mai: 8. \"23\".zfill(4) cho \"0023\"; \"A\r\nB\nC\".splitlines() cho [\"A\", \"B\", \"C\"]. lower/title/zfill/splitlines trả kết quả mới, không sửa str tại chỗ."
+     "prompt": "Viết cùng câu \"Mai: 8\" bằng str.format và f-string. Đổi \"23\" thành mã bốn ký tự, rồi tách \"12\\r\\n15\\n9\" thành ba dòng.",
+     "answer": "\"{}: {}\".format(\"Mai\", 8) và f\"{'Mai'}: {8}\" đều tạo Mai: 8. \"23\".zfill(4) cho \"0023\"; \"12\\r\\n15\\n9\".splitlines() cho [\"12\", \"15\", \"9\"]. lower/title/zfill/splitlines trả kết quả mới, không sửa chuỗi tại chỗ."
     },
     {
-     "prompt": "len([6,8,10]) là bao nhiêu? input(\"Gia: \") trả số hay chuỗi, và input/print dùng các luồng nào?",
-     "answer": "Độ dài là 3. input trả str, ghi lời nhắc rồi đọc stdin; print ghi stdout. Vì vậy nhập 12.5 cần float trước phép tính."
+     "prompt": "len([12, 15, 9]) là bao nhiêu? input(\"Gia: \") trả số hay chuỗi, và input/print dùng các luồng nào?",
+     "answer": "Độ dài là 3. input trả chuỗi, ghi lời nhắc rồi đọc stdin; print ghi stdout. Vì vậy nhập 12.5 cần float trước phép tính."
     }
    ]
   },

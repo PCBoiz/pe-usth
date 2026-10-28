@@ -3,13 +3,13 @@
  "sort_order": 4,
  "module": "M1 · Python nền tảng",
  "title": "PY04 · Biến, tên hợp lệ và kiểu dữ liệu",
- "subtitle": "Cơ bản · M1 · 16 phút",
- "estimated_minutes": 16,
+ "subtitle": "Cơ bản · M1 · 17 phút",
+ "estimated_minutes": 17,
  "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY04 · Biến, tên hợp lệ và kiểu dữ liệu",
-  "subtitle": "Cơ bản · M1 · 16 phút",
+  "subtitle": "Cơ bản · M1 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY04",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Giá bán đọc từ một ô nhập là chuỗi \"15\". Trước khi tính doanh thu, bạn cần chuyển chuỗi đó thành số:"
+      "text": "Ô code bạn vừa chạy ở bài trước giữ được số liệu giữa các lần bấm. Nhưng số liệu của quán đến từ nhiều chỗ, và không chỗ nào cũng đưa cho bạn một con số. Bạn gõ giá bán vào một ô nhập trên máy tính tiền, và nó trả về chuỗi \"15\" chứ không phải số 15. Trước khi tính doanh thu, bạn phải đổi chuỗi đó thành số:"
      },
      {
       "type": "code",
@@ -34,7 +34,11 @@
     [
      {
       "type": "paragraph",
-      "text": "`str` là chuỗi, `int` là số nguyên, `float` là số thực và `bool` gồm True/False. Số nguyên Python không bị cố định trong 32 hay 64 bit; số lớn vẫn bị giới hạn bởi bộ nhớ và tài nguyên máy. `int(raw)` tạo giá trị số từ chuỗi phù hợp; chuỗi ban đầu vẫn là chuỗi. Nếu raw là \"mười lăm\", phép chuyển gây ValueError."
+      "text": "Bốn kiểu dữ liệu sau đủ cho sổ của quán lúc này. `int` là số nguyên, dùng cho số cốc. `float` là số thực, dùng cho khối lượng cà phê đã xay. `str` là chuỗi, dùng cho tên món. `bool` chỉ có True hoặc False, dùng cho câu hỏi kiểu đơn đã thanh toán hay chưa."
+     },
+     {
+      "type": "paragraph",
+      "text": "Số nguyên Python không bị chặn ở 32 hay 64 bit, nên tổng tiền cả năm vẫn viết thẳng được. Giới hạn thật nằm ở bộ nhớ máy. `int(raw)` tạo một giá trị số từ chuỗi phù hợp, còn chuỗi ban đầu vẫn là chuỗi. Nếu nhân viên gõ \"mười lăm\", phép đổi gây `ValueError`."
      },
      {
       "type": "code",
@@ -46,7 +50,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Python dùng kiểu động: cùng tên `value` có thể được gán tới một đối tượng (object) khác kiểu. Điều đó không biến object chuỗi cũ thành số thực. `2e4` là cách viết số thực 2 × 10 mũ 4."
+      "text": "Cùng một tên có thể trỏ sang thứ khác: `value` vừa giữ chuỗi giá, giờ giữ một số thực. Python dùng kiểu động, nên một tên được gán tới một đối tượng (object) khác kiểu mà không phải khai lại. Điều đó không biến object chuỗi cũ thành số thực. `2e4` là cách viết số thực 2 × 10 mũ 4, tiện khi ghi doanh thu lớn."
      },
      {
       "type": "code",
@@ -58,11 +62,15 @@
     [
      {
       "type": "paragraph",
-      "text": "Tên biến có thể có chữ, số và gạch dưới nhưng không bắt đầu bằng số; không dùng từ khóa như `for`. Dấu cách và dấu gạch ngang không thuộc tên như `total cups` hay `total-cups`. `cups` và `Cups` là hai tên khác nhau. `keyword.iskeyword` kiểm một tên, còn `keyword.kwlist` cho danh sách từ khóa của Python đang chạy. Chọn tên gợi rõ nội dung giúp tránh nhầm số lượng với đơn giá."
+      "text": "Tên biến trong sổ cũng phải theo luật của Python. Tên gồm chữ, số và gạch dưới, và không bắt đầu bằng số. Không dùng từ khóa như `for` làm tên. `total cups` hay `total-cups` không phải tên vì có dấu cách và dấu trừ. `cups` và `Cups` là hai tên khác nhau, nên đừng ghi số cốc vào một cái rồi đọc cái kia."
      },
      {
       "type": "paragraph",
-      "text": "Chuyển kiểu không xảy ra tự động cho mọi phép tính. `\"15\" + 2` gây TypeError vì đang cộng str với int; `float(\"12.5\")` cho 12.5, còn `int(\"12.5\")` gây ValueError. Khi dữ liệu đến từ ô nhập hoặc file, hãy chọn phép đổi theo ý nghĩa dữ liệu."
+      "text": "`keyword.iskeyword` kiểm một tên, còn `keyword.kwlist` cho danh sách từ khóa của Python đang chạy. Chọn tên gợi rõ nội dung giúp bạn không nhầm số lượng với đơn giá — hai cột rất dễ lẫn trong một sổ bán hàng."
+     },
+     {
+      "type": "paragraph",
+      "text": "Phép đổi kiểu không tự xảy ra cho mọi phép tính. `\"15\" + 2` gây `TypeError` vì đang cộng chuỗi với số. `float(\"12.5\")` cho 12.5, còn `int(\"12.5\")` gây `ValueError`. Khi số liệu đến từ ô nhập hay từ file máy tính tiền xuất ra, bạn chọn phép đổi theo ý nghĩa của cột. Số cốc dùng `int`, khối lượng dùng `float`."
      }
     ]
    ],
@@ -74,7 +82,7 @@
   "step_2": {
    "mcq": [
     {
-     "question": "raw = \"12.5\". Biểu thức nào tính giá của hai vé?",
+     "question": "raw = \"12.5\". Biểu thức nào tính tiền của hai cốc?",
      "options": [
       {
        "text": "float(raw) * 2",
@@ -93,11 +101,11 @@
      "explanation": "Đúng. Chuỗi có phần thập phân cần đổi sang float trước."
     },
     {
-     "question": "Giá vé từ ô nhập là chuỗi. Kết quả ở lệnh print cuối có giá trị nào?\n\nraw = \"18\"\nprice = int(raw)\nprint(price * 2)",
+     "question": "Giá một cốc gõ vào ô nhập là chuỗi. Kết quả ở lệnh print cuối có giá trị nào?\n\nraw = \"18\"\nprice = int(raw)\nprint(price * 2)",
      "options": [
       {
        "text": "20",
-       "detail": "Phép tính là nhân giá với hai vé, không cộng 2."
+       "detail": "Phép tính là nhân giá với hai cốc, không cộng 2."
       },
       {
        "text": "36",
@@ -161,9 +169,9 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Hệ thống cung cấp raw là giá một vé dưới dạng chuỗi, ví dụ \"7.5\". Gán giá hai vé vào total; đầu vào là chuỗi số hợp lệ, không âm."
+    "body": "Hệ thống cung cấp raw là giá một cốc dưới dạng chuỗi, ví dụ \"7.5\". Gán tiền hai cốc vào total; đầu vào là chuỗi số hợp lệ, không âm."
    },
-   "starterCode": "# Hệ thống cung cấp raw là giá một vé dưới dạng chuỗi, ví dụ \"7.\n# Hệ thống cung cấp raw; gán kết quả vào total.\n",
+   "starterCode": "# raw là giá một cốc dưới dạng chuỗi, ví dụ \"7.5\".\n# Gán tiền hai cốc vào total.\n",
    "solutionCode": "price = float(raw)\ntotal = price * 2\n",
    "tests": [
     {

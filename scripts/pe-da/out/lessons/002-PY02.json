@@ -3,13 +3,13 @@
  "sort_order": 2,
  "module": "M1 · Python nền tảng",
  "title": "PY02 · Chọn đúng Python và tách môi trường học",
- "subtitle": "Cơ bản · M1 · 15 phút",
- "estimated_minutes": 15,
- "xp_reward": 9,
+ "subtitle": "Cơ bản · M1 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY02 · Chọn đúng Python và tách môi trường học",
-  "subtitle": "Cơ bản · M1 · 15 phút",
+  "subtitle": "Cơ bản · M1 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY02",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn có hai dự án cần các phiên bản thư viện khác nhau. Nếu cài mọi thứ vào cùng một Python, một lần nâng cấp có thể làm dự án cũ thay đổi. Trước hết, hãy biết mình đang chạy Python nào:"
+      "text": "Ở bài trước bạn vừa tính doanh thu ngày đầu bằng mấy dòng code. Sổ sách của quán sẽ lớn dần, nên trước khi viết thêm, hãy dọn cho nó một góc riêng. Giả sử bạn có hai dự án: sổ bán hàng của quán và một bài tập cũ. Nếu cài mọi thứ vào cùng một Python, một lần nâng cấp cho quán có thể làm bài tập cũ đổi kết quả. Trước hết, hãy biết mình đang chạy Python nào:"
      },
      {
       "type": "code",
@@ -34,11 +34,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Số 3 cho biết đang dùng Python 3. `sys` là một module (file Python nạp được vào file khác) có sẵn của Python; `import sys` giúp bạn đọc thông tin môi trường. Khi cần xem đường dẫn Python đang chạy, gõ `print(sys.executable)`. Đường dẫn cụ thể sẽ khác nhau giữa các máy."
+      "text": "Số 3 cho biết đang dùng Python 3. `sys` là một module (file Python nạp được vào file khác) có sẵn của Python, và `import sys` cho bạn đọc thông tin môi trường. Khi cần xem đường dẫn Python đang chạy, gõ `print(sys.executable)`. Đường dẫn trên máy bạn sẽ khác máy người khác."
      },
      {
       "type": "paragraph",
-      "text": "Môi trường ảo giữ thư viện của từng dự án riêng nhau. Mở terminal (cửa sổ bạn gõ câu lệnh vào) trong thư mục dự án rồi chạy lệnh sau. Đây là lệnh terminal, không phải code để dán vào cell Python:"
+      "text": "Môi trường ảo giữ thư viện của từng dự án riêng nhau. Một lần cài cho dự án khác sẽ không làm đổi sổ của quán. Mở terminal (cửa sổ bạn gõ câu lệnh vào) trong thư mục dự án rồi chạy lệnh sau. Đây là lệnh terminal, không phải code để dán vào một ô code:"
      },
      {
       "type": "terminal",
@@ -49,7 +49,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Tên `.venv` là thư mục bạn chọn để chứa môi trường. Bước này tạo môi trường, chưa cài NumPy (thư viện tính toán trên cả dãy số một lượt). Trên Windows, kiểm tra pip của môi trường vừa tạo bằng:"
+      "text": "Tên `.venv` là thư mục bạn chọn để chứa môi trường của quán. Bước này chỉ tạo môi trường, chưa cài NumPy (thư viện tính toán trên cả dãy số một lượt). Bạn sẽ cần tới nó khi sổ bán hàng dài hàng nghìn dòng. Trên Windows, kiểm tra pip của môi trường vừa tạo bằng:"
      },
      {
       "type": "terminal",
@@ -60,15 +60,15 @@
     [
      {
       "type": "paragraph",
-      "text": "Trên Linux/macOS, lệnh tương ứng là `.venv/bin/python -m pip --version`. Gọi pip qua đúng Python giúp tránh cài nhầm thư viện. Khi đến bài NumPy, cài bằng `.venv\\Scripts\\python -m pip install numpy` trên Windows hoặc `.venv/bin/python -m pip install numpy` trên Linux/macOS. `pip` cài gói (package) — tập module nạp được như một đơn vị — thường từ kho PyPI; nó không tự đổi phiên bản Python."
+      "text": "Trên Linux/macOS, lệnh tương ứng là `.venv/bin/python -m pip --version`. Gọi pip qua đúng Python giúp bạn không cài nhầm thư viện sang môi trường khác. Khi tới bài NumPy, cài bằng `.venv\\Scripts\\python -m pip install numpy` trên Windows hoặc `.venv/bin/python -m pip install numpy` trên Linux/macOS. `pip` cài gói (package), tức một tập module nạp được như một đơn vị, thường lấy từ kho PyPI. Nó không tự đổi phiên bản Python."
      },
      {
       "type": "paragraph",
-      "text": "`sys` và `venv` thuộc thư viện chuẩn nên đã có cùng Python. NumPy là package bên ngoài cần cài thêm. `virtualenv` là công cụ khác để tạo môi trường; `pyenv` chủ yếu giúp quản lý phiên bản Python. Conda quản lý cả môi trường lẫn package, trong đó Miniconda gọn hơn Anaconda vốn kèm nhiều package."
+      "text": "`sys` và `venv` thuộc thư viện chuẩn nên đã có sẵn cùng Python, còn NumPy là gói bên ngoài phải cài thêm. Quanh việc này còn vài công cụ khác mà bạn sẽ gặp trong tài liệu. `virtualenv` cũng tạo môi trường; `pyenv` chủ yếu giúp quản lý các phiên bản Python. Conda quản lý cả môi trường lẫn gói, trong đó Miniconda gọn hơn Anaconda vốn kèm sẵn nhiều gói."
      },
      {
       "type": "paragraph",
-      "text": "Sơ đồ trong slide (trang trình bày của bài giảng gốc) còn nhắc pipenv và Poetry để quản lý dự án/phụ thuộc. Nó cũng nhắc `setup.py` trong cách đóng gói truyền thống. Trước mắt, bạn chỉ cần một cách tạo môi trường và biết Python nào sẽ chạy bài. Khi chia sẻ dự án, ghi lại các phiên bản thư viện để người khác dựng lại môi trường."
+      "text": "Sơ đồ trong slide (trang trình bày của bài giảng gốc) còn nhắc pipenv và Poetry để quản lý dự án và các phụ thuộc. Nó cũng nhắc `setup.py` trong cách đóng gói truyền thống. Trước mắt bạn chỉ cần biết tạo một môi trường và biết Python nào sẽ chạy bài. Khi gửi dự án cho người khác, ghi lại các phiên bản thư viện để họ dựng lại đúng môi trường của bạn."
      }
     ]
    ],

@@ -3,13 +3,13 @@
  "sort_order": 9,
  "module": "M1 · Python nền tảng",
  "title": "PY09 · Điều kiện, so sánh và khối lệnh",
- "subtitle": "Cơ bản · M1 · 13 phút",
- "estimated_minutes": 13,
+ "subtitle": "Cơ bản · M1 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY09 · Điều kiện, so sánh và khối lệnh",
-  "subtitle": "Cơ bản · M1 · 13 phút",
+  "subtitle": "Cơ bản · M1 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY09",
@@ -22,23 +22,27 @@
     [
      {
       "type": "paragraph",
-      "text": "Một điểm từ 8 trở lên được ghi Good, từ 5 đến dưới 8 là Pass, còn lại là Retry:"
+      "text": "Sổ đã sạch sau bước trước, giờ để chương trình tự quyết một việc nhỏ thay bạn. Bạn muốn nó nhắc theo số cốc còn pha được trong bình. Từ 8 trở lên là đủ hàng; từ 5 đến dưới 8 là sắp hết; dưới 5 thì phải pha thêm ngay:"
      },
      {
       "type": "code",
-      "code": "score = 7\nif score >= 8:\n    print(\"Good\")\nelif score >= 5:\n    print(\"Pass\")\nelse:\n    print(\"Retry\")",
-      "expected": "Pass",
+      "code": "cups = 7\nif cups >= 8:\n    print(\"Du hang\")\nelif cups >= 5:\n    print(\"Sap het\")\nelse:\n    print(\"Pha them\")",
+      "expected": "Sap het",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "Python kiểm tra các nhánh từ trên xuống và chỉ chạy nhánh đầu có điều kiện đúng. Dấu `:` mở khối; thụt lề cho biết lệnh thuộc nhánh nào. Lệnh được viết trở lại mức thụt lề ngoài nhánh tiếp tục chạy sau cấu trúc if. Dùng nhất quán bốn dấu cách và tránh trộn tab với space; thụt lề sai có thể gây IndentationError, còn trộn tab và space không nhất quán có thể gây TabError."
+      "text": "Python xét các nhánh từ trên xuống và chỉ chạy nhánh đầu tiên có điều kiện đúng. Vì vậy 7 cốc ra `Sap het`, dù nó cũng nhỏ hơn 8. Dấu `:` mở một khối, còn thụt lề cho biết lệnh thuộc nhánh nào. Lệnh viết trở lại mức thụt lề ngoài sẽ chạy sau cả cấu trúc `if`."
+     },
+     {
+      "type": "paragraph",
+      "text": "Dùng nhất quán bốn dấu cách, và đừng trộn tab với space. Thụt lề sai gây `IndentationError`; trộn tab với space không đều gây `TabError`."
      },
      {
       "type": "code",
-      "code": "age, enrolled = 19, True\nprint(age >= 18 and enrolled)\nprint(not enrolled)\nprint(age != 20)",
+      "code": "cups, machine_on = 7, True\nprint(cups >= 5 and machine_on)\nprint(not machine_on)\nprint(cups != 10)",
       "expected": "True\nFalse\nTrue",
       "tryIt": true
      }
@@ -46,17 +50,21 @@
     [
      {
       "type": "paragraph",
-      "text": "`and` yêu cầu cả hai điều kiện đúng; `or` cần ít nhất một điều kiện đúng; `not` đảo giá trị đúng/sai. `==` so sánh bằng, `!=` so sánh khác, còn `=` là phép gán. Với dữ liệu vô hướng, and/or có thể dừng sớm khi đã xác định được kết quả."
+      "text": "Ba từ này ghép các điều kiện của quầy lại với nhau. `and` đòi cả hai điều kiện đúng: còn ít nhất 5 cốc và máy đang bật thì mới nhận đơn. `or` chỉ cần một điều kiện đúng. `not` đảo đúng thành sai."
+     },
+     {
+      "type": "paragraph",
+      "text": "Bốn phép so sánh còn lại đọc thẳng như trong tiếng Việt. `==` so bằng, `!=` so khác, còn một dấu `=` là phép gán — nhầm hai thứ này là lỗi hay gặp nhất của người mới. Với dữ liệu vô hướng, `and` và `or` có thể dừng sớm khi kết quả đã rõ."
      },
      {
       "type": "code",
-      "code": "score = 9\nif 0 <= score <= 10:\n    if score >= 8:\n        print(\"Valid and good\")\nelse:\n    print(\"Invalid\")",
-      "expected": "Valid and good",
+      "code": "cups = 9\nif 0 <= cups <= 20:\n    if cups >= 8:\n        print(\"Du hang\")\nelse:\n    print(\"So khong hop le\")",
+      "expected": "Du hang",
       "tryIt": true
      },
      {
       "type": "paragraph",
-      "text": "Ở ví dụ lồng nhau, kiểm tra điểm hợp lệ được xét trước. `else` thẳng hàng với if nào thì thuộc if đó: ở đây nó thuộc kiểm tra 0 <= score <= 10, không thuộc kiểm tra score >= 8. Giảm mức thụt lề kết thúc khối bên trong. Dòng trống và comment không mở hay kết thúc khối mới. Nếu cần để trống một nhánh đang viết dở, dùng `pass`; một nhánh chỉ có comment vẫn thiếu câu lệnh."
+      "text": "Ở ví dụ lồng nhau, phép kiểm số liệu hợp lệ được xét trước: một bình không chứa được -3 cốc. `else` thẳng hàng với `if` nào thì thuộc `if` đó. Ở đây nó thuộc phép kiểm `0 <= cups <= 20`, không thuộc phép kiểm `cups >= 8`. Giảm mức thụt lề là kết thúc khối bên trong. Dòng trống và chú thích không mở hay đóng khối nào. Nếu một nhánh chưa viết xong, đặt `pass` vào đó; một nhánh chỉ có chú thích vẫn là thiếu câu lệnh."
      }
     ]
    ],
@@ -127,20 +135,20 @@
    ],
    "practice": [
     {
-     "prompt": "Với score = 8, đoạn đầu chạy nhánh nào?",
-     "answer": "Good, vì điều kiện đầu đã đúng."
+     "prompt": "Với cups = 8, đoạn đầu chạy nhánh nào?",
+     "answer": "Du hang, vì điều kiện đầu đã đúng."
     },
     {
-     "prompt": "Dùng phép so sánh nào cho điều kiện ít nhất 5 và không quá 10?",
-     "answer": "Viết 5 <= score <= 10, hoặc score >= 5 and score <= 10."
+     "prompt": "Dùng phép so sánh nào cho điều kiện ít nhất 5 cốc và không quá 20?",
+     "answer": "Viết 5 <= cups <= 20, hoặc cups >= 5 and cups <= 20."
     },
     {
-     "prompt": "Vì sao if True: rồi chỉ có comment chưa phải khối hoàn chỉnh?",
-     "answer": "Comment không phải câu lệnh. Cần một câu lệnh thực hoặc pass, với thụt lề đúng."
+     "prompt": "Vì sao if True: rồi chỉ có một dòng chú thích chưa phải khối hoàn chỉnh?",
+     "answer": "Chú thích không phải câu lệnh. Cần một câu lệnh thực hoặc pass, với thụt lề đúng."
     },
     {
-     "prompt": "Nếu if ngoài kiểm điểm 0..10 và if trong kiểm >=8, else thẳng hàng với if ngoài chạy khi nào? Đặt print(\"done\") sau toàn bộ cấu trúc có bị bỏ qua không?",
-     "answer": "else ngoài chạy khi điểm không hợp lệ. print ở ngoài mọi nhánh chạy sau cấu trúc khi không có ngoại lệ hay thoát sớm. Comment/dòng trống không đổi quan hệ khối; mức thụt lề quyết định."
+     "prompt": "Nếu if ngoài kiểm số cốc trong 0..20 và if trong kiểm >= 8, else thẳng hàng với if ngoài chạy khi nào? Đặt print(\"xong\") sau toàn bộ cấu trúc có bị bỏ qua không?",
+     "answer": "else ngoài chạy khi số cốc không hợp lệ. print ở ngoài mọi nhánh chạy sau cấu trúc khi không có ngoại lệ hay thoát sớm. Chú thích và dòng trống không đổi quan hệ khối; mức thụt lề quyết định."
     }
    ]
   },

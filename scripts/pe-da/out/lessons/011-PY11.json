@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Một điểm trên bản đồ gồm hai tọa độ. Bạn muốn giữ chúng thành một bản ghi và tách ra khi cần:"
+      "text": "Dãy số cốc bạn vừa dựng là nhiều giá trị cùng loại. Một dòng bán hàng thì khác. Nó gồm số cốc và đơn giá, hai thứ khác hẳn nhau, và không ô nào được sửa sau khi đã chốt đơn. Bạn muốn giữ hai con số đó thành một bản ghi rồi tách ra khi cần:"
      },
      {
       "type": "code",
-      "code": "point = (10, 20)\nx, y = point\nprint(x, y)\nprint(type((10)).__name__, type((10,)).__name__)",
+      "code": "dong = (10, 20)\nso_coc, don_gia = dong\nprint(so_coc, don_gia)\nprint(type((10)).__name__, type((10,)).__name__)",
       "expected": "10 20\nint tuple",
       "tryIt": true
      }
@@ -34,11 +34,15 @@
     [
      {
       "type": "paragraph",
-      "text": "Tuple có thứ tự và đọc theo chỉ số như list: `point[0]` là 10. Tuple không cho gán lại các vị trí tham chiếu. Nếu một phần tử trỏ tới list, list đó vẫn có thể thay đổi; tính bất biến của tuple không tự đóng băng object con. Dấu phẩy tạo tuple một phần tử: `(10,)`; `(10)` vẫn là số 10. Thao tác `x, y = point` được gọi là unpacking: gán mỗi phần tử vào một tên; dạng cơ bản cần số tên bằng số phần tử."
+      "text": "Tuple có thứ tự và đọc theo chỉ số như list, nên `dong[0]` là 10 cốc. Nó không cho gán lại các vị trí, vì vậy một dòng đã chốt không bị sửa nhầm. Nếu một phần tử trỏ tới một list thì list đó vẫn đổi được; tính bất biến của tuple không tự đóng băng object con."
+     },
+     {
+      "type": "paragraph",
+      "text": "Dấu phẩy mới là thứ tạo tuple một phần tử: `(10,)` là tuple, còn `(10)` vẫn là số 10. Phép `so_coc, don_gia = dong` được gọi là unpacking: mỗi phần tử vào một tên, và dạng cơ bản cần số tên bằng số phần tử."
      },
      {
       "type": "code",
-      "code": "point = (10, 20)\ntry:\n    point[0] = 30\nexcept TypeError as error:\n    print(type(error).__name__)",
+      "code": "dong = (10, 20)\ntry:\n    dong[0] = 30\nexcept TypeError as error:\n    print(type(error).__name__)",
       "expected": "TypeError",
       "tryIt": true
      }
@@ -46,17 +50,27 @@
     [
      {
       "type": "paragraph",
-      "text": "Collection là cách gom nhiều object vào một cấu trúc. List thích hợp khi cần thêm hoặc sửa vị trí; tuple thường dùng cho bản ghi hay kích thước cố định. String, list, tuple và range đều là sequence: có thứ tự, đọc theo vị trí và có thể có giá trị lặp. Set giữ thành viên không trùng và không có chỉ số; dict tra giá trị bằng khóa. Bạn chọn cấu trúc theo thao tác cần làm, không chỉ theo cách nó được in ra."
+      "text": "Collection là cách gom nhiều object vào một cấu trúc, và quán cần vài kiểu gom khác nhau. List phù hợp khi còn thêm và sửa, như số cốc mỗi ngày. Tuple phù hợp cho bản ghi đã chốt, như một dòng hoá đơn. String, list, tuple và range đều là sequence: có thứ tự và đọc theo vị trí."
+     },
+     {
+      "type": "paragraph",
+      "text": "Hai cấu trúc còn lại trả lời câu hỏi khác. Set giữ các thành viên không trùng và không có chỉ số, như tập món đã bán trong ngày. Còn dict tra giá trị theo khóa, như bảng giá tra theo tên món. Bạn chọn theo thao tác cần làm, không theo cách nó được in ra."
      },
      {
       "type": "code",
       "code": "raw = b\"AB\"\neditable = bytearray(raw)\neditable[0] = 67\nprint(raw)\nprint(bytes(editable))",
       "expected": "b'AB'\nb'CB'",
       "tryIt": true
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Máy in hoá đơn và máy đọc mã vạch trên bao cà phê không nhận chữ. Chúng nhận từng byte (tám bit, đơn vị dữ liệu nhỏ nhất). `bytes` và `bytearray` cũng là sequence, nhưng chứa giá trị byte thay vì ký tự văn bản."
      },
      {
       "type": "paragraph",
-      "text": "`bytes` và `bytearray` cũng là sequence, nhưng chứa giá trị byte (tám bit, đơn vị dữ liệu nhỏ nhất) thay vì ký tự văn bản. bytes bất biến; bytearray cho phép đổi từng byte như ở chỉ số 0 của ví dụ. Không thể coi mỗi byte là một ký tự tiếng Việt; cần chọn cách mã hóa (encoding) để chuyển giữa str và bytes khi đọc/ghi văn bản."
+      "text": "bytes bất biến, còn bytearray cho đổi từng byte. Đừng coi mỗi byte là một ký tự tiếng Việt. Để chuyển giữa chuỗi và bytes khi đọc hay ghi văn bản, bạn phải chọn cách mã hóa (encoding). Chỗ này bạn chưa cần tới khi ghi sổ bán hàng mỗi ngày, nhưng nó quay lại ngay khi quán nối với một thiết bị thật."
      }
     ]
    ],
@@ -127,24 +141,24 @@
    ],
    "practice": [
     {
-     "prompt": "args = (10) có phải tuple một phần tử không?",
-     "answer": "Không. Dùng args = (10,)."
+     "prompt": "dong = (10) có phải tuple một phần tử không?",
+     "answer": "Không. Dùng dong = (10,)."
     },
     {
-     "prompt": "Cần thêm số đo liên tục, chọn list hay tuple?",
+     "prompt": "Cần ghi thêm số cốc mỗi ngày, chọn list hay tuple?",
      "answer": "List thường phù hợp hơn vì có thể thêm và sửa phần tử."
     },
     {
      "prompt": "bytes và bytearray khác nhau ở điểm nào?",
-     "answer": "bytes bất biến; bytearray cho phép cập nhật byte. Cả hai dùng cho dữ liệu nhị phân, không thay thế quy tắc mã hóa văn bản."
+     "answer": "bytes bất biến; bytearray cho phép cập nhật từng byte. Cả hai dùng cho dữ liệu nhị phân, không thay quy tắc mã hóa văn bản."
     },
     {
-     "prompt": "Cần dãy có thể trùng và thêm phần tử, tập mã duy nhất, tra theo mã và cặp kích thước cố định: chọn collection nào? Chúng khác sequence ở đâu?",
-     "answer": "Lần lượt list, set, dict và tuple. Sequence có thứ tự và truy cập vị trí; list/tuple/range/str/bytes/bytearray là ví dụ. Không dùng vị trí để truy cập set; dict tra khóa."
+     "prompt": "Cần dãy có thể trùng và thêm được, tập tên món duy nhất, tra giá theo tên món, và một cặp số cốc với đơn giá cố định: chọn collection nào? Chúng khác sequence ở đâu?",
+     "answer": "Lần lượt list, set, dict và tuple. Sequence có thứ tự và truy cập theo vị trí; list/tuple/range/str/bytes/bytearray là ví dụ. Không dùng vị trí để truy cập set; dict tra khóa."
     },
     {
-     "prompt": "point=(10,20): point[1] trả gì và point[0]=30 gây lỗi gì? Nếu tuple chứa list thì list bên trong có bị đóng băng không?",
-     "answer": "Trả 20; phép gán vị trí tuple gây TypeError. Tuple cố định tham chiếu ở các vị trí, không tự làm list bên trong bất biến."
+     "prompt": "dong=(10,20): dong[1] trả gì và dong[0]=30 gây lỗi gì? Nếu tuple chứa một list thì list bên trong có bị đóng băng không?",
+     "answer": "Trả 20; phép gán vị trí trong tuple gây TypeError. Tuple cố định tham chiếu ở các vị trí, không tự làm list bên trong bất biến."
     }
    ]
   },

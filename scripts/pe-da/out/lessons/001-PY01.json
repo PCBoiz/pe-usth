@@ -3,13 +3,13 @@
  "sort_order": 1,
  "module": "M1 · Python nền tảng",
  "title": "PY01 · Chạy một phép tính và đọc kết quả",
- "subtitle": "Cơ bản · M1 · 15 phút",
- "estimated_minutes": 15,
- "xp_reward": 9,
+ "subtitle": "Cơ bản · M1 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY01 · Chạy một phép tính và đọc kết quả",
-  "subtitle": "Cơ bản · M1 · 15 phút",
+  "subtitle": "Cơ bản · M1 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY01",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một quán bán 12 cốc vào buổi sáng và 9 cốc vào buổi chiều. Bạn muốn tính số cốc đã bán trong ngày. Mở Python hoặc một ô code (cell) trong notebook (trang gồm nhiều ô code chạy riêng được) rồi chạy:"
+      "text": "Hôm nay quán của bạn mở cửa ngày đầu. Buổi sáng bán 12 cốc, buổi chiều bán 9 cốc, và bạn muốn biết cả ngày được bao nhiêu. Mở Python hoặc một ô code (cell) trong notebook (trang gồm nhiều ô code chạy riêng được) rồi chạy:"
      },
      {
       "type": "code",
@@ -34,11 +34,15 @@
     [
      {
       "type": "paragraph",
-      "text": "`print` hiển thị kết quả của biểu thức trong ngoặc. Python là ngôn ngữ bậc cao: bạn viết tên biến và phép tính thay vì các lệnh máy. Mã nguồn mở nghĩa là mã nguồn triển khai được công khai theo giấy phép cho phép sử dụng và đóng góp. Python dùng được cho nhiều việc, từ tự động hóa đến ứng dụng và phân tích dữ liệu. Nó cũng viết được script (đoạn code chạy trực tiếp từ dòng lệnh) và backend (phần chạy phía sau trang web). Cách viết chú trọng khả năng đọc; tên biến rõ nghĩa và thụt lề giúp người đọc theo dõi chương trình."
+      "text": "`print` hiển thị kết quả của biểu thức trong ngoặc, nên con số 21 hiện ra chính là số cốc cả ngày. Python là ngôn ngữ bậc cao: bạn viết phép tính của quán bằng tên và dấu, không phải bằng lệnh máy. Mã nguồn mở nghĩa là mã nguồn triển khai được công khai theo giấy phép cho phép dùng và đóng góp."
      },
      {
       "type": "paragraph",
-      "text": "Khi cần dùng lại một số, đặt tên cho nó bằng phép gán:"
+      "text": "Cùng ngôn ngữ này còn làm được nhiều việc khác quanh quán. Một script (đoạn code chạy trực tiếp từ dòng lệnh) có thể chốt sổ mỗi tối. Một backend (phần chạy phía sau trang web) có thể nhận đơn đặt online. Cách viết chú trọng khả năng đọc, nên tên rõ nghĩa và thụt lề giúp người sau đọc lại sổ của bạn."
+     },
+     {
+      "type": "paragraph",
+      "text": "Mai bạn lại đếm hai buổi, nên hãy đặt tên cho từng con số thay vì gõ lại biểu thức:"
      },
      {
       "type": "code",
@@ -50,7 +54,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Dấu `=` gán giá trị cho tên biến. Hai lần chạy trên cho cùng kết quả nhưng lần sau bạn có thể đổi số bán từng buổi mà không viết lại biểu thức."
+      "text": "Dấu `=` gán giá trị cho tên biến. Hai lần chạy cho cùng một con số. Nhưng bản sau cho bạn đổi số bán từng buổi mà không phải viết lại phép tính."
      },
      {
       "type": "code",
@@ -62,15 +66,15 @@
     [
      {
       "type": "paragraph",
-      "text": "Nếu giá mỗi cốc là 15 nghìn đồng, doanh thu là 315 nghìn. Python cũng hỗ trợ lập trình hướng đối tượng; sau phần hàm, bạn sẽ học cách gom dữ liệu và hành vi vào lớp (class)."
+      "text": "Mỗi cốc 15 nghìn đồng, nên doanh thu ngày đầu là 315 nghìn. Python cũng hỗ trợ lập trình hướng đối tượng. Sau phần hàm, bạn sẽ gom số liệu và thao tác của quán vào một lớp (class)."
      },
      {
       "type": "paragraph",
-      "text": "Trong REPL bạn nhập và chạy từng lệnh. Trong script bạn lưu code vào một file (dữ liệu đã ghi xuống đĩa) có đuôi `.py` rồi chạy bằng `python ten_file.py`. Trên hệ UNIX, dòng đầu như `#!/usr/bin/env python3` có thể chỉ trình thông dịch khi file được cấp quyền chạy; bạn vẫn có thể gọi Python trực tiếp. Khóa học dùng Python 3; Python 2 đã ngừng được hỗ trợ."
+      "text": "Có hai chỗ để chạy những dòng này, và bạn sẽ dùng cả hai. Trong REPL bạn gõ từng lệnh rồi xem ngay, tiện lúc tính nhanh một hoá đơn. Trong script bạn lưu code vào một file (dữ liệu đã ghi xuống đĩa) có đuôi `.py`, rồi chạy bằng `python ten_file.py`. Cách này tiện cho việc chốt sổ lặp lại mỗi tối. Trên hệ UNIX, dòng đầu như `#!/usr/bin/env python3` chỉ trình thông dịch khi file được cấp quyền chạy. Khóa học dùng Python 3; Python 2 đã ngừng được hỗ trợ."
      },
      {
       "type": "paragraph",
-      "text": "Python thường được gọi là ngôn ngữ thông dịch. CPython còn biên dịch mã nguồn thành bytecode trước khi thực thi, nên “thông dịch” không có nghĩa hoàn toàn không biên dịch. Tính dễ đọc cũng không có nghĩa Python luôn nhanh nhất. Tác vụ nặng CPU (bộ xử lý chạy từng lệnh) và môi trường triển khai vẫn cần lựa chọn cách xử lý phù hợp."
+      "text": "Hai điều hay bị nói quá về Python. Python thường được gọi là ngôn ngữ thông dịch, nhưng CPython còn biên dịch mã nguồn thành bytecode trước khi chạy. Và dễ đọc không đồng nghĩa với nhanh nhất. Tới ngày một phép tính của quán chạy lâu, bạn sẽ phải xem việc đó nặng CPU (bộ xử lý chạy từng lệnh) hay nặng đọc ghi."
      }
     ]
    ],

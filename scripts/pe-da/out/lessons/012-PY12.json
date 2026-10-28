@@ -3,13 +3,13 @@
  "sort_order": 12,
  "module": "M1 · Python nền tảng",
  "title": "PY12 · Dictionary và tra cứu theo khóa",
- "subtitle": "Cơ bản · M1 · 14 phút",
- "estimated_minutes": 14,
- "xp_reward": 8,
+ "subtitle": "Cơ bản · M1 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY12 · Dictionary và tra cứu theo khóa",
-  "subtitle": "Cơ bản · M1 · 14 phút",
+  "subtitle": "Cơ bản · M1 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY12",
@@ -22,41 +22,51 @@
     [
      {
       "type": "paragraph",
-      "text": "Mỗi học viên có mã và điểm. Dictionary (kiểu từ điển lưu các cặp khoá–giá trị) giúp bạn lấy điểm theo mã thay vì nhớ vị trí trong một dãy:"
+      "text": "Tuple ở bài trước giữ được một dòng bán hàng. Nhưng khi khách gọi \"latte\", bạn cần số của món đó ngay, không phải đi tìm nó nằm ô thứ mấy. Dictionary (kiểu từ điển lưu các cặp khoá–giá trị) cho bạn tra theo tên món:"
      },
      {
       "type": "code",
-      "code": "marks = {\"S01\": 8, \"S02\": 0}\nprint(marks[\"S01\"])\nprint(marks.get(\"S03\", \"missing\"))\nprint(\"S02\" in marks)",
-      "expected": "8\nmissing\nTrue",
+      "code": "da_ban = {\"espresso\": 8, \"latte\": 0}\nprint(da_ban[\"espresso\"])\nprint(da_ban.get(\"mocha\", \"khong ban\"))\nprint(\"latte\" in da_ban)",
+      "expected": "8\nkhong ban\nTrue",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "`marks[key]` đọc giá trị và gây KeyError nếu thiếu khóa. `get` cho phép trả giá trị mặc định. Kiểm tra có khóa khác với kiểm tra điểm có khác 0: S02 có dữ liệu hợp lệ là điểm 0. `in` trên dict kiểm tra khóa."
+      "text": "`da_ban[\"espresso\"]` đọc giá trị của khóa đó, và gây `KeyError` nếu khóa không có. `get` cho bạn trả về một giá trị mặc định, nên một món chưa từng bán không làm chương trình dừng. Có khóa khác với có giá trị khác 0. `\"latte\"` nằm trong sổ với số liệu hợp lệ là 0 cốc, tức hôm nay chưa bán được cốc nào. `in` trên dict xét khóa, không xét giá trị."
      },
      {
       "type": "code",
-      "code": "marks = {\"S01\": 8}\nmarks[\"S02\"] = 7\nmarks.update({\"S01\": 9})\nfor code, mark in marks.items():\n    print(code, mark)\nprint(list(marks.keys()), list(marks.values()))",
-      "expected": "S01 9\nS02 7\n['S01', 'S02'] [9, 7]",
+      "code": "gia = {\"espresso\": 25}\ngia[\"latte\"] = 30\ngia.update({\"espresso\": 27})\nfor mon, tien in gia.items():\n    print(mon, tien)\nprint(list(gia.keys()), list(gia.values()))",
+      "expected": "espresso 27\nlatte 30\n['espresso', 'latte'] [27, 30]",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "Trong `for code, mark in marks.items()`, mỗi lượt lấy một cặp khóa và giá trị rồi gán vào code và mark. Đây là vòng lặp for; bài PY14 sẽ giải thích cách viết vòng lặp chi tiết hơn. `keys()` và `values()` trả các view, tức cách xem khóa hoặc giá trị luôn phản ánh nội dung hiện tại của dict; Python 3 giữ thứ tự chèn. Khóa là duy nhất, nên gán S01 lần nữa sẽ thay giá trị của khóa đó."
-     },
-     {
-      "type": "code",
-      "code": "marks = {\"S01\": 8, \"S02\": 9, \"S03\": 5}\nbest = max(marks, key=marks.get)\nremoved = marks.pop(\"S03\")\nprint(best, removed)\nprint(min(marks, key=marks.get))",
-      "expected": "S02 5\nS01",
-      "tryIt": true
+      "text": "Bảng giá đổi theo tuần. Bạn thêm món mới bằng `gia[\"latte\"] = 30` và sửa giá cũ bằng `update`. Khóa là duy nhất, nên gán `\"espresso\"` lần nữa chỉ thay giá của chính khóa đó chứ không tạo dòng thứ hai."
      },
      {
       "type": "paragraph",
-      "text": "`max(marks)` và `min(marks)` mặc định so các khóa. Thêm `key=marks.get` mới so theo điểm và vẫn trả mã tương ứng. `pop(key, default)` vừa lấy vừa xóa, trả default nếu thiếu; không có default thì khóa thiếu gây KeyError. `del marks[code]` chỉ xóa. `not in` cũng xét khóa, giống `in`. Giá trị trong dict có thể là list hoặc một dict khác, chẳng hạn hồ sơ chứa tên và nhiều điểm."
+      "text": "Trong `for mon, tien in gia.items()`, mỗi lượt lấy một cặp khóa và giá trị rồi gán vào `mon` và `tien`. Đây là vòng lặp `for`, và bài PY14 sẽ nói kỹ hơn về nó. `keys()` và `values()` trả về các view, tức cách xem khóa hoặc giá trị luôn phản ánh nội dung hiện tại của dict. Python 3 giữ thứ tự bạn đã chèn, nên bảng in ra theo đúng thứ tự bạn thêm món."
+     },
+     {
+      "type": "code",
+      "code": "gia = {\"espresso\": 25, \"latte\": 30, \"tra_da\": 12}\ndat_nhat = max(gia, key=gia.get)\nbo_di = gia.pop(\"tra_da\")\nprint(dat_nhat, bo_di)\nprint(min(gia, key=gia.get))",
+      "expected": "latte 12\nespresso",
+      "tryIt": true
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Cuối tháng bạn muốn biết món nào đắt nhất và món nào rẻ nhất. `max(gia)` và `min(gia)` mặc định so các khóa, tức so tên món theo thứ tự chữ. Thêm `key=gia.get` mới so theo giá, và kết quả trả về vẫn là tên món."
+     },
+     {
+      "type": "paragraph",
+      "text": "Khi bỏ một món khỏi bảng giá, `pop(key, default)` vừa lấy vừa xoá, nên bỏ `tra_da` cũng cho bạn biết giá cuối của nó là 12. Không truyền `default` thì một khóa thiếu gây `KeyError`, còn `del gia[mon]` thì chỉ xoá. `not in` cũng xét khóa, giống `in`. Giá trị trong dict còn có thể là list hay một dict khác, chẳng hạn một món kèm nhiều mức size."
      }
     ]
    ],
@@ -68,7 +78,7 @@
   "step_2": {
    "mcq": [
     {
-     "question": "marks={\"S02\":0}. marks.get(\"S02\", None) trả gì?",
+     "question": "da_ban={\"latte\":0}. da_ban.get(\"latte\", None) trả gì?",
      "options": [
       {
        "text": "None",
@@ -76,7 +86,7 @@
       },
       {
        "text": "0",
-       "detail": "Đúng. Khóa tồn tại và giữ điểm 0.",
+       "detail": "Đúng. Khóa tồn tại và giữ số 0 cốc.",
        "correct": true
       },
       {
@@ -84,7 +94,7 @@
        "detail": "get cho phép giá trị mặc định; truy cập [] vào khóa thiếu mới gây KeyError."
       }
      ],
-     "explanation": "Đúng. Khóa tồn tại và giữ điểm 0."
+     "explanation": "Đúng. Khóa tồn tại và giữ số 0."
     },
     {
      "question": "Điểm 0 là một giá trị đã có. Kết quả ở lệnh print cuối có giá trị nào?\n\nmarks = {\"A\": 0, \"B\": 8}\nprint(marks[\"A\"])",
@@ -127,24 +137,24 @@
    ],
    "practice": [
     {
-     "prompt": "\"Mai\" in student kiểm tra tên trong values hay khóa?",
-     "answer": "Kiểm tra khóa; muốn tìm trong values dùng \"Mai\" in student.values()."
+     "prompt": "\"latte\" in gia kiểm tra tên món trong values hay trong khóa?",
+     "answer": "Kiểm tra khóa; muốn tìm trong values dùng 30 in gia.values()."
     },
     {
-     "prompt": "Tìm mã có điểm thấp nhất trong marks bằng biểu thức nào?",
-     "answer": "min(marks, key=marks.get), khi dict không rỗng."
+     "prompt": "Tìm món có giá thấp nhất trong gia bằng biểu thức nào?",
+     "answer": "min(gia, key=gia.get), khi dict không rỗng."
     },
     {
-     "prompt": "Xóa S01 và lấy lại điểm của mã đó.",
-     "answer": "score = marks.pop(\"S01\"). Nếu có thể thiếu khóa, dùng marks.pop(\"S01\", None) và xử lý trường hợp không có."
+     "prompt": "Bỏ espresso khỏi bảng giá và lấy lại giá cuối của nó.",
+     "answer": "cuoi = gia.pop(\"espresso\"). Nếu khóa có thể thiếu, dùng gia.pop(\"espresso\", None) và xử lý trường hợp không có."
     },
     {
-     "prompt": "Với d={\"A\":9,\"Z\":2}, max(d), min(d), max(d,key=d.get), min(d,key=d.get) trả gì?",
-     "answer": "Lần lượt Z, A, A và Z. Hai cách đầu so khóa; hai cách có key=d.get so giá trị nhưng vẫn trả khóa."
+     "prompt": "Với d={\"americano\":9,\"zero\":2}, max(d), min(d), max(d,key=d.get), min(d,key=d.get) trả gì?",
+     "answer": "Lần lượt zero, americano, americano và zero. Hai cách đầu so khóa; hai cách có key=d.get so giá trị nhưng vẫn trả khóa."
     },
     {
-     "prompt": "Với d={\"A\":1}, d.update({\"A\":3,\"B\":2}); d.pop(\"X\",0); del d[\"A\"] làm d còn gì? get(\"X\",0) có thêm X không?",
-     "answer": "d còn {\"B\":2}; update ghi đè A và thêm B, pop khóa thiếu trả 0, del xóa A. get không thêm khóa. keys/values/items cho khóa, giá trị và cặp tương ứng; \"B\" in d và \"X\" not in d đều True."
+     "prompt": "Với d={\"latte\":1}, d.update({\"latte\":3,\"mocha\":2}); d.pop(\"tra_da\",0); del d[\"latte\"] làm d còn gì? get(\"tra_da\",0) có thêm khóa không?",
+     "answer": "d còn {\"mocha\":2}; update ghi đè latte và thêm mocha, pop một khóa thiếu trả 0, del xoá latte. get không thêm khóa. keys/values/items cho khóa, giá trị và cặp tương ứng; \"mocha\" in d và \"tra_da\" not in d đều True."
     }
    ]
   },

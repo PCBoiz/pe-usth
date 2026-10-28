@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một báo cáo cần ghép tên cửa hàng vào tiêu đề. Bạn có thể dùng phép cộng với chuỗi:"
+      "text": "Hoá đơn bạn vừa tính xong phải in ra một dòng cho khách đọc. Bản báo cáo cuối ngày cần một dòng tiêu đề có tên quán. Với chuỗi, dấu `+` làm việc ghép chứ không làm phép cộng:"
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`+` nối chuỗi, còn `*` với một số nguyên lặp chuỗi. Muốn nối số vào văn bản, chuyển nó thành chuỗi bằng `str` hoặc dùng định dạng chuỗi ở bài sau."
+      "text": "`+` nối hai chuỗi lại, còn `*` với một số nguyên thì lặp chuỗi — dòng kẻ dưới tiêu đề chỉ là năm dấu `-` lặp lại. Muốn đưa số cốc vào câu chữ, đổi nó thành chuỗi bằng `str`, hoặc dùng cách định dạng ở bài sau."
      },
      {
       "type": "code",
@@ -46,17 +46,23 @@
     [
      {
       "type": "paragraph",
-      "text": "`\\n` trong literal tạo ký tự xuống dòng. Nháy đơn và nháy đôi đều tạo chuỗi; chọn loại giúp ít phải escape khi nội dung chứa dấu nháy. Ba dấu nháy liên tiếp có thể viết chuỗi nhiều dòng."
+      "text": "Một bản báo cáo có nhiều dòng, nên bạn cần ký tự xuống dòng. `\\n` trong chuỗi literal tạo đúng ký tự đó, vì vậy một chuỗi in ra thành hai dòng. Nháy đơn và nháy đôi đều tạo chuỗi; chọn loại nào là để ít phải escape khi nội dung có dấu nháy. Ba dấu nháy liên tiếp viết được chuỗi nhiều dòng, tiện cho một mẫu hoá đơn dài."
      },
      {
       "type": "code",
       "code": "name = \"Hà Nội\"\n# len đếm ký tự Unicode trong chuỗi này.\nprint(len(name))\nprint(\"Ha\" == \"Hà\")",
       "expected": "6\nFalse",
       "tryIt": true
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Tên món và tên quán của bạn có dấu, nên hai điểm sau đáng chú ý. Chuỗi Python là Unicode, vì vậy `len(\"Hà Nội\")` đếm đúng 6 ký tự như bạn đọc. Và hai chuỗi khác dấu là hai giá trị khác nhau: `\"Ha\"` không bằng `\"Hà\"`, nên một bảng giá gõ thiếu dấu sẽ tra không ra. Một ký tự như `\"A\"` vẫn có kiểu `str`; Python không có kiểu riêng cho một ký tự."
      },
      {
       "type": "paragraph",
-      "text": "Chuỗi Python là Unicode nên bạn có thể dùng tiếng Việt. Một ký tự như \"A\" vẫn có kiểu str, không có kiểu char riêng. Hai chuỗi khác dấu là hai giá trị khác nhau. Dấu `#` bắt đầu một chú thích (comment), bỏ phần còn lại của dòng khỏi việc thực thi; có thể dùng nó để ghi lý do của một phép tính hoặc tạm vô hiệu hóa một dòng code. Comment không làm thay đổi giá trị của biến. Chuỗi ba nháy vẫn là object chuỗi; ở đầu hàm hoặc module, nó có thể làm docstring mô tả thành phần đó."
+      "text": "Dòng bắt đầu bằng `#` là một chú thích (comment). Python bỏ qua phần còn lại của dòng, nên bạn ghi được lý do của một phép tính cho người sau đọc sổ. Nó cũng dùng để tạm vô hiệu một dòng code. Chú thích không làm đổi giá trị của biến nào. Chuỗi ba nháy thì khác: nó vẫn là một chuỗi thật. Đặt ở đầu hàm hay đầu module, nó thành docstring mô tả thành phần đó."
      }
     ]
    ],

@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn tính tổng hóa đơn nhiều lần với đơn giá và số lượng khác nhau. Thay vì lặp lại biểu thức, đặt phép tính trong một hàm:"
+      "text": "Ca bán hàng bạn vừa viết lặp cùng một phép tính cho mỗi khách. Mỗi hoá đơn của quán là đơn giá nhân số lượng, và bạn gõ lại biểu thức đó cả ngày. Đặt nó vào một hàm rồi gọi theo tên:"
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "price và quantity là tham số trong định nghĩa; 12 và 3 là đối số trong lần gọi. quantity có giá trị mặc định 1. Bạn có thể truyền theo vị trí hoặc ghi tên đối số để dễ đọc."
+      "text": "`price` và `quantity` là tham số trong định nghĩa, còn 12 và 3 là đối số của lần gọi. `quantity` có giá trị mặc định 1, nên khách mua đúng một cốc thì gọi `total(12)` là đủ. Bạn truyền theo vị trí, hoặc ghi tên đối số như `total(12, quantity=2)` để người đọc lại sổ hiểu ngay con số 2 là gì."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Hàm chỉ print không tự trả số vừa hiển thị. Nếu không return một giá trị, kết quả lời gọi là None. Để đưa kết quả vào bước xử lý sau, dùng return."
+      "text": "Một hàm chỉ `print` thì không trả lại con số vừa hiện. Nếu không `return` một giá trị, kết quả lời gọi là None, nên `result` ở đây không cộng được vào doanh thu ngày. Muốn đưa kết quả sang bước sau, dùng `return`."
      },
      {
       "type": "code",
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "sum, len, min và max là built-in có sẵn. Hàm average trên yêu cầu dữ liệu không rỗng; với list rỗng nó chia cho 0. Docstring ở đầu hàm nêu rõ hợp đồng đó. Một hàm nhỏ nên có đầu vào, đầu ra và điều kiện sử dụng đủ rõ để người khác gọi đúng."
+      "text": "`sum`, `len`, `min` và `max` là các hàm có sẵn, nên trung bình số cốc ba ngày viết được trong một dòng. Hàm `average` ở trên đòi dữ liệu không rỗng: gọi nó với một sổ chưa có ngày nào là chia cho 0. Docstring ở đầu hàm nói rõ điều kiện đó. Một hàm nhỏ nên có đầu vào, đầu ra và điều kiện dùng đủ rõ để người sau gọi đúng mà không phải đọc thân hàm."
      }
     ]
    ],
@@ -135,8 +135,8 @@
      "answer": "None; 36 chỉ được print ra màn hình."
     },
     {
-     "prompt": "Viết hàm discount(price, amount) trả giá sau giảm.",
-     "answer": "def discount(price, amount): return price - amount. Ví dụ discount(20, 3) trả 17; cần bổ sung quy tắc nếu không cho phép giá âm."
+     "prompt": "Viết hàm discount(price, amount) trả giá một cốc sau giảm.",
+     "answer": "def discount(price, amount): return price - amount. Ví dụ discount(20, 3) trả 17; cần bổ sung quy tắc nếu quán không cho phép giá âm."
     },
     {
      "prompt": "Định nghĩa total nhưng chưa gọi có chạy thân hàm không? Trong total(12,3), đâu là tham số, đâu là đối số; docstring khác comment thế nào?",

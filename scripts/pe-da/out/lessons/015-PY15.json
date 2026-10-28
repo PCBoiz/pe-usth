@@ -3,13 +3,13 @@
  "sort_order": 15,
  "module": "M1 · Python nền tảng",
  "title": "PY15 · While, break và continue",
- "subtitle": "Cơ bản · M1 · 13 phút",
- "estimated_minutes": 13,
+ "subtitle": "Cơ bản · M1 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY15 · While, break và continue",
-  "subtitle": "Cơ bản · M1 · 13 phút",
+  "subtitle": "Cơ bản · M1 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY15",
@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Một chương trình cho phép thử tối đa ba lần. Khi chưa có thao tác của người dùng, bạn có thể mô phỏng số lượt để đọc điều kiện dừng:"
+      "text": "Vòng `for` ở bài trước biết trước phải đi qua bao nhiêu ô. Một ca bán hàng của quán thì không: nó chạy tới khi bạn đóng cửa. Trước hết hãy xem ca dễ hơn — buổi sáng bạn chiết thử tối đa ba lượt để cân chỉnh máy pha:"
      },
      {
       "type": "code",
-      "code": "attempt = 0\nwhile attempt < 3:\n    attempt += 1\n    print(attempt)",
+      "code": "luot = 0\nwhile luot < 3:\n    luot += 1\n    print(luot)",
       "expected": "1\n2\n3",
       "tryIt": true
      }
@@ -34,11 +34,11 @@
     [
      {
       "type": "paragraph",
-      "text": "while kiểm tra điều kiện trước mỗi lượt. Việc tăng attempt giúp điều kiện cuối cùng thành False. Nếu quên thay đổi trạng thái mà điều kiện luôn đúng, chương trình có thể lặp mãi."
+      "text": "`while` kiểm điều kiện trước mỗi lượt. Dòng `luot += 1` là thứ làm điều kiện cuối cùng thành False, nên vòng dừng sau lượt thứ ba. Nếu bạn quên đổi trạng thái mà điều kiện luôn đúng, chương trình lặp mãi và máy pha không bao giờ được nghỉ."
      },
      {
       "type": "code",
-      "code": "for number in range(6):\n    if number == 1:\n        continue\n    if number == 4:\n        break\n    print(number)",
+      "code": "for don in range(6):\n    if don == 1:\n        continue\n    if don == 4:\n        break\n    print(don)",
       "expected": "0\n2\n3",
       "tryIt": true
      }
@@ -46,17 +46,27 @@
     [
      {
       "type": "paragraph",
-      "text": "`continue` bỏ phần còn lại của lượt hiện tại; `break` thoát vòng gần nhất. Vì vậy số 1 không được in và gặp 4 thì dừng trước print. Vị trí cập nhật biến rất quan trọng: nếu `total += number` nằm sau continue, số bị bỏ qua không được cộng. Trong while, nếu cập nhật điều kiện dừng nằm sau continue, bạn có thể vô tình bỏ luôn bước giúp vòng lặp kết thúc."
-     },
-     {
-      "type": "code",
-      "code": "commands = iter([\"sum\", \"quit\", \"sum\"])\nwhile True:\n    command = next(commands, \"quit\")\n    if command == \"quit\":\n        break\n    print(command)",
-      "expected": "sum",
-      "tryIt": true
+      "text": "Giờ đến một ca có sự cố. Sáu đơn vào quầy, đơn số 1 bị khách huỷ, và tới đơn số 4 thì hết nguyên liệu. `continue` bỏ phần còn lại của lượt hiện tại, nên đơn bị huỷ không được in. `break` thoát vòng gần nhất, nên cả ca dừng ở đơn số 4."
      },
      {
       "type": "paragraph",
-      "text": "`iter(...)` tạo đối tượng để lấy lần lượt các lệnh trong danh sách. Mỗi lần gọi `next(commands, \"quit\")` sẽ lấy lệnh tiếp theo; khi hết dữ liệu, nó trả giá trị mặc định `\"quit\"`. Chuỗi này là sentinel, tức giá trị báo dừng, nên ví dụ không lặp mãi. Khi làm chương trình nhận lệnh trong terminal (CLI), bạn có thể lấy từng lệnh bằng `input()` và giữ cùng quy tắc thoát."
+      "text": "Vị trí dòng cập nhật rất quan trọng. Nếu `total += don` nằm sau `continue`, đơn bị bỏ qua cũng không được cộng vào doanh thu. Trong `while`, nếu dòng cập nhật điều kiện dừng nằm sau `continue`, bạn có thể bỏ luôn bước giúp vòng lặp kết thúc."
+     },
+     {
+      "type": "code",
+      "code": "lenh = iter([\"pha\", \"dong_cua\", \"pha\"])\nwhile True:\n    viec = next(lenh, \"dong_cua\")\n    if viec == \"dong_cua\":\n        break\n    print(viec)",
+      "expected": "pha",
+      "tryIt": true
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Đây là hình dạng thật của một ca: quầy nhận lệnh tới khi gặp lệnh đóng cửa. `iter(...)` tạo đối tượng để lấy lần lượt các lệnh trong dãy. Mỗi lần gọi `next(lenh, \"dong_cua\")` lấy lệnh tiếp theo, và khi hết dữ liệu nó trả về giá trị mặc định `\"dong_cua\"`."
+     },
+     {
+      "type": "paragraph",
+      "text": "Chuỗi đó là sentinel, tức giá trị báo dừng, nên ví dụ không lặp mãi dù vòng ngoài viết `while True`. Khi bạn làm một màn nhận lệnh trong terminal (CLI) cho quầy, mỗi lệnh sẽ đến từ `input()` và quy tắc thoát vẫn giữ nguyên như vậy."
      }
     ]
    ],
@@ -128,15 +138,15 @@
    "practice": [
     {
      "prompt": "Vòng đầu chạy mấy lượt?",
-     "answer": "3 lượt, với attempt được in là 1, 2 và 3."
+     "answer": "3 lượt, với luot được in là 1, 2 và 3."
     },
     {
      "prompt": "break và continue có giống nhau không?",
      "answer": "Không. break thoát vòng lặp; continue chỉ bỏ phần còn lại của một lượt."
     },
     {
-     "prompt": "Nếu commands không có phần tử nào, ví dụ cuối có bị lặp mãi không?",
-     "answer": "Không. next trả mặc định quit ngay, rồi break kết thúc vòng lặp."
+     "prompt": "Nếu dãy lenh không có phần tử nào, ví dụ cuối có bị lặp mãi không?",
+     "answer": "Không. next trả mặc định dong_cua ngay, rồi break kết thúc vòng lặp."
     },
     {
      "prompt": "total=0; duyệt [1,2,3,4], bỏ lượt khi n==2, dừng khi n==4, còn lại cộng n. Tổng cuối là gì? Trong while, đặt cập nhật n sau continue có rủi ro gì?",

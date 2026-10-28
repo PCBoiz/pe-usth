@@ -3,13 +3,13 @@
  "sort_order": 3,
  "module": "M1 · Python nền tảng",
  "title": "PY03 · REPL, notebook và trạng thái đã chạy",
- "subtitle": "Cơ bản · M1 · 14 phút",
- "estimated_minutes": 14,
- "xp_reward": 8,
+ "subtitle": "Cơ bản · M1 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY03 · REPL, notebook và trạng thái đã chạy",
-  "subtitle": "Cơ bản · M1 · 14 phút",
+  "subtitle": "Cơ bản · M1 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY03",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong notebook, bạn chạy cell gán `cups = 12` rồi chạy cell in `cups`. Kết quả đúng vì kernel (tiến trình Python chạy phía sau notebook) còn giữ biến từ cell trước. Hãy xem một lần chạy có đầy đủ đầu vào:"
+      "text": "Môi trường bạn vừa tạo ở bài trước quyết định Python nào sẽ chạy; giờ chọn chỗ để gõ. Trong một notebook, bạn chạy ô gán `cups = 12` lúc đầu buổi, rồi lát sau chạy ô in `cups`. Con số cũ vẫn còn vì kernel (tiến trình Python chạy phía sau trang đó) giữ lại biến của ô trước. Một lần chạy có đủ đầu vào thì trông như sau:"
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Notebook có cell code và cell văn bản, có thể chứa đầu ra (output), hình và phương trình; Shift+Enter thường chạy cell hiện tại. Jupyter Notebook và JupyterLab là hai giao diện làm việc với notebook. Kernel là tiến trình thực thi và giữ trạng thái. Nếu chỉ gửi cell `print(cups + 1)` cho người khác, họ có thể chưa có biến `cups`."
+      "text": "Trang này có hai loại ô: ô code và ô văn bản. Mỗi ô có thể kèm đầu ra (output), hình và công thức; Shift+Enter thường chạy ô đang chọn. Jupyter Notebook và JupyterLab là hai giao diện làm việc với nó. Phần giữ trạng thái và thực thi là kernel, và nó sống suốt buổi bạn ngồi tính. Nếu bạn chỉ gửi riêng ô `print(cups + 1)` cho người quản lý quán, máy họ có thể chưa có `cups`."
      },
      {
       "type": "code",
@@ -46,7 +46,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Cell chạy sau sẽ dùng giá trị cups mới nhất trong kernel. Nếu chưa gán cups mà đã in nó, Python báo NameError vì chưa có tên đó. Khi hoàn thành notebook, khởi động lại kernel rồi chạy từ đầu để tìm bước khởi tạo bị thiếu. Một editor chủ yếu giúp sửa văn bản mã nguồn; IDE gom thêm công cụ chạy, kiểm lỗi và gỡ lỗi. VS Code có thể mở rộng bằng extension; PyCharm và Spyder là các ví dụ IDE trong slide."
+      "text": "Giữa hai ô, bạn đếm lại bình rồi sửa con số; ô chạy sau dùng giá trị `cups` mới nhất mà kernel đang giữ. Nếu chưa gán `cups` mà đã in nó, Python báo `NameError` vì chưa có tên đó. Đó là lý do trước khi gửi sổ cho người khác, bạn khởi động lại tiến trình đó rồi chạy lại từ đầu. Bước khởi tạo nào bị thiếu sẽ lộ ra ngay."
+     },
+     {
+      "type": "paragraph",
+      "text": "Nơi bạn gõ cũng có nhiều lựa chọn, và chọn gì thì sổ của quán vẫn tính ra cùng con số. Một editor chủ yếu giúp sửa văn bản mã nguồn. Một IDE gom thêm công cụ chạy, kiểm lỗi và gỡ lỗi. VS Code mở rộng được bằng extension, còn PyCharm và Spyder là hai ví dụ IDE mà bài giảng gốc nêu."
      },
      {
       "type": "code",
@@ -58,15 +62,15 @@
     [
      {
       "type": "paragraph",
-      "text": "`type(12)` cho biết 12 có kiểu int, còn `type(\"data\")` cho biết chuỗi có kiểu str. Bạn sẽ gặp hai kiểu này ở các bài tiếp. Khi cần tra, gõ `dir(object)` để xem tên thuộc tính/phương thức, hoặc `help(print)` để đọc hướng dẫn dùng print. Help có output dài nên không cần chép hết vào bài; hãy tìm phần tham số và ví dụ bạn đang cần."
+      "text": "Hai kiểu dữ liệu đầu tiên của sổ xuất hiện ở đây: số cốc là một con số, tên món là chữ. `type(12)` cho biết 12 có kiểu int, còn `type(\"data\")` cho biết chuỗi có kiểu str. Khi cần tra một thứ gì, gõ `dir(object)` để xem tên các thuộc tính, hoặc `help(print)` để đọc hướng dẫn dùng print."
      },
      {
       "type": "paragraph",
-      "text": "Nếu chưa có Notebook, chạy `python -m pip install notebook` trong terminal của môi trường đã chọn, sau đó chạy `jupyter notebook` để mở. Với conda, slide đưa lựa chọn `conda install -c conda-forge notebook`. Đây là lệnh terminal; đừng dán chúng vào cell rồi coi là câu Python thông thường. Không cần dùng cả pip và conda cho cùng lần cài."
+      "text": "Nếu máy chưa có nó, chạy `python -m pip install notebook` trong terminal của môi trường đã chọn, rồi chạy `jupyter notebook` để mở. Với conda, bài giảng gốc đưa lựa chọn `conda install -c conda-forge notebook`. Đây là lệnh terminal; đừng dán chúng vào một ô rồi coi là câu Python. Và không cần dùng cả pip lẫn conda cho cùng một lần cài."
      },
      {
       "type": "paragraph",
-      "text": "Jupyter phát triển từ dự án IPython. Với notebook Python, IPython kernel thực thi code và giữ các biến; Notebook và JupyterLab là các giao diện người học dùng để gửi code tới kernel. Trong sơ đồ lịch sử của slide, ZeroMQ vận chuyển thông điệp và Tornado phục vụ phần web. jQuery và Bootstrap giúp dựng giao diện; MathJax hiển thị công thức toán. Những thành phần giao diện này không tính thay kernel và bạn không cần tự cài từng cái để viết một cell."
+      "text": "Phần dưới đây là lịch sử, đọc để biết chứ chưa cần làm gì. Jupyter phát triển từ dự án IPython. Với Python, IPython kernel thực thi và giữ các biến, còn Notebook và JupyterLab là giao diện gửi lệnh tới nó. Trong sơ đồ của slide, ZeroMQ vận chuyển thông điệp và Tornado phục vụ phần web. jQuery, Bootstrap và MathJax lo phần giao diện. Bạn không phải tự cài từng cái để tính một ô."
      }
     ]
    ],

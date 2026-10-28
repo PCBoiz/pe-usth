@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn cần cộng số cốc của ba ngày. Một vòng for có thể lần lượt lấy từng số và cộng vào biến tổng:"
+      "text": "Ba ngày thì bạn cộng tay được, như ở bài trước. Một tháng thì phải để chương trình đi qua từng ô của sổ. Một vòng `for` lấy lần lượt từng số cốc và cộng vào biến tổng:"
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`total` được khởi tạo trước vòng lặp. Mỗi lượt, biến `value` nhận một giá trị (value) của dãy theo thứ tự. Khi cần tạo số thứ tự, dùng range:"
+      "text": "`total` được khởi tạo bằng 0 trước vòng lặp, vì chưa cộng gì thì tổng là 0. Mỗi lượt, biến `value` nhận một giá trị (value) của dãy theo thứ tự rồi cộng vào `total`. Khi cần số thứ tự ngày thay vì chỉ con số, dùng `range`:"
      },
      {
       "type": "code",
@@ -46,17 +46,23 @@
     [
      {
       "type": "paragraph",
-      "text": "`range(start, stop, step)` không lấy stop; bước âm tạo dãy giảm. `range(5)` bắt đầu từ 0. range là một object range, nên ví dụ gọi list để hiện toàn bộ số. `enumerate` cho cả chỉ số và giá trị."
+      "text": "`range(start, stop, step)` không lấy `stop`, nên `range(1, 5)` là bốn ngày từ 1 đến 4. Bước âm tạo dãy giảm, dùng khi bạn muốn đọc từ ngày gần nhất trở về trước. `range(5)` bắt đầu từ 0. `range` trả về một object `range`, nên ví dụ gọi `list` để hiện hết các số. `enumerate` cho cả chỉ số và giá trị, tiện khi muốn in \"ngày 0 bán 6 cốc\"."
      },
      {
       "type": "code",
-      "code": "names, marks = [\"Mai\", \"An\"], [8, 7]\nfor name, mark in zip(names, marks):\n    print(name, mark)\nprint([x * 2 for x in [1, 2, 3] if x >= 2])",
-      "expected": "Mai 8\nAn 7\n[4, 6]",
+      "code": "mon, gia = [\"espresso\", \"latte\"], [25, 30]\nfor ten, tien in zip(mon, gia):\n    print(ten, tien)\nprint([x * 2 for x in [1, 2, 3] if x >= 2])",
+      "expected": "espresso 25\nlatte 30\n[4, 6]",
       "tryIt": true
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Tên món nằm một dãy và giá nằm dãy khác, nên bạn cần ghép chúng lại. `zip` ghép các phần tử cùng vị trí, và cách gọi này dừng khi dãy ngắn nhất hết phần tử. Trong `for ten, tien`, cặp do `zip` tạo được tách vào hai tên."
      },
      {
       "type": "paragraph",
-      "text": "`zip` ghép các phần tử cùng vị trí; cách gọi này dừng khi dãy ngắn nhất hết phần tử. Trong `for name, mark`, cặp do zip tạo được unpack vào hai tên. List comprehension như `[x * 2 for x in values if x >= 2]` tạo list mới: điều kiện chọn phần tử, biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt đầu vào (input). Nếu cần nhiều bước, vòng lặp thường dễ đọc hơn."
+      "text": "List comprehension như `[x * 2 for x in values if x >= 2]` tạo một list mới: điều kiện chọn phần tử, còn biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt của đầu vào (input). Nếu phép tính cần nhiều bước, một vòng lặp thường dễ đọc hơn."
      }
     ]
    ],
@@ -140,11 +146,11 @@
     },
     {
      "prompt": "range(4), range(2,5) và range(5,0,-2) tạo các số nào? for n in range(3): total += n với total=0 từ đầu có tổng gì?",
-     "answer": "Lần lượt 0,1,2,3; 2,3,4; 5,3,1. range là sequence không phải list; dùng list(...) để hiển thị. Vòng cuối cộng lần lượt 0,1,2, được 3; câu lệnh sau vòng chỉ chạy sau khi duyệt xong."
+     "answer": "Lần lượt 0,1,2,3; 2,3,4; 5,3,1. range là sequence chứ không phải list; dùng list(...) để hiển thị. Vòng cuối cộng lần lượt 0,1,2 được 3; câu lệnh sau vòng chỉ chạy khi đã duyệt xong."
     },
     {
-     "prompt": "Ghép zip([\"An\",\"Mai\"],[8]) rồi for name, score in ... được mấy cặp? Viết comprehension đổi [\"AN\",\"MAI\"] thành chữ thường, và lọc [3,1,4] giữ số >=3.",
-     "answer": "Zip mặc định chỉ có (\"An\",8) vì dãy điểm ngắn hơn; vòng for unpack cặp vào hai tên. [s.lower() for s in [\"AN\",\"MAI\"]] cho [\"an\",\"mai\"]; [x for x in [3,1,4] if x>=3] cho [3,4], giữ thứ tự ban đầu."
+     "prompt": "Ghép zip([\"espresso\",\"latte\"],[25]) rồi for ten, tien in ... được mấy cặp? Viết comprehension đổi [\"ESPRESSO\",\"LATTE\"] thành chữ thường, và lọc [3,1,4] giữ số >= 3.",
+     "answer": "Zip mặc định chỉ có (\"espresso\",25) vì dãy giá ngắn hơn; vòng for tách cặp vào hai tên. [s.lower() for s in [\"ESPRESSO\",\"LATTE\"]] cho [\"espresso\",\"latte\"]; [x for x in [3,1,4] if x>=3] cho [3,4], giữ thứ tự ban đầu."
     }
    ]
   },

@@ -6,13 +6,13 @@
    "sort_order": 1,
    "module": "M1 · Python nền tảng",
    "title": "PY01 · Chạy một phép tính và đọc kết quả",
-   "subtitle": "Cơ bản · M1 · 15 phút",
-   "estimated_minutes": 15,
-   "xp_reward": 9,
+   "subtitle": "Cơ bản · M1 · 16 phút",
+   "estimated_minutes": 16,
+   "xp_reward": 10,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY01 · Chạy một phép tính và đọc kết quả",
-    "subtitle": "Cơ bản · M1 · 15 phút",
+    "subtitle": "Cơ bản · M1 · 16 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY01",
@@ -25,7 +25,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Một quán bán 12 cốc vào buổi sáng và 9 cốc vào buổi chiều. Bạn muốn tính số cốc đã bán trong ngày. Mở Python hoặc một ô code (cell) trong notebook (trang gồm nhiều ô code chạy riêng được) rồi chạy:"
+        "text": "Hôm nay quán của bạn mở cửa ngày đầu. Buổi sáng bán 12 cốc, buổi chiều bán 9 cốc, và bạn muốn biết cả ngày được bao nhiêu. Mở Python hoặc một ô code (cell) trong notebook (trang gồm nhiều ô code chạy riêng được) rồi chạy:"
        },
        {
         "type": "code",
@@ -37,11 +37,15 @@
       [
        {
         "type": "paragraph",
-        "text": "`print` hiển thị kết quả của biểu thức trong ngoặc. Python là ngôn ngữ bậc cao: bạn viết tên biến và phép tính thay vì các lệnh máy. Mã nguồn mở nghĩa là mã nguồn triển khai được công khai theo giấy phép cho phép sử dụng và đóng góp. Python dùng được cho nhiều việc, từ tự động hóa đến ứng dụng và phân tích dữ liệu. Nó cũng viết được script (đoạn code chạy trực tiếp từ dòng lệnh) và backend (phần chạy phía sau trang web). Cách viết chú trọng khả năng đọc; tên biến rõ nghĩa và thụt lề giúp người đọc theo dõi chương trình."
+        "text": "`print` hiển thị kết quả của biểu thức trong ngoặc, nên con số 21 hiện ra chính là số cốc cả ngày. Python là ngôn ngữ bậc cao: bạn viết phép tính của quán bằng tên và dấu, không phải bằng lệnh máy. Mã nguồn mở nghĩa là mã nguồn triển khai được công khai theo giấy phép cho phép dùng và đóng góp."
        },
        {
         "type": "paragraph",
-        "text": "Khi cần dùng lại một số, đặt tên cho nó bằng phép gán:"
+        "text": "Cùng ngôn ngữ này còn làm được nhiều việc khác quanh quán. Một script (đoạn code chạy trực tiếp từ dòng lệnh) có thể chốt sổ mỗi tối. Một backend (phần chạy phía sau trang web) có thể nhận đơn đặt online. Cách viết chú trọng khả năng đọc, nên tên rõ nghĩa và thụt lề giúp người sau đọc lại sổ của bạn."
+       },
+       {
+        "type": "paragraph",
+        "text": "Mai bạn lại đếm hai buổi, nên hãy đặt tên cho từng con số thay vì gõ lại biểu thức:"
        },
        {
         "type": "code",
@@ -53,7 +57,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Dấu `=` gán giá trị cho tên biến. Hai lần chạy trên cho cùng kết quả nhưng lần sau bạn có thể đổi số bán từng buổi mà không viết lại biểu thức."
+        "text": "Dấu `=` gán giá trị cho tên biến. Hai lần chạy cho cùng một con số. Nhưng bản sau cho bạn đổi số bán từng buổi mà không phải viết lại phép tính."
        },
        {
         "type": "code",
@@ -65,15 +69,15 @@
       [
        {
         "type": "paragraph",
-        "text": "Nếu giá mỗi cốc là 15 nghìn đồng, doanh thu là 315 nghìn. Python cũng hỗ trợ lập trình hướng đối tượng; sau phần hàm, bạn sẽ học cách gom dữ liệu và hành vi vào lớp (class)."
+        "text": "Mỗi cốc 15 nghìn đồng, nên doanh thu ngày đầu là 315 nghìn. Python cũng hỗ trợ lập trình hướng đối tượng. Sau phần hàm, bạn sẽ gom số liệu và thao tác của quán vào một lớp (class)."
        },
        {
         "type": "paragraph",
-        "text": "Trong REPL bạn nhập và chạy từng lệnh. Trong script bạn lưu code vào một file (dữ liệu đã ghi xuống đĩa) có đuôi `.py` rồi chạy bằng `python ten_file.py`. Trên hệ UNIX, dòng đầu như `#!/usr/bin/env python3` có thể chỉ trình thông dịch khi file được cấp quyền chạy; bạn vẫn có thể gọi Python trực tiếp. Khóa học dùng Python 3; Python 2 đã ngừng được hỗ trợ."
+        "text": "Có hai chỗ để chạy những dòng này, và bạn sẽ dùng cả hai. Trong REPL bạn gõ từng lệnh rồi xem ngay, tiện lúc tính nhanh một hoá đơn. Trong script bạn lưu code vào một file (dữ liệu đã ghi xuống đĩa) có đuôi `.py`, rồi chạy bằng `python ten_file.py`. Cách này tiện cho việc chốt sổ lặp lại mỗi tối. Trên hệ UNIX, dòng đầu như `#!/usr/bin/env python3` chỉ trình thông dịch khi file được cấp quyền chạy. Khóa học dùng Python 3; Python 2 đã ngừng được hỗ trợ."
        },
        {
         "type": "paragraph",
-        "text": "Python thường được gọi là ngôn ngữ thông dịch. CPython còn biên dịch mã nguồn thành bytecode trước khi thực thi, nên “thông dịch” không có nghĩa hoàn toàn không biên dịch. Tính dễ đọc cũng không có nghĩa Python luôn nhanh nhất. Tác vụ nặng CPU (bộ xử lý chạy từng lệnh) và môi trường triển khai vẫn cần lựa chọn cách xử lý phù hợp."
+        "text": "Hai điều hay bị nói quá về Python. Python thường được gọi là ngôn ngữ thông dịch, nhưng CPython còn biên dịch mã nguồn thành bytecode trước khi chạy. Và dễ đọc không đồng nghĩa với nhanh nhất. Tới ngày một phép tính của quán chạy lâu, bạn sẽ phải xem việc đó nặng CPU (bộ xử lý chạy từng lệnh) hay nặng đọc ghi."
        }
       ]
      ],
@@ -187,13 +191,13 @@
    "sort_order": 2,
    "module": "M1 · Python nền tảng",
    "title": "PY02 · Chọn đúng Python và tách môi trường học",
-   "subtitle": "Cơ bản · M1 · 15 phút",
-   "estimated_minutes": 15,
-   "xp_reward": 9,
+   "subtitle": "Cơ bản · M1 · 16 phút",
+   "estimated_minutes": 16,
+   "xp_reward": 10,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY02 · Chọn đúng Python và tách môi trường học",
-    "subtitle": "Cơ bản · M1 · 15 phút",
+    "subtitle": "Cơ bản · M1 · 16 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY02",
@@ -206,7 +210,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn có hai dự án cần các phiên bản thư viện khác nhau. Nếu cài mọi thứ vào cùng một Python, một lần nâng cấp có thể làm dự án cũ thay đổi. Trước hết, hãy biết mình đang chạy Python nào:"
+        "text": "Ở bài trước bạn vừa tính doanh thu ngày đầu bằng mấy dòng code. Sổ sách của quán sẽ lớn dần, nên trước khi viết thêm, hãy dọn cho nó một góc riêng. Giả sử bạn có hai dự án: sổ bán hàng của quán và một bài tập cũ. Nếu cài mọi thứ vào cùng một Python, một lần nâng cấp cho quán có thể làm bài tập cũ đổi kết quả. Trước hết, hãy biết mình đang chạy Python nào:"
        },
        {
         "type": "code",
@@ -218,11 +222,11 @@
       [
        {
         "type": "paragraph",
-        "text": "Số 3 cho biết đang dùng Python 3. `sys` là một module (file Python nạp được vào file khác) có sẵn của Python; `import sys` giúp bạn đọc thông tin môi trường. Khi cần xem đường dẫn Python đang chạy, gõ `print(sys.executable)`. Đường dẫn cụ thể sẽ khác nhau giữa các máy."
+        "text": "Số 3 cho biết đang dùng Python 3. `sys` là một module (file Python nạp được vào file khác) có sẵn của Python, và `import sys` cho bạn đọc thông tin môi trường. Khi cần xem đường dẫn Python đang chạy, gõ `print(sys.executable)`. Đường dẫn trên máy bạn sẽ khác máy người khác."
        },
        {
         "type": "paragraph",
-        "text": "Môi trường ảo giữ thư viện của từng dự án riêng nhau. Mở terminal (cửa sổ bạn gõ câu lệnh vào) trong thư mục dự án rồi chạy lệnh sau. Đây là lệnh terminal, không phải code để dán vào cell Python:"
+        "text": "Môi trường ảo giữ thư viện của từng dự án riêng nhau. Một lần cài cho dự án khác sẽ không làm đổi sổ của quán. Mở terminal (cửa sổ bạn gõ câu lệnh vào) trong thư mục dự án rồi chạy lệnh sau. Đây là lệnh terminal, không phải code để dán vào một ô code:"
        },
        {
         "type": "terminal",
@@ -233,7 +237,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Tên `.venv` là thư mục bạn chọn để chứa môi trường. Bước này tạo môi trường, chưa cài NumPy (thư viện tính toán trên cả dãy số một lượt). Trên Windows, kiểm tra pip của môi trường vừa tạo bằng:"
+        "text": "Tên `.venv` là thư mục bạn chọn để chứa môi trường của quán. Bước này chỉ tạo môi trường, chưa cài NumPy (thư viện tính toán trên cả dãy số một lượt). Bạn sẽ cần tới nó khi sổ bán hàng dài hàng nghìn dòng. Trên Windows, kiểm tra pip của môi trường vừa tạo bằng:"
        },
        {
         "type": "terminal",
@@ -244,15 +248,15 @@
       [
        {
         "type": "paragraph",
-        "text": "Trên Linux/macOS, lệnh tương ứng là `.venv/bin/python -m pip --version`. Gọi pip qua đúng Python giúp tránh cài nhầm thư viện. Khi đến bài NumPy, cài bằng `.venv\\Scripts\\python -m pip install numpy` trên Windows hoặc `.venv/bin/python -m pip install numpy` trên Linux/macOS. `pip` cài gói (package) — tập module nạp được như một đơn vị — thường từ kho PyPI; nó không tự đổi phiên bản Python."
+        "text": "Trên Linux/macOS, lệnh tương ứng là `.venv/bin/python -m pip --version`. Gọi pip qua đúng Python giúp bạn không cài nhầm thư viện sang môi trường khác. Khi tới bài NumPy, cài bằng `.venv\\Scripts\\python -m pip install numpy` trên Windows hoặc `.venv/bin/python -m pip install numpy` trên Linux/macOS. `pip` cài gói (package), tức một tập module nạp được như một đơn vị, thường lấy từ kho PyPI. Nó không tự đổi phiên bản Python."
        },
        {
         "type": "paragraph",
-        "text": "`sys` và `venv` thuộc thư viện chuẩn nên đã có cùng Python. NumPy là package bên ngoài cần cài thêm. `virtualenv` là công cụ khác để tạo môi trường; `pyenv` chủ yếu giúp quản lý phiên bản Python. Conda quản lý cả môi trường lẫn package, trong đó Miniconda gọn hơn Anaconda vốn kèm nhiều package."
+        "text": "`sys` và `venv` thuộc thư viện chuẩn nên đã có sẵn cùng Python, còn NumPy là gói bên ngoài phải cài thêm. Quanh việc này còn vài công cụ khác mà bạn sẽ gặp trong tài liệu. `virtualenv` cũng tạo môi trường; `pyenv` chủ yếu giúp quản lý các phiên bản Python. Conda quản lý cả môi trường lẫn gói, trong đó Miniconda gọn hơn Anaconda vốn kèm sẵn nhiều gói."
        },
        {
         "type": "paragraph",
-        "text": "Sơ đồ trong slide (trang trình bày của bài giảng gốc) còn nhắc pipenv và Poetry để quản lý dự án/phụ thuộc. Nó cũng nhắc `setup.py` trong cách đóng gói truyền thống. Trước mắt, bạn chỉ cần một cách tạo môi trường và biết Python nào sẽ chạy bài. Khi chia sẻ dự án, ghi lại các phiên bản thư viện để người khác dựng lại môi trường."
+        "text": "Sơ đồ trong slide (trang trình bày của bài giảng gốc) còn nhắc pipenv và Poetry để quản lý dự án và các phụ thuộc. Nó cũng nhắc `setup.py` trong cách đóng gói truyền thống. Trước mắt bạn chỉ cần biết tạo một môi trường và biết Python nào sẽ chạy bài. Khi gửi dự án cho người khác, ghi lại các phiên bản thư viện để họ dựng lại đúng môi trường của bạn."
        }
       ]
      ],
@@ -366,13 +370,13 @@
    "sort_order": 3,
    "module": "M1 · Python nền tảng",
    "title": "PY03 · REPL, notebook và trạng thái đã chạy",
-   "subtitle": "Cơ bản · M1 · 14 phút",
-   "estimated_minutes": 14,
-   "xp_reward": 8,
+   "subtitle": "Cơ bản · M1 · 15 phút",
+   "estimated_minutes": 15,
+   "xp_reward": 9,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY03 · REPL, notebook và trạng thái đã chạy",
-    "subtitle": "Cơ bản · M1 · 14 phút",
+    "subtitle": "Cơ bản · M1 · 15 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY03",
@@ -385,7 +389,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Trong notebook, bạn chạy cell gán `cups = 12` rồi chạy cell in `cups`. Kết quả đúng vì kernel (tiến trình Python chạy phía sau notebook) còn giữ biến từ cell trước. Hãy xem một lần chạy có đầy đủ đầu vào:"
+        "text": "Môi trường bạn vừa tạo ở bài trước quyết định Python nào sẽ chạy; giờ chọn chỗ để gõ. Trong một notebook, bạn chạy ô gán `cups = 12` lúc đầu buổi, rồi lát sau chạy ô in `cups`. Con số cũ vẫn còn vì kernel (tiến trình Python chạy phía sau trang đó) giữ lại biến của ô trước. Một lần chạy có đủ đầu vào thì trông như sau:"
        },
        {
         "type": "code",
@@ -397,7 +401,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Notebook có cell code và cell văn bản, có thể chứa đầu ra (output), hình và phương trình; Shift+Enter thường chạy cell hiện tại. Jupyter Notebook và JupyterLab là hai giao diện làm việc với notebook. Kernel là tiến trình thực thi và giữ trạng thái. Nếu chỉ gửi cell `print(cups + 1)` cho người khác, họ có thể chưa có biến `cups`."
+        "text": "Trang này có hai loại ô: ô code và ô văn bản. Mỗi ô có thể kèm đầu ra (output), hình và công thức; Shift+Enter thường chạy ô đang chọn. Jupyter Notebook và JupyterLab là hai giao diện làm việc với nó. Phần giữ trạng thái và thực thi là kernel, và nó sống suốt buổi bạn ngồi tính. Nếu bạn chỉ gửi riêng ô `print(cups + 1)` cho người quản lý quán, máy họ có thể chưa có `cups`."
        },
        {
         "type": "code",
@@ -409,7 +413,11 @@
       [
        {
         "type": "paragraph",
-        "text": "Cell chạy sau sẽ dùng giá trị cups mới nhất trong kernel. Nếu chưa gán cups mà đã in nó, Python báo NameError vì chưa có tên đó. Khi hoàn thành notebook, khởi động lại kernel rồi chạy từ đầu để tìm bước khởi tạo bị thiếu. Một editor chủ yếu giúp sửa văn bản mã nguồn; IDE gom thêm công cụ chạy, kiểm lỗi và gỡ lỗi. VS Code có thể mở rộng bằng extension; PyCharm và Spyder là các ví dụ IDE trong slide."
+        "text": "Giữa hai ô, bạn đếm lại bình rồi sửa con số; ô chạy sau dùng giá trị `cups` mới nhất mà kernel đang giữ. Nếu chưa gán `cups` mà đã in nó, Python báo `NameError` vì chưa có tên đó. Đó là lý do trước khi gửi sổ cho người khác, bạn khởi động lại tiến trình đó rồi chạy lại từ đầu. Bước khởi tạo nào bị thiếu sẽ lộ ra ngay."
+       },
+       {
+        "type": "paragraph",
+        "text": "Nơi bạn gõ cũng có nhiều lựa chọn, và chọn gì thì sổ của quán vẫn tính ra cùng con số. Một editor chủ yếu giúp sửa văn bản mã nguồn. Một IDE gom thêm công cụ chạy, kiểm lỗi và gỡ lỗi. VS Code mở rộng được bằng extension, còn PyCharm và Spyder là hai ví dụ IDE mà bài giảng gốc nêu."
        },
        {
         "type": "code",
@@ -421,15 +429,15 @@
       [
        {
         "type": "paragraph",
-        "text": "`type(12)` cho biết 12 có kiểu int, còn `type(\"data\")` cho biết chuỗi có kiểu str. Bạn sẽ gặp hai kiểu này ở các bài tiếp. Khi cần tra, gõ `dir(object)` để xem tên thuộc tính/phương thức, hoặc `help(print)` để đọc hướng dẫn dùng print. Help có output dài nên không cần chép hết vào bài; hãy tìm phần tham số và ví dụ bạn đang cần."
+        "text": "Hai kiểu dữ liệu đầu tiên của sổ xuất hiện ở đây: số cốc là một con số, tên món là chữ. `type(12)` cho biết 12 có kiểu int, còn `type(\"data\")` cho biết chuỗi có kiểu str. Khi cần tra một thứ gì, gõ `dir(object)` để xem tên các thuộc tính, hoặc `help(print)` để đọc hướng dẫn dùng print."
        },
        {
         "type": "paragraph",
-        "text": "Nếu chưa có Notebook, chạy `python -m pip install notebook` trong terminal của môi trường đã chọn, sau đó chạy `jupyter notebook` để mở. Với conda, slide đưa lựa chọn `conda install -c conda-forge notebook`. Đây là lệnh terminal; đừng dán chúng vào cell rồi coi là câu Python thông thường. Không cần dùng cả pip và conda cho cùng lần cài."
+        "text": "Nếu máy chưa có nó, chạy `python -m pip install notebook` trong terminal của môi trường đã chọn, rồi chạy `jupyter notebook` để mở. Với conda, bài giảng gốc đưa lựa chọn `conda install -c conda-forge notebook`. Đây là lệnh terminal; đừng dán chúng vào một ô rồi coi là câu Python. Và không cần dùng cả pip lẫn conda cho cùng một lần cài."
        },
        {
         "type": "paragraph",
-        "text": "Jupyter phát triển từ dự án IPython. Với notebook Python, IPython kernel thực thi code và giữ các biến; Notebook và JupyterLab là các giao diện người học dùng để gửi code tới kernel. Trong sơ đồ lịch sử của slide, ZeroMQ vận chuyển thông điệp và Tornado phục vụ phần web. jQuery và Bootstrap giúp dựng giao diện; MathJax hiển thị công thức toán. Những thành phần giao diện này không tính thay kernel và bạn không cần tự cài từng cái để viết một cell."
+        "text": "Phần dưới đây là lịch sử, đọc để biết chứ chưa cần làm gì. Jupyter phát triển từ dự án IPython. Với Python, IPython kernel thực thi và giữ các biến, còn Notebook và JupyterLab là giao diện gửi lệnh tới nó. Trong sơ đồ của slide, ZeroMQ vận chuyển thông điệp và Tornado phục vụ phần web. jQuery, Bootstrap và MathJax lo phần giao diện. Bạn không phải tự cài từng cái để tính một ô."
        }
       ]
      ],
@@ -539,13 +547,13 @@
    "sort_order": 4,
    "module": "M1 · Python nền tảng",
    "title": "PY04 · Biến, tên hợp lệ và kiểu dữ liệu",
-   "subtitle": "Cơ bản · M1 · 16 phút",
-   "estimated_minutes": 16,
+   "subtitle": "Cơ bản · M1 · 17 phút",
+   "estimated_minutes": 17,
    "xp_reward": 10,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY04 · Biến, tên hợp lệ và kiểu dữ liệu",
-    "subtitle": "Cơ bản · M1 · 16 phút",
+    "subtitle": "Cơ bản · M1 · 17 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY04",
@@ -558,7 +566,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Giá bán đọc từ một ô nhập là chuỗi \"15\". Trước khi tính doanh thu, bạn cần chuyển chuỗi đó thành số:"
+        "text": "Ô code bạn vừa chạy ở bài trước giữ được số liệu giữa các lần bấm. Nhưng số liệu của quán đến từ nhiều chỗ, và không chỗ nào cũng đưa cho bạn một con số. Bạn gõ giá bán vào một ô nhập trên máy tính tiền, và nó trả về chuỗi \"15\" chứ không phải số 15. Trước khi tính doanh thu, bạn phải đổi chuỗi đó thành số:"
        },
        {
         "type": "code",
@@ -570,7 +578,11 @@
       [
        {
         "type": "paragraph",
-        "text": "`str` là chuỗi, `int` là số nguyên, `float` là số thực và `bool` gồm True/False. Số nguyên Python không bị cố định trong 32 hay 64 bit; số lớn vẫn bị giới hạn bởi bộ nhớ và tài nguyên máy. `int(raw)` tạo giá trị số từ chuỗi phù hợp; chuỗi ban đầu vẫn là chuỗi. Nếu raw là \"mười lăm\", phép chuyển gây ValueError."
+        "text": "Bốn kiểu dữ liệu sau đủ cho sổ của quán lúc này. `int` là số nguyên, dùng cho số cốc. `float` là số thực, dùng cho khối lượng cà phê đã xay. `str` là chuỗi, dùng cho tên món. `bool` chỉ có True hoặc False, dùng cho câu hỏi kiểu đơn đã thanh toán hay chưa."
+       },
+       {
+        "type": "paragraph",
+        "text": "Số nguyên Python không bị chặn ở 32 hay 64 bit, nên tổng tiền cả năm vẫn viết thẳng được. Giới hạn thật nằm ở bộ nhớ máy. `int(raw)` tạo một giá trị số từ chuỗi phù hợp, còn chuỗi ban đầu vẫn là chuỗi. Nếu nhân viên gõ \"mười lăm\", phép đổi gây `ValueError`."
        },
        {
         "type": "code",
@@ -582,7 +594,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Python dùng kiểu động: cùng tên `value` có thể được gán tới một đối tượng (object) khác kiểu. Điều đó không biến object chuỗi cũ thành số thực. `2e4` là cách viết số thực 2 × 10 mũ 4."
+        "text": "Cùng một tên có thể trỏ sang thứ khác: `value` vừa giữ chuỗi giá, giờ giữ một số thực. Python dùng kiểu động, nên một tên được gán tới một đối tượng (object) khác kiểu mà không phải khai lại. Điều đó không biến object chuỗi cũ thành số thực. `2e4` là cách viết số thực 2 × 10 mũ 4, tiện khi ghi doanh thu lớn."
        },
        {
         "type": "code",
@@ -594,11 +606,15 @@
       [
        {
         "type": "paragraph",
-        "text": "Tên biến có thể có chữ, số và gạch dưới nhưng không bắt đầu bằng số; không dùng từ khóa như `for`. Dấu cách và dấu gạch ngang không thuộc tên như `total cups` hay `total-cups`. `cups` và `Cups` là hai tên khác nhau. `keyword.iskeyword` kiểm một tên, còn `keyword.kwlist` cho danh sách từ khóa của Python đang chạy. Chọn tên gợi rõ nội dung giúp tránh nhầm số lượng với đơn giá."
+        "text": "Tên biến trong sổ cũng phải theo luật của Python. Tên gồm chữ, số và gạch dưới, và không bắt đầu bằng số. Không dùng từ khóa như `for` làm tên. `total cups` hay `total-cups` không phải tên vì có dấu cách và dấu trừ. `cups` và `Cups` là hai tên khác nhau, nên đừng ghi số cốc vào một cái rồi đọc cái kia."
        },
        {
         "type": "paragraph",
-        "text": "Chuyển kiểu không xảy ra tự động cho mọi phép tính. `\"15\" + 2` gây TypeError vì đang cộng str với int; `float(\"12.5\")` cho 12.5, còn `int(\"12.5\")` gây ValueError. Khi dữ liệu đến từ ô nhập hoặc file, hãy chọn phép đổi theo ý nghĩa dữ liệu."
+        "text": "`keyword.iskeyword` kiểm một tên, còn `keyword.kwlist` cho danh sách từ khóa của Python đang chạy. Chọn tên gợi rõ nội dung giúp bạn không nhầm số lượng với đơn giá — hai cột rất dễ lẫn trong một sổ bán hàng."
+       },
+       {
+        "type": "paragraph",
+        "text": "Phép đổi kiểu không tự xảy ra cho mọi phép tính. `\"15\" + 2` gây `TypeError` vì đang cộng chuỗi với số. `float(\"12.5\")` cho 12.5, còn `int(\"12.5\")` gây `ValueError`. Khi số liệu đến từ ô nhập hay từ file máy tính tiền xuất ra, bạn chọn phép đổi theo ý nghĩa của cột. Số cốc dùng `int`, khối lượng dùng `float`."
        }
       ]
      ],
@@ -610,7 +626,7 @@
     "step_2": {
      "mcq": [
       {
-       "question": "raw = \"12.5\". Biểu thức nào tính giá của hai vé?",
+       "question": "raw = \"12.5\". Biểu thức nào tính tiền của hai cốc?",
        "options": [
         {
          "text": "float(raw) * 2",
@@ -629,11 +645,11 @@
        "explanation": "Đúng. Chuỗi có phần thập phân cần đổi sang float trước."
       },
       {
-       "question": "Giá vé từ ô nhập là chuỗi. Kết quả ở lệnh print cuối có giá trị nào?\n\nraw = \"18\"\nprice = int(raw)\nprint(price * 2)",
+       "question": "Giá một cốc gõ vào ô nhập là chuỗi. Kết quả ở lệnh print cuối có giá trị nào?\n\nraw = \"18\"\nprice = int(raw)\nprint(price * 2)",
        "options": [
         {
          "text": "20",
-         "detail": "Phép tính là nhân giá với hai vé, không cộng 2."
+         "detail": "Phép tính là nhân giá với hai cốc, không cộng 2."
         },
         {
          "text": "36",
@@ -697,9 +713,9 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Hệ thống cung cấp raw là giá một vé dưới dạng chuỗi, ví dụ \"7.5\". Gán giá hai vé vào total; đầu vào là chuỗi số hợp lệ, không âm."
+      "body": "Hệ thống cung cấp raw là giá một cốc dưới dạng chuỗi, ví dụ \"7.5\". Gán tiền hai cốc vào total; đầu vào là chuỗi số hợp lệ, không âm."
      },
-     "starterCode": "# Hệ thống cung cấp raw là giá một vé dưới dạng chuỗi, ví dụ \"7.\n# Hệ thống cung cấp raw; gán kết quả vào total.\n",
+     "starterCode": "# raw là giá một cốc dưới dạng chuỗi, ví dụ \"7.5\".\n# Gán tiền hai cốc vào total.\n",
      "solutionCode": "price = float(raw)\ntotal = price * 2\n",
      "tests": [
       {
@@ -750,13 +766,13 @@
    "sort_order": 5,
    "module": "M1 · Python nền tảng",
    "title": "PY05 · Phép toán và thứ tự tính",
-   "subtitle": "Cơ bản · M1 · 12 phút",
-   "estimated_minutes": 12,
+   "subtitle": "Cơ bản · M1 · 13 phút",
+   "estimated_minutes": 13,
    "xp_reward": 8,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY05 · Phép toán và thứ tự tính",
-    "subtitle": "Cơ bản · M1 · 12 phút",
+    "subtitle": "Cơ bản · M1 · 13 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY05",
@@ -769,7 +785,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn bán 3 cốc, mỗi cốc 15 nghìn, rồi giảm 5 nghìn cho cả hóa đơn. Phép tính phải nhân số lượng với giá trước khi trừ giảm giá:"
+        "text": "Số đã về đúng kiểu ở bài trước, giờ tính tiền cho một hoá đơn thật. Một khách gọi 3 cốc, mỗi cốc 15 nghìn, và bạn giảm 5 nghìn cho cả hoá đơn. Thứ tự tính quyết định số tiền thu được:"
        },
        {
         "type": "code",
@@ -781,29 +797,79 @@
       [
        {
         "type": "paragraph",
-        "text": "Hai kết quả khác nhau vì dấu ngoặc thay đổi thứ tự. Cách thứ nhất giảm 5 nghìn một lần; cách thứ hai giảm 5 nghìn cho từng cốc. Trong Python, nhân/chia có ưu tiên hơn cộng/trừ; khi ý nghĩa chưa rõ, thêm ngoặc."
+        "text": "Hai con số khác nhau vì dấu ngoặc đổi thứ tự tính. Cách thứ nhất giảm 5 nghìn một lần cho cả hoá đơn, đúng điều bạn muốn. Cách thứ hai giảm 5 nghìn cho từng cốc, nên quán mất thêm 10 nghìn. Trong Python, nhân và chia tính trước cộng và trừ; khi ý nghĩa chưa rõ, hãy thêm ngoặc."
        },
        {
         "type": "code",
         "code": "print(7 / 2)\nprint(7 // 2, 7 % 2)\nprint(-7 // 2)",
         "expected": "3.5\n3 1\n-4",
         "tryIt": true
+       },
+       {
+        "type": "diagram",
+        "title": "Thứ tự phép tính — hai cách đọc cùng một dãy số",
+        "lanes": [
+         {
+          "label": "Không có ngoặc",
+          "steps": [
+           "3 * 15 - 5",
+           "45 - 5",
+           "40"
+          ],
+          "note": "Nhân chạy trước vì `*` ưu tiên hơn `-`: giảm 5 nghìn MỘT lần cho cả hoá đơn."
+         },
+         {
+          "label": "Có ngoặc",
+          "steps": [
+           "3 * (15 - 5)",
+           "3 * 10",
+           "30"
+          ],
+          "note": "Ngoặc chạy trước mọi thứ: giảm 5 nghìn cho TỪNG cốc, nên hoá đơn rẻ hơn 10 nghìn."
+         },
+         {
+          "label": "Chia thực `/`",
+          "steps": [
+           "7 / 2",
+           "3.5"
+          ],
+          "note": "`/` luôn trả số thực, kể cả khi chia hết — `4 / 2` ra `2.0`."
+         },
+         {
+          "label": "Chia lấy thương `//`",
+          "steps": [
+           "7 // 2",
+           "3"
+          ],
+          "note": "`//` làm tròn XUỐNG, nên `-7 // 2` ra `-4` chứ không phải `-3`."
+         }
+        ]
        }
       ],
       [
        {
         "type": "paragraph",
-        "text": "`/` chia thực. `//` lấy thương làm tròn xuống, nên -7 chia 2 được -4 theo hướng âm vô cùng, không phải -3. `%` lấy phần dư; 7 chia 2 có thương 3 và dư 1."
+        "text": "Cuối buổi bạn còn 7 chiếc bánh và 2 khay để xếp. `7 / 2` cho 3.5: đúng về số học, nhưng nửa chiếc bánh không xếp được thành khay. `7 // 2` cho 3, tức mỗi khay 3 chiếc, vì phép này lấy thương rồi làm tròn xuống. `7 % 2` cho 1, tức phần dư — đúng một chiếc còn thừa sau khi chia đều."
+       },
+       {
+        "type": "paragraph",
+        "text": "Hướng làm tròn xuống đáng nhớ vì nó không đổi khi số âm vào cuộc. Nó luôn đi về phía âm vô cùng, nên `-7 // 2` cho -4 chứ không phải -3. Ở sổ của quán, một con âm thường là dấu hiệu bạn đã trừ nhầm chiều."
        },
        {
         "type": "code",
         "code": "total = 10\ntotal += 5\nprint(total)\nprint(2 ** 3)\nprint(99 / 100)",
         "expected": "15\n8\n0.99",
         "tryIt": true
+       }
+      ],
+      [
+       {
+        "type": "paragraph",
+        "text": "Trong lúc bán, bạn cộng dồn vào một biến thay vì tính lại từ đầu. `total += 5` cộng 5 rồi gán lại, tương đương `total = total + 5` với số ở ví dụ này. Trong `total + 5`, giá trị `total` hiện tại và 5 là hai toán hạng. `**` là lũy thừa, nên `2 ** 3` bằng 8."
        },
        {
         "type": "paragraph",
-        "text": "`total += 5` cộng 5 rồi gán lại, tương đương `total = total + 5` với số ở ví dụ này. Trong `total + 5`, giá trị total hiện tại và 5 là hai toán hạng. `**` là lũy thừa, nên 2 ** 3 bằng 8. Python 3 cho 99 / 100 bằng 0.99 dù cả hai toán hạng là int; trộn int và float trong phép tính như 2 + 3.0 thường cho float. Đừng chép nguyên kết quả chia Python 2 từ tài liệu cũ."
+        "text": "Phép chia còn một chi tiết dễ vấp khi bạn đọc tài liệu cũ. Python 3 cho `99 / 100` bằng 0.99 dù hai toán hạng đều là int. Trộn int với float như `2 + 3.0` thường cho float. Đừng chép kết quả chia của Python 2 vào bảng tính của quán."
        }
       ]
      ],
@@ -961,7 +1027,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Một báo cáo cần ghép tên cửa hàng vào tiêu đề. Bạn có thể dùng phép cộng với chuỗi:"
+        "text": "Hoá đơn bạn vừa tính xong phải in ra một dòng cho khách đọc. Bản báo cáo cuối ngày cần một dòng tiêu đề có tên quán. Với chuỗi, dấu `+` làm việc ghép chứ không làm phép cộng:"
        },
        {
         "type": "code",
@@ -973,7 +1039,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`+` nối chuỗi, còn `*` với một số nguyên lặp chuỗi. Muốn nối số vào văn bản, chuyển nó thành chuỗi bằng `str` hoặc dùng định dạng chuỗi ở bài sau."
+        "text": "`+` nối hai chuỗi lại, còn `*` với một số nguyên thì lặp chuỗi — dòng kẻ dưới tiêu đề chỉ là năm dấu `-` lặp lại. Muốn đưa số cốc vào câu chữ, đổi nó thành chuỗi bằng `str`, hoặc dùng cách định dạng ở bài sau."
        },
        {
         "type": "code",
@@ -985,17 +1051,23 @@
       [
        {
         "type": "paragraph",
-        "text": "`\\n` trong literal tạo ký tự xuống dòng. Nháy đơn và nháy đôi đều tạo chuỗi; chọn loại giúp ít phải escape khi nội dung chứa dấu nháy. Ba dấu nháy liên tiếp có thể viết chuỗi nhiều dòng."
+        "text": "Một bản báo cáo có nhiều dòng, nên bạn cần ký tự xuống dòng. `\\n` trong chuỗi literal tạo đúng ký tự đó, vì vậy một chuỗi in ra thành hai dòng. Nháy đơn và nháy đôi đều tạo chuỗi; chọn loại nào là để ít phải escape khi nội dung có dấu nháy. Ba dấu nháy liên tiếp viết được chuỗi nhiều dòng, tiện cho một mẫu hoá đơn dài."
        },
        {
         "type": "code",
         "code": "name = \"Hà Nội\"\n# len đếm ký tự Unicode trong chuỗi này.\nprint(len(name))\nprint(\"Ha\" == \"Hà\")",
         "expected": "6\nFalse",
         "tryIt": true
+       }
+      ],
+      [
+       {
+        "type": "paragraph",
+        "text": "Tên món và tên quán của bạn có dấu, nên hai điểm sau đáng chú ý. Chuỗi Python là Unicode, vì vậy `len(\"Hà Nội\")` đếm đúng 6 ký tự như bạn đọc. Và hai chuỗi khác dấu là hai giá trị khác nhau: `\"Ha\"` không bằng `\"Hà\"`, nên một bảng giá gõ thiếu dấu sẽ tra không ra. Một ký tự như `\"A\"` vẫn có kiểu `str`; Python không có kiểu riêng cho một ký tự."
        },
        {
         "type": "paragraph",
-        "text": "Chuỗi Python là Unicode nên bạn có thể dùng tiếng Việt. Một ký tự như \"A\" vẫn có kiểu str, không có kiểu char riêng. Hai chuỗi khác dấu là hai giá trị khác nhau. Dấu `#` bắt đầu một chú thích (comment), bỏ phần còn lại của dòng khỏi việc thực thi; có thể dùng nó để ghi lý do của một phép tính hoặc tạm vô hiệu hóa một dòng code. Comment không làm thay đổi giá trị của biến. Chuỗi ba nháy vẫn là object chuỗi; ở đầu hàm hoặc module, nó có thể làm docstring mô tả thành phần đó."
+        "text": "Dòng bắt đầu bằng `#` là một chú thích (comment). Python bỏ qua phần còn lại của dòng, nên bạn ghi được lý do của một phép tính cho người sau đọc sổ. Nó cũng dùng để tạm vô hiệu một dòng code. Chú thích không làm đổi giá trị của biến nào. Chuỗi ba nháy thì khác: nó vẫn là một chuỗi thật. Đặt ở đầu hàm hay đầu module, nó thành docstring mô tả thành phần đó."
        }
       ]
      ],
@@ -1134,13 +1206,13 @@
    "sort_order": 7,
    "module": "M1 · Python nền tảng",
    "title": "PY07 · Lấy ký tự và một đoạn chuỗi",
-   "subtitle": "Cơ bản · M1 · 12 phút",
-   "estimated_minutes": 12,
+   "subtitle": "Cơ bản · M1 · 13 phút",
+   "estimated_minutes": 13,
    "xp_reward": 8,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY07 · Lấy ký tự và một đoạn chuỗi",
-    "subtitle": "Cơ bản · M1 · 12 phút",
+    "subtitle": "Cơ bản · M1 · 13 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY07",
@@ -1153,41 +1225,41 @@
       [
        {
         "type": "paragraph",
-        "text": "Tên file là \"marks.csv\". Bạn chỉ cần phần đuôi csv để kiểm tra loại dữ liệu:"
+        "text": "Dòng tiêu đề bạn vừa dựng ở bài trước là chữ bạn tự viết ra. Nhưng mỗi tối máy tính tiền lại xuất cho quán một file tên \"doanhthu.csv\", và bạn cần đọc được từng phần của chuỗi đó. Ba ký tự cuối cho biết đây là bảng phân tách bằng dấu phẩy:"
        },
        {
         "type": "code",
-        "code": "filename = \"marks.csv\"\nprint(filename[-3:])\nprint(filename[0])",
-        "expected": "csv\nm",
+        "code": "filename = \"doanhthu.csv\"\nprint(filename[-3:])\nprint(filename[0])",
+        "expected": "csv\nd",
         "tryIt": true
        }
       ],
       [
        {
         "type": "paragraph",
-        "text": "Chỉ số bắt đầu từ 0; chỉ số âm đếm từ cuối. `filename[-3:]` lấy từ ký tự thứ ba tính từ cuối đến hết chuỗi. Dấu `:` tạo một lát cắt (slice), tức một đoạn liên tiếp của dãy. Với bước dương, bỏ start như `filename[:5]` nghĩa là lấy từ đầu, còn bỏ stop như `filename[2:]` là lấy đến hết."
+        "text": "Chỉ số bắt đầu từ 0, nên `filename[0]` là chữ đầu tiên. Chỉ số âm đếm từ cuối, nên `filename[-3:]` lấy từ ký tự thứ ba tính từ cuối đến hết chuỗi. Dấu `:` tạo một lát cắt (slice), tức một đoạn liên tiếp của dãy. Bỏ điểm đầu như `filename[:5]` là lấy từ đầu; bỏ điểm cuối như `filename[2:]` là lấy đến hết."
        },
        {
         "type": "code",
-        "code": "text = \"Python\"\nprint(text[1:5:2])\nprint(text[::-1])\nprint(\"Py\" in text)",
-        "expected": "yh\nnohtyP\nTrue",
+        "code": "ma = \"CF0312\"\nprint(ma[1:5:2])\nprint(ma[::-1])\nprint(\"CF\" in ma)",
+        "expected": "F3\n2130FC\nTrue",
         "tryIt": true
        }
       ],
       [
        {
         "type": "paragraph",
-        "text": "Trong `text[start:stop:step]`, điểm dừng không được lấy. `text[1:5:2]` lấy chỉ số 1 và 3, nên được y và h. Bước -1 đảo hướng đọc. `in` kiểm tra có chuỗi con, còn `not in` kiểm tra không có. Việc kiểm tra phân biệt hoa thường: `\"Py\" in \"Python\"` là True, nhưng `\"py\" in \"Python\"` là False."
+        "text": "Mã đơn của quán cũng là một chuỗi, nên cùng mấy phép đọc đó áp được. Trong `ma[start:stop:step]`, điểm dừng không được lấy: `ma[1:5:2]` lấy chỉ số 1 và 3, nên được `\"F3\"`. Bước -1 đọc ngược cả chuỗi. `in` kiểm có chuỗi con, `not in` kiểm không có. Phép kiểm này phân biệt hoa thường, nên `\"CF\" in ma` là True còn `\"cf\" in ma` là False."
        },
        {
         "type": "code",
-        "code": "text = \"data\"\ntry:\n    text[0] = \"D\"\nexcept TypeError as error:\n    print(type(error).__name__)\nprint(\"D\" + text[1:])",
-        "expected": "TypeError\nData",
+        "code": "mon = \"latte\"\ntry:\n    mon[0] = \"L\"\nexcept TypeError as error:\n    print(type(error).__name__)\nprint(\"L\" + mon[1:])",
+        "expected": "TypeError\nLatte",
         "tryIt": true
        },
        {
         "type": "paragraph",
-        "text": "Chuỗi bất biến: không thể gán lại một ký tự trong object chuỗi. Đoạn trên dùng try/except để bắt TypeError và in tên lỗi, nên chương trình vẫn chạy câu lệnh tiếp theo; bạn sẽ học cấu trúc bắt lỗi ở bài ngoại lệ. Bạn tạo chuỗi mới bằng cách ghép \"D\" với đoạn còn lại. Chỉ số vượt phạm vi gây IndexError; slice vượt điểm cuối có thể trả đoạn ngắn hơn thay vì báo lỗi."
+        "text": "Tên món trong sổ viết thường, và bạn muốn hoa chữ đầu khi in ra hoá đơn. Sửa thẳng một ký tự thì không được: chuỗi bất biến, nên không gán lại được một ký tự trong chuỗi đã có. Đoạn trên dùng `try`/`except` để bắt `TypeError` và in tên lỗi, nên chương trình vẫn chạy dòng sau. Cách đúng là tạo một chuỗi mới: ghép `\"L\"` với đoạn còn lại. Chỉ số vượt phạm vi gây `IndexError`, còn lát cắt vượt điểm cuối trả đoạn ngắn hơn thay vì báo lỗi."
        }
       ]
      ],
@@ -1258,20 +1330,20 @@
      ],
      "practice": [
       {
-       "prompt": "\"Python\"[-1] trả ký tự nào?",
-       "answer": "n."
+       "prompt": "\"latte\"[-1] trả ký tự nào?",
+       "answer": "e."
       },
       {
-       "prompt": "Trong \"Python\"[1:5:2], vì sao không có ký tự ở vị trí 5?",
-       "answer": "Slice không lấy điểm dừng; các chỉ số được lấy là 1 và 3."
+       "prompt": "Trong \"CF0312\"[1:5:2], vì sao không có ký tự ở vị trí 5?",
+       "answer": "Lát cắt không lấy điểm dừng; các chỉ số được lấy là 1 và 3."
       },
       {
-       "prompt": "Lấy 5 ký tự đầu và 3 ký tự cuối của một chuỗi.",
-       "answer": "Dùng s[:5] và s[-3:]. Nếu chuỗi ngắn hơn độ dài yêu cầu, slice trả phần có sẵn."
+       "prompt": "Lấy 5 ký tự đầu và 3 ký tự cuối của tên file \"doanhthu.csv\".",
+       "answer": "Dùng s[:5] cho \"doanh\" và s[-3:] cho \"csv\". Nếu chuỗi ngắn hơn độ dài yêu cầu, lát cắt trả phần có sẵn."
       },
       {
-       "prompt": "Với s=\"Python\", s[0], s[-1], s[:2], s[2:] và \"py\" not in s cho gì?",
-       "answer": "P; n; Py; thon; True. Chỉ số bắt đầu 0, âm từ cuối; bỏ start lấy từ đầu, bỏ stop lấy đến hết. So chuỗi con phân biệt hoa thường."
+       "prompt": "Với s=\"latte\", s[0], s[-1], s[:2], s[2:] và \"LA\" not in s cho gì?",
+       "answer": "l; e; la; tte; True. Chỉ số bắt đầu 0, chỉ số âm đếm từ cuối; bỏ điểm đầu lấy từ đầu, bỏ điểm cuối lấy đến hết. So chuỗi con phân biệt hoa thường."
       }
      ]
     },
@@ -1331,13 +1403,13 @@
    "sort_order": 8,
    "module": "M1 · Python nền tảng",
    "title": "PY08 · Chuẩn hóa và định dạng văn bản",
-   "subtitle": "Cơ bản · M1 · 13 phút",
-   "estimated_minutes": 13,
+   "subtitle": "Cơ bản · M1 · 14 phút",
+   "estimated_minutes": 14,
    "xp_reward": 8,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY08 · Chuẩn hóa và định dạng văn bản",
-    "subtitle": "Cơ bản · M1 · 13 phút",
+    "subtitle": "Cơ bản · M1 · 14 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY08",
@@ -1350,7 +1422,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Tên người nhập có khoảng trắng và chữ hoa/thường lẫn nhau. Bạn muốn hiển thị tên và mã theo một quy tắc chung:"
+        "text": "Mã đơn bạn vừa đọc ở bài trước là chữ do máy sinh, nên nó sạch. Chữ do người gõ thì không: nhân viên ghi tên khách lên cốc với khoảng trắng thừa và chữ hoa lẫn lộn. Trước khi in hay đếm, bạn dọn nó về một khuôn:"
        },
        {
         "type": "code",
@@ -1362,7 +1434,11 @@
       [
        {
         "type": "paragraph",
-        "text": "`strip()` bỏ khoảng trắng hai đầu, `title()` viết hoa đầu từ và `zfill(4)` thêm số 0 để đủ bốn ký tự. Mỗi phương thức trả một kết quả mới; tên người thật có thể có quy tắc riêng, nên không tự áp title cho mọi danh sách tên mà chưa kiểm tra."
+        "text": "Ba phương thức trên làm ba việc nhỏ trên cùng một chuỗi. `strip()` bỏ khoảng trắng hai đầu, nên `\"  maI  \"` thành `\"maI\"`. `title()` viết hoa đầu mỗi từ, nên nó thành `\"Mai\"`. `zfill(4)` thêm số 0 vào đầu cho đủ bốn ký tự, nên đơn số 23 thành mã `0023` và các mã xếp thẳng cột trong sổ."
+       },
+       {
+        "type": "paragraph",
+        "text": "Mỗi phương thức trả về một kết quả mới và không sửa chuỗi gốc. Tên người thật có quy tắc riêng, nên đừng áp `title()` cho cả danh sách khách mà chưa đọc qua."
        },
        {
         "type": "code",
@@ -1374,17 +1450,23 @@
       [
        {
         "type": "paragraph",
-        "text": "`split(\",\")` tách theo dấu phẩy và trả list các chuỗi. `splitlines()` tách theo các dấu xuống dòng. `rstrip()` chỉ xử lý phía phải; nó không giống yêu cầu bỏ một hậu tố chính xác."
+        "text": "Số cốc ba ngày từ máy tính tiền về trong một dòng chữ, kèm dấu xuống dòng ở cuối. `rstrip()` bỏ khoảng trắng phía phải, kể cả dấu xuống dòng đó. `split(\",\")` tách theo dấu phẩy và trả một list các chuỗi — vẫn là chuỗi, chưa phải số. `splitlines()` tách theo các dấu xuống dòng, dùng khi cả tệp về trong một chuỗi."
        },
        {
         "type": "code",
         "code": "name, total = \"Mai\", 12.5\nprint(\"{}: {:.1f}\".format(name, total))\nprint(f\"{name.lower()}: {total:.2f}\")",
         "expected": "Mai: 12.5\nmai: 12.50",
         "tryIt": true
+       }
+      ],
+      [
+       {
+        "type": "paragraph",
+        "text": "Lúc in hoá đơn, bạn chèn giá trị vào một chuỗi (string), tức một dãy ký tự. `str.format()` và f-string đều làm việc đó. `.2f` hiển thị hai chữ số sau dấu thập phân, nên 12.5 nghìn in ra `12.50`; nó không đổi con số đang lưu."
        },
        {
         "type": "paragraph",
-        "text": "`str.format()` và f-string chèn giá trị vào một chuỗi (string), tức một dãy ký tự. `.2f` hiển thị hai chữ số sau dấu thập phân; nó không thay đổi số đang lưu. `input(\"Gia: \")` hiển thị lời nhắc, đọc một dòng từ luồng đầu vào chuẩn (stdin) và trả str. `print` ghi vào luồng đầu ra chuẩn (stdout), thường là màn hình terminal. Muốn tính với giá nhập, chuyển bằng float hoặc int trước. Các ví dụ dùng chuỗi có sẵn để bạn chạy mà không phải nhập tương tác."
+        "text": "Muốn nhận giá từ người gõ thì cần thêm hai đường vào ra. `input(\"Gia: \")` hiện lời nhắc rồi đọc một dòng từ luồng vào chuẩn (stdin), và nó luôn trả về chuỗi. `print` ghi ra luồng ra chuẩn (stdout), thường là cửa sổ terminal. Vì vậy muốn tính với giá vừa nhập, đổi nó sang số bằng `float` hoặc `int` trước. Các ví dụ ở đây dùng chuỗi có sẵn để bạn chạy mà không phải gõ tay."
        }
       ]
      ],
@@ -1459,20 +1541,20 @@
        "answer": "List các chuỗi."
       },
       {
-       "prompt": "Viết biểu thức đổi \" Data \" thành \"data\".",
-       "answer": "\" Data \".strip().lower()."
+       "prompt": "Viết biểu thức đổi \" Latte \" thành \"latte\".",
+       "answer": "\" Latte \".strip().lower()."
       },
       {
-       "prompt": "Viết code đọc một giá từ input rồi hiển thị hai chữ số thập phân.",
+       "prompt": "Viết code đọc giá một cốc từ input rồi hiển thị hai chữ số thập phân.",
        "answer": "price = float(input(\"Gia: \")); print(f\"{price:.2f}\"). Khi người nhập chuỗi không phải số, cần xử lý ValueError ở bài ngoại lệ."
       },
       {
-       "prompt": "Viết cùng câu \"Mai: 8\" bằng str.format và f-string. Đổi \"23\" thành mã bốn ký tự, rồi tách \"A\\r\\nB\\nC\" thành ba dòng.",
-       "answer": "\"{}: {}\".format(\"Mai\", 8) và f\"{'Mai'}: {8}\" đều tạo Mai: 8. \"23\".zfill(4) cho \"0023\"; \"A\r\nB\nC\".splitlines() cho [\"A\", \"B\", \"C\"]. lower/title/zfill/splitlines trả kết quả mới, không sửa str tại chỗ."
+       "prompt": "Viết cùng câu \"Mai: 8\" bằng str.format và f-string. Đổi \"23\" thành mã bốn ký tự, rồi tách \"12\\r\\n15\\n9\" thành ba dòng.",
+       "answer": "\"{}: {}\".format(\"Mai\", 8) và f\"{'Mai'}: {8}\" đều tạo Mai: 8. \"23\".zfill(4) cho \"0023\"; \"12\\r\\n15\\n9\".splitlines() cho [\"12\", \"15\", \"9\"]. lower/title/zfill/splitlines trả kết quả mới, không sửa chuỗi tại chỗ."
       },
       {
-       "prompt": "len([6,8,10]) là bao nhiêu? input(\"Gia: \") trả số hay chuỗi, và input/print dùng các luồng nào?",
-       "answer": "Độ dài là 3. input trả str, ghi lời nhắc rồi đọc stdin; print ghi stdout. Vì vậy nhập 12.5 cần float trước phép tính."
+       "prompt": "len([12, 15, 9]) là bao nhiêu? input(\"Gia: \") trả số hay chuỗi, và input/print dùng các luồng nào?",
+       "answer": "Độ dài là 3. input trả chuỗi, ghi lời nhắc rồi đọc stdin; print ghi stdout. Vì vậy nhập 12.5 cần float trước phép tính."
       }
      ]
     },
@@ -1527,13 +1609,13 @@
    "sort_order": 9,
    "module": "M1 · Python nền tảng",
    "title": "PY09 · Điều kiện, so sánh và khối lệnh",
-   "subtitle": "Cơ bản · M1 · 13 phút",
-   "estimated_minutes": 13,
+   "subtitle": "Cơ bản · M1 · 14 phút",
+   "estimated_minutes": 14,
    "xp_reward": 8,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY09 · Điều kiện, so sánh và khối lệnh",
-    "subtitle": "Cơ bản · M1 · 13 phút",
+    "subtitle": "Cơ bản · M1 · 14 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY09",
@@ -1546,23 +1628,27 @@
       [
        {
         "type": "paragraph",
-        "text": "Một điểm từ 8 trở lên được ghi Good, từ 5 đến dưới 8 là Pass, còn lại là Retry:"
+        "text": "Sổ đã sạch sau bước trước, giờ để chương trình tự quyết một việc nhỏ thay bạn. Bạn muốn nó nhắc theo số cốc còn pha được trong bình. Từ 8 trở lên là đủ hàng; từ 5 đến dưới 8 là sắp hết; dưới 5 thì phải pha thêm ngay:"
        },
        {
         "type": "code",
-        "code": "score = 7\nif score >= 8:\n    print(\"Good\")\nelif score >= 5:\n    print(\"Pass\")\nelse:\n    print(\"Retry\")",
-        "expected": "Pass",
+        "code": "cups = 7\nif cups >= 8:\n    print(\"Du hang\")\nelif cups >= 5:\n    print(\"Sap het\")\nelse:\n    print(\"Pha them\")",
+        "expected": "Sap het",
         "tryIt": true
        }
       ],
       [
        {
         "type": "paragraph",
-        "text": "Python kiểm tra các nhánh từ trên xuống và chỉ chạy nhánh đầu có điều kiện đúng. Dấu `:` mở khối; thụt lề cho biết lệnh thuộc nhánh nào. Lệnh được viết trở lại mức thụt lề ngoài nhánh tiếp tục chạy sau cấu trúc if. Dùng nhất quán bốn dấu cách và tránh trộn tab với space; thụt lề sai có thể gây IndentationError, còn trộn tab và space không nhất quán có thể gây TabError."
+        "text": "Python xét các nhánh từ trên xuống và chỉ chạy nhánh đầu tiên có điều kiện đúng. Vì vậy 7 cốc ra `Sap het`, dù nó cũng nhỏ hơn 8. Dấu `:` mở một khối, còn thụt lề cho biết lệnh thuộc nhánh nào. Lệnh viết trở lại mức thụt lề ngoài sẽ chạy sau cả cấu trúc `if`."
+       },
+       {
+        "type": "paragraph",
+        "text": "Dùng nhất quán bốn dấu cách, và đừng trộn tab với space. Thụt lề sai gây `IndentationError`; trộn tab với space không đều gây `TabError`."
        },
        {
         "type": "code",
-        "code": "age, enrolled = 19, True\nprint(age >= 18 and enrolled)\nprint(not enrolled)\nprint(age != 20)",
+        "code": "cups, machine_on = 7, True\nprint(cups >= 5 and machine_on)\nprint(not machine_on)\nprint(cups != 10)",
         "expected": "True\nFalse\nTrue",
         "tryIt": true
        }
@@ -1570,17 +1656,21 @@
       [
        {
         "type": "paragraph",
-        "text": "`and` yêu cầu cả hai điều kiện đúng; `or` cần ít nhất một điều kiện đúng; `not` đảo giá trị đúng/sai. `==` so sánh bằng, `!=` so sánh khác, còn `=` là phép gán. Với dữ liệu vô hướng, and/or có thể dừng sớm khi đã xác định được kết quả."
+        "text": "Ba từ này ghép các điều kiện của quầy lại với nhau. `and` đòi cả hai điều kiện đúng: còn ít nhất 5 cốc và máy đang bật thì mới nhận đơn. `or` chỉ cần một điều kiện đúng. `not` đảo đúng thành sai."
+       },
+       {
+        "type": "paragraph",
+        "text": "Bốn phép so sánh còn lại đọc thẳng như trong tiếng Việt. `==` so bằng, `!=` so khác, còn một dấu `=` là phép gán — nhầm hai thứ này là lỗi hay gặp nhất của người mới. Với dữ liệu vô hướng, `and` và `or` có thể dừng sớm khi kết quả đã rõ."
        },
        {
         "type": "code",
-        "code": "score = 9\nif 0 <= score <= 10:\n    if score >= 8:\n        print(\"Valid and good\")\nelse:\n    print(\"Invalid\")",
-        "expected": "Valid and good",
+        "code": "cups = 9\nif 0 <= cups <= 20:\n    if cups >= 8:\n        print(\"Du hang\")\nelse:\n    print(\"So khong hop le\")",
+        "expected": "Du hang",
         "tryIt": true
        },
        {
         "type": "paragraph",
-        "text": "Ở ví dụ lồng nhau, kiểm tra điểm hợp lệ được xét trước. `else` thẳng hàng với if nào thì thuộc if đó: ở đây nó thuộc kiểm tra 0 <= score <= 10, không thuộc kiểm tra score >= 8. Giảm mức thụt lề kết thúc khối bên trong. Dòng trống và comment không mở hay kết thúc khối mới. Nếu cần để trống một nhánh đang viết dở, dùng `pass`; một nhánh chỉ có comment vẫn thiếu câu lệnh."
+        "text": "Ở ví dụ lồng nhau, phép kiểm số liệu hợp lệ được xét trước: một bình không chứa được -3 cốc. `else` thẳng hàng với `if` nào thì thuộc `if` đó. Ở đây nó thuộc phép kiểm `0 <= cups <= 20`, không thuộc phép kiểm `cups >= 8`. Giảm mức thụt lề là kết thúc khối bên trong. Dòng trống và chú thích không mở hay đóng khối nào. Nếu một nhánh chưa viết xong, đặt `pass` vào đó; một nhánh chỉ có chú thích vẫn là thiếu câu lệnh."
        }
       ]
      ],
@@ -1651,20 +1741,20 @@
      ],
      "practice": [
       {
-       "prompt": "Với score = 8, đoạn đầu chạy nhánh nào?",
-       "answer": "Good, vì điều kiện đầu đã đúng."
+       "prompt": "Với cups = 8, đoạn đầu chạy nhánh nào?",
+       "answer": "Du hang, vì điều kiện đầu đã đúng."
       },
       {
-       "prompt": "Dùng phép so sánh nào cho điều kiện ít nhất 5 và không quá 10?",
-       "answer": "Viết 5 <= score <= 10, hoặc score >= 5 and score <= 10."
+       "prompt": "Dùng phép so sánh nào cho điều kiện ít nhất 5 cốc và không quá 20?",
+       "answer": "Viết 5 <= cups <= 20, hoặc cups >= 5 and cups <= 20."
       },
       {
-       "prompt": "Vì sao if True: rồi chỉ có comment chưa phải khối hoàn chỉnh?",
-       "answer": "Comment không phải câu lệnh. Cần một câu lệnh thực hoặc pass, với thụt lề đúng."
+       "prompt": "Vì sao if True: rồi chỉ có một dòng chú thích chưa phải khối hoàn chỉnh?",
+       "answer": "Chú thích không phải câu lệnh. Cần một câu lệnh thực hoặc pass, với thụt lề đúng."
       },
       {
-       "prompt": "Nếu if ngoài kiểm điểm 0..10 và if trong kiểm >=8, else thẳng hàng với if ngoài chạy khi nào? Đặt print(\"done\") sau toàn bộ cấu trúc có bị bỏ qua không?",
-       "answer": "else ngoài chạy khi điểm không hợp lệ. print ở ngoài mọi nhánh chạy sau cấu trúc khi không có ngoại lệ hay thoát sớm. Comment/dòng trống không đổi quan hệ khối; mức thụt lề quyết định."
+       "prompt": "Nếu if ngoài kiểm số cốc trong 0..20 và if trong kiểm >= 8, else thẳng hàng với if ngoài chạy khi nào? Đặt print(\"xong\") sau toàn bộ cấu trúc có bị bỏ qua không?",
+       "answer": "else ngoài chạy khi số cốc không hợp lệ. print ở ngoài mọi nhánh chạy sau cấu trúc khi không có ngoại lệ hay thoát sớm. Chú thích và dòng trống không đổi quan hệ khối; mức thụt lề quyết định."
       }
      ]
     },
@@ -1743,7 +1833,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn lưu số cốc bán trong ba ngày bằng list. Khi nhận số của ngày tiếp theo, bạn thêm nó vào cuối:"
+        "text": "Mấy bài trước bạn chỉ giữ một con số cho một ngày. Sang tuần thứ hai, quán cần cả dãy để so ngày này với ngày khác. Bạn ghi số cốc bán ba ngày đầu vào một `list`, rồi hết ngày thứ tư thì thêm con số mới vào cuối:"
        },
        {
         "type": "code",
@@ -1755,7 +1845,7 @@
       [
        {
         "type": "paragraph",
-        "text": "List có thứ tự, cho phép phần tử trùng và có thể thay đổi. `append` thêm một object. Nếu cần nối nhiều phần tử từ một dãy khác, dùng `extend`:"
+        "text": "List có thứ tự, cho phép giá trị trùng — hai ngày bán đúng 12 cốc là chuyện thường — và sửa được sau khi tạo. `append` thêm đúng một phần tử. Khi muốn nối nhiều con số từ một dãy khác, dùng `extend`:"
        },
        {
         "type": "code",
@@ -1767,7 +1857,11 @@
       [
        {
         "type": "paragraph",
-        "text": "`append([3, 4])` tạo một phần tử là list con; `extend([3, 4])` thêm hai số riêng. `a + b` tạo list nối mới; `a += b` mở rộng list a tại chỗ. `insert(0, 0)` chèn số 0 ở đầu. Bạn cũng có thể gán một phần tử bằng `b[0] = 7`, hoặc cập nhật một đoạn: `b[1:3] = [8, 9]` thay các phần tử ở chỉ số 1 và 2. Slice rỗng như `b[1:1] = [6]` chèn trước vị trí 1 mà không xóa phần tử nào."
+        "text": "Giả sử sổ hai ngày đang là `[1, 2]` và bạn nhận thêm hai ngày `[3, 4]`. `append([3, 4])` thêm một phần tử là list con, nên sổ có ba ô và ô thứ ba lại là một dãy. `extend([3, 4])` thêm hai con số riêng, đúng ý \"ghi tiếp hai ngày\". `a + b` tạo một list mới, còn `a += b` mở rộng chính `a`. `insert(0, 0)` chèn số 0 ở đầu."
+       },
+       {
+        "type": "paragraph",
+        "text": "Bạn cũng sửa được sổ tại chỗ khi đếm lại và thấy lệch. `b[0] = 7` thay một ô. `b[1:3] = [8, 9]` thay cả đoạn ở chỉ số 1 và 2. Lát cắt rỗng như `b[1:1] = [6]` chèn thêm một ngày trước vị trí 1 mà không xoá ngày nào."
        },
        {
         "type": "code",
@@ -1779,11 +1873,15 @@
       [
        {
         "type": "paragraph",
-        "text": "`remove(x)` xóa lần xuất hiện đầu tiên khớp x; `pop()` xóa và trả phần tử cuối, còn `pop(index)` chọn vị trí cần lấy. `del` xóa theo vị trí hoặc slice. `sort` sắp tại chỗ, `reverse` đảo tại chỗ. Hai phương thức này trả None thay vì trả list đã đổi. Khi chỉ muốn đọc một phần, `values[1::2]` lấy các vị trí 1, 3, 5...; `values[-5:]` lấy tối đa năm phần tử cuối và không xóa dữ liệu."
+        "text": "Năm thao tác dưới đây hay dùng khi dọn một dãy đếm nháp. `remove(x)` xoá lần xuất hiện đầu tiên khớp `x`. `pop()` xoá và trả về phần tử cuối, còn `pop(index)` chọn vị trí cần lấy. `del` xoá theo vị trí hoặc theo lát cắt. `sort` sắp tại chỗ và `reverse` đảo tại chỗ; cả hai trả None chứ không trả list đã đổi."
        },
        {
         "type": "paragraph",
-        "text": "Gán `b = a` không sao chép list: hai tên cùng dùng một object. Muốn thay đổi list ngoài mà giữ bản gốc, dùng `a.copy()` cho bản sao nông; dữ liệu lồng nhau vẫn cần xem có dùng chung object con hay không."
+        "text": "Khi chỉ muốn đọc mà không xoá gì, dùng lát cắt. `values[1::2]` lấy các vị trí 1, 3, 5 và tiếp như vậy. `values[-5:]` lấy tối đa năm phần tử cuối, tức năm ngày gần nhất."
+       },
+       {
+        "type": "paragraph",
+        "text": "Còn một cái bẫy khi bạn muốn giữ lại bản gốc. Gán `b = a` không sao chép list: hai tên cùng trỏ vào một dãy, nên sửa `b` là sửa cả sổ gốc. Dùng `a.copy()` để có một bản sao nông. Với dữ liệu lồng nhau, vẫn phải xem hai bản có dùng chung object con hay không."
        }
       ]
      ],
@@ -1982,11 +2080,11 @@
       [
        {
         "type": "paragraph",
-        "text": "Một điểm trên bản đồ gồm hai tọa độ. Bạn muốn giữ chúng thành một bản ghi và tách ra khi cần:"
+        "text": "Dãy số cốc bạn vừa dựng là nhiều giá trị cùng loại. Một dòng bán hàng thì khác. Nó gồm số cốc và đơn giá, hai thứ khác hẳn nhau, và không ô nào được sửa sau khi đã chốt đơn. Bạn muốn giữ hai con số đó thành một bản ghi rồi tách ra khi cần:"
        },
        {
         "type": "code",
-        "code": "point = (10, 20)\nx, y = point\nprint(x, y)\nprint(type((10)).__name__, type((10,)).__name__)",
+        "code": "dong = (10, 20)\nso_coc, don_gia = dong\nprint(so_coc, don_gia)\nprint(type((10)).__name__, type((10,)).__name__)",
         "expected": "10 20\nint tuple",
         "tryIt": true
        }
@@ -1994,11 +2092,15 @@
       [
        {
         "type": "paragraph",
-        "text": "Tuple có thứ tự và đọc theo chỉ số như list: `point[0]` là 10. Tuple không cho gán lại các vị trí tham chiếu. Nếu một phần tử trỏ tới list, list đó vẫn có thể thay đổi; tính bất biến của tuple không tự đóng băng object con. Dấu phẩy tạo tuple một phần tử: `(10,)`; `(10)` vẫn là số 10. Thao tác `x, y = point` được gọi là unpacking: gán mỗi phần tử vào một tên; dạng cơ bản cần số tên bằng số phần tử."
+        "text": "Tuple có thứ tự và đọc theo chỉ số như list, nên `dong[0]` là 10 cốc. Nó không cho gán lại các vị trí, vì vậy một dòng đã chốt không bị sửa nhầm. Nếu một phần tử trỏ tới một list thì list đó vẫn đổi được; tính bất biến của tuple không tự đóng băng object con."
+       },
+       {
+        "type": "paragraph",
+        "text": "Dấu phẩy mới là thứ tạo tuple một phần tử: `(10,)` là tuple, còn `(10)` vẫn là số 10. Phép `so_coc, don_gia = dong` được gọi là unpacking: mỗi phần tử vào một tên, và dạng cơ bản cần số tên bằng số phần tử."
        },
        {
         "type": "code",
-        "code": "point = (10, 20)\ntry:\n    point[0] = 30\nexcept TypeError as error:\n    print(type(error).__name__)",
+        "code": "dong = (10, 20)\ntry:\n    dong[0] = 30\nexcept TypeError as error:\n    print(type(error).__name__)",
         "expected": "TypeError",
         "tryIt": true
        }
@@ -2006,17 +2108,27 @@
       [
        {
         "type": "paragraph",
-        "text": "Collection là cách gom nhiều object vào một cấu trúc. List thích hợp khi cần thêm hoặc sửa vị trí; tuple thường dùng cho bản ghi hay kích thước cố định. String, list, tuple và range đều là sequence: có thứ tự, đọc theo vị trí và có thể có giá trị lặp. Set giữ thành viên không trùng và không có chỉ số; dict tra giá trị bằng khóa. Bạn chọn cấu trúc theo thao tác cần làm, không chỉ theo cách nó được in ra."
+        "text": "Collection là cách gom nhiều object vào một cấu trúc, và quán cần vài kiểu gom khác nhau. List phù hợp khi còn thêm và sửa, như số cốc mỗi ngày. Tuple phù hợp cho bản ghi đã chốt, như một dòng hoá đơn. String, list, tuple và range đều là sequence: có thứ tự và đọc theo vị trí."
+       },
+       {
+        "type": "paragraph",
+        "text": "Hai cấu trúc còn lại trả lời câu hỏi khác. Set giữ các thành viên không trùng và không có chỉ số, như tập món đã bán trong ngày. Còn dict tra giá trị theo khóa, như bảng giá tra theo tên món. Bạn chọn theo thao tác cần làm, không theo cách nó được in ra."
        },
        {
         "type": "code",
         "code": "raw = b\"AB\"\neditable = bytearray(raw)\neditable[0] = 67\nprint(raw)\nprint(bytes(editable))",
         "expected": "b'AB'\nb'CB'",
         "tryIt": true
+       }
+      ],
+      [
+       {
+        "type": "paragraph",
+        "text": "Máy in hoá đơn và máy đọc mã vạch trên bao cà phê không nhận chữ. Chúng nhận từng byte (tám bit, đơn vị dữ liệu nhỏ nhất). `bytes` và `bytearray` cũng là sequence, nhưng chứa giá trị byte thay vì ký tự văn bản."
        },
        {
         "type": "paragraph",
-        "text": "`bytes` và `bytearray` cũng là sequence, nhưng chứa giá trị byte (tám bit, đơn vị dữ liệu nhỏ nhất) thay vì ký tự văn bản. bytes bất biến; bytearray cho phép đổi từng byte như ở chỉ số 0 của ví dụ. Không thể coi mỗi byte là một ký tự tiếng Việt; cần chọn cách mã hóa (encoding) để chuyển giữa str và bytes khi đọc/ghi văn bản."
+        "text": "bytes bất biến, còn bytearray cho đổi từng byte. Đừng coi mỗi byte là một ký tự tiếng Việt. Để chuyển giữa chuỗi và bytes khi đọc hay ghi văn bản, bạn phải chọn cách mã hóa (encoding). Chỗ này bạn chưa cần tới khi ghi sổ bán hàng mỗi ngày, nhưng nó quay lại ngay khi quán nối với một thiết bị thật."
        }
       ]
      ],
@@ -2087,24 +2199,24 @@
      ],
      "practice": [
       {
-       "prompt": "args = (10) có phải tuple một phần tử không?",
-       "answer": "Không. Dùng args = (10,)."
+       "prompt": "dong = (10) có phải tuple một phần tử không?",
+       "answer": "Không. Dùng dong = (10,)."
       },
       {
-       "prompt": "Cần thêm số đo liên tục, chọn list hay tuple?",
+       "prompt": "Cần ghi thêm số cốc mỗi ngày, chọn list hay tuple?",
        "answer": "List thường phù hợp hơn vì có thể thêm và sửa phần tử."
       },
       {
        "prompt": "bytes và bytearray khác nhau ở điểm nào?",
-       "answer": "bytes bất biến; bytearray cho phép cập nhật byte. Cả hai dùng cho dữ liệu nhị phân, không thay thế quy tắc mã hóa văn bản."
+       "answer": "bytes bất biến; bytearray cho phép cập nhật từng byte. Cả hai dùng cho dữ liệu nhị phân, không thay quy tắc mã hóa văn bản."
       },
       {
-       "prompt": "Cần dãy có thể trùng và thêm phần tử, tập mã duy nhất, tra theo mã và cặp kích thước cố định: chọn collection nào? Chúng khác sequence ở đâu?",
-       "answer": "Lần lượt list, set, dict và tuple. Sequence có thứ tự và truy cập vị trí; list/tuple/range/str/bytes/bytearray là ví dụ. Không dùng vị trí để truy cập set; dict tra khóa."
+       "prompt": "Cần dãy có thể trùng và thêm được, tập tên món duy nhất, tra giá theo tên món, và một cặp số cốc với đơn giá cố định: chọn collection nào? Chúng khác sequence ở đâu?",
+       "answer": "Lần lượt list, set, dict và tuple. Sequence có thứ tự và truy cập theo vị trí; list/tuple/range/str/bytes/bytearray là ví dụ. Không dùng vị trí để truy cập set; dict tra khóa."
       },
       {
-       "prompt": "point=(10,20): point[1] trả gì và point[0]=30 gây lỗi gì? Nếu tuple chứa list thì list bên trong có bị đóng băng không?",
-       "answer": "Trả 20; phép gán vị trí tuple gây TypeError. Tuple cố định tham chiếu ở các vị trí, không tự làm list bên trong bất biến."
+       "prompt": "dong=(10,20): dong[1] trả gì và dong[0]=30 gây lỗi gì? Nếu tuple chứa một list thì list bên trong có bị đóng băng không?",
+       "answer": "Trả 20; phép gán vị trí trong tuple gây TypeError. Tuple cố định tham chiếu ở các vị trí, không tự làm list bên trong bất biến."
       }
      ]
     },
@@ -2178,13 +2290,13 @@
    "sort_order": 12,
    "module": "M1 · Python nền tảng",
    "title": "PY12 · Dictionary và tra cứu theo khóa",
-   "subtitle": "Cơ bản · M1 · 14 phút",
-   "estimated_minutes": 14,
-   "xp_reward": 8,
+   "subtitle": "Cơ bản · M1 · 15 phút",
+   "estimated_minutes": 15,
+   "xp_reward": 9,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY12 · Dictionary và tra cứu theo khóa",
-    "subtitle": "Cơ bản · M1 · 14 phút",
+    "subtitle": "Cơ bản · M1 · 15 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY12",
@@ -2197,41 +2309,51 @@
       [
        {
         "type": "paragraph",
-        "text": "Mỗi học viên có mã và điểm. Dictionary (kiểu từ điển lưu các cặp khoá–giá trị) giúp bạn lấy điểm theo mã thay vì nhớ vị trí trong một dãy:"
+        "text": "Tuple ở bài trước giữ được một dòng bán hàng. Nhưng khi khách gọi \"latte\", bạn cần số của món đó ngay, không phải đi tìm nó nằm ô thứ mấy. Dictionary (kiểu từ điển lưu các cặp khoá–giá trị) cho bạn tra theo tên món:"
        },
        {
         "type": "code",
-        "code": "marks = {\"S01\": 8, \"S02\": 0}\nprint(marks[\"S01\"])\nprint(marks.get(\"S03\", \"missing\"))\nprint(\"S02\" in marks)",
-        "expected": "8\nmissing\nTrue",
+        "code": "da_ban = {\"espresso\": 8, \"latte\": 0}\nprint(da_ban[\"espresso\"])\nprint(da_ban.get(\"mocha\", \"khong ban\"))\nprint(\"latte\" in da_ban)",
+        "expected": "8\nkhong ban\nTrue",
         "tryIt": true
        }
       ],
       [
        {
         "type": "paragraph",
-        "text": "`marks[key]` đọc giá trị và gây KeyError nếu thiếu khóa. `get` cho phép trả giá trị mặc định. Kiểm tra có khóa khác với kiểm tra điểm có khác 0: S02 có dữ liệu hợp lệ là điểm 0. `in` trên dict kiểm tra khóa."
+        "text": "`da_ban[\"espresso\"]` đọc giá trị của khóa đó, và gây `KeyError` nếu khóa không có. `get` cho bạn trả về một giá trị mặc định, nên một món chưa từng bán không làm chương trình dừng. Có khóa khác với có giá trị khác 0. `\"latte\"` nằm trong sổ với số liệu hợp lệ là 0 cốc, tức hôm nay chưa bán được cốc nào. `in` trên dict xét khóa, không xét giá trị."
        },
        {
         "type": "code",
-        "code": "marks = {\"S01\": 8}\nmarks[\"S02\"] = 7\nmarks.update({\"S01\": 9})\nfor code, mark in marks.items():\n    print(code, mark)\nprint(list(marks.keys()), list(marks.values()))",
-        "expected": "S01 9\nS02 7\n['S01', 'S02'] [9, 7]",
+        "code": "gia = {\"espresso\": 25}\ngia[\"latte\"] = 30\ngia.update({\"espresso\": 27})\nfor mon, tien in gia.items():\n    print(mon, tien)\nprint(list(gia.keys()), list(gia.values()))",
+        "expected": "espresso 27\nlatte 30\n['espresso', 'latte'] [27, 30]",
         "tryIt": true
        }
       ],
       [
        {
         "type": "paragraph",
-        "text": "Trong `for code, mark in marks.items()`, mỗi lượt lấy một cặp khóa và giá trị rồi gán vào code và mark. Đây là vòng lặp for; bài PY14 sẽ giải thích cách viết vòng lặp chi tiết hơn. `keys()` và `values()` trả các view, tức cách xem khóa hoặc giá trị luôn phản ánh nội dung hiện tại của dict; Python 3 giữ thứ tự chèn. Khóa là duy nhất, nên gán S01 lần nữa sẽ thay giá trị của khóa đó."
-       },
-       {
-        "type": "code",
-        "code": "marks = {\"S01\": 8, \"S02\": 9, \"S03\": 5}\nbest = max(marks, key=marks.get)\nremoved = marks.pop(\"S03\")\nprint(best, removed)\nprint(min(marks, key=marks.get))",
-        "expected": "S02 5\nS01",
-        "tryIt": true
+        "text": "Bảng giá đổi theo tuần. Bạn thêm món mới bằng `gia[\"latte\"] = 30` và sửa giá cũ bằng `update`. Khóa là duy nhất, nên gán `\"espresso\"` lần nữa chỉ thay giá của chính khóa đó chứ không tạo dòng thứ hai."
        },
        {
         "type": "paragraph",
-        "text": "`max(marks)` và `min(marks)` mặc định so các khóa. Thêm `key=marks.get` mới so theo điểm và vẫn trả mã tương ứng. `pop(key, default)` vừa lấy vừa xóa, trả default nếu thiếu; không có default thì khóa thiếu gây KeyError. `del marks[code]` chỉ xóa. `not in` cũng xét khóa, giống `in`. Giá trị trong dict có thể là list hoặc một dict khác, chẳng hạn hồ sơ chứa tên và nhiều điểm."
+        "text": "Trong `for mon, tien in gia.items()`, mỗi lượt lấy một cặp khóa và giá trị rồi gán vào `mon` và `tien`. Đây là vòng lặp `for`, và bài PY14 sẽ nói kỹ hơn về nó. `keys()` và `values()` trả về các view, tức cách xem khóa hoặc giá trị luôn phản ánh nội dung hiện tại của dict. Python 3 giữ thứ tự bạn đã chèn, nên bảng in ra theo đúng thứ tự bạn thêm món."
+       },
+       {
+        "type": "code",
+        "code": "gia = {\"espresso\": 25, \"latte\": 30, \"tra_da\": 12}\ndat_nhat = max(gia, key=gia.get)\nbo_di = gia.pop(\"tra_da\")\nprint(dat_nhat, bo_di)\nprint(min(gia, key=gia.get))",
+        "expected": "latte 12\nespresso",
+        "tryIt": true
+       }
+      ],
+      [
+       {
+        "type": "paragraph",
+        "text": "Cuối tháng bạn muốn biết món nào đắt nhất và món nào rẻ nhất. `max(gia)` và `min(gia)` mặc định so các khóa, tức so tên món theo thứ tự chữ. Thêm `key=gia.get` mới so theo giá, và kết quả trả về vẫn là tên món."
+       },
+       {
+        "type": "paragraph",
+        "text": "Khi bỏ một món khỏi bảng giá, `pop(key, default)` vừa lấy vừa xoá, nên bỏ `tra_da` cũng cho bạn biết giá cuối của nó là 12. Không truyền `default` thì một khóa thiếu gây `KeyError`, còn `del gia[mon]` thì chỉ xoá. `not in` cũng xét khóa, giống `in`. Giá trị trong dict còn có thể là list hay một dict khác, chẳng hạn một món kèm nhiều mức size."
        }
       ]
      ],
@@ -2243,7 +2365,7 @@
     "step_2": {
      "mcq": [
       {
-       "question": "marks={\"S02\":0}. marks.get(\"S02\", None) trả gì?",
+       "question": "da_ban={\"latte\":0}. da_ban.get(\"latte\", None) trả gì?",
        "options": [
         {
          "text": "None",
@@ -2251,7 +2373,7 @@
         },
         {
          "text": "0",
-         "detail": "Đúng. Khóa tồn tại và giữ điểm 0.",
+         "detail": "Đúng. Khóa tồn tại và giữ số 0 cốc.",
          "correct": true
         },
         {
@@ -2259,7 +2381,7 @@
          "detail": "get cho phép giá trị mặc định; truy cập [] vào khóa thiếu mới gây KeyError."
         }
        ],
-       "explanation": "Đúng. Khóa tồn tại và giữ điểm 0."
+       "explanation": "Đúng. Khóa tồn tại và giữ số 0."
       },
       {
        "question": "Điểm 0 là một giá trị đã có. Kết quả ở lệnh print cuối có giá trị nào?\n\nmarks = {\"A\": 0, \"B\": 8}\nprint(marks[\"A\"])",
@@ -2302,24 +2424,24 @@
      ],
      "practice": [
       {
-       "prompt": "\"Mai\" in student kiểm tra tên trong values hay khóa?",
-       "answer": "Kiểm tra khóa; muốn tìm trong values dùng \"Mai\" in student.values()."
+       "prompt": "\"latte\" in gia kiểm tra tên món trong values hay trong khóa?",
+       "answer": "Kiểm tra khóa; muốn tìm trong values dùng 30 in gia.values()."
       },
       {
-       "prompt": "Tìm mã có điểm thấp nhất trong marks bằng biểu thức nào?",
-       "answer": "min(marks, key=marks.get), khi dict không rỗng."
+       "prompt": "Tìm món có giá thấp nhất trong gia bằng biểu thức nào?",
+       "answer": "min(gia, key=gia.get), khi dict không rỗng."
       },
       {
-       "prompt": "Xóa S01 và lấy lại điểm của mã đó.",
-       "answer": "score = marks.pop(\"S01\"). Nếu có thể thiếu khóa, dùng marks.pop(\"S01\", None) và xử lý trường hợp không có."
+       "prompt": "Bỏ espresso khỏi bảng giá và lấy lại giá cuối của nó.",
+       "answer": "cuoi = gia.pop(\"espresso\"). Nếu khóa có thể thiếu, dùng gia.pop(\"espresso\", None) và xử lý trường hợp không có."
       },
       {
-       "prompt": "Với d={\"A\":9,\"Z\":2}, max(d), min(d), max(d,key=d.get), min(d,key=d.get) trả gì?",
-       "answer": "Lần lượt Z, A, A và Z. Hai cách đầu so khóa; hai cách có key=d.get so giá trị nhưng vẫn trả khóa."
+       "prompt": "Với d={\"americano\":9,\"zero\":2}, max(d), min(d), max(d,key=d.get), min(d,key=d.get) trả gì?",
+       "answer": "Lần lượt zero, americano, americano và zero. Hai cách đầu so khóa; hai cách có key=d.get so giá trị nhưng vẫn trả khóa."
       },
       {
-       "prompt": "Với d={\"A\":1}, d.update({\"A\":3,\"B\":2}); d.pop(\"X\",0); del d[\"A\"] làm d còn gì? get(\"X\",0) có thêm X không?",
-       "answer": "d còn {\"B\":2}; update ghi đè A và thêm B, pop khóa thiếu trả 0, del xóa A. get không thêm khóa. keys/values/items cho khóa, giá trị và cặp tương ứng; \"B\" in d và \"X\" not in d đều True."
+       "prompt": "Với d={\"latte\":1}, d.update({\"latte\":3,\"mocha\":2}); d.pop(\"tra_da\",0); del d[\"latte\"] làm d còn gì? get(\"tra_da\",0) có thêm khóa không?",
+       "answer": "d còn {\"mocha\":2}; update ghi đè latte và thêm mocha, pop một khóa thiếu trả 0, del xoá latte. get không thêm khóa. keys/values/items cho khóa, giá trị và cặp tương ứng; \"mocha\" in d và \"tra_da\" not in d đều True."
       }
      ]
     },
@@ -2389,13 +2511,13 @@
    "sort_order": 13,
    "module": "M1 · Python nền tảng",
    "title": "PY13 · Set và so sánh hai nhóm",
-   "subtitle": "Cơ bản · M1 · 12 phút",
-   "estimated_minutes": 12,
+   "subtitle": "Cơ bản · M1 · 13 phút",
+   "estimated_minutes": 13,
    "xp_reward": 8,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY13 · Set và so sánh hai nhóm",
-    "subtitle": "Cơ bản · M1 · 12 phút",
+    "subtitle": "Cơ bản · M1 · 13 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY13",
@@ -2408,41 +2530,51 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn có danh sách học viên đã đăng ký và danh sách đã nộp bài. Cần tìm ai chưa nộp, không cần đếm một tên hai lần:"
+        "text": "Bảng giá ở bài trước tra được theo tên món. Nhưng có câu hỏi chỉ cần biết một món thuộc nhóm nào, không cần giá. Bạn có nhóm món trên bảng giá và nhóm món đã bán hôm nay, và muốn biết món nào chưa bán được cốc nào:"
        },
        {
         "type": "code",
-        "code": "registered = {\"An\", \"Mai\", \"Lan\"}\nsubmitted = {\"Mai\", \"Lan\"}\nprint(sorted(registered - submitted))\nprint(len(registered))",
-        "expected": "['An']\n3",
+        "code": "menu = {\"espresso\", \"latte\", \"tra_da\"}\nda_ban = {\"latte\", \"tra_da\"}\nprint(sorted(menu - da_ban))\nprint(len(menu))",
+        "expected": "['espresso']\n3",
         "tryIt": true
        }
       ],
       [
        {
         "type": "paragraph",
-        "text": "Set chỉ giữ các phần tử khác nhau và không có chỉ số vị trí. Phép hiệu `registered - submitted` giữ người thuộc nhóm đăng ký nhưng không thuộc nhóm nộp. Ví dụ dùng sorted khi in để kết quả có thứ tự ổn định."
+        "text": "Set chỉ giữ các phần tử khác nhau và không có chỉ số vị trí, nên nó trả lời \"có hay không\" rất gọn. Phép hiệu `menu - da_ban` giữ món thuộc bảng giá nhưng không thuộc nhóm đã bán. Ví dụ gọi `sorted` lúc in để thứ tự ổn định giữa các lần chạy, vì bản thân set không giữ thứ tự nào."
        },
        {
         "type": "code",
-        "code": "a, b = {1, 2}, {2, 3}\nprint(sorted(a | b))\nprint(sorted(a & b))\nprint(sorted(a - b))",
-        "expected": "[1, 2, 3]\n[2]\n[1]",
+        "code": "sang = {\"espresso\", \"latte\"}\nchieu = {\"latte\", \"tra_da\"}\nprint(sorted(sang | chieu))\nprint(sorted(sang & chieu))\nprint(sorted(sang - chieu))",
+        "expected": "['espresso', 'latte', 'tra_da']\n['latte']\n['espresso']",
         "tryIt": true
        }
       ],
       [
        {
         "type": "paragraph",
-        "text": "`|` là hợp, `&` là giao, `-` là hiệu. Các phương thức tương ứng là `union`, `intersection` và `difference`. Thứ tự hai vế quan trọng với hiệu: b - a không giống a - b."
+        "text": "Hai ca trong ngày bán được hai nhóm món, và ba phép dưới đây trả lời ba câu hỏi khác nhau về chúng. `|` là hợp: cả ngày bán được những món nào. `&` là giao: món nào bán được ở cả hai ca. `-` là hiệu: món chỉ ca sáng bán được."
+       },
+       {
+        "type": "paragraph",
+        "text": "Các phương thức tương ứng là `union`, `intersection` và `difference`. Thứ tự hai vế quan trọng với phép hiệu: `chieu - sang` cho món chỉ ca chiều bán được, khác hẳn `sang - chieu`."
        },
        {
         "type": "code",
-        "code": "a, b = {1, 2}, {1, 2, 3}\nprint(a.issubset(b), b.issuperset(a))\nprint(a.isdisjoint({4, 5}))\nprint(len(set([1, 1, 2])))",
+        "code": "da_ban = {\"espresso\", \"latte\"}\nmenu = {\"espresso\", \"latte\", \"tra_da\"}\nprint(da_ban.issubset(menu), menu.issuperset(da_ban))\nprint(da_ban.isdisjoint({\"banh_mi\"}))\nprint(len(set([\"latte\", \"latte\", \"espresso\"])))",
         "expected": "True True\nTrue\n2",
         "tryIt": true
+       }
+      ],
+      [
+       {
+        "type": "paragraph",
+        "text": "Bốn phép kiểm quan hệ nói về hai nhóm chứ không về một món. `da_ban.issubset(menu)` hay `da_ban <= menu` hỏi mọi món đã bán có nằm trong bảng giá không — nếu False thì ai đó đã bán một món ngoài bảng. `menu.issuperset(da_ban)` hay `menu >= da_ban` hỏi điều ngược lại. `isdisjoint` hỏi hai nhóm có món chung nào không. Còn `x in da_ban` hỏi về đúng một thành viên."
        },
        {
         "type": "paragraph",
-        "text": "`a.issubset(b)` hay `a <= b` kiểm mọi phần tử của a có trong b. `b.issuperset(a)` hay `b >= a` kiểm quan hệ ngược lại. `isdisjoint` kiểm không có phần tử chung; `x in a` kiểm một thành viên. Tạo set từ list loại phần tử trùng, nhưng không giữ thứ tự bản ghi ban đầu."
+        "text": "Tạo set từ một dãy cũng loại các tên trùng, nên ba lần bán latte chỉ còn một tên. Nhưng nó không giữ thứ tự bản ghi, và không giữ số lần mỗi tên xuất hiện — muốn đếm số cốc mỗi món thì set không làm được."
        }
       ]
      ],
@@ -2513,20 +2645,20 @@
      ],
      "practice": [
       {
-       "prompt": "Giao của {1, 2} và {2, 3} là gì?",
-       "answer": "{2}."
+       "prompt": "Giao của {\"espresso\",\"latte\"} và {\"latte\",\"tra_da\"} là gì?",
+       "answer": "{\"latte\"}."
       },
       {
-       "prompt": "Muốn biết mọi người đã nộp đều có đăng ký, dùng quan hệ nào?",
-       "answer": "submitted.issubset(registered), hoặc submitted <= registered."
+       "prompt": "Muốn biết mọi món đã bán đều có trong bảng giá, dùng quan hệ nào?",
+       "answer": "da_ban.issubset(menu), hoặc da_ban <= menu."
       },
       {
-       "prompt": "Từ [\"A\", \"A\", \"B\"], đếm mã khác nhau.",
-       "answer": "len(set([\"A\", \"A\", \"B\"])) cho 2. Set không giữ số lần mỗi mã xuất hiện; việc đó cần Counter."
+       "prompt": "Từ [\"latte\", \"latte\", \"espresso\"], đếm số món khác nhau.",
+       "answer": "len(set([\"latte\", \"latte\", \"espresso\"])) cho 2. Set không giữ số lần mỗi món xuất hiện; việc đó cần Counter."
       },
       {
-       "prompt": "Với a={1,2}, b={1,2,3}, kiểm a <= b, b >= a, a.isdisjoint({4}) và 2 in a. Viết tương đương hợp/giao/hiệu bằng method.",
-       "answer": "Cả bốn kiểm tra đều True. a | b tương đương a.union(b); a & b tương đương a.intersection(b); a - b tương đương a.difference(b). Set giữ duy nhất và không có thứ tự xếp hạng."
+       "prompt": "Với a={\"espresso\",\"latte\"}, b={\"espresso\",\"latte\",\"tra_da\"}, kiểm a <= b, b >= a, a.isdisjoint({\"banh_mi\"}) và \"latte\" in a. Viết tương đương hợp/giao/hiệu bằng method.",
+       "answer": "Cả bốn phép kiểm đều True. a | b tương đương a.union(b); a & b tương đương a.intersection(b); a - b tương đương a.difference(b). Set giữ phần tử duy nhất và không có thứ tự xếp hạng."
       }
      ]
     },
@@ -2624,7 +2756,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn cần cộng số cốc của ba ngày. Một vòng for có thể lần lượt lấy từng số và cộng vào biến tổng:"
+        "text": "Ba ngày thì bạn cộng tay được, như ở bài trước. Một tháng thì phải để chương trình đi qua từng ô của sổ. Một vòng `for` lấy lần lượt từng số cốc và cộng vào biến tổng:"
        },
        {
         "type": "code",
@@ -2636,7 +2768,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`total` được khởi tạo trước vòng lặp. Mỗi lượt, biến `value` nhận một giá trị (value) của dãy theo thứ tự. Khi cần tạo số thứ tự, dùng range:"
+        "text": "`total` được khởi tạo bằng 0 trước vòng lặp, vì chưa cộng gì thì tổng là 0. Mỗi lượt, biến `value` nhận một giá trị (value) của dãy theo thứ tự rồi cộng vào `total`. Khi cần số thứ tự ngày thay vì chỉ con số, dùng `range`:"
        },
        {
         "type": "code",
@@ -2648,17 +2780,23 @@
       [
        {
         "type": "paragraph",
-        "text": "`range(start, stop, step)` không lấy stop; bước âm tạo dãy giảm. `range(5)` bắt đầu từ 0. range là một object range, nên ví dụ gọi list để hiện toàn bộ số. `enumerate` cho cả chỉ số và giá trị."
+        "text": "`range(start, stop, step)` không lấy `stop`, nên `range(1, 5)` là bốn ngày từ 1 đến 4. Bước âm tạo dãy giảm, dùng khi bạn muốn đọc từ ngày gần nhất trở về trước. `range(5)` bắt đầu từ 0. `range` trả về một object `range`, nên ví dụ gọi `list` để hiện hết các số. `enumerate` cho cả chỉ số và giá trị, tiện khi muốn in \"ngày 0 bán 6 cốc\"."
        },
        {
         "type": "code",
-        "code": "names, marks = [\"Mai\", \"An\"], [8, 7]\nfor name, mark in zip(names, marks):\n    print(name, mark)\nprint([x * 2 for x in [1, 2, 3] if x >= 2])",
-        "expected": "Mai 8\nAn 7\n[4, 6]",
+        "code": "mon, gia = [\"espresso\", \"latte\"], [25, 30]\nfor ten, tien in zip(mon, gia):\n    print(ten, tien)\nprint([x * 2 for x in [1, 2, 3] if x >= 2])",
+        "expected": "espresso 25\nlatte 30\n[4, 6]",
         "tryIt": true
+       }
+      ],
+      [
+       {
+        "type": "paragraph",
+        "text": "Tên món nằm một dãy và giá nằm dãy khác, nên bạn cần ghép chúng lại. `zip` ghép các phần tử cùng vị trí, và cách gọi này dừng khi dãy ngắn nhất hết phần tử. Trong `for ten, tien`, cặp do `zip` tạo được tách vào hai tên."
        },
        {
         "type": "paragraph",
-        "text": "`zip` ghép các phần tử cùng vị trí; cách gọi này dừng khi dãy ngắn nhất hết phần tử. Trong `for name, mark`, cặp do zip tạo được unpack vào hai tên. List comprehension như `[x * 2 for x in values if x >= 2]` tạo list mới: điều kiện chọn phần tử, biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt đầu vào (input). Nếu cần nhiều bước, vòng lặp thường dễ đọc hơn."
+        "text": "List comprehension như `[x * 2 for x in values if x >= 2]` tạo một list mới: điều kiện chọn phần tử, còn biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt của đầu vào (input). Nếu phép tính cần nhiều bước, một vòng lặp thường dễ đọc hơn."
        }
       ]
      ],
@@ -2742,11 +2880,11 @@
       },
       {
        "prompt": "range(4), range(2,5) và range(5,0,-2) tạo các số nào? for n in range(3): total += n với total=0 từ đầu có tổng gì?",
-       "answer": "Lần lượt 0,1,2,3; 2,3,4; 5,3,1. range là sequence không phải list; dùng list(...) để hiển thị. Vòng cuối cộng lần lượt 0,1,2, được 3; câu lệnh sau vòng chỉ chạy sau khi duyệt xong."
+       "answer": "Lần lượt 0,1,2,3; 2,3,4; 5,3,1. range là sequence chứ không phải list; dùng list(...) để hiển thị. Vòng cuối cộng lần lượt 0,1,2 được 3; câu lệnh sau vòng chỉ chạy khi đã duyệt xong."
       },
       {
-       "prompt": "Ghép zip([\"An\",\"Mai\"],[8]) rồi for name, score in ... được mấy cặp? Viết comprehension đổi [\"AN\",\"MAI\"] thành chữ thường, và lọc [3,1,4] giữ số >=3.",
-       "answer": "Zip mặc định chỉ có (\"An\",8) vì dãy điểm ngắn hơn; vòng for unpack cặp vào hai tên. [s.lower() for s in [\"AN\",\"MAI\"]] cho [\"an\",\"mai\"]; [x for x in [3,1,4] if x>=3] cho [3,4], giữ thứ tự ban đầu."
+       "prompt": "Ghép zip([\"espresso\",\"latte\"],[25]) rồi for ten, tien in ... được mấy cặp? Viết comprehension đổi [\"ESPRESSO\",\"LATTE\"] thành chữ thường, và lọc [3,1,4] giữ số >= 3.",
+       "answer": "Zip mặc định chỉ có (\"espresso\",25) vì dãy giá ngắn hơn; vòng for tách cặp vào hai tên. [s.lower() for s in [\"ESPRESSO\",\"LATTE\"]] cho [\"espresso\",\"latte\"]; [x for x in [3,1,4] if x>=3] cho [3,4], giữ thứ tự ban đầu."
       }
      ]
     },
@@ -2815,13 +2953,13 @@
    "sort_order": 15,
    "module": "M1 · Python nền tảng",
    "title": "PY15 · While, break và continue",
-   "subtitle": "Cơ bản · M1 · 13 phút",
-   "estimated_minutes": 13,
+   "subtitle": "Cơ bản · M1 · 14 phút",
+   "estimated_minutes": 14,
    "xp_reward": 8,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY15 · While, break và continue",
-    "subtitle": "Cơ bản · M1 · 13 phút",
+    "subtitle": "Cơ bản · M1 · 14 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY15",
@@ -2834,11 +2972,11 @@
       [
        {
         "type": "paragraph",
-        "text": "Một chương trình cho phép thử tối đa ba lần. Khi chưa có thao tác của người dùng, bạn có thể mô phỏng số lượt để đọc điều kiện dừng:"
+        "text": "Vòng `for` ở bài trước biết trước phải đi qua bao nhiêu ô. Một ca bán hàng của quán thì không: nó chạy tới khi bạn đóng cửa. Trước hết hãy xem ca dễ hơn — buổi sáng bạn chiết thử tối đa ba lượt để cân chỉnh máy pha:"
        },
        {
         "type": "code",
-        "code": "attempt = 0\nwhile attempt < 3:\n    attempt += 1\n    print(attempt)",
+        "code": "luot = 0\nwhile luot < 3:\n    luot += 1\n    print(luot)",
         "expected": "1\n2\n3",
         "tryIt": true
        }
@@ -2846,11 +2984,11 @@
       [
        {
         "type": "paragraph",
-        "text": "while kiểm tra điều kiện trước mỗi lượt. Việc tăng attempt giúp điều kiện cuối cùng thành False. Nếu quên thay đổi trạng thái mà điều kiện luôn đúng, chương trình có thể lặp mãi."
+        "text": "`while` kiểm điều kiện trước mỗi lượt. Dòng `luot += 1` là thứ làm điều kiện cuối cùng thành False, nên vòng dừng sau lượt thứ ba. Nếu bạn quên đổi trạng thái mà điều kiện luôn đúng, chương trình lặp mãi và máy pha không bao giờ được nghỉ."
        },
        {
         "type": "code",
-        "code": "for number in range(6):\n    if number == 1:\n        continue\n    if number == 4:\n        break\n    print(number)",
+        "code": "for don in range(6):\n    if don == 1:\n        continue\n    if don == 4:\n        break\n    print(don)",
         "expected": "0\n2\n3",
         "tryIt": true
        }
@@ -2858,17 +2996,27 @@
       [
        {
         "type": "paragraph",
-        "text": "`continue` bỏ phần còn lại của lượt hiện tại; `break` thoát vòng gần nhất. Vì vậy số 1 không được in và gặp 4 thì dừng trước print. Vị trí cập nhật biến rất quan trọng: nếu `total += number` nằm sau continue, số bị bỏ qua không được cộng. Trong while, nếu cập nhật điều kiện dừng nằm sau continue, bạn có thể vô tình bỏ luôn bước giúp vòng lặp kết thúc."
-       },
-       {
-        "type": "code",
-        "code": "commands = iter([\"sum\", \"quit\", \"sum\"])\nwhile True:\n    command = next(commands, \"quit\")\n    if command == \"quit\":\n        break\n    print(command)",
-        "expected": "sum",
-        "tryIt": true
+        "text": "Giờ đến một ca có sự cố. Sáu đơn vào quầy, đơn số 1 bị khách huỷ, và tới đơn số 4 thì hết nguyên liệu. `continue` bỏ phần còn lại của lượt hiện tại, nên đơn bị huỷ không được in. `break` thoát vòng gần nhất, nên cả ca dừng ở đơn số 4."
        },
        {
         "type": "paragraph",
-        "text": "`iter(...)` tạo đối tượng để lấy lần lượt các lệnh trong danh sách. Mỗi lần gọi `next(commands, \"quit\")` sẽ lấy lệnh tiếp theo; khi hết dữ liệu, nó trả giá trị mặc định `\"quit\"`. Chuỗi này là sentinel, tức giá trị báo dừng, nên ví dụ không lặp mãi. Khi làm chương trình nhận lệnh trong terminal (CLI), bạn có thể lấy từng lệnh bằng `input()` và giữ cùng quy tắc thoát."
+        "text": "Vị trí dòng cập nhật rất quan trọng. Nếu `total += don` nằm sau `continue`, đơn bị bỏ qua cũng không được cộng vào doanh thu. Trong `while`, nếu dòng cập nhật điều kiện dừng nằm sau `continue`, bạn có thể bỏ luôn bước giúp vòng lặp kết thúc."
+       },
+       {
+        "type": "code",
+        "code": "lenh = iter([\"pha\", \"dong_cua\", \"pha\"])\nwhile True:\n    viec = next(lenh, \"dong_cua\")\n    if viec == \"dong_cua\":\n        break\n    print(viec)",
+        "expected": "pha",
+        "tryIt": true
+       }
+      ],
+      [
+       {
+        "type": "paragraph",
+        "text": "Đây là hình dạng thật của một ca: quầy nhận lệnh tới khi gặp lệnh đóng cửa. `iter(...)` tạo đối tượng để lấy lần lượt các lệnh trong dãy. Mỗi lần gọi `next(lenh, \"dong_cua\")` lấy lệnh tiếp theo, và khi hết dữ liệu nó trả về giá trị mặc định `\"dong_cua\"`."
+       },
+       {
+        "type": "paragraph",
+        "text": "Chuỗi đó là sentinel, tức giá trị báo dừng, nên ví dụ không lặp mãi dù vòng ngoài viết `while True`. Khi bạn làm một màn nhận lệnh trong terminal (CLI) cho quầy, mỗi lệnh sẽ đến từ `input()` và quy tắc thoát vẫn giữ nguyên như vậy."
        }
       ]
      ],
@@ -2940,15 +3088,15 @@
      "practice": [
       {
        "prompt": "Vòng đầu chạy mấy lượt?",
-       "answer": "3 lượt, với attempt được in là 1, 2 và 3."
+       "answer": "3 lượt, với luot được in là 1, 2 và 3."
       },
       {
        "prompt": "break và continue có giống nhau không?",
        "answer": "Không. break thoát vòng lặp; continue chỉ bỏ phần còn lại của một lượt."
       },
       {
-       "prompt": "Nếu commands không có phần tử nào, ví dụ cuối có bị lặp mãi không?",
-       "answer": "Không. next trả mặc định quit ngay, rồi break kết thúc vòng lặp."
+       "prompt": "Nếu dãy lenh không có phần tử nào, ví dụ cuối có bị lặp mãi không?",
+       "answer": "Không. next trả mặc định dong_cua ngay, rồi break kết thúc vòng lặp."
       },
       {
        "prompt": "total=0; duyệt [1,2,3,4], bỏ lượt khi n==2, dừng khi n==4, còn lại cộng n. Tổng cuối là gì? Trong while, đặt cập nhật n sau continue có rủi ro gì?",
@@ -3052,7 +3200,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn tính tổng hóa đơn nhiều lần với đơn giá và số lượng khác nhau. Thay vì lặp lại biểu thức, đặt phép tính trong một hàm:"
+        "text": "Ca bán hàng bạn vừa viết lặp cùng một phép tính cho mỗi khách. Mỗi hoá đơn của quán là đơn giá nhân số lượng, và bạn gõ lại biểu thức đó cả ngày. Đặt nó vào một hàm rồi gọi theo tên:"
        },
        {
         "type": "code",
@@ -3064,7 +3212,7 @@
       [
        {
         "type": "paragraph",
-        "text": "price và quantity là tham số trong định nghĩa; 12 và 3 là đối số trong lần gọi. quantity có giá trị mặc định 1. Bạn có thể truyền theo vị trí hoặc ghi tên đối số để dễ đọc."
+        "text": "`price` và `quantity` là tham số trong định nghĩa, còn 12 và 3 là đối số của lần gọi. `quantity` có giá trị mặc định 1, nên khách mua đúng một cốc thì gọi `total(12)` là đủ. Bạn truyền theo vị trí, hoặc ghi tên đối số như `total(12, quantity=2)` để người đọc lại sổ hiểu ngay con số 2 là gì."
        },
        {
         "type": "code",
@@ -3076,7 +3224,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Hàm chỉ print không tự trả số vừa hiển thị. Nếu không return một giá trị, kết quả lời gọi là None. Để đưa kết quả vào bước xử lý sau, dùng return."
+        "text": "Một hàm chỉ `print` thì không trả lại con số vừa hiện. Nếu không `return` một giá trị, kết quả lời gọi là None, nên `result` ở đây không cộng được vào doanh thu ngày. Muốn đưa kết quả sang bước sau, dùng `return`."
        },
        {
         "type": "code",
@@ -3086,7 +3234,7 @@
        },
        {
         "type": "paragraph",
-        "text": "sum, len, min và max là built-in có sẵn. Hàm average trên yêu cầu dữ liệu không rỗng; với list rỗng nó chia cho 0. Docstring ở đầu hàm nêu rõ hợp đồng đó. Một hàm nhỏ nên có đầu vào, đầu ra và điều kiện sử dụng đủ rõ để người khác gọi đúng."
+        "text": "`sum`, `len`, `min` và `max` là các hàm có sẵn, nên trung bình số cốc ba ngày viết được trong một dòng. Hàm `average` ở trên đòi dữ liệu không rỗng: gọi nó với một sổ chưa có ngày nào là chia cho 0. Docstring ở đầu hàm nói rõ điều kiện đó. Một hàm nhỏ nên có đầu vào, đầu ra và điều kiện dùng đủ rõ để người sau gọi đúng mà không phải đọc thân hàm."
        }
       ]
      ],
@@ -3165,8 +3313,8 @@
        "answer": "None; 36 chỉ được print ra màn hình."
       },
       {
-       "prompt": "Viết hàm discount(price, amount) trả giá sau giảm.",
-       "answer": "def discount(price, amount): return price - amount. Ví dụ discount(20, 3) trả 17; cần bổ sung quy tắc nếu không cho phép giá âm."
+       "prompt": "Viết hàm discount(price, amount) trả giá một cốc sau giảm.",
+       "answer": "def discount(price, amount): return price - amount. Ví dụ discount(20, 3) trả 17; cần bổ sung quy tắc nếu quán không cho phép giá âm."
       },
       {
        "prompt": "Định nghĩa total nhưng chưa gọi có chạy thân hàm không? Trong total(12,3), đâu là tham số, đâu là đối số; docstring khác comment thế nào?",
@@ -3237,13 +3385,13 @@
    "sort_order": 17,
    "module": "M1 · Python nền tảng",
    "title": "PY17 · Scope, tham chiếu hàm và callback",
-   "subtitle": "Cơ bản · M1 · 12 phút",
-   "estimated_minutes": 12,
+   "subtitle": "Cơ bản · M1 · 13 phút",
+   "estimated_minutes": 13,
    "xp_reward": 8,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY17 · Scope, tham chiếu hàm và callback",
-    "subtitle": "Cơ bản · M1 · 12 phút",
+    "subtitle": "Cơ bản · M1 · 13 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY17",
@@ -3256,7 +3404,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Một callback (hàm bạn giao cho thư viện gọi hộ) sẽ chạy khi người dùng bấm nút. Để hiểu vì sao phải truyền tên hàm thay vì gọi ngay, trước hết thử lưu hàm trong một biến:"
+        "text": "Hàm bạn vừa viết được gọi bằng tên, và bạn tự quyết lúc gọi. Màn hình gọi món của quán thì khác: bạn giao hàm cho thư viện, và nó gọi hộ lúc khách bấm nút. Một callback (hàm bạn giao cho thư viện gọi hộ) chạy đúng lúc đó. Để thấy vì sao phải truyền tên hàm thay vì gọi ngay, trước hết thử lưu hàm trong một biến:"
        },
        {
         "type": "code",
@@ -3268,7 +3416,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`greet` là chính object hàm; `greet()` gọi hàm và nhận kết quả. Trong Tkinter (thư viện giao diện đồ hoạ đi kèm Python) dùng `command=greet`, trong threading dùng `target=worker`. Nếu viết `command=greet()`, hàm chạy ngay và giá trị trả về bị dùng thay cho callback."
+        "text": "`greet` là chính object hàm, còn `greet()` là lời gọi và nó cho ra kết quả. Trong Tkinter (thư viện giao diện đồ hoạ đi kèm Python) bạn viết `command=greet`, trong `threading` bạn viết `target=worker`. Nếu viết `command=greet()` thì hàm chạy ngay lúc dựng nút, giá trị trả về bị dùng thay cho callback, và nút đó bấm về sau không ra gì."
        },
        {
         "type": "code",
@@ -3280,7 +3428,11 @@
       [
        {
         "type": "paragraph",
-        "text": "Biến value trong calculate có phạm vi cục bộ (local scope): nó chỉ thuộc lần gọi hàm đó và che tên value bên ngoài. Vì vậy, gán value = 20 trong hàm không đổi value ở cấp module. Mỗi lần gọi có các biến cục bộ riêng; một khối if hoặc for không tự tạo phạm vi hàm mới."
+        "text": "Giả sử `value` là giá tạm tính đang hiện trên màn hình, và `calculate` là một hàm tính thử. Biến `value` trong `calculate` có phạm vi cục bộ (local scope): nó chỉ thuộc lần gọi hàm đó và che tên `value` bên ngoài. Vì vậy gán `value = 20` trong hàm không đổi `value` ở cấp module, và một phép tính thử không làm hỏng con số của sổ chính."
+       },
+       {
+        "type": "paragraph",
+        "text": "Mỗi lần gọi có các biến cục bộ riêng. Một khối `if` hay `for` không tự tạo một phạm vi hàm mới."
        },
        {
         "type": "code",
@@ -3292,11 +3444,11 @@
       [
        {
         "type": "paragraph",
-        "text": "`global` cần khi bạn muốn gán lại tên cấp module từ trong hàm. Chỉ đọc tên bên ngoài không tự đòi hỏi global. Trong ứng dụng lớn, ưu tiên truyền dữ liệu và trả kết quả, hoặc giữ trạng thái trong object, để tránh quá nhiều biến dùng chung."
+        "text": "`global` cần khi bạn muốn gán lại một tên cấp module từ trong hàm — ví dụ bộ đếm số cốc đã pha trong ca. Chỉ đọc tên bên ngoài thì không cần `global`. Khi màn hình gọi món lớn dần, hãy ưu tiên truyền dữ liệu vào và trả kết quả ra. Giữ trạng thái trong một object cũng là một cách. Cả hai cách đều tránh một rừng biến dùng chung mà không ai biết ai đang sửa."
        },
        {
         "type": "paragraph",
-        "text": "Khi truyền đối số cho một luồng (thread), `args=(10,)` là tuple một phần tử; dấu phẩy là cần thiết. Bạn sẽ dùng lại phân biệt “truyền hàm” và “gọi hàm” ở cả bài tiến trình, luồng và GUI (giao diện đồ hoạ)."
+        "text": "Cùng cách phân biệt này còn dùng lại ở các bài sau. Khi truyền đối số cho một luồng (thread), `args=(10,)` là tuple một phần tử và dấu phẩy là bắt buộc. Bạn sẽ gặp lại \"truyền hàm\" và \"gọi hàm\" ở cả bài tiến trình, bài luồng và bài GUI (giao diện đồ hoạ) của quán."
        }
       ]
      ],
@@ -3372,10 +3524,10 @@
       },
       {
        "prompt": "Vì sao calculate() trả 20 nhưng value bên ngoài vẫn là 10?",
-       "answer": "value bên trong là biến local khác với tên cấp module."
+       "answer": "value bên trong là biến cục bộ, khác với tên cùng chữ ở cấp module."
       },
       {
-       "prompt": "Trong Button, command=save và command=save() khác nhau thế nào?",
+       "prompt": "Trên nút In hoá đơn, command=save và command=save() khác nhau thế nào?",
        "answer": "command=save truyền hàm để gọi sau; command=save() gọi ngay khi dựng nút rồi truyền kết quả của lời gọi."
       }
      ]
@@ -3429,13 +3581,13 @@
    "sort_order": 18,
    "module": "M1 · Python nền tảng",
    "title": "PY18 · Ngoại lệ và dữ liệu không hợp lệ",
-   "subtitle": "Cơ bản · M1 · 14 phút",
-   "estimated_minutes": 14,
-   "xp_reward": 8,
+   "subtitle": "Cơ bản · M1 · 15 phút",
+   "estimated_minutes": 15,
+   "xp_reward": 9,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY18 · Ngoại lệ và dữ liệu không hợp lệ",
-    "subtitle": "Cơ bản · M1 · 14 phút",
+    "subtitle": "Cơ bản · M1 · 15 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY18",
@@ -3448,7 +3600,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Một cột điểm có hai chuỗi hợp lệ và một chuỗi trống. Nếu chuyển tất cả thành số mà không xử lý lỗi, chương trình sẽ dừng ở ô trống:"
+        "text": "Mọi hàm bạn vừa viết đều giả định số liệu đúng. Sổ của quán do người ghi tay, nên sớm muộn sẽ có một ô bỏ trống. Cột số cốc tuần này có hai ô ghi đúng và một ô trống. Đổi hết sang số mà không lường trước thì chương trình dừng ngay ở ô trống đó:"
        },
        {
         "type": "code",
@@ -3460,29 +3612,39 @@
       [
        {
         "type": "paragraph",
-        "text": "try chứa thao tác có thể gây lỗi; except ValueError xử lý riêng lỗi chuyển đổi này. Không bắt mọi ngoại lệ rồi bỏ qua, vì lỗi lập trình như sai tên biến cần được phát hiện."
+        "text": "`try` chứa thao tác có thể gây lỗi, còn `except ValueError` xử lý riêng lỗi đổi kiểu này. Nhờ vậy ô trống thành chữ `missing` và hai ô còn lại vẫn được tính. Đừng bắt mọi ngoại lệ rồi bỏ qua. Một lỗi lập trình như gõ sai tên biến cũng sẽ bị che, và bạn mất cả buổi đi tìm."
        },
        {
         "type": "code",
-        "code": "def read_mark(raw):\n    mark = float(raw)\n    if not 0 <= mark <= 10:\n        raise ValueError(\"Outside 0..10\")\n    return mark\n\ntry:\n    read_mark(\"12\")\nexcept ValueError as error:\n    print(str(error))",
-        "expected": "Outside 0..10",
+        "code": "def doc_so_coc(raw):\n    coc = float(raw)\n    if not 0 <= coc <= 50:\n        raise ValueError(\"Ngoai 0..50\")\n    return coc\n\ntry:\n    doc_so_coc(\"99\")\nexcept ValueError as error:\n    print(str(error))",
+        "expected": "Ngoai 0..50",
         "tryIt": true
        }
       ],
       [
        {
         "type": "paragraph",
-        "text": "`raise` chủ động báo dữ liệu vi phạm quy tắc. Phân biệt các lỗi thường gặp: TypeError là thao tác không phù hợp kiểu, IndexError là chỉ số không tồn tại và KeyError là thiếu khóa dict. Traceback cho biết chuỗi lời gọi và vị trí phát sinh; đọc dòng lỗi cuối cùng rồi tìm lại dòng code liên quan."
+        "text": "`raise` là cách bạn chủ động báo rằng số liệu vi phạm quy tắc của quán. Một đơn 99 cốc gần như chắc chắn là gõ nhầm, nên để nó đi vào sổ còn tệ hơn là dừng lại."
+       },
+       {
+        "type": "paragraph",
+        "text": "Khi dọn sổ bạn còn gặp ba lỗi khác. `TypeError` là thao tác không phù hợp với kiểu. `IndexError` là chỉ số không tồn tại. `KeyError` là thiếu khóa trong một dict. Traceback cho biết chuỗi lời gọi và vị trí phát sinh; hãy đọc dòng lỗi cuối rồi tìm lại dòng code liên quan."
        },
        {
         "type": "code",
         "code": "try:\n    number = int(\"8\")\nexcept ValueError:\n    print(\"invalid\")\nelse:\n    print(number)\nfinally:\n    print(\"finished\")",
         "expected": "8\nfinished",
         "tryIt": true
+       }
+      ],
+      [
+       {
+        "type": "paragraph",
+        "text": "`else` chạy khi phần `try` không gây ngoại lệ. `finally` chạy khi rời cấu trúc, dù có lỗi hay không, nên nó là chỗ thu dọn tài nguyên. Với file, khối `with` thường quản lý việc đóng file rõ hơn."
        },
        {
         "type": "paragraph",
-        "text": "else chạy khi phần try không gây ngoại lệ; finally chạy khi rời cấu trúc, thường dùng để thu dọn tài nguyên. Với file, khối with thường giúp quản lý đóng file rõ hơn. Trong dữ liệu phân tích, “bắt được lỗi” chưa quyết định nên bỏ ô, gắn nhãn thiếu hay yêu cầu nhập lại; bạn phải nêu chính sách xử lý."
+        "text": "Bắt được lỗi vẫn chưa phải là quyết định. Bạn còn phải chọn một chính sách cho ô trống trong sổ. Bỏ ô đó là một cách. Ghi nhãn là thiếu là cách thứ hai. Trả lại cho người ghi sổ nhập lại là cách thứ ba. Ba cách cho ba con số doanh thu khác nhau, và chỉ bạn biết cách nào đúng với quán của mình."
        }
       ]
      ],
@@ -3553,20 +3715,20 @@
      ],
      "practice": [
       {
-       "prompt": "Chuỗi trống chuyển bằng float thường gây lỗi gì?",
+       "prompt": "Một ô trống chuyển bằng float thường gây lỗi gì?",
        "answer": "ValueError."
       },
       {
-       "prompt": "Muốn báo điểm ngoài 0–10, dùng từ khóa nào?",
-       "answer": "raise, chẳng hạn raise ValueError(\"Outside 0..10\")."
+       "prompt": "Muốn báo số cốc ngoài khoảng 0–50, dùng từ khóa nào?",
+       "answer": "raise, chẳng hạn raise ValueError(\"Ngoai 0..50\")."
       },
       {
-       "prompt": "Có nên dùng except: pass để bỏ hết lỗi đọc dữ liệu không?",
-       "answer": "Không. Nó có thể che lỗi sai tên, sai logic hoặc lỗi file. Bắt ngoại lệ cụ thể, ghi nhận dữ liệu lỗi và nêu cách xử lý."
+       "prompt": "Có nên dùng except: pass để bỏ hết lỗi khi đọc sổ không?",
+       "answer": "Không. Nó có thể che lỗi sai tên, sai logic hoặc lỗi đọc file. Hãy bắt ngoại lệ cụ thể, ghi nhận dòng lỗi và nêu rõ cách xử lý."
       },
       {
-       "prompt": "Giữ nguyên độ dài khi đổi [\"1\",\"\",\"3.5\"] thành float, đánh dấu ô hỏng bằng None: viết phần try/except và nêu kết quả.",
-       "answer": "Khởi tạo values=[]; lặp raw, try: values.append(float(raw)); except ValueError: values.append(None). Kết quả [1.0,None,3.5]. Bắt ValueError riêng, không bỏ dòng âm thầm và không giữ chuỗi rỗng trong cột đã quy ước là số hoặc None."
+       "prompt": "Giữ nguyên độ dài khi đổi [\"12\",\"\",\"9\"] thành float, đánh dấu ô hỏng bằng None: viết phần try/except và nêu kết quả.",
+       "answer": "Khởi tạo values=[]; lặp raw, try: values.append(float(raw)); except ValueError: values.append(None). Kết quả [12.0,None,9.0]. Bắt ValueError riêng, không bỏ dòng âm thầm và không giữ chuỗi rỗng trong cột đã quy ước là số hoặc None."
       }
      ]
     },
