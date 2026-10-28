@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Sau khi nhập điểm, bạn muốn lưu một bản nén mà ứng dụng mở lại được. Trước khi đưa việc lưu sang thread, kiểm hai chiều ghi và nạp trên file thật. pickle biến object thành bytes; gzip nén bytes; hai bước không thay thế nhau. Chỉ nạp pickle từ nguồn bạn tin cậy."
+      "text": "Hết ca, quán cần lưu một bản nén mà ứng dụng mở lại được. Trước khi đưa việc lưu sang thread, kiểm hai chiều ghi và nạp trên file thật. pickle biến object thành bytes; gzip nén bytes; hai bước không thay thế nhau. Chỉ nạp pickle từ nguồn bạn tin cậy."
      },
      {
       "type": "code",
-      "code": "import tempfile, gzip, pickle\nfrom pathlib import Path\ndata = {\"marks\":[6, 8]}\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    with gzip.open(path, \"wb\") as f:\n        pickle.dump(data, f)\n    with gzip.open(path, \"rb\") as f:\n        restored = pickle.load(f)\n    print(restored == data, path.exists())",
+      "code": "import tempfile, gzip, pickle\nfrom pathlib import Path\ndata = {\"so_coc\":[6, 8]}\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"quan.dat\"\n    with gzip.open(path, \"wb\") as f:\n        pickle.dump(data, f)\n    with gzip.open(path, \"rb\") as f:\n        restored = pickle.load(f)\n    print(restored == data, path.exists())",
       "expected": "True True",
       "tryIt": true,
       "trace": {
@@ -34,7 +34,7 @@
         "kind": "final",
         "var": "restored",
         "prompt": "Sau khi chạy xong, `restored` bằng mấy?",
-        "answer": "{'marks': [6, 8]}"
+        "answer": "{'so_coc': [6, 8]}"
        },
        "rows": [
         {
@@ -68,7 +68,7 @@
          "set": [
           [
            "data",
-           "{'marks': [6, 8]}"
+           "{'so_coc': [6, 8]}"
           ]
          ]
         },
@@ -77,7 +77,7 @@
          "set": [
           [
            "folder",
-           "'C:\\\\Users\\\\sonkh\\\\AppData\\\\Local\\\\Temp\\\\tmpcegn0rfr'"
+           "'C:\\\\Users\\\\sonkh\\\\AppData\\\\Local\\\\Temp\\\\tmp_mb_vsfm'"
           ]
          ]
         },
@@ -86,7 +86,7 @@
          "set": [
           [
            "path",
-           "WindowsPath: WindowsPath('C:/Users/sonkh/AppData/Local/Temp/tmpcegn0rfr…"
+           "WindowsPath: WindowsPath('C:/Users/sonkh/AppData/Local/Temp/tmp_mb_vsfm…"
           ]
          ]
         },
@@ -125,7 +125,7 @@
          "set": [
           [
            "restored",
-           "{'marks': [6, 8]}"
+           "{'so_coc': [6, 8]}"
           ]
          ]
         },
@@ -160,7 +160,7 @@
      },
      {
       "type": "code",
-      "code": "import tempfile, gzip, pickle, copy\nfrom pathlib import Path\nfrom threading import Thread\nfrom queue import Queue\ndef save(path, snapshot, messages):\n    with gzip.open(path, \"wb\") as f:\n        pickle.dump(snapshot, f)\n    messages.put((\"done\", len(snapshot[\"marks\"])))\ndata = {\"marks\":[6, 8]}\nmessages = Queue()\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    snapshot = copy.deepcopy(data)\n    worker = Thread(target=save, args=(path, snapshot, messages))\n    worker.start()\n    data[\"marks\"].append(10)\n    worker.join()\n    status = messages.get()\n    with gzip.open(path, \"rb\") as f:\n        loaded = pickle.load(f)\n    print(status)\n    print(loaded[\"marks\"], data[\"marks\"])",
+      "code": "import tempfile, gzip, pickle, copy\nfrom pathlib import Path\nfrom threading import Thread\nfrom queue import Queue\ndef save(path, snapshot, messages):\n    with gzip.open(path, \"wb\") as f:\n        pickle.dump(snapshot, f)\n    messages.put((\"done\", len(snapshot[\"so_coc\"])))\ndata = {\"so_coc\":[6, 8]}\nmessages = Queue()\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"quan.dat\"\n    snapshot = copy.deepcopy(data)\n    worker = Thread(target=save, args=(path, snapshot, messages))\n    worker.start()\n    data[\"so_coc\"].append(10)\n    worker.join()\n    status = messages.get()\n    with gzip.open(path, \"rb\") as f:\n        loaded = pickle.load(f)\n    print(status)\n    print(loaded[\"so_coc\"], data[\"so_coc\"])",
       "expected": "('done', 2)\n[6, 8] [6, 8, 10]"
      }
     ],
@@ -171,7 +171,7 @@
      },
      {
       "type": "code",
-      "code": "import tempfile, gzip, pickle\nfrom pathlib import Path\nfrom threading import Thread\nfrom queue import Queue\ndef save(path, data, messages):\n    try:\n        with gzip.open(path, \"wb\") as f:\n            pickle.dump(data, f)\n    except OSError as error:\n        messages.put((\"error\", isinstance(error, FileNotFoundError)))\n    else:\n        messages.put((\"done\", True))\nmessages = Queue()\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"missing-folder\" / \"students.dat\"\n    worker = Thread(target=save, args=(path, {\"marks\":[6, 8]}, messages))\n    worker.start(); worker.join()\n    print(messages.get())",
+      "code": "import tempfile, gzip, pickle\nfrom pathlib import Path\nfrom threading import Thread\nfrom queue import Queue\ndef save(path, data, messages):\n    try:\n        with gzip.open(path, \"wb\") as f:\n            pickle.dump(data, f)\n    except OSError as error:\n        messages.put((\"error\", isinstance(error, FileNotFoundError)))\n    else:\n        messages.put((\"done\", True))\nmessages = Queue()\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"missing-folder\" / \"quan.dat\"\n    worker = Thread(target=save, args=(path, {\"so_coc\":[6, 8]}, messages))\n    worker.start(); worker.join()\n    print(messages.get())",
       "expected": "('error', True)"
      }
     ]

@@ -59,7 +59,7 @@
    ],
    "context": {
     "level": "Nâng cao",
-    "prereq": "CT10 · Tạo thread bằng target, start và join, SY05 · Class và object: mỗi sinh viên có dữ liệu riêng, SY07 · Kế thừa, override và super"
+    "prereq": "CT10 · Tạo thread bằng target, start và join, SY05 · Class và object: mỗi món có dữ liệu riêng, SY07 · Kế thừa, override và super"
    }
   },
   "step_2": {

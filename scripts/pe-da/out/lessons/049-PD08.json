@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Kiểu của từng cột đã rõ ở bài trước, còn ô trống thì phải xem trước khi điền. Một cảm biến gửi nhiệt độ 20, bỏ trống lần đo tiếp theo rồi gửi 22. Ô trống có nghĩa là chưa có số đo, nên chưa thể coi đó là 0 độ."
+      "text": "Kiểu của từng cột đã rõ ở bài trước, còn ô trống thì phải xem trước khi điền. Sổ của quán ghi doanh thu buổi sáng là 20, bỏ trống buổi trưa rồi ghi 22 cho buổi chiều. Ô trống nghĩa là chưa ai ghi, nên chưa thể coi đó là 0 đồng."
      },
      {
       "type": "code",
-      "code": "import pandas as pd\ntemperature = pd.Series([20.0, None, 22.0])\nprint(temperature.isna().tolist())\nprint(temperature.isna().sum())\nprint(temperature.mean())",
+      "code": "import pandas as pd\ndoanh_thu = pd.Series([20.0, None, 22.0])\nprint(doanh_thu.isna().tolist())\nprint(doanh_thu.isna().sum())\nprint(doanh_thu.mean())",
       "expected": "[False, True, False]\n1\n21.0",
       "tryIt": true
      }
@@ -34,19 +34,19 @@
     [
      {
       "type": "paragraph",
-      "text": "`isna` nhận biết giá trị thiếu. Trung bình mặc định bỏ các ô thiếu, nên 21 được tính từ hai số đo có thật. Dùng == None hoặc == NaN không phải cách tổng quát để tìm các ô này."
+      "text": "`isna` nhận biết giá trị thiếu. Trung bình mặc định bỏ các ô thiếu, nên 21 được tính từ hai buổi có số thật. Dùng == None hoặc == NaN không phải cách tổng quát để tìm các ô này."
      },
      {
       "type": "code",
-      "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [10.0, None, 30.0]})\nknown = df.dropna(subset=['amount'])\nprint(known['order'].tolist())\nprint(df['amount'].fillna(0).tolist())",
-      "expected": "['A', 'C']\n[10.0, 0.0, 30.0]",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'ma_don': ['DH-01', 'DH-02', 'DH-03'], 'tong_tien': [10.0, None, 30.0]})\nknown = df.dropna(subset=['tong_tien'])\nprint(known['ma_don'].tolist())\nprint(df['tong_tien'].fillna(0).tolist())",
+      "expected": "['DH-01', 'DH-03']\n[10.0, 0.0, 30.0]",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "dropna ở đây bỏ hàng thiếu amount; fillna trả cột đã được điền. Hai cách trả lời hai câu hỏi khác nhau. Điền 0 chỉ hợp lý nếu bạn có quy ước rằng ô trống nghĩa là không phát sinh tiền."
+      "text": "dropna ở đây bỏ hàng thiếu `tong_tien`; fillna trả cột đã được điền. Hai cách trả lời hai câu hỏi khác nhau. Điền 0 chỉ hợp lý nếu quán có quy ước rằng ô trống nghĩa là không phát sinh tiền."
      },
      {
       "type": "code",
@@ -135,9 +135,9 @@
      "answer": "Vì thiếu dữ liệu không nhất thiết có nghĩa là giá trị bằng 0."
     },
     {
-     "prompt": "Giữ các hàng có price trong [10, thiếu, 30] rồi in giá còn lại.",
+     "prompt": "Giữ các hàng có don_gia trong [10, thiếu, 30] rồi in giá còn lại.",
      "answer": "Còn [10.0, 30.0].",
-     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'price': [10.0, None, 30.0]})\nprint(df.dropna(subset=['price'])['price'].tolist())",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'don_gia': [10.0, None, 30.0]})\nprint(df.dropna(subset=['don_gia'])['don_gia'].tolist())",
      "answerExpected": "[10.0, 30.0]"
     }
    ]

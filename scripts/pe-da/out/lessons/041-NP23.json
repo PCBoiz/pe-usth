@@ -2,13 +2,13 @@
  "lesson_code": "NP23",
  "sort_order": 41,
  "module": "M2 · NumPy từ dãy số đến bảng",
- "title": "NP23 · Bài tổng hợp: điểm kiểm tra",
+ "title": "NP23 · Bài tổng hợp: bảng số cốc của quán",
  "subtitle": "Trung cấp · M2 · 11 phút",
  "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
-  "title": "NP23 · Bài tổng hợp: điểm kiểm tra",
+  "title": "NP23 · Bài tổng hợp: bảng số cốc của quán",
   "subtitle": "Trung cấp · M2 · 11 phút",
   "source": {
    "kind": "python-da",
@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Bài trước cố định bộ sinh để chạy lại được, và đây là bài gộp mọi phép tính trên bảng. Bạn có bảng điểm của ba học viên, mỗi người làm hai bài kiểm tra. Để báo tổng điểm của từng người, trước hết xác định hàng là học viên và cột là bài kiểm tra:"
+      "text": "Bài trước cố định bộ sinh để chạy lại được, và đây là bài gộp mọi phép tính trên bảng. Bạn có bảng số cốc của ba món, mỗi món bán ở hai quầy. Để báo tổng số cốc của từng món, trước hết xác định hàng là món và cột là quầy:"
      },
      {
       "type": "code",
-      "code": "import numpy as np\n\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks.sum(axis=1))",
+      "code": "import numpy as np\n\nso_coc = np.array([[6, 8], [7, 9], [5, 6]])\nprint(so_coc.sum(axis=1))",
       "expected": "[14 16 11]",
       "tryIt": true
      }
@@ -34,15 +34,15 @@
     [
      {
       "type": "paragraph",
-      "text": "Ba tổng 14, 16 và 11 lần lượt thuộc ba học viên. Bản tổng hợp nền tảng dùng dữ liệu đầy đủ và các thao tác đã học đến NP15. Bạn có thể làm phần đó trước khi học các bài phân tích dữ liệu phía sau."
+      "text": "Ba tổng 14, 16 và 11 lần lượt thuộc ba món. Bản tổng hợp nền tảng dùng dữ liệu đầy đủ và các thao tác đã học đến NP15. Bạn có thể làm phần đó trước khi học các bài phân tích dữ liệu phía sau."
      },
      {
       "type": "paragraph",
-      "text": "Để có cả tổng từng học viên và tổng từng bài kiểm tra:"
+      "text": "Để có cả tổng từng món và tổng từng quầy:"
      },
      {
       "type": "code",
-      "code": "marks = np.array([[6., 8.], [7., 9.], [5., 6.]])\nprint(marks.sum(axis=1))\nprint(marks.sum(axis=0))",
+      "code": "so_coc = np.array([[6., 8.], [7., 9.], [5., 6.]])\nprint(so_coc.sum(axis=1))\nprint(so_coc.sum(axis=0))",
       "expected": "[14. 16. 11.]\n[18. 23.]",
       "tryIt": true
      }
@@ -50,19 +50,19 @@
     [
      {
       "type": "paragraph",
-      "text": "`marks` có `shape` `(3, 2)`. `axis=1` cho ba tổng hàng, còn `axis=0` cho hai tổng cột. Bạn có thể đối chiếu hàng đầu: 6 + 8 = 14, và cột đầu: 6 + 7 + 5 = 18."
+      "text": "`so_coc` có `shape` `(3, 2)`. `axis=1` cho ba tổng hàng, còn `axis=0` cho hai tổng cột. Bạn có thể đối chiếu hàng đầu: 6 + 8 = 14, và cột đầu: 6 + 7 + 5 = 18."
      },
      {
       "type": "paragraph",
-      "text": "Nếu cần gắn nhãn, hãy nêu rõ ngưỡng. Chẳng hạn, bạn có thể tính `totals = marks.sum(axis=1)` rồi dùng `np.where(totals >= 10, \"dat\", \"chua dat\")` khi quy định tổng từ 10 là đạt."
+      "text": "Nếu cần gắn nhãn, hãy nêu rõ ngưỡng. Chẳng hạn, bạn có thể tính `tong = so_coc.sum(axis=1)` rồi dùng `np.where(tong >= 10, \"dat\", \"chua dat\")` khi quán quy định món bán từ 10 cốc là đạt."
      },
      {
       "type": "paragraph",
-      "text": "Bản DA thêm một điểm chưa được nhập. Bạn cần biết NP16 và NP17 để đọc phép tính trung bình này:"
+      "text": "Bản DA thêm một ô chưa được ghi. Bạn cần biết NP16 và NP17 để đọc phép tính trung bình này:"
      },
      {
       "type": "code",
-      "code": "marks = np.array([[6., 8.], [np.nan, 9.], [5., 6.]])\nprint(np.isnan(marks).sum())\nprint(np.nanmean(marks, axis=0))",
+      "code": "so_coc = np.array([[6., 8.], [np.nan, 9.], [5., 6.]])\nprint(np.isnan(so_coc).sum())\nprint(np.nanmean(so_coc, axis=0))",
       "expected": "1\n[5.5        7.66666667]",
       "tryIt": true
      }
@@ -70,11 +70,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Bảng có một ô thiếu. Trung bình bài đầu là (6 + 5) / 2 = 5.5; bài thứ hai là (8 + 9 + 6) / 3, xấp xỉ 7.67. Số quan sát dùng để tính ở hai cột khác nhau, nên cần nói rõ khi báo cáo."
+      "text": "Bảng có một ô thiếu. Trung bình của quầy Q1 là (6 + 5) / 2 = 5.5; quầy Q2 là (8 + 9 + 6) / 3, xấp xỉ 7.67. Số ô dùng để tính ở hai cột khác nhau, nên cần nói rõ khi báo cáo."
      },
      {
       "type": "paragraph",
-      "text": "Hãy giữ ý nghĩa dữ liệu đi cùng kết quả: mỗi số thuộc học viên nào hoặc bài kiểm tra nào, và phép tính đã xử lý ô thiếu ra sao. NP19 giúp bạn tránh sửa dữ liệu gốc khi thử cách xử lý khác; NP20 giúp kiểm các kết quả số thực. Bài này không yêu cầu pandas (thư viện bảng dữ liệu có nhãn hàng và nhãn cột) hay Matplotlib (thư viện vẽ hình). Quán đã có bảng số; chặng sau cho bảng đó cột có tên."
+      "text": "Hãy giữ ý nghĩa dữ liệu đi cùng kết quả: mỗi số thuộc món nào hoặc quầy nào, và phép tính đã xử lý ô thiếu ra sao. NP19 giúp bạn tránh sửa dữ liệu gốc khi thử cách xử lý khác; NP20 giúp kiểm các kết quả số thực. Bài này không yêu cầu pandas (thư viện bảng dữ liệu có nhãn hàng và nhãn cột) hay Matplotlib (thư viện vẽ hình). Quán đã có bảng số; chặng sau cho bảng đó cột có tên."
      }
     ]
    ],
@@ -145,17 +145,17 @@
    ],
    "practice": [
     {
-     "prompt": "Bảng có 3 hàng học viên và 2 cột bài kiểm tra. Tổng điểm từng học viên có bao nhiêu phần tử?",
-     "answer": "Có 3 số, mỗi số là tổng điểm của một học viên."
+     "prompt": "Bảng có 3 hàng món và 2 cột quầy. Tổng số cốc từng món có bao nhiêu phần tử?",
+     "answer": "Có 3 số, mỗi số là tổng số cốc của một món."
     },
     {
-     "prompt": "Điền `axis` để tính tổng điểm mỗi bài kiểm tra: `marks.sum(axis=___)`.",
-     "answer": "Điền `0`: `marks.sum(axis=0)`."
+     "prompt": "Điền `axis` để tính tổng số cốc mỗi quầy: `so_coc.sum(axis=___)`.",
+     "answer": "Điền `0`: `so_coc.sum(axis=0)`."
     },
     {
-     "prompt": "Tự tạo bảng điểm 3 học viên, 2 bài kiểm tra; in shape, tổng hàng và tổng cột. Nếu đã học phần DA, thêm một ô NaN rồi báo số ô thiếu và trung bình mỗi cột.",
+     "prompt": "Tự tạo bảng số cốc 3 món, 2 quầy; in shape, tổng hàng và tổng cột. Nếu đã học phần DA, thêm một ô NaN rồi báo số ô thiếu và trung bình mỗi cột.",
      "answer": "Một cách làm bản nền tảng và bản DA trên cùng dữ liệu mới:",
-     "answerCode": "import numpy as np\n\nmarks = np.array([[4., 7.], [8., 6.], [5., 9.]])\nprint(marks.shape)\nprint(marks.sum(axis=1))\nprint(marks.sum(axis=0))\n\nmissing = np.array([[4., 7.], [np.nan, 6.], [5., 9.]])\nprint(np.isnan(missing).sum())\nprint(np.nanmean(missing, axis=0))",
+     "answerCode": "import numpy as np\n\nso_coc = np.array([[4., 7.], [8., 6.], [5., 9.]])\nprint(so_coc.shape)\nprint(so_coc.sum(axis=1))\nprint(so_coc.sum(axis=0))\n\nthieu = np.array([[4., 7.], [np.nan, 6.], [5., 9.]])\nprint(np.isnan(thieu).sum())\nprint(np.nanmean(thieu, axis=0))",
      "answerExpected": "(3, 2)\n[11. 14. 14.]\n[17. 22.]\n1\n[4.5        7.33333333]"
     }
    ]

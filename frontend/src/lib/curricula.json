@@ -58,14 +58,14 @@
             "NP13 · So sánh tạo dãy True/False",
             "NP14 · Lọc dữ liệu bằng mask",
             "NP15 · Gắn nhãn và giới hạn điểm",
-            "NP16 · Thống kê và điểm có trọng số",
+            "NP16 · Thống kê và giá trung bình có trọng số",
             "NP17 · Dữ liệu thiếu: NaN",
             "NP18 · Broadcasting từ ví dụ giá bán",
             "NP19 · Cắt dữ liệu: view và copy",
             "NP20 · So sánh số thực",
             "NP21 · Đọc bảng số từ CSV",
             "NP22 · Tạo dữ liệu thử với seed",
-            "NP23 · Bài tổng hợp: điểm kiểm tra"
+            "NP23 · Bài tổng hợp: bảng số cốc của quán"
           ]
         },
         {
@@ -147,7 +147,7 @@
             "SY02 · Lấy mẫu ngẫu nhiên và đếm tần suất",
             "SY03 · Tìm và sửa mẫu văn bản bằng regex",
             "SY04 · Git: từ thư mục bài làm đến fork của bạn",
-            "SY05 · Class và object: mỗi sinh viên có dữ liệu riêng",
+            "SY05 · Class và object: mỗi món có dữ liệu riêng",
             "SY06 · Cho object cách hiển thị và so sánh",
             "SY07 · Kế thừa, override và super",
             "SY08 · Đa kế thừa: method được tìm ở đâu?",
@@ -155,7 +155,7 @@
             "SY10 · Giữ trạng thái hợp lệ bằng getter và setter",
             "SY11 · Module và các cách import",
             "SY12 · Package và điểm bắt đầu của chương trình",
-            "SY13 · Làm tròn xuống và tính điểm có trọng số",
+            "SY13 · Làm tròn xuống và giá trung bình có trọng số",
             "SY14 · Curses: nhận phím và vẽ lại giao diện terminal",
             "SY15 · Mở file: đọc, ghi đè, nối và tạo mới",
             "SY16 · Con trỏ file, dòng văn bản và bytes",
@@ -167,7 +167,7 @@
             "SY22 · Đọc đúng định dạng Stata và SAS",
             "SY23 · HDF5 và MATLAB: đọc mảng kèm tên",
             "SY24 · Đọc SQL bằng SQLAlchemy và pandas",
-            "SY25 · PW1: quản lý sinh viên, môn học và điểm bằng collection",
+            "SY25 · PW1: quản lý món, nguyên liệu và định lượng bằng collection",
             "SY26 · PW2–PW4: chuyển sang object rồi chia package",
             "SY27 · PW5: lưu ba file, nén và nạp lại",
             "SY28 · PW6: đổi persistence sang pickle có nén"
@@ -213,7 +213,7 @@
             "GU09 · Place: vị trí tuyệt đối và tương đối",
             "GU10 · Grid: dựng form theo hàng và cột",
             "GU11 · Event loop và tác vụ nền",
-            "GU12 · PW9: ứng dụng quản lý điểm bằng Tkinter"
+            "GU12 · PW9: màn hình nhận đơn tại quầy bằng Tkinter"
           ]
         },
         {

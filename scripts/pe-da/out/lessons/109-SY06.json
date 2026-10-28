@@ -22,12 +22,12 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi in một điểm số, bạn muốn thấy \"Diem 8\" thay vì mô tả mặc định của object. Python gọi __str__ để lấy chuỗi hiển thị:"
+      "text": "Khi in số cốc của một dòng đơn, bạn muốn thấy \"8 coc\" thay vì mô tả mặc định của object. Python gọi __str__ để lấy chuỗi hiển thị:"
      },
      {
       "type": "code",
-      "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __str__(self): return f\"Diem {self.value}\"\nprint(Grade(8))",
-      "expected": "Diem 8",
+      "code": "class Cups:\n    def __init__(self, value): self.value = value\n    def __str__(self): return f\"{self.value} coc\"\nprint(Cups(8))",
+      "expected": "8 coc",
       "tryIt": true,
       "trace": {
        "predict": {
@@ -35,7 +35,7 @@
         "var": "self",
         "line": 2,
         "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-        "answer": "Grade()"
+        "answer": "Cups()"
        },
        "rows": [
         {
@@ -43,18 +43,18 @@
         },
         {
          "line": 1,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "enter": true
         },
         {
          "line": 1,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1
         },
         {
          "line": 2,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "set": [
           [
@@ -65,7 +65,7 @@
         },
         {
          "line": 3,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "set": [
           [
@@ -76,7 +76,7 @@
         },
         {
          "line": 3,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "ret": "None"
         },
@@ -91,7 +91,7 @@
          "set": [
           [
            "self",
-           "Grade()"
+           "Cups()"
           ],
           [
            "value",
@@ -106,7 +106,7 @@
          "set": [
           [
            "self",
-           "Grade(value=8)"
+           "Cups(value=8)"
           ]
          ]
         },
@@ -124,7 +124,7 @@
          "set": [
           [
            "self",
-           "Grade(value=8)"
+           "Cups(value=8)"
           ]
          ]
         },
@@ -137,8 +137,8 @@
          "line": 3,
          "fn": "__str__",
          "depth": 1,
-         "ret": "'Diem 8'",
-         "out": "Diem 8"
+         "ret": "'8 coc'",
+         "out": "8 coc"
         }
        ]
       }
@@ -147,11 +147,11 @@
     [
      {
       "type": "paragraph",
-      "text": "`__str__` phải trả chuỗi. Nếu chỉ print trong method rồi không return, Python không nhận được chuỗi đúng yêu cầu. Để so sánh hai Grade bằng dấu <, định nghĩa __lt__:"
+      "text": "`__str__` phải trả chuỗi. Nếu chỉ print trong method rồi không return, Python không nhận được chuỗi đúng yêu cầu. Để so sánh hai Cups bằng dấu <, định nghĩa __lt__:"
      },
      {
       "type": "code",
-      "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\nprint(Grade(5) < Grade(8))\nprint([g.value for g in sorted([Grade(8), Grade(5)])])",
+      "code": "class Cups:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Cups): return NotImplemented\n        return self.value < other.value\nprint(Cups(5) < Cups(8))\nprint([c.value for c in sorted([Cups(8), Cups(5)])])",
       "expected": "True\n[5, 8]",
       "tryIt": true,
       "trace": {
@@ -160,7 +160,7 @@
         "var": "self",
         "line": 2,
         "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-        "answer": "Grade()"
+        "answer": "Cups()"
        },
        "rows": [
         {
@@ -168,18 +168,18 @@
         },
         {
          "line": 1,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "enter": true
         },
         {
          "line": 1,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1
         },
         {
          "line": 2,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "set": [
           [
@@ -190,7 +190,7 @@
         },
         {
          "line": 3,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "set": [
           [
@@ -201,7 +201,7 @@
         },
         {
          "line": 3,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "ret": "None"
         },
@@ -216,7 +216,7 @@
          "set": [
           [
            "self",
-           "Grade()"
+           "Cups()"
           ],
           [
            "value",
@@ -231,7 +231,7 @@
          "set": [
           [
            "self",
-           "Grade(value=5)"
+           "Cups(value=5)"
           ]
          ]
         },
@@ -243,7 +243,7 @@
          "set": [
           [
            "self",
-           "Grade()"
+           "Cups()"
           ],
           [
            "value",
@@ -259,7 +259,7 @@
          "set": [
           [
            "self",
-           "Grade()"
+           "Cups()"
           ],
           [
            "value",
@@ -274,7 +274,7 @@
          "set": [
           [
            "self",
-           "Grade(value=8)"
+           "Cups(value=8)"
           ]
          ]
         },
@@ -292,11 +292,11 @@
          "set": [
           [
            "other",
-           "Grade(value=8)"
+           "Cups(value=8)"
           ],
           [
            "self",
-           "Grade(value=5)"
+           "Cups(value=5)"
           ]
          ]
         },
@@ -328,7 +328,7 @@
          "set": [
           [
            "self",
-           "Grade()"
+           "Cups()"
           ],
           [
            "value",
@@ -343,7 +343,7 @@
          "set": [
           [
            "self",
-           "Grade(value=8)"
+           "Cups(value=8)"
           ]
          ]
         },
@@ -355,7 +355,7 @@
          "set": [
           [
            "self",
-           "Grade()"
+           "Cups()"
           ],
           [
            "value",
@@ -371,7 +371,7 @@
          "set": [
           [
            "self",
-           "Grade()"
+           "Cups()"
           ],
           [
            "value",
@@ -386,7 +386,7 @@
          "set": [
           [
            "self",
-           "Grade(value=5)"
+           "Cups(value=5)"
           ]
          ]
         },
@@ -404,11 +404,11 @@
          "set": [
           [
            "other",
-           "Grade(value=8)"
+           "Cups(value=8)"
           ],
           [
            "self",
-           "Grade(value=5)"
+           "Cups(value=5)"
           ]
          ]
         },
@@ -432,8 +432,8 @@
          "line": 7,
          "set": [
           [
-           "g",
-           "Grade(value=8)"
+           "c",
+           "Cups(value=8)"
           ]
          ]
         },
@@ -441,8 +441,8 @@
          "line": 7,
          "set": [
           [
-           "Grade",
-           "<lớp Grade>"
+           "Cups",
+           "<lớp Cups>"
           ]
          ],
          "out": "[5, 8]"
@@ -454,11 +454,11 @@
     [
      {
       "type": "paragraph",
-      "text": "`sorted` tạo danh sách mới theo quy tắc so sánh. Ở đây quy tắc là giá trị điểm. `NotImplemented` cho biết method không xử lý loại object kia; nó khác việc tự nhận mọi trường hợp không biết là False."
+      "text": "`sorted` tạo danh sách mới theo quy tắc so sánh. Ở đây quy tắc là số cốc. `NotImplemented` cho biết method không xử lý loại object kia; nó khác việc tự nhận mọi trường hợp không biết là False."
      },
      {
       "type": "code",
-      "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\ntry:\n    print(Grade(5) < \"8\")\nexcept TypeError:\n    print(\"Khong cung loai de so sanh\")",
+      "code": "class Cups:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Cups): return NotImplemented\n        return self.value < other.value\ntry:\n    print(Cups(5) < \"8\")\nexcept TypeError:\n    print(\"Khong cung loai de so sanh\")",
       "expected": "Khong cung loai de so sanh",
       "tryIt": true,
       "trace": {
@@ -467,7 +467,7 @@
         "var": "self",
         "line": 2,
         "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-        "answer": "Grade()"
+        "answer": "Cups()"
        },
        "rows": [
         {
@@ -475,18 +475,18 @@
         },
         {
          "line": 1,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "enter": true
         },
         {
          "line": 1,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1
         },
         {
          "line": 2,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "set": [
           [
@@ -497,7 +497,7 @@
         },
         {
          "line": 3,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "set": [
           [
@@ -508,7 +508,7 @@
         },
         {
          "line": 3,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "ret": "None"
         },
@@ -526,7 +526,7 @@
          "set": [
           [
            "self",
-           "Grade()"
+           "Cups()"
           ],
           [
            "value",
@@ -541,7 +541,7 @@
          "set": [
           [
            "self",
-           "Grade(value=5)"
+           "Cups(value=5)"
           ]
          ]
         },
@@ -563,7 +563,7 @@
           ],
           [
            "self",
-           "Grade(value=5)"
+           "Cups(value=5)"
           ]
          ]
         },
@@ -580,7 +580,7 @@
         },
         {
          "line": 7,
-         "exc": "TypeError: '<' not supported between instances of 'Grade' and 'str'"
+         "exc": "TypeError: '<' not supported between instances of 'Cups' and 'str'"
         },
         {
          "line": 8
@@ -600,7 +600,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Không phải hai object có thể in được thì cũng so sánh thứ tự được với nhau. Khi thiết kế báo cáo, chọn rõ thứ tự theo điểm, tên hay mã thay vì trông chờ thứ tự mặc định."
+      "text": "Không phải hai object có thể in được thì cũng so sánh thứ tự được với nhau. Khi thiết kế báo cáo của quán, chọn rõ thứ tự theo số cốc, tên món hay mã món thay vì trông chờ thứ tự mặc định."
      },
      {
       "type": "paragraph",
@@ -610,7 +610,7 @@
    ],
    "context": {
     "level": "Trung cấp",
-    "prereq": "SY05 · Class và object: mỗi sinh viên có dữ liệu riêng"
+    "prereq": "SY05 · Class và object: mỗi món có dữ liệu riêng"
    }
   },
   "step_2": {
@@ -676,15 +676,15 @@
    "practice": [
     {
      "prompt": "__str__ trả gì?",
-     "answer": "Một str. print(Grade(8)) sẽ dùng chuỗi do __str__ trả."
+     "answer": "Một str. print(Cups(8)) sẽ dùng chuỗi do __str__ trả."
     },
     {
-     "prompt": "Muốn xếp điểm giảm dần khi đã có __lt__ thì làm sao?",
-     "answer": "sorted(grades, reverse=True). Nó không sửa list nguồn."
+     "prompt": "Muốn xếp số cốc giảm dần khi đã có __lt__ thì làm sao?",
+     "answer": "sorted(rows, reverse=True). Nó không sửa list nguồn."
     },
     {
-     "prompt": "Thêm __str__ và __lt__ cho Course theo credits.",
-     "answer": "__str__ có thể trả f\"{self.cid}: {self.credits}\"; __lt__ kiểm other là Course rồi so self.credits < other.credits, kiểu khác trả NotImplemented. Thử credits hòa và so với str."
+     "prompt": "Thêm __str__ và __lt__ cho Item theo giá niêm yết.",
+     "answer": "__str__ có thể trả f\"{self.code}: {self.price}\"; __lt__ kiểm other là Item rồi so self.price < other.price, kiểu khác trả NotImplemented. Thử hai món cùng giá và so với str."
     },
     {
      "prompt": "Person có name và age. Viết __lt__ để Person(\"Z\",18) < Person(\"A\",21) là True; viết __str__ trả tên và tuổi. Có nên print trong __str__ thay return không?",

@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Vùng tô ở bài trước chia một tổng; lần này ô nằm theo hai trục toạ độ. Một bảng nhiệt độ có các ô theo vị trí x và y, không chỉ theo tên nhóm. pcolor và pcolormesh vẽ màu cho các ô lưới, còn đường contour nối các vị trí có cùng giá trị. Chúng hữu ích cho lưới đo hoặc bề mặt mô phỏng; tọa độ và đơn vị phải đi cùng ma trận."
+      "text": "Vùng tô ở bài trước chia một tổng; lần này ô nằm theo hai trục toạ độ. Bản đồ lượng khách của quán theo giờ và theo thứ cũng là một lưới như vậy. Ô nằm theo hai toạ độ, không chỉ theo tên nhóm. pcolor và pcolormesh vẽ màu cho các ô lưới, còn đường contour nối các vị trí có cùng giá trị. Chúng hữu ích cho lưới đo hoặc bề mặt mô phỏng; tọa độ và đơn vị phải đi cùng ma trận."
      },
      {
       "type": "code",

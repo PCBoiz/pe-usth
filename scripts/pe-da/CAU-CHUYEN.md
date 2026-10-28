@@ -85,6 +85,15 @@ Nói ra trước, vì đây là chỗ một đợt "viết lại cho có câu ch
 - **Khái niệm từng bài dạy.** PY05 vẫn dạy `/ // % **` và thứ tự tính. Đổi bối cảnh, không đổi
   giáo trình.
 - **`topics`, `sourceRefs`, `sourcePages`.** Chúng trỏ về slide gốc.
+  **Và vì chúng trỏ về slide GỐC, chúng nay nói khác nội dung bài — có chủ đích.** Ngày
+  29/10 chủ dự án cho phép đổi miền của SY25–SY28 và GU12 từ *"quản lý sinh viên, môn học
+  và điểm"* sang *"quản lý món, nguyên liệu và định lượng"*; `topics` của chúng vẫn ghi
+  `Student`, `Course`, `StudentMark`, `GPA`, `credits`. Đó là lý lịch ĐÚNG — bài quả thật
+  dựng từ slide đó — nhưng người soạn sau đọc lướt sẽ tưởng project vẫn là quản lý sinh
+  viên rồi "sửa lại cho khớp". Đừng. Khái niệm được dạy không đổi (collection, quan hệ
+  nhiều–nhiều, lưu trữ), chỉ miền ví dụ đổi.
+  Đã kiểm: `topics` KHÔNG được `build.py` hay `check.py` đọc một lần nào, nên nó không tới
+  người học và không có phép kiểm nào canh nó.
 - **Chú giải thuật ngữ lần đầu (L10).** 65 chú giải đã thêm ngày 29/10 nằm ở ĐÚNG bài mà
   `thuatngu.json` khai `baiDauTien`, và luật TB đối chiếu lại con số đó mỗi lần chạy. Viết lại
   một bài mà xoá mất cụm `lát cắt (slice)` của PY07 là L10 đỏ ở PY07 **và** TB đỏ vì lần dùng

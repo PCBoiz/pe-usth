@@ -46,11 +46,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi tự tạo module, file grades.py có thể chứa các hàm tính điểm. Import dùng tên grades, không viết grades.py hay đường dẫn hệ điều hành. Ví dụ dưới tạo một module nhỏ trong thư mục tạm và nạp đúng file đó để minh họa mà không sửa dự án của bạn:"
+      "text": "Khi tự tạo module, file pricing.py có thể chứa các hàm tính tiền của quán. Import dùng tên pricing, không viết pricing.py hay đường dẫn hệ điều hành. Ví dụ dưới tạo một module nhỏ trong thư mục tạm và nạp đúng file đó để minh họa mà không sửa dự án của bạn:"
      },
      {
       "type": "code",
-      "code": "import tempfile, importlib.util\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"grades.py\"\n    path.write_text(\"def passed(score): return score >= 5\\n\", encoding=\"utf8\")\n    spec = importlib.util.spec_from_file_location(\"grades_demo\", path)\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    print(module.passed(6))",
+      "code": "import tempfile, importlib.util\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"pricing.py\"\n    path.write_text(\"def has_discount(cups): return cups >= 5\\n\", encoding=\"utf8\")\n    spec = importlib.util.spec_from_file_location(\"pricing_demo\", path)\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    print(module.has_discount(6))",
       "expected": "True",
       "tryIt": true
      }
@@ -58,7 +58,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong dự án thông thường, đặt grades.py bên cạnh main.py rồi viết `import grades`; không cần importlib như ví dụ tự chứa. Module giúp nhiều file cùng dùng một hàm; sửa công thức ở một nơi sẽ dễ bảo trì hơn chép nhiều bản. Module còn có thể chứa class và hằng số, chẳng hạn Student và PASS_MARK. `from math import *` đưa nhiều tên vào nơi gọi và có thể che tên cũ, nên ưu tiên import rõ tên."
+      "text": "Trong dự án thông thường, đặt pricing.py bên cạnh main.py rồi viết `import pricing`; không cần importlib như ví dụ tự chứa. Module giúp nhiều file cùng dùng một hàm; sửa công thức ở một nơi sẽ dễ bảo trì hơn chép nhiều bản. Module còn có thể chứa class và hằng số, chẳng hạn Item và BULK_MIN. `from math import *` đưa nhiều tên vào nơi gọi và có thể che tên cũ, nên ưu tiên import rõ tên."
      },
      {
       "type": "paragraph",
@@ -141,12 +141,12 @@
      "answer": "Không. Đó là alias do người viết chọn; np là quy ước phổ biến cho NumPy."
     },
     {
-     "prompt": "Tạo grades.py có passed và main.py dùng hàm đó.",
-     "answer": "grades.py: def passed(score): return score >= 5. main.py: import grades; print(grades.passed(6)). Chạy python main.py từ thư mục dự án. Kiểm không còn bản công thức sao chép trong main."
+     "prompt": "Tạo pricing.py có has_discount và main.py dùng hàm đó.",
+     "answer": "pricing.py: def has_discount(cups): return cups >= 5. main.py: import pricing; print(pricing.has_discount(6)). Chạy python main.py từ thư mục dự án. Kiểm không còn bản công thức sao chép trong main."
     },
     {
-     "prompt": "Module riêng có thể chứa gì và giúp bảo trì thế nào? Viết import grades.py hay import grades? from math import * có thể gây vấn đề gì?",
-     "answer": "Một file .py có thể chứa hàm, class và hằng để dùng lại/chia sẻ. Nhiều nơi import cùng công thức nên chỉ sửa một nơi. Viết import grades, không ghi .py hay đường dẫn. Import * có thể che tên đang có và làm khó biết hàm đến từ đâu."
+     "prompt": "Module riêng có thể chứa gì và giúp bảo trì thế nào? Viết import pricing.py hay import pricing? from math import * có thể gây vấn đề gì?",
+     "answer": "Một file .py có thể chứa hàm, class và hằng để dùng lại/chia sẻ. Nhiều nơi import cùng công thức nên chỉ sửa một nơi. Viết import pricing, không ghi .py hay đường dẫn. Import * có thể che tên đang có và làm khó biết hàm đến từ đâu."
     },
     {
      "prompt": "import numpy as np và from math import floor as down đưa các tên nào vào nơi gọi? __init__.py có giống __init__(self) không?",
@@ -159,7 +159,7 @@
     "title": "Chạy thử",
     "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport math\nprint(math.floor(8.79 * 10) / 10)\nfrom math import floor\nprint(floor(8.79 * 10) / 10)\n\n# ── Đoạn 2 ──\nimport math as mt\nfrom math import floor as down\nprint(mt.pi > 3)\nprint(down(-1.2))\n\n# ── Đoạn 3 ──\nimport tempfile, importlib.util\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"grades.py\"\n    path.write_text(\"def passed(score): return score >= 5\\n\", encoding=\"utf8\")\n    spec = importlib.util.spec_from_file_location(\"grades_demo\", path)\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    print(module.passed(6))\n"
+   "starterCode": "# ── Đoạn 1 ──\nimport math\nprint(math.floor(8.79 * 10) / 10)\nfrom math import floor\nprint(floor(8.79 * 10) / 10)\n\n# ── Đoạn 2 ──\nimport math as mt\nfrom math import floor as down\nprint(mt.pi > 3)\nprint(down(-1.2))\n\n# ── Đoạn 3 ──\nimport tempfile, importlib.util\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"pricing.py\"\n    path.write_text(\"def has_discount(cups): return cups >= 5\\n\", encoding=\"utf8\")\n    spec = importlib.util.spec_from_file_location(\"pricing_demo\", path)\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    print(module.has_discount(6))\n"
   }
  },
  "_mode": "pyodide",

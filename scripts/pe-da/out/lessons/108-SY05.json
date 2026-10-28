@@ -2,13 +2,13 @@
  "lesson_code": "SY05",
  "sort_order": 108,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
- "title": "SY05 · Class và object: mỗi sinh viên có dữ liệu riêng",
+ "title": "SY05 · Class và object: mỗi món có dữ liệu riêng",
  "subtitle": "Trung cấp · M5 · 16 phút",
  "estimated_minutes": 16,
  "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
-  "title": "SY05 · Class và object: mỗi sinh viên có dữ liệu riêng",
+  "title": "SY05 · Class và object: mỗi món có dữ liệu riêng",
   "subtitle": "Trung cấp · M5 · 16 phút",
   "source": {
    "kind": "python-da",
@@ -22,12 +22,12 @@
     [
      {
       "type": "paragraph",
-      "text": "Code có lịch sử rồi, giờ đến cấu trúc. Một hồ sơ sinh viên có mã, tên và ngày sinh. Theo cách viết thủ tục, bạn có thể dùng dict giữ hồ sơ và các hàm riêng để sửa, liệt kê. Cách hướng đối tượng gom dữ liệu này với hành vi liên quan vào Student; mã gọi làm việc qua thuộc tính và các hàm của từng sinh viên, gọi là method. Cả hai cách vẫn dùng hàm, nhưng khác nơi giữ dữ liệu và tổ chức trách nhiệm:"
+      "text": "Code có lịch sử rồi, giờ đến cấu trúc. Một món trong thực đơn của quán có mã, tên và nhóm. Theo cách viết thủ tục, bạn có thể dùng dict giữ hồ sơ món và các hàm riêng để sửa, liệt kê. Cách hướng đối tượng gom dữ liệu này với hành vi liên quan vào Item; mã gọi làm việc qua thuộc tính và các hàm của từng món, gọi là method. Cả hai cách vẫn dùng hàm, nhưng khác nơi giữ dữ liệu và tổ chức trách nhiệm:"
      },
      {
       "type": "code",
-      "code": "class Student:\n    def __init__(self, sid, name, dob):\n        self.sid = sid\n        self.name = name\n        self.dob = dob\n    def label(self):\n        return self.sid + \": \" + self.name\nstudent = Student(\"S01\", \"An\", \"2005-01-02\")\nprint(student.label())",
-      "expected": "S01: An",
+      "code": "class Item:\n    def __init__(self, code, name, group):\n        self.code = code\n        self.name = name\n        self.group = group\n    def label(self):\n        return self.code + \": \" + self.name\nitem = Item(\"latte\", \"Latte\", \"Ca phe\")\nprint(item.label())",
+      "expected": "latte: Latte",
       "tryIt": true,
       "trace": {
        "predict": {
@@ -35,7 +35,7 @@
         "var": "self",
         "line": 2,
         "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-        "answer": "Student()"
+        "answer": "Item()"
        },
        "rows": [
         {
@@ -43,18 +43,18 @@
         },
         {
          "line": 1,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "enter": true
         },
         {
          "line": 1,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1
         },
         {
          "line": 2,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "set": [
           [
@@ -65,7 +65,7 @@
         },
         {
          "line": 6,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "set": [
           [
@@ -76,7 +76,7 @@
         },
         {
          "line": 6,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "ret": "None"
         },
@@ -90,20 +90,20 @@
          "enter": true,
          "set": [
           [
-           "dob",
-           "'2005-01-02'"
+           "code",
+           "'latte'"
+          ],
+          [
+           "group",
+           "'Ca phe'"
           ],
           [
            "name",
-           "'An'"
+           "'Latte'"
           ],
           [
            "self",
-           "Student()"
-          ],
-          [
-           "sid",
-           "'S01'"
+           "Item()"
           ]
          ]
         },
@@ -114,7 +114,7 @@
          "set": [
           [
            "self",
-           "Student(sid='S01')"
+           "Item(code='latte')"
           ]
          ]
         },
@@ -125,7 +125,7 @@
          "set": [
           [
            "self",
-           "Student(sid='S01', name='An')"
+           "Item(code='latte', name='Latte')"
           ]
          ]
         },
@@ -136,7 +136,7 @@
          "set": [
           [
            "self",
-           "Student(sid='S01', name='An', dob='2005-01-02')"
+           "Item(code='latte', name='Latte', group='Ca phe')"
           ]
          ]
         },
@@ -157,7 +157,7 @@
          "set": [
           [
            "self",
-           "Student(sid='S01', name='An', dob='2005-01-02')"
+           "Item(code='latte', name='Latte', group='Ca phe')"
           ]
          ]
         },
@@ -170,8 +170,8 @@
          "line": 7,
          "fn": "label",
          "depth": 1,
-         "ret": "'S01: An'",
-         "out": "S01: An"
+         "ret": "'latte: Latte'",
+         "out": "latte: Latte"
         }
        ]
       }
@@ -180,12 +180,12 @@
     [
      {
       "type": "paragraph",
-      "text": "`Student` là class mô tả cách tạo hồ sơ; student là một đối tượng cụ thể được tạo từ class, gọi là instance. Khi viết `Student(...)`, Python tạo object và gọi `__init__` để khởi tạo dữ liệu cho nó. Constructor là thao tác dựng object; nói chính xác, `__init__` là bước khởi tạo chứ không tự cấp phát object. `self` nhận instance đang được gọi method, nên self.name đọc tên sinh viên đó."
+      "text": "`Item` là class mô tả cách tạo hồ sơ món; item là một đối tượng cụ thể được tạo từ class, gọi là instance. Khi viết `Item(...)`, Python tạo object và gọi `__init__` để khởi tạo dữ liệu cho nó. Constructor là thao tác dựng object; nói chính xác, `__init__` là bước khởi tạo chứ không tự cấp phát object. `self` nhận instance đang được gọi method, nên self.name đọc tên món đó."
      },
      {
       "type": "code",
-      "code": "class Student:\n    def __init__(self, name):\n        self.name = name\nfirst = Student(\"An\")\nsecond = Student(\"Binh\")\nfirst.name = \"Anh\"\nprint(first.name, second.name)",
-      "expected": "Anh Binh",
+      "code": "class Item:\n    def __init__(self, name):\n        self.name = name\nfirst = Item(\"Latte\")\nsecond = Item(\"Mocha\")\nfirst.name = \"Latte da\"\nprint(first.name, second.name)",
+      "expected": "Latte da Mocha",
       "tryIt": true,
       "trace": {
        "predict": {
@@ -193,7 +193,7 @@
         "var": "self",
         "line": 2,
         "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-        "answer": "Student()"
+        "answer": "Item()"
        },
        "rows": [
         {
@@ -201,18 +201,18 @@
         },
         {
          "line": 1,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "enter": true
         },
         {
          "line": 1,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1
         },
         {
          "line": 2,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "set": [
           [
@@ -223,7 +223,7 @@
         },
         {
          "line": 2,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "ret": "None"
         },
@@ -238,11 +238,11 @@
          "set": [
           [
            "name",
-           "'An'"
+           "'Latte'"
           ],
           [
            "self",
-           "Student()"
+           "Item()"
           ]
          ]
         },
@@ -253,7 +253,7 @@
          "set": [
           [
            "self",
-           "Student(name='An')"
+           "Item(name='Latte')"
           ]
          ]
         },
@@ -274,11 +274,11 @@
          "set": [
           [
            "name",
-           "'Binh'"
+           "'Mocha'"
           ],
           [
            "self",
-           "Student()"
+           "Item()"
           ]
          ]
         },
@@ -289,7 +289,7 @@
          "set": [
           [
            "self",
-           "Student(name='Binh')"
+           "Item(name='Mocha')"
           ]
          ]
         },
@@ -304,13 +304,13 @@
          "set": [
           [
            "first",
-           "Student(name='Anh')"
+           "Item(name='Latte da')"
           ]
          ]
         },
         {
          "line": 7,
-         "out": "Anh Binh"
+         "out": "Latte da Mocha"
         }
        ]
       }
@@ -323,8 +323,8 @@
      },
      {
       "type": "code",
-      "code": "class Student:\n    def __init__(self, name):\n        self.name = name\nfirst = Student(\"An\")\nalias = first\nalias.name = \"Anh\"\nprint(first.name)\nprint(alias is first)",
-      "expected": "Anh\nTrue",
+      "code": "class Item:\n    def __init__(self, name):\n        self.name = name\nfirst = Item(\"Latte\")\nalias = first\nalias.name = \"Latte da\"\nprint(first.name)\nprint(alias is first)",
+      "expected": "Latte da\nTrue",
       "tryIt": true,
       "trace": {
        "predict": {
@@ -332,7 +332,7 @@
         "var": "self",
         "line": 2,
         "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-        "answer": "Student()"
+        "answer": "Item()"
        },
        "rows": [
         {
@@ -340,18 +340,18 @@
         },
         {
          "line": 1,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "enter": true
         },
         {
          "line": 1,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1
         },
         {
          "line": 2,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "set": [
           [
@@ -362,7 +362,7 @@
         },
         {
          "line": 2,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "ret": "None"
         },
@@ -377,11 +377,11 @@
          "set": [
           [
            "name",
-           "'An'"
+           "'Latte'"
           ],
           [
            "self",
-           "Student()"
+           "Item()"
           ]
          ]
         },
@@ -392,7 +392,7 @@
          "set": [
           [
            "self",
-           "Student(name='An')"
+           "Item(name='Latte')"
           ]
          ]
         },
@@ -407,7 +407,7 @@
          "set": [
           [
            "alias",
-           "Student(name='An')"
+           "Item(name='Latte')"
           ]
          ]
         },
@@ -416,17 +416,17 @@
          "set": [
           [
            "alias",
-           "Student(name='Anh')"
+           "Item(name='Latte da')"
           ],
           [
            "first",
-           "Student(name='Anh')"
+           "Item(name='Latte da')"
           ]
          ]
         },
         {
          "line": 7,
-         "out": "Anh"
+         "out": "Latte da"
         },
         {
          "line": 8,
@@ -441,7 +441,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Gán alias = first không tạo một sinh viên thứ hai. Hai tên cùng tham chiếu một object. Các câu ôn trong slide dùng bối cảnh Java: biến thuộc kiểu cơ bản (primitive) như int giữ giá trị, còn biến tham chiếu (reference) giữ tham chiếu đến object. Gán một biến reference cho biến khác có thể làm hai biến cùng trỏ tới một object. Ở Python, mọi giá trị đều là object và phép gán gắn tên với object. Cần phân biệt gán lại tên với sửa một object dùng chung."
+      "text": "Gán alias = first không tạo một món thứ hai. Hai tên cùng tham chiếu một object. Các câu ôn trong slide dùng bối cảnh Java: biến thuộc kiểu cơ bản (primitive) như int giữ giá trị, còn biến tham chiếu (reference) giữ tham chiếu đến object. Gán một biến reference cho biến khác có thể làm hai biến cùng trỏ tới một object. Ở Python, mọi giá trị đều là object và phép gán gắn tên với object. Cần phân biệt gán lại tên với sửa một object dùng chung."
      }
     ]
    ],
@@ -512,24 +512,24 @@
    ],
    "practice": [
     {
-     "prompt": "Student và student khác nhau gì?",
-     "answer": "Student là class; student là một instance được tạo từ class."
+     "prompt": "Item và item khác nhau gì?",
+     "answer": "Item là class; item là một instance được tạo từ class."
     },
     {
      "prompt": "Vì sao sửa alias.name làm first.name đổi?",
      "answer": "Hai tên trỏ cùng object, không có bản sao được tạo bởi phép gán."
     },
     {
-     "prompt": "Viết Course(cid, name, credits) và method label() trả mã: tên.",
-     "answer": "Khởi tạo self.cid, self.name, self.credits trong __init__; label trả f\"{self.cid}: {self.name}\". Tạo hai Course, sửa tên một môn và xác nhận môn kia không đổi."
+     "prompt": "Viết Ingredient(code, name, unit) và method label() trả mã: tên.",
+     "answer": "Khởi tạo self.code, self.name, self.unit trong __init__; label trả f\"{self.code}: {self.name}\". Tạo hai Ingredient, sửa tên một nguyên liệu và xác nhận nguyên liệu kia không đổi."
     },
     {
-     "prompt": "Sau a=Student(\"An\"), b=a, b.name=\"Mai\", có mấy object Student? So với câu Java về primitive/reference khác gì?",
-     "answer": "Một object Student được hai tên tham chiếu; a.name cũng là Mai. Trong mô hình Java, gán primitive sao giá trị, gán reference sao tham chiếu. Python mọi giá trị là object; gán tên không tự sao chép object."
+     "prompt": "Sau a=Item(\"Latte\"), b=a, b.name=\"Mocha\", có mấy object Item? So với câu Java về primitive/reference khác gì?",
+     "answer": "Một object Item được hai tên tham chiếu; a.name cũng là Mocha. Trong mô hình Java, gán primitive sao giá trị, gán reference sao tham chiếu. Python mọi giá trị là object; gán tên không tự sao chép object."
     },
     {
      "prompt": "Trong def label(self, prefix): return prefix+self.name, self là gì, prefix là gì, kết quả đi đâu?",
-     "answer": "self là instance hiện tại khi gọi obj.label(\"SV: \"); prefix là tham số nhận đối số \"SV: \". return gửi chuỗi về nơi gọi, không tự in. __init__ khởi tạo object; name là thuộc tính có thể đọc/gán."
+     "answer": "self là instance hiện tại khi gọi obj.label(\"Mon: \"); prefix là tham số nhận đối số \"Mon: \". return gửi chuỗi về nơi gọi, không tự in. __init__ khởi tạo object; name là thuộc tính có thể đọc/gán."
     }
    ]
   },

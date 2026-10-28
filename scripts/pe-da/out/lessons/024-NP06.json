@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Quán có quầy thứ hai rồi, nên một dãy số không còn đủ. Cửa hàng A bán 12, 15 và 9 cốc trong ba ngày. Cửa hàng B bán 10, 8 và 14 cốc trong cùng ba ngày đó. Bạn có thể đặt mỗi cửa hàng trên một hàng để so sánh:"
+      "text": "Quán có quầy thứ hai rồi, nên một dãy số không còn đủ. Quầy Q1 bán 12, 15 và 9 cốc trong ba ngày. Quầy Q2 bán 10, 8 và 14 cốc trong cùng ba ngày đó. Bạn có thể đặt mỗi quầy trên một hàng để so sánh:"
      },
      {
       "type": "code",
-      "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales)",
+      "code": "import numpy as np\n\nso_coc = np.array([[12, 15, 9],\n                   [10,  8, 14]])\nprint(so_coc)",
       "expected": "[[12 15  9]\n [10  8 14]]",
       "tryIt": true
      }
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Đây là array hai chiều, có thể hình dung như một bảng. Mỗi danh sách con tạo thành một hàng. Hàng đầu thuộc cửa hàng A, hàng thứ hai thuộc cửa hàng B; ba cột lần lượt là ba ngày."
+      "text": "Đây là array hai chiều, có thể hình dung như một bảng. Mỗi danh sách con tạo thành một hàng. Hàng đầu thuộc quầy Q1, hàng thứ hai thuộc quầy Q2; ba cột lần lượt là ba ngày."
      },
      {
       "type": "paragraph",
@@ -54,17 +54,17 @@
      },
      {
       "type": "paragraph",
-      "text": "Một bảng điểm cũng dùng cách xếp đó, nhưng ý nghĩa của hàng và cột thay đổi:"
+      "text": "Một bảng số cốc theo món cũng dùng cách xếp đó, nhưng ý nghĩa của hàng và cột thay đổi:"
      },
      {
       "type": "code",
-      "code": "marks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks)",
+      "code": "so_coc_mon = np.array([[6, 8], [7, 9], [5, 6]])\nprint(so_coc_mon)",
       "expected": "[[6 8]\n [7 9]\n [5 6]]",
       "tryIt": true
      },
      {
       "type": "paragraph",
-      "text": "Nếu mỗi hàng là một học viên và mỗi cột là một bài kiểm tra, bảng này lưu điểm của 3 học viên trong 2 bài. Học viên đầu có điểm 6 và 8. Trước khi tính, bạn cần biết rõ hàng và cột đại diện cho điều gì; NumPy không tự lưu các nhãn đó trong array số này."
+      "text": "Nếu mỗi hàng là một món và mỗi cột là một quầy, bảng này lưu số cốc của 3 món tại 2 quầy. Món đầu bán 6 cốc ở Q1 và 8 cốc ở Q2. Trước khi tính, bạn cần biết rõ hàng và cột đại diện cho điều gì; NumPy không tự lưu các nhãn đó trong array số này."
      }
     ]
    ],
@@ -145,9 +145,9 @@
      "answerExpected": "[[1 2 3]\n [4 5 6]\n [7 8 9]]"
     },
     {
-     "prompt": "Tạo một bảng điểm cho 2 học viên, mỗi người có điểm của 2 bài kiểm tra.",
-     "answer": "Ví dụ, mỗi hàng là một học viên:",
-     "answerCode": "import numpy as np\n\nmarks = np.array([[6, 8], [7, 9]])\nprint(marks)",
+     "prompt": "Tạo một bảng số cốc cho 2 món, mỗi món có số cốc ở 2 quầy.",
+     "answer": "Ví dụ, mỗi hàng là một món:",
+     "answerCode": "import numpy as np\n\nso_coc_mon = np.array([[6, 8], [7, 9]])\nprint(so_coc_mon)",
      "answerExpected": "[[6 8]\n [7 9]]"
     }
    ]

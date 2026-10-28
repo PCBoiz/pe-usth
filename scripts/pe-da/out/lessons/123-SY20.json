@@ -22,12 +22,12 @@
     [
      {
       "type": "paragraph",
-      "text": "Hệ quản lý có students.txt, courses.txt và marks.txt. Nén riêng từng chuỗi chưa đủ giữ tên ba file; archive gom chúng vào một gói có tên thành viên:"
+      "text": "Hệ quản lý của quán có items.txt, ingredients.txt và recipe.txt. Nén riêng từng chuỗi chưa đủ giữ tên ba file; archive gom chúng vào một gói có tên thành viên:"
      },
      {
       "type": "code",
-      "code": "from io import BytesIO\nimport zipfile\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    archive.writestr(\"students.txt\", \"S01,An\\n\")\n    archive.writestr(\"courses.txt\", \"PY,Python\\n\")\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    print(archive.namelist())\n    print(archive.read(\"students.txt\").decode(\"utf8\").strip())",
-      "expected": "['students.txt', 'courses.txt']\nS01,An",
+      "code": "from io import BytesIO\nimport zipfile\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    archive.writestr(\"items.txt\", \"latte,Latte\\n\")\n    archive.writestr(\"ingredients.txt\", \"ca-phe-hat,Ca phe hat\\n\")\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    print(archive.namelist())\n    print(archive.read(\"items.txt\").decode(\"utf8\").strip())",
+      "expected": "['items.txt', 'ingredients.txt']\nlatte,Latte",
       "tryIt": true
      }
     ],
@@ -38,8 +38,8 @@
      },
      {
       "type": "code",
-      "code": "from io import BytesIO\nimport tarfile\nbuffer = BytesIO()\npayload = b\"S01,PY,8\\n\"\nwith tarfile.open(fileobj=buffer, mode=\"w:gz\") as archive:\n    entry = tarfile.TarInfo(\"marks.txt\"); entry.size = len(payload)\n    archive.addfile(entry, BytesIO(payload))\nwith tarfile.open(fileobj=BytesIO(buffer.getvalue()), mode=\"r:gz\") as archive:\n    print(archive.getnames())\n    print(archive.extractfile(\"marks.txt\").read().decode().strip())",
-      "expected": "['marks.txt']\nS01,PY,8",
+      "code": "from io import BytesIO\nimport tarfile\nbuffer = BytesIO()\npayload = b\"latte,ca-phe-hat,8.7\\n\"\nwith tarfile.open(fileobj=buffer, mode=\"w:gz\") as archive:\n    entry = tarfile.TarInfo(\"recipe.txt\"); entry.size = len(payload)\n    archive.addfile(entry, BytesIO(payload))\nwith tarfile.open(fileobj=BytesIO(buffer.getvalue()), mode=\"r:gz\") as archive:\n    print(archive.getnames())\n    print(archive.extractfile(\"recipe.txt\").read().decode().strip())",
+      "expected": "['recipe.txt']\nlatte,ca-phe-hat,8.7",
       "tryIt": true
      }
     ],
@@ -50,7 +50,7 @@
      },
      {
       "type": "code",
-      "code": "import zipfile\nfrom io import BytesIO\nfiles = {\"students.txt\": b\"A\", \"courses.txt\": b\"B\", \"marks.txt\": b\"C\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\") as archive:\n    for name, data in files.items(): archive.writestr(name, data)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name) for name in archive.namelist()}\nprint(restored == files)",
+      "code": "import zipfile\nfrom io import BytesIO\nfiles = {\"items.txt\": b\"A\", \"ingredients.txt\": b\"B\", \"recipe.txt\": b\"C\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\") as archive:\n    for name, data in files.items(): archive.writestr(name, data)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name) for name in archive.namelist()}\nprint(restored == files)",
       "expected": "True",
       "tryIt": true,
       "trace": {
@@ -58,7 +58,7 @@
         "kind": "final",
         "var": "name",
         "prompt": "Sau khi chạy xong, `name` bằng mấy?",
-        "answer": "'marks.txt'"
+        "answer": "'recipe.txt'"
        },
        "rows": [
         {
@@ -72,7 +72,7 @@
          "set": [
           [
            "files",
-           "{'students.txt': b'A', 'courses.txt': b'B', 'marks.txt': b'C'}"
+           "{'items.txt': b'A', 'ingredients.txt': b'B', 'recipe.txt': b'C'}"
           ]
          ]
         },
@@ -93,7 +93,7 @@
          "set": [
           [
            "archive",
-           "ZipFile(_allowZip64=True, _didModify=True, debug=0, NameToInfo={'studen…"
+           "ZipFile(_allowZip64=True, _didModify=True, debug=0, NameToInfo={'items.…"
           ],
           [
            "data",
@@ -101,7 +101,7 @@
           ],
           [
            "name",
-           "'students.txt'"
+           "'items.txt'"
           ]
          ]
         },
@@ -114,7 +114,7 @@
           ],
           [
            "name",
-           "'courses.txt'"
+           "'ingredients.txt'"
           ]
          ]
         },
@@ -127,7 +127,7 @@
           ],
           [
            "name",
-           "'marks.txt'"
+           "'recipe.txt'"
           ]
          ]
         },
@@ -142,7 +142,7 @@
          "set": [
           [
            "archive",
-           "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'stude…"
+           "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'items…"
           ]
          ]
         },
@@ -151,7 +151,7 @@
          "set": [
           [
            "name",
-           "'students.txt'"
+           "'items.txt'"
           ]
          ]
         },
@@ -160,7 +160,7 @@
          "set": [
           [
            "name",
-           "'courses.txt'"
+           "'ingredients.txt'"
           ]
          ]
         },
@@ -169,7 +169,7 @@
          "set": [
           [
            "name",
-           "'marks.txt'"
+           "'recipe.txt'"
           ]
          ]
         },
@@ -182,7 +182,7 @@
           ],
           [
            "archive",
-           "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'stude…"
+           "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'items…"
           ],
           [
            "buffer",
@@ -194,11 +194,11 @@
           ],
           [
            "files",
-           "{'students.txt': b'A', 'courses.txt': b'B', 'marks.txt': b'C'}"
+           "{'items.txt': b'A', 'ingredients.txt': b'B', 'recipe.txt': b'C'}"
           ],
           [
            "restored",
-           "{'students.txt': b'A', 'courses.txt': b'B', 'marks.txt': b'C'}"
+           "{'items.txt': b'A', 'ingredients.txt': b'B', 'recipe.txt': b'C'}"
           ],
           [
            "zipfile",
@@ -301,8 +301,8 @@
      "answer": "w tạo tar không nén; w:gz tạo tar có gzip."
     },
     {
-     "prompt": "Đóng đúng ba file PW5 vào students.dat và kiểm khôi phục.",
-     "answer": "Dùng ZipFile trên students.dat hoặc tar.gz; thành viên students.txt/courses.txt/marks.txt. Khi đọc, xác nhận đủ đúng tên, parse dữ liệu rồi so với trước khi đóng. Chạy lại từ state rỗng; không chỉ kiểm file .dat tồn tại."
+     "prompt": "Đóng đúng ba file PW5 vào quan.dat và kiểm khôi phục.",
+     "answer": "Dùng ZipFile trên quan.dat hoặc tar.gz; thành viên items.txt/ingredients.txt/recipe.txt. Khi đọc, xác nhận đủ đúng tên, parse dữ liệu rồi so với trước khi đóng. Chạy lại từ state rỗng; không chỉ kiểm file .dat tồn tại."
     },
     {
      "prompt": "Cần gom thư mục reports có hai file vào một gói: ZIP giữ được tên file/thư mục không? tarfile mode w có tự nén giống w:gz không?",

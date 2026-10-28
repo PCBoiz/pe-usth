@@ -22,12 +22,12 @@
     [
      {
       "type": "paragraph",
-      "text": "Bước trước giữ dữ liệu trong các collection rời nhau. PW1 đã có cùng một dữ liệu đi qua nhiều hàm. Bây giờ chuyển hồ sơ thành object nhưng giữ các chức năng người dùng đang có. Mỗi Student vẫn cần mã, tên và ngày sinh:"
+      "text": "Bước trước giữ dữ liệu trong các collection rời nhau. PW1 đã có cùng một dữ liệu đi qua nhiều hàm. Bây giờ chuyển hồ sơ món của quán thành object nhưng giữ các chức năng người dùng đang có. Mỗi Item vẫn cần mã, tên và nhóm:"
      },
      {
       "type": "code",
-      "code": "class Student:\n    def __init__(self, sid, name, dob): self.sid, self.name, self.dob = sid, name, dob\n    def describe(self): return f\"{self.sid}: {self.name} ({self.dob})\"\nclass Course:\n    def __init__(self, cid, name, credits): self.cid, self.name, self.credits = cid, name, credits\n    def describe(self): return f\"{self.cid}: {self.name}\"\nfor item in [Student(\"S01\", \"An\", \"2005-01-02\"), Course(\"PY\", \"Python\", 3)]:\n    print(item.describe())",
-      "expected": "S01: An (2005-01-02)\nPY: Python",
+      "code": "class Item:\n    def __init__(self, code, name, group): self.code, self.name, self.group = code, name, group\n    def describe(self): return f\"{self.code}: {self.name} ({self.group})\"\nclass Ingredient:\n    def __init__(self, code, name, unit): self.code, self.name, self.unit = code, name, unit\n    def describe(self): return f\"{self.code}: {self.name}\"\nfor row in [Item(\"latte\", \"Latte\", \"Ca phe\"), Ingredient(\"ca-phe-hat\", \"Ca phe hat\", \"g\")]:\n    print(row.describe())",
+      "expected": "latte: Latte (Ca phe)\nca-phe-hat: Ca phe hat",
       "tryIt": true,
       "trace": {
        "predict": {
@@ -35,7 +35,7 @@
         "var": "self",
         "line": 2,
         "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-        "answer": "Student()"
+        "answer": "Item()"
        },
        "rows": [
         {
@@ -43,18 +43,18 @@
         },
         {
          "line": 1,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "enter": true
         },
         {
          "line": 1,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1
         },
         {
          "line": 2,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "set": [
           [
@@ -65,7 +65,7 @@
         },
         {
          "line": 3,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "set": [
           [
@@ -76,7 +76,7 @@
         },
         {
          "line": 3,
-         "fn": "Student",
+         "fn": "Item",
          "depth": 1,
          "ret": "None"
         },
@@ -85,18 +85,18 @@
         },
         {
          "line": 4,
-         "fn": "Course",
+         "fn": "Ingredient",
          "depth": 1,
          "enter": true
         },
         {
          "line": 4,
-         "fn": "Course",
+         "fn": "Ingredient",
          "depth": 1
         },
         {
          "line": 5,
-         "fn": "Course",
+         "fn": "Ingredient",
          "depth": 1,
          "set": [
           [
@@ -107,7 +107,7 @@
         },
         {
          "line": 6,
-         "fn": "Course",
+         "fn": "Ingredient",
          "depth": 1,
          "set": [
           [
@@ -118,7 +118,7 @@
         },
         {
          "line": 6,
-         "fn": "Course",
+         "fn": "Ingredient",
          "depth": 1,
          "ret": "None"
         },
@@ -132,20 +132,20 @@
          "enter": true,
          "set": [
           [
-           "dob",
-           "'2005-01-02'"
+           "code",
+           "'latte'"
+          ],
+          [
+           "group",
+           "'Ca phe'"
           ],
           [
            "name",
-           "'An'"
+           "'Latte'"
           ],
           [
            "self",
-           "Student()"
-          ],
-          [
-           "sid",
-           "'S01'"
+           "Item()"
           ]
          ]
         },
@@ -156,7 +156,7 @@
          "set": [
           [
            "self",
-           "Student(sid='S01', name='An', dob='2005-01-02')"
+           "Item(code='latte', name='Latte', group='Ca phe')"
           ]
          ]
         },
@@ -167,20 +167,20 @@
          "ret": "None",
          "set": [
           [
-           "cid",
-           "'PY'"
-          ],
-          [
-           "credits",
-           "3"
+           "code",
+           "'ca-phe-hat'"
           ],
           [
            "name",
-           "'Python'"
+           "'Ca phe hat'"
           ],
           [
            "self",
-           "Course()"
+           "Ingredient()"
+          ],
+          [
+           "unit",
+           "'g'"
           ]
          ]
         },
@@ -191,20 +191,20 @@
          "enter": true,
          "set": [
           [
-           "cid",
-           "'PY'"
-          ],
-          [
-           "credits",
-           "3"
+           "code",
+           "'ca-phe-hat'"
           ],
           [
            "name",
-           "'Python'"
+           "'Ca phe hat'"
           ],
           [
            "self",
-           "Course()"
+           "Ingredient()"
+          ],
+          [
+           "unit",
+           "'g'"
           ]
          ]
         },
@@ -215,7 +215,7 @@
          "set": [
           [
            "self",
-           "Course(cid='PY', name='Python', credits=3)"
+           "Ingredient(code='ca-phe-hat', name='Ca phe hat', unit='g')"
           ]
          ]
         },
@@ -236,7 +236,7 @@
          "set": [
           [
            "self",
-           "Student(sid='S01', name='An', dob='2005-01-02')"
+           "Item(code='latte', name='Latte', group='Ca phe')"
           ]
          ]
         },
@@ -249,15 +249,15 @@
          "line": 3,
          "fn": "describe",
          "depth": 1,
-         "ret": "'S01: An (2005-01-02)'",
-         "out": "S01: An (2005-01-02)"
+         "ret": "'latte: Latte (Ca phe)'",
+         "out": "latte: Latte (Ca phe)"
         },
         {
          "line": 7,
          "set": [
           [
-           "item",
-           "Course(cid='PY', name='Python', credits=3)"
+           "row",
+           "Ingredient(code='ca-phe-hat', name='Ca phe hat', unit='g')"
           ]
          ]
         },
@@ -272,7 +272,7 @@
          "set": [
           [
            "self",
-           "Course(cid='PY', name='Python', credits=3)"
+           "Ingredient(code='ca-phe-hat', name='Ca phe hat', unit='g')"
           ]
          ]
         },
@@ -285,8 +285,8 @@
          "line": 6,
          "fn": "describe",
          "depth": 1,
-         "ret": "'PY: Python'",
-         "out": "PY: Python"
+         "ret": "'ca-phe-hat: Ca phe hat'",
+         "out": "ca-phe-hat: Ca phe hat"
         },
         {
          "line": 7
@@ -298,11 +298,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Vòng lặp gọi cùng describe trên hai loại object. Đây là một cách thấy đa hình ở thao tác listing. Trong ứng dụng hoàn chỉnh, Registry quản lý dữ liệu và kiểm mã tham chiếu; StudentMark giữ mã sinh viên/môn và điểm. Không đặt việc gọi input ngay trong __init__ nếu còn muốn tạo object từ file."
+      "text": "Vòng lặp gọi cùng describe trên hai loại object. Đây là một cách thấy đa hình ở thao tác listing. Trong ứng dụng hoàn chỉnh, Registry quản lý dữ liệu và kiểm mã tham chiếu; RecipeLine giữ mã món/nguyên liệu và lượng. Không đặt việc gọi input ngay trong __init__ nếu còn muốn tạo object từ file."
      },
      {
       "type": "code",
-      "code": "import math\nimport numpy as np\nclass StudentMark:\n    def __init__(self, sid, cid, score):\n        self.sid, self.cid = sid, cid\n        self.set_score(score)\n    def set_score(self, score):\n        if type(score) not in (int, float) or not math.isfinite(score):\n            raise ValueError(\"score\")\n        if not 0 <= score <= 10:\n            raise ValueError(\"score\")\n        self.score = math.floor(score * 10) / 10\nrows = [StudentMark(\"S01\", \"PY\", 8.79), StudentMark(\"S01\", \"DB\", 6.29)]\nmarks = np.array([row.score for row in rows])\ncredits = np.array([3, 1])\nprint(marks.tolist())\nprint(round(float((marks * credits).sum() / credits.sum()), 2))",
+      "code": "import math\nimport numpy as np\nclass RecipeLine:\n    def __init__(self, item_id, ingredient_id, amount):\n        self.item_id, self.ingredient_id = item_id, ingredient_id\n        self.set_amount(amount)\n    def set_amount(self, amount):\n        if type(amount) not in (int, float) or not math.isfinite(amount):\n            raise ValueError(\"amount\")\n        if not 0 <= amount <= 50:\n            raise ValueError(\"amount\")\n        self.amount = math.floor(amount * 10) / 10\nrows = [RecipeLine(\"latte\", \"ca-phe-hat\", 8.79), RecipeLine(\"mocha\", \"ca-phe-hat\", 6.29)]\namounts = np.array([row.amount for row in rows])\ncups = np.array([3, 1])\nprint(amounts.tolist())\nprint(round(float((amounts * cups).sum() / cups.sum()), 2))",
       "expected": "[8.7, 6.2]\n8.07",
       "tryIt": true,
       "trace": {
@@ -311,7 +311,7 @@
         "var": "self",
         "line": 4,
         "prompt": "Ngay sau khi dòng 4 chạy, `self` bằng mấy?",
-        "answer": "StudentMark()"
+        "answer": "RecipeLine()"
        },
        "rows": [
         {
@@ -337,18 +337,18 @@
         },
         {
          "line": 3,
-         "fn": "StudentMark",
+         "fn": "RecipeLine",
          "depth": 1,
          "enter": true
         },
         {
          "line": 3,
-         "fn": "StudentMark",
+         "fn": "RecipeLine",
          "depth": 1
         },
         {
          "line": 4,
-         "fn": "StudentMark",
+         "fn": "RecipeLine",
          "depth": 1,
          "set": [
           [
@@ -359,18 +359,18 @@
         },
         {
          "line": 7,
-         "fn": "StudentMark",
+         "fn": "RecipeLine",
          "depth": 1,
          "set": [
           [
-           "set_score",
-           "<hàm set_score>"
+           "set_amount",
+           "<hàm set_amount>"
           ]
          ]
         },
         {
          "line": 7,
-         "fn": "StudentMark",
+         "fn": "RecipeLine",
          "depth": 1,
          "ret": "None"
         },
@@ -384,20 +384,20 @@
          "enter": true,
          "set": [
           [
-           "cid",
-           "'PY'"
-          ],
-          [
-           "score",
+           "amount",
            "8.79"
           ],
           [
-           "self",
-           "StudentMark()"
+           "ingredient_id",
+           "'ca-phe-hat'"
           ],
           [
-           "sid",
-           "'S01'"
+           "item_id",
+           "'latte'"
+          ],
+          [
+           "self",
+           "RecipeLine()"
           ]
          ]
         },
@@ -408,7 +408,7 @@
          "set": [
           [
            "self",
-           "StudentMark(sid='S01', cid='PY')"
+           "RecipeLine(item_id='latte', ingredient_id='ca-phe-hat')"
           ]
          ]
         },
@@ -419,44 +419,44 @@
         },
         {
          "line": 7,
-         "fn": "set_score",
+         "fn": "set_amount",
          "depth": 2,
          "enter": true,
          "set": [
           [
-           "score",
+           "amount",
            "8.79"
           ],
           [
            "self",
-           "StudentMark(sid='S01', cid='PY')"
+           "RecipeLine(item_id='latte', ingredient_id='ca-phe-hat')"
           ]
          ]
         },
         {
          "line": 8,
-         "fn": "set_score",
+         "fn": "set_amount",
          "depth": 2
         },
         {
          "line": 10,
-         "fn": "set_score",
+         "fn": "set_amount",
          "depth": 2
         },
         {
          "line": 12,
-         "fn": "set_score",
+         "fn": "set_amount",
          "depth": 2,
          "set": [
           [
            "self",
-           "StudentMark(sid='S01', cid='PY', score=8.7)"
+           "RecipeLine(item_id='latte', ingredient_id='ca-phe-hat', amount=8.7)"
           ]
          ]
         },
         {
          "line": 12,
-         "fn": "set_score",
+         "fn": "set_amount",
          "depth": 2,
          "ret": "None"
         },
@@ -467,16 +467,16 @@
          "ret": "None",
          "set": [
           [
-           "cid",
-           "'DB'"
-          ],
-          [
-           "score",
+           "amount",
            "6.29"
           ],
           [
+           "item_id",
+           "'mocha'"
+          ],
+          [
            "self",
-           "StudentMark()"
+           "RecipeLine()"
           ]
          ]
         },
@@ -487,20 +487,20 @@
          "enter": true,
          "set": [
           [
-           "cid",
-           "'DB'"
-          ],
-          [
-           "score",
+           "amount",
            "6.29"
           ],
           [
-           "self",
-           "StudentMark()"
+           "ingredient_id",
+           "'ca-phe-hat'"
           ],
           [
-           "sid",
-           "'S01'"
+           "item_id",
+           "'mocha'"
+          ],
+          [
+           "self",
+           "RecipeLine()"
           ]
          ]
         },
@@ -511,7 +511,7 @@
          "set": [
           [
            "self",
-           "StudentMark(sid='S01', cid='DB')"
+           "RecipeLine(item_id='mocha', ingredient_id='ca-phe-hat')"
           ]
          ]
         },
@@ -522,44 +522,44 @@
         },
         {
          "line": 7,
-         "fn": "set_score",
+         "fn": "set_amount",
          "depth": 2,
          "enter": true,
          "set": [
           [
-           "score",
+           "amount",
            "6.29"
           ],
           [
            "self",
-           "StudentMark(sid='S01', cid='DB')"
+           "RecipeLine(item_id='mocha', ingredient_id='ca-phe-hat')"
           ]
          ]
         },
         {
          "line": 8,
-         "fn": "set_score",
+         "fn": "set_amount",
          "depth": 2
         },
         {
          "line": 10,
-         "fn": "set_score",
+         "fn": "set_amount",
          "depth": 2
         },
         {
          "line": 12,
-         "fn": "set_score",
+         "fn": "set_amount",
          "depth": 2,
          "set": [
           [
            "self",
-           "StudentMark(sid='S01', cid='DB', score=6.2)"
+           "RecipeLine(item_id='mocha', ingredient_id='ca-phe-hat', amount=6.2)"
           ]
          ]
         },
         {
          "line": 12,
-         "fn": "set_score",
+         "fn": "set_amount",
          "depth": 2,
          "ret": "None"
         },
@@ -574,7 +574,7 @@
          "set": [
           [
            "row",
-           "StudentMark(sid='S01', cid='PY', score=8.7)"
+           "RecipeLine(item_id='latte', ingredient_id='ca-phe-hat', amount=8.7)"
           ]
          ]
         },
@@ -583,7 +583,7 @@
          "set": [
           [
            "row",
-           "StudentMark(sid='S01', cid='DB', score=6.2)"
+           "RecipeLine(item_id='mocha', ingredient_id='ca-phe-hat', amount=6.2)"
           ]
          ]
         },
@@ -591,11 +591,11 @@
          "line": 14,
          "set": [
           [
-           "StudentMark",
-           "<lớp StudentMark>"
+           "RecipeLine",
+           "<lớp RecipeLine>"
           ],
           [
-           "marks",
+           "amounts",
            "ndarray: array([8.7, 6.2])"
           ],
           [
@@ -607,8 +607,12 @@
            "<thư viện numpy>"
           ],
           [
+           "row",
+           "Ingredient(code='ca-phe-hat', name='Ca phe hat', unit='g')"
+          ],
+          [
            "rows",
-           "[StudentMark(sid='S01', cid='PY', score=8.7), StudentMark(sid='S01', ci…"
+           "[RecipeLine(item_id='latte', ingredient_id='ca-phe-hat', amount=8.7), R…"
           ]
          ]
         },
@@ -616,7 +620,7 @@
          "line": 15,
          "set": [
           [
-           "credits",
+           "cups",
            "ndarray: array([3, 1])"
           ]
          ]
@@ -636,12 +640,12 @@
     [
      {
       "type": "paragraph",
-      "text": "Ở PW3, floor được áp lúc nhận điểm, rồi GPA dùng điểm đã lưu. Với 8.7 và 6.2, trung bình trọng số là 8.075; ví dụ round trên float chỉ minh họa hiển thị, không thiết lập quy tắc tài chính thập phân. Đề phải nói rõ dùng giá trị nào để xếp hạng và tie-break khi bằng nhau."
+      "text": "Ở PW3, floor được áp lúc nhận lượng, rồi lượng trung bình dùng số đã lưu. Với 8.7 và 6.2, trung bình có trọng số là 8.075; ví dụ round trên float chỉ minh họa hiển thị, không thiết lập quy tắc làm tròn cho số liệu chính thức. Đề phải nói rõ dùng giá trị nào để xếp hạng và tie-break khi bằng nhau."
      },
      {
       "type": "code",
-      "code": "files = {\"input.py\": \"doc du lieu\", \"output.py\": \"curses output\", \"domains/student.py\": \"Student\", \"domains/course.py\": \"Course\", \"domains/mark.py\": \"StudentMark\", \"domains/registry.py\": \"Registry\", \"domains/__init__.py\": \"exports\", \"main.py\": \"dieu phoi\"}\nprint(files[\"output.py\"])\nprint(sorted(name for name in files if name.startswith(\"domains/\")))",
-      "expected": "curses output\n['domains/__init__.py', 'domains/course.py', 'domains/mark.py', 'domains/registry.py', 'domains/student.py']",
+      "code": "files = {\"input.py\": \"doc du lieu\", \"output.py\": \"curses output\", \"domains/item.py\": \"Item\", \"domains/ingredient.py\": \"Ingredient\", \"domains/recipe.py\": \"RecipeLine\", \"domains/registry.py\": \"Registry\", \"domains/__init__.py\": \"exports\", \"main.py\": \"dieu phoi\"}\nprint(files[\"output.py\"])\nprint(sorted(name for name in files if name.startswith(\"domains/\")))",
+      "expected": "curses output\n['domains/__init__.py', 'domains/ingredient.py', 'domains/item.py', 'domains/recipe.py', 'domains/registry.py']",
       "tryIt": true,
       "trace": {
        "predict": {
@@ -657,7 +661,7 @@
          "set": [
           [
            "files",
-           "{'input.py': 'doc du lieu', 'output.py': 'curses output', 'domains/stud…"
+           "{'input.py': 'doc du lieu', 'output.py': 'curses output', 'domains/item…"
           ]
          ]
         },
@@ -703,7 +707,7 @@
          "set": [
           [
            "name",
-           "'domains/student.py'"
+           "'domains/item.py'"
           ]
          ]
         },
@@ -711,7 +715,7 @@
          "line": 3,
          "fn": "<genexpr>",
          "depth": 1,
-         "ret": "'domains/student.py'"
+         "ret": "'domains/item.py'"
         },
         {
          "line": 3,
@@ -721,7 +725,7 @@
          "set": [
           [
            "name",
-           "'domains/student.py'"
+           "'domains/item.py'"
           ]
          ]
         },
@@ -732,7 +736,7 @@
          "set": [
           [
            "name",
-           "'domains/course.py'"
+           "'domains/ingredient.py'"
           ]
          ]
         },
@@ -740,7 +744,7 @@
          "line": 3,
          "fn": "<genexpr>",
          "depth": 1,
-         "ret": "'domains/course.py'"
+         "ret": "'domains/ingredient.py'"
         },
         {
          "line": 3,
@@ -750,7 +754,7 @@
          "set": [
           [
            "name",
-           "'domains/course.py'"
+           "'domains/ingredient.py'"
           ]
          ]
         },
@@ -761,7 +765,7 @@
          "set": [
           [
            "name",
-           "'domains/mark.py'"
+           "'domains/recipe.py'"
           ]
          ]
         },
@@ -769,7 +773,7 @@
          "line": 3,
          "fn": "<genexpr>",
          "depth": 1,
-         "ret": "'domains/mark.py'"
+         "ret": "'domains/recipe.py'"
         },
         {
          "line": 3,
@@ -779,7 +783,7 @@
          "set": [
           [
            "name",
-           "'domains/mark.py'"
+           "'domains/recipe.py'"
           ]
          ]
         },
@@ -862,7 +866,7 @@
          "fn": "<genexpr>",
          "depth": 1,
          "ret": "None",
-         "out": "['domains/__init__.py', 'domains/course.py', 'domains/mark.py', 'domains/registry.py', 'domains/student.py']"
+         "out": "['domains/__init__.py', 'domains/ingredient.py', 'domains/item.py', 'domains/recipe.py', 'domains/registry.py']"
         },
         {
          "line": 3,
@@ -879,17 +883,17 @@
      },
      {
       "type": "paragraph",
-      "text": "Ở class StudentMark trên, set_score kiểm điểm rồi mới cập nhật self.score. Mỗi lần đổi điểm cũng đi qua method này: nếu dữ liệu mới sai, điểm cũ vẫn còn. Kiểm kiểu trước khi gọi math.isfinite để không coi True là điểm 1; chỉ lưu số hữu hạn trong 0..10, sau đó mới floor một chữ số. Đây là một cách đóng gói quy tắc mà PW2/PW3 yêu cầu."
+      "text": "Ở class RecipeLine trên, set_amount kiểm lượng rồi mới cập nhật self.amount. Mỗi lần đổi lượng cũng đi qua method này: nếu dữ liệu mới sai, lượng cũ vẫn còn. Kiểm kiểu trước khi gọi math.isfinite để không coi True là 1 gam; chỉ lưu số hữu hạn trong 0..50, sau đó mới floor một chữ số. Đây là một cách đóng gói quy tắc mà PW2/PW3 yêu cầu."
      },
      {
       "type": "paragraph",
-      "text": "Để xếp GPA, dùng `sorted(students, key=lambda student: (-student.gpa, student.sid))`: GPA giảm dần, bằng GPA thì mã tăng dần. Nếu chỉ cần giữ thứ tự nhập khi hòa, có thể dùng key theo gpa và `reverse=True`. Project mẫu tính GPA trên những môn đã có điểm, với trọng số tín chỉ của chính các môn đó. Sinh viên chưa có điểm môn nào được ghi \"chưa có GPA\" và xếp riêng; không thay điểm thiếu bằng 0. Công bố chính sách này trước khi so sánh kết quả."
+      "text": "Để xếp theo lượng trung bình, dùng `sorted(items, key=lambda item: (-item.avg, item.code))`: lượng giảm dần, bằng nhau thì mã tăng dần. Nếu chỉ cần giữ thứ tự nhập khi hòa, có thể dùng key theo avg và `reverse=True`. Project mẫu tính trung bình trên những nguyên liệu đã khai, với trọng số là số cốc của chính các món đó. Món chưa khai nguyên liệu nào được ghi \"chưa có định lượng\" và xếp riêng; không thay lượng thiếu bằng 0. Công bố chính sách này trước khi so sánh kết quả."
      }
     ]
    ],
    "context": {
     "level": "Trung cấp",
-    "prereq": "SY05 · Class và object: mỗi sinh viên có dữ liệu riêng, SY06 · Cho object cách hiển thị và so sánh, SY07 · Kế thừa, override và super, SY10 · Giữ trạng thái hợp lệ bằng getter và setter, SY12 · Package và điểm bắt đầu của chương trình, SY13 · Làm tròn xuống và tính điểm có trọng số, SY14 · Curses: nhận phím và vẽ lại giao diện terminal, SY25 · PW1: quản lý sinh viên, môn học và điểm bằng collection"
+    "prereq": "SY05 · Class và object: mỗi món có dữ liệu riêng, SY06 · Cho object cách hiển thị và so sánh, SY07 · Kế thừa, override và super, SY10 · Giữ trạng thái hợp lệ bằng getter và setter, SY12 · Package và điểm bắt đầu của chương trình, SY13 · Làm tròn xuống và giá trung bình có trọng số, SY14 · Curses: nhận phím và vẽ lại giao diện terminal, SY25 · PW1: quản lý món, nguyên liệu và định lượng bằng collection"
    }
   },
   "step_2": {
@@ -954,20 +958,20 @@
    ],
    "practice": [
     {
-     "prompt": "PW2 có được bỏ ngày sinh hoặc chỉ giữ một môn để đơn giản hóa không?",
+     "prompt": "PW2 có được bỏ nhóm món hoặc chỉ giữ một nguyên liệu để đơn giản hóa không?",
      "answer": "Không. Phải giữ tính năng PW1, bổ sung cách tổ chức bằng object, encapsulation và hành vi đa hình."
     },
     {
-     "prompt": "Công thức GPA ở ví dụ dùng điểm 8.79 hay 8.7?",
-     "answer": "Dùng điểm đã floor lúc nhập, tức 8.7 theo yêu cầu PW3. Không âm thầm đổi quy tắc giữa nhập, lưu và báo cáo."
+     "prompt": "Công thức trung bình ở ví dụ dùng lượng 8.79 hay 8.7?",
+     "answer": "Dùng lượng đã floor lúc nhập, tức 8.7 theo yêu cầu PW3. Không âm thầm đổi quy tắc giữa nhập, lưu và báo cáo."
     },
     {
      "prompt": "Nộp gói PW2–PW4 có đủ chức năng và cách xác nhận.",
-     "answer": "Tạo Student/Course/StudentMark/Registry; setter kiểm dữ liệu; các object có hành vi listing chung. PW3: math.floor 1 chữ số lúc nhập, NumPy GPA trọng số tín chỉ, xếp GPA giảm dần, curses menu thật theo SY14. PW4: tách input.py/output.py/domains/main.py, import không tự mở UI. Nộp toàn cây file và video/menu terminal; kiểm cùng 2 sinh viên/2 môn, đổi điểm, giữ DoB, điểm 0, xếp GPA và lỗi mã trùng; ghi commit từng bước thay vì coi sơ đồ file là code đã chạy."
+     "answer": "Tạo Item/Ingredient/RecipeLine/Registry; setter kiểm dữ liệu; các object có hành vi listing chung. PW3: math.floor 1 chữ số lúc nhập, NumPy tính trung bình có trọng số theo số cốc, xếp giảm dần, curses menu thật theo SY14. PW4: tách input.py/output.py/domains/main.py, import không tự mở UI. Nộp toàn cây file và video/menu terminal; kiểm cùng 2 món/2 nguyên liệu, đổi lượng, giữ nhóm món, lượng 0, xếp trung bình và lỗi mã trùng; ghi commit từng bước thay vì coi sơ đồ file là code đã chạy."
     },
     {
-     "prompt": "Điểm cũ 8.7: gọi set_score với 11, True hoặc NaN có được đổi state không? Khi hai GPA bằng nhau và một sinh viên chưa có điểm môn nào, bạn xếp thế nào?",
-     "answer": "Cả ba đầu vào phải bị từ chối trước khi gán, giữ điểm cũ 8.7. Chọn và công bố tie-break, ví dụ GPA giảm rồi mã tăng bằng key=(-gpa,sid). GPA tính trên các môn đã có điểm cùng tín chỉ tương ứng. Sinh viên chưa có điểm môn nào có GPA=None và được xếp riêng sau nhóm có GPA; không âm thầm gán 0 cho môn thiếu điểm."
+     "prompt": "Lượng cũ 8.7: gọi set_amount với 99, True hoặc NaN có được đổi state không? Khi hai món có lượng trung bình bằng nhau và một món chưa khai nguyên liệu nào, bạn xếp thế nào?",
+     "answer": "Cả ba đầu vào phải bị từ chối trước khi gán, giữ lượng cũ 8.7. Chọn và công bố tie-break, ví dụ trung bình giảm rồi mã tăng bằng key=(-avg,code). Trung bình tính trên các nguyên liệu đã khai cùng số cốc tương ứng. Món chưa khai nguyên liệu nào có avg=None và được xếp riêng sau nhóm đã khai; không âm thầm gán 0 cho định lượng thiếu."
     }
    ]
   },
@@ -976,7 +980,7 @@
     "title": "Chạy thử",
     "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
    },
-   "starterCode": "# ── Đoạn 1 ──\nclass Student:\n    def __init__(self, sid, name, dob): self.sid, self.name, self.dob = sid, name, dob\n    def describe(self): return f\"{self.sid}: {self.name} ({self.dob})\"\nclass Course:\n    def __init__(self, cid, name, credits): self.cid, self.name, self.credits = cid, name, credits\n    def describe(self): return f\"{self.cid}: {self.name}\"\nfor item in [Student(\"S01\", \"An\", \"2005-01-02\"), Course(\"PY\", \"Python\", 3)]:\n    print(item.describe())\n\n# ── Đoạn 2 ──\nimport math\nimport numpy as np\nclass StudentMark:\n    def __init__(self, sid, cid, score):\n        self.sid, self.cid = sid, cid\n        self.set_score(score)\n    def set_score(self, score):\n        if type(score) not in (int, float) or not math.isfinite(score):\n            raise ValueError(\"score\")\n        if not 0 <= score <= 10:\n            raise ValueError(\"score\")\n        self.score = math.floor(score * 10) / 10\nrows = [StudentMark(\"S01\", \"PY\", 8.79), StudentMark(\"S01\", \"DB\", 6.29)]\nmarks = np.array([row.score for row in rows])\ncredits = np.array([3, 1])\nprint(marks.tolist())\nprint(round(float((marks * credits).sum() / credits.sum()), 2))\n\n# ── Đoạn 3 ──\nfiles = {\"input.py\": \"doc du lieu\", \"output.py\": \"curses output\", \"domains/student.py\": \"Student\", \"domains/course.py\": \"Course\", \"domains/mark.py\": \"StudentMark\", \"domains/registry.py\": \"Registry\", \"domains/__init__.py\": \"exports\", \"main.py\": \"dieu phoi\"}\nprint(files[\"output.py\"])\nprint(sorted(name for name in files if name.startswith(\"domains/\")))\n",
+   "starterCode": "# ── Đoạn 1 ──\nclass Item:\n    def __init__(self, code, name, group): self.code, self.name, self.group = code, name, group\n    def describe(self): return f\"{self.code}: {self.name} ({self.group})\"\nclass Ingredient:\n    def __init__(self, code, name, unit): self.code, self.name, self.unit = code, name, unit\n    def describe(self): return f\"{self.code}: {self.name}\"\nfor row in [Item(\"latte\", \"Latte\", \"Ca phe\"), Ingredient(\"ca-phe-hat\", \"Ca phe hat\", \"g\")]:\n    print(row.describe())\n\n# ── Đoạn 2 ──\nimport math\nimport numpy as np\nclass RecipeLine:\n    def __init__(self, item_id, ingredient_id, amount):\n        self.item_id, self.ingredient_id = item_id, ingredient_id\n        self.set_amount(amount)\n    def set_amount(self, amount):\n        if type(amount) not in (int, float) or not math.isfinite(amount):\n            raise ValueError(\"amount\")\n        if not 0 <= amount <= 50:\n            raise ValueError(\"amount\")\n        self.amount = math.floor(amount * 10) / 10\nrows = [RecipeLine(\"latte\", \"ca-phe-hat\", 8.79), RecipeLine(\"mocha\", \"ca-phe-hat\", 6.29)]\namounts = np.array([row.amount for row in rows])\ncups = np.array([3, 1])\nprint(amounts.tolist())\nprint(round(float((amounts * cups).sum() / cups.sum()), 2))\n\n# ── Đoạn 3 ──\nfiles = {\"input.py\": \"doc du lieu\", \"output.py\": \"curses output\", \"domains/item.py\": \"Item\", \"domains/ingredient.py\": \"Ingredient\", \"domains/recipe.py\": \"RecipeLine\", \"domains/registry.py\": \"Registry\", \"domains/__init__.py\": \"exports\", \"main.py\": \"dieu phoi\"}\nprint(files[\"output.py\"])\nprint(sorted(name for name in files if name.startswith(\"domains/\")))\n",
    "packages": [
     "numpy"
    ]

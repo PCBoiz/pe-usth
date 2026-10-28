@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Ba file ở bước trước lưu được dữ liệu, nhưng mỗi lần đọc lại phải tự ghép. PW5 đã đọc được dữ liệu text. Ở PW6, bạn giữ chức năng chương trình nhưng thay cách lưu bằng pickle có nén. Bắt đầu từ bộ dữ liệu gồm cả thông tin định danh và phiên bản cấu trúc (version):"
+      "text": "Ba file ở bước trước lưu được dữ liệu, nhưng mỗi lần đọc lại phải tự ghép. PW5 đã đọc được dữ liệu text. Ở PW6, bạn giữ chức năng chương trình nhưng thay cách lưu bằng pickle có nén. Bắt đầu từ bộ dữ liệu của quán, gồm cả thông tin định danh và phiên bản cấu trúc (version):"
      },
      {
       "type": "code",
-      "code": "import gzip, pickle\nstate = {\"version\": 1, \"students\": {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}, \"courses\": {\"PY\": {\"name\": \"Python\", \"credits\": 3}}, \"marks\": {(\"S01\", \"PY\"): 8.7}}\nblob = gzip.compress(pickle.dumps(state))\nloaded = pickle.loads(gzip.decompress(blob))\nprint(loaded == state)\nprint(loaded[\"marks\"][(\"S01\", \"PY\")])",
+      "code": "import gzip, pickle\nstate = {\"version\": 1, \"items\": {\"latte\": {\"name\": \"Latte\", \"group\": \"Ca phe\"}}, \"ingredients\": {\"ca-phe-hat\": {\"name\": \"Ca phe hat\", \"unit\": \"g\"}}, \"recipe\": {(\"latte\", \"ca-phe-hat\"): 8.7}}\nblob = gzip.compress(pickle.dumps(state))\nloaded = pickle.loads(gzip.decompress(blob))\nprint(loaded == state)\nprint(loaded[\"recipe\"][(\"latte\", \"ca-phe-hat\")])",
       "expected": "True\n8.7",
       "tryIt": true
      }
@@ -34,11 +34,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Pickle giữ tuple key của marks mà JSON không hỗ trợ trực tiếp cho key. Khi lưu object domain thật, giữ class ở module ổn định như domains.student; khi load Python cần tìm đúng class đó. Giữ toàn bộ state trong một dict version giúp kiểm schema trước khi cập nhật registry."
+      "text": "Pickle giữ tuple key của bảng định lượng mà JSON không hỗ trợ trực tiếp cho key. Khi lưu object domain thật, giữ class ở module ổn định như domains.item; khi load Python cần tìm đúng class đó. Giữ toàn bộ state trong một dict version giúp kiểm schema trước khi cập nhật registry."
      },
      {
       "type": "code",
-      "code": "import gzip, pickle, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    with gzip.open(path, \"wb\") as f: pickle.dump({\"version\": 1, \"marks\": (8, 9)}, f)\n    with gzip.open(path, \"rb\") as f: loaded = pickle.load(f)\n    print(type(loaded[\"marks\"]).__name__)\n    print(loaded[\"version\"])",
+      "code": "import gzip, pickle, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"quan.dat\"\n    with gzip.open(path, \"wb\") as f: pickle.dump({\"version\": 1, \"amounts\": (8, 9)}, f)\n    with gzip.open(path, \"rb\") as f: loaded = pickle.load(f)\n    print(type(loaded[\"amounts\"]).__name__)\n    print(loaded[\"version\"])",
       "expected": "tuple\n1",
       "tryIt": true,
       "trace": {
@@ -46,7 +46,7 @@
         "kind": "final",
         "var": "loaded",
         "prompt": "Sau khi chạy xong, `loaded` bằng mấy?",
-        "answer": "{'version': 1, 'marks': (8, 9)}"
+        "answer": "{'version': 1, 'amounts': (8, 9)}"
        },
        "rows": [
         {
@@ -72,7 +72,7 @@
          "set": [
           [
            "folder",
-           "'C:\\\\Users\\\\sonkh\\\\AppData\\\\Local\\\\Temp\\\\tmpi12k9asl'"
+           "'C:\\\\Users\\\\sonkh\\\\AppData\\\\Local\\\\Temp\\\\tmp8h0yw9hn'"
           ]
          ]
         },
@@ -81,7 +81,7 @@
          "set": [
           [
            "path",
-           "WindowsPath: WindowsPath('C:/Users/sonkh/AppData/Local/Temp/tmpi12k9asl…"
+           "WindowsPath: WindowsPath('C:/Users/sonkh/AppData/Local/Temp/tmp8h0yw9hn…"
           ]
          ]
         },
@@ -103,7 +103,7 @@
           ],
           [
            "loaded",
-           "{'version': 1, 'marks': (8, 9)}"
+           "{'version': 1, 'amounts': (8, 9)}"
           ]
          ]
         },
@@ -242,7 +242,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Kiểm version chỉ là bước đầu; vẫn phải kiểm sinh viên/môn/điểm và tham chiếu như PW5. Nạp state vào biến tạm, xác nhận hợp lệ rồi mới thay registry đang dùng. Bước tiếp theo của nguồn là PW8 đưa việc lưu này sang thread nền và PW9 dùng GUI; đổi persistence ở đây chưa tự có hai tính năng đó. Quán đã thành một hệ thống chạy lại được; chặng sau là lúc nó có hai quầy."
+      "text": "Kiểm version chỉ là bước đầu; vẫn phải kiểm món, nguyên liệu, định lượng và tham chiếu như PW5. Nạp state vào biến tạm, xác nhận hợp lệ rồi mới thay registry đang dùng. Bước tiếp theo của nguồn là PW8 đưa việc lưu này sang thread nền và PW9 dùng GUI; đổi persistence ở đây chưa tự có hai tính năng đó. Quán đã thành một hệ thống chạy lại được; chặng sau là lúc nó có hai quầy."
      }
     ]
    ],
@@ -322,7 +322,7 @@
     },
     {
      "prompt": "Hoàn thiện PW6 với state domain và kiểm đủ tính năng cũ.",
-     "answer": "Lưu registry qua gzip.open wb + pickle.dump, load rb + pickle.load từ file tin cậy. Đặt Student/Course/StudentMark trong module domains ổn định. Nạp vào tempstate, kiểm version/ID/DoB/credits/marks, rồi mới thay registry. Thử hai lần chạy, kiểu object giữ được, điểm 0, GPA/ranking như cũ, file thiếu/file hỏng/version lạ. Lỗi load giữ state hiện tại và filecũ; không báo lưu thành công trước khi dump/close xong."
+     "answer": "Lưu registry qua gzip.open wb + pickle.dump, load rb + pickle.load từ file tin cậy. Đặt Item/Ingredient/RecipeLine trong module domains ổn định. Nạp vào tempstate, kiểm version/mã/nhóm/unit/định lượng, rồi mới thay registry. Thử hai lần chạy, kiểu object giữ được, lượng 0, trung bình và thứ tự như cũ, file thiếu/file hỏng/version lạ. Lỗi load giữ state hiện tại và file cũ; không báo lưu thành công trước khi dump/close xong."
     }
    ]
   },
@@ -331,7 +331,7 @@
     "title": "Chạy thử",
     "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport gzip, pickle\nstate = {\"version\": 1, \"students\": {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}, \"courses\": {\"PY\": {\"name\": \"Python\", \"credits\": 3}}, \"marks\": {(\"S01\", \"PY\"): 8.7}}\nblob = gzip.compress(pickle.dumps(state))\nloaded = pickle.loads(gzip.decompress(blob))\nprint(loaded == state)\nprint(loaded[\"marks\"][(\"S01\", \"PY\")])\n\n# ── Đoạn 2 ──\nimport gzip, pickle, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    with gzip.open(path, \"wb\") as f: pickle.dump({\"version\": 1, \"marks\": (8, 9)}, f)\n    with gzip.open(path, \"rb\") as f: loaded = pickle.load(f)\n    print(type(loaded[\"marks\"]).__name__)\n    print(loaded[\"version\"])\n\n# ── Đoạn 3 ──\ndef validate_version(state):\n    if not isinstance(state, dict) or state.get(\"version\") != 1:\n        raise ValueError(\"unsupported schema\")\n    return state\ntry:\n    validate_version({\"version\": 2})\nexcept ValueError:\n    print(\"Can chuyen doi du lieu\")\nprint(validate_version({\"version\": 1})[\"version\"])\n"
+   "starterCode": "# ── Đoạn 1 ──\nimport gzip, pickle\nstate = {\"version\": 1, \"items\": {\"latte\": {\"name\": \"Latte\", \"group\": \"Ca phe\"}}, \"ingredients\": {\"ca-phe-hat\": {\"name\": \"Ca phe hat\", \"unit\": \"g\"}}, \"recipe\": {(\"latte\", \"ca-phe-hat\"): 8.7}}\nblob = gzip.compress(pickle.dumps(state))\nloaded = pickle.loads(gzip.decompress(blob))\nprint(loaded == state)\nprint(loaded[\"recipe\"][(\"latte\", \"ca-phe-hat\")])\n\n# ── Đoạn 2 ──\nimport gzip, pickle, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"quan.dat\"\n    with gzip.open(path, \"wb\") as f: pickle.dump({\"version\": 1, \"amounts\": (8, 9)}, f)\n    with gzip.open(path, \"rb\") as f: loaded = pickle.load(f)\n    print(type(loaded[\"amounts\"]).__name__)\n    print(loaded[\"version\"])\n\n# ── Đoạn 3 ──\ndef validate_version(state):\n    if not isinstance(state, dict) or state.get(\"version\") != 1:\n        raise ValueError(\"unsupported schema\")\n    return state\ntry:\n    validate_version({\"version\": 2})\nexcept ValueError:\n    print(\"Can chuyen doi du lieu\")\nprint(validate_version({\"version\": 1})[\"version\"])\n"
   }
  },
  "_mode": "pyodide",

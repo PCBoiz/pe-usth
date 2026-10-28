@@ -2,13 +2,13 @@
  "lesson_code": "SY13",
  "sort_order": 116,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
- "title": "SY13 · Làm tròn xuống và tính điểm có trọng số",
+ "title": "SY13 · Làm tròn xuống và giá trung bình có trọng số",
  "subtitle": "Trung cấp · M5 · 11 phút",
  "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
-  "title": "SY13 · Làm tròn xuống và tính điểm có trọng số",
+  "title": "SY13 · Làm tròn xuống và giá trung bình có trọng số",
   "subtitle": "Trung cấp · M5 · 11 phút",
   "source": {
    "kind": "python-da",
@@ -22,19 +22,19 @@
     [
      {
       "type": "paragraph",
-      "text": "Gói code của quán đã có điểm bắt đầu rồi, giờ quay lại mấy phép tính hay dùng. Môn Python có 3 tín chỉ, môn Database có 1. Hai điểm 8 và 6 không đóng góp như nhau vào điểm trung bình (GPA). Trước khi tính trung bình, hãy làm riêng phép nhân điểm với trọng số:"
+      "text": "Gói code của quán đã có điểm bắt đầu rồi, giờ quay lại mấy phép tính hay dùng. Sáng nay quán bán 3 cốc latte giá 45 000 đ và 1 cốc cà phê đen giá 20 000 đ. Hai mức giá không đóng góp như nhau vào giá trung bình mỗi cốc. Cùng công thức này ở trường được gọi là điểm trung bình (GPA), với trọng số là số tín chỉ. Trước khi tính trung bình, hãy làm riêng phép nhân giá với trọng số:"
      },
      {
       "type": "code",
-      "code": "import numpy as np\nmarks = np.array([8.0, 6.0])\ncredits = np.array([3.0, 1.0])\nprint(marks * credits)\nprint((marks * credits).sum() / credits.sum())",
-      "expected": "[24.  6.]\n7.5",
+      "code": "import numpy as np\ndon_gia = np.array([45000.0, 20000.0])\nso_coc = np.array([3.0, 1.0])\nprint(don_gia * so_coc)\nprint((don_gia * so_coc).sum() / so_coc.sum())",
+      "expected": "[135000.  20000.]\n38750.0",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "Tổng có trọng số là 30, tổng tín chỉ là 4, nên GPA bằng 7.5. Chỉ dùng marks.mean() sẽ cho 7.0 và bỏ qua số tín chỉ. Trước bài này, bạn cần đã hiểu array, phép toán theo phần tử và sum; không nên bắt đầu học NumPy bằng cả công thức gộp này."
+      "text": "Tổng có trọng số là 155 000, tổng số cốc là 4, nên giá trung bình mỗi cốc bằng 38750.0. Chỉ dùng don_gia.mean() sẽ cho 32500.0 và bỏ qua số cốc. Trước bài này, bạn cần đã hiểu array, phép toán theo phần tử và sum; không nên bắt đầu học NumPy bằng cả công thức gộp này."
      },
      {
       "type": "code",
@@ -46,12 +46,12 @@
     [
      {
       "type": "paragraph",
-      "text": "PW3 yêu cầu làm tròn xuống một chữ số sau dấu thập phân lúc nhập điểm. floor đi về âm vô cùng, khác round chọn gần nhất. Điểm âm phải bị từ chối theo quy tắc điểm trước khi lưu; ví dụ âm chỉ để làm rõ nghĩa của floor. Số thực nhị phân còn có sai số biểu diễn; nếu hợp đồng làm tròn trên chuỗi thập phân cần Decimal với quy tắc đã nêu."
+      "text": "PW3 yêu cầu làm tròn xuống một chữ số sau dấu thập phân lúc ghi số kilogam cà phê đã dùng. floor đi về âm vô cùng, khác round chọn gần nhất. Số âm phải bị từ chối theo quy tắc trước khi lưu; ví dụ âm chỉ để làm rõ nghĩa của floor. Số thực nhị phân còn có sai số biểu diễn; nếu hợp đồng làm tròn trên chuỗi thập phân cần Decimal với quy tắc đã nêu."
      },
      {
       "type": "code",
-      "code": "students = [{\"id\": \"A\", \"gpa\": 7.5}, {\"id\": \"B\", \"gpa\": 8.0}]\nranked = sorted(students, key=lambda x: x[\"gpa\"], reverse=True)\nprint([s[\"id\"] for s in ranked])\nprint([s[\"id\"] for s in students])",
-      "expected": "['B', 'A']\n['A', 'B']",
+      "code": "mon = [{\"id\": \"ca-phe-den\", \"doanh_thu\": 7.5}, {\"id\": \"latte\", \"doanh_thu\": 8.0}]\nranked = sorted(mon, key=lambda x: x[\"doanh_thu\"], reverse=True)\nprint([m[\"id\"] for m in ranked])\nprint([m[\"id\"] for m in mon])",
+      "expected": "['latte', 'ca-phe-den']\n['ca-phe-den', 'latte']",
       "tryIt": true,
       "trace": {
        "predict": {
@@ -59,15 +59,15 @@
         "var": "x",
         "line": 2,
         "prompt": "Ngay sau khi dòng 2 chạy, `x` bằng mấy?",
-        "answer": "{'id': 'A', 'gpa': 7.5}"
+        "answer": "{'id': 'ca-phe-den', 'doanh_thu': 7.5}"
        },
        "rows": [
         {
          "line": 1,
          "set": [
           [
-           "students",
-           "[{'id': 'A', 'gpa': 7.5}, {'id': 'B', 'gpa': 8.0}]"
+           "mon",
+           "[{'id': 'ca-phe-den', 'doanh_thu': 7.5}, {'id': 'latte', 'doanh_thu': 8…"
           ]
          ]
         },
@@ -82,7 +82,7 @@
          "set": [
           [
            "x",
-           "{'id': 'A', 'gpa': 7.5}"
+           "{'id': 'ca-phe-den', 'doanh_thu': 7.5}"
           ]
          ]
         },
@@ -99,7 +99,7 @@
          "set": [
           [
            "x",
-           "{'id': 'B', 'gpa': 8.0}"
+           "{'id': 'latte', 'doanh_thu': 8.0}"
           ]
          ]
         },
@@ -111,7 +111,7 @@
          "set": [
           [
            "x",
-           "{'id': 'B', 'gpa': 8.0}"
+           "{'id': 'latte', 'doanh_thu': 8.0}"
           ]
          ]
         },
@@ -130,8 +130,8 @@
          "line": 3,
          "set": [
           [
-           "s",
-           "{'id': 'B', 'gpa': 8.0}"
+           "m",
+           "{'id': 'latte', 'doanh_thu': 8.0}"
           ]
          ]
         },
@@ -139,8 +139,8 @@
          "line": 3,
          "set": [
           [
-           "s",
-           "{'id': 'A', 'gpa': 7.5}"
+           "m",
+           "{'id': 'ca-phe-den', 'doanh_thu': 7.5}"
           ]
          ]
         },
@@ -148,22 +148,22 @@
          "line": 3,
          "set": [
           [
-           "ranked",
-           "[{'id': 'B', 'gpa': 8.0}, {'id': 'A', 'gpa': 7.5}]"
+           "mon",
+           "[{'id': 'ca-phe-den', 'doanh_thu': 7.5}, {'id': 'latte', 'doanh_thu': 8…"
           ],
           [
-           "students",
-           "[{'id': 'A', 'gpa': 7.5}, {'id': 'B', 'gpa': 8.0}]"
+           "ranked",
+           "[{'id': 'latte', 'doanh_thu': 8.0}, {'id': 'ca-phe-den', 'doanh_thu': 7…"
           ]
          ],
-         "out": "['B', 'A']"
+         "out": "['latte', 'ca-phe-den']"
         },
         {
          "line": 4,
          "set": [
           [
-           "s",
-           "{'id': 'A', 'gpa': 7.5}"
+           "m",
+           "{'id': 'ca-phe-den', 'doanh_thu': 7.5}"
           ]
          ]
         },
@@ -171,8 +171,8 @@
          "line": 4,
          "set": [
           [
-           "s",
-           "{'id': 'B', 'gpa': 8.0}"
+           "m",
+           "{'id': 'latte', 'doanh_thu': 8.0}"
           ]
          ]
         },
@@ -180,15 +180,15 @@
          "line": 4,
          "set": [
           [
-           "ranked",
-           "[{'id': 'B', 'gpa': 8.0}, {'id': 'A', 'gpa': 7.5}]"
+           "mon",
+           "[{'id': 'ca-phe-den', 'doanh_thu': 7.5}, {'id': 'latte', 'doanh_thu': 8…"
           ],
           [
-           "students",
-           "[{'id': 'A', 'gpa': 7.5}, {'id': 'B', 'gpa': 8.0}]"
+           "ranked",
+           "[{'id': 'latte', 'doanh_thu': 8.0}, {'id': 'ca-phe-den', 'doanh_thu': 7…"
           ]
          ],
-         "out": "['A', 'B']"
+         "out": "['ca-phe-den', 'latte']"
         },
         {
          "line": 4,
@@ -199,7 +199,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Xếp giảm dần theo GPA giúp báo cáo có ý nghĩa rõ. Nếu cần thứ tự khi GPA bằng nhau, công bố thêm quy tắc theo mã hoặc giữ thứ tự input. `sorted` trả danh sách mới, không sửa danh sách ban đầu."
+      "text": "Xếp giảm dần theo doanh thu giúp báo cáo có ý nghĩa rõ. Nếu cần thứ tự khi doanh thu bằng nhau, công bố thêm quy tắc theo mã món hoặc giữ thứ tự input. `sorted` trả danh sách mới, không sửa danh sách ban đầu."
      }
     ]
    ],
@@ -270,16 +270,16 @@
    ],
    "practice": [
     {
-     "prompt": "Hai môn 3 và 1 tín chỉ, điểm 8 và 6, GPA bằng bao nhiêu?",
-     "answer": "(8*3 + 6*1)/(3+1) = 7.5."
+     "prompt": "Hai món giá 45 000 đ và 20 000 đ, bán 3 và 1 cốc. Giá trung bình mỗi cốc bằng bao nhiêu?",
+     "answer": "(45000*3 + 20000*1)/(3+1) = 38750."
     },
     {
      "prompt": "floor(x*10)/10 và round(x,1) với 8.79 có giống nhau không?",
      "answer": "Không: lần lượt 8.7 và 8.8."
     },
     {
-     "prompt": "Viết weighted_gpa(marks, credits) và xếp sinh viên giảm dần.",
-     "answer": "Đổi cả hai thành array float; từ chối khác độ dài, rỗng, điểm không hữu hạn/ngoài 0..10, tín chỉ không hữu hạn/không dương. Trả sum(marks*credits)/sum(credits). Xếp bằng key gpa, reverse=True; nêu quy tắc khi hòa."
+     "prompt": "Viết gia_trung_binh(don_gia, so_coc) và xếp món giảm dần theo doanh thu.",
+     "answer": "Đổi cả hai thành array float; từ chối khác độ dài, rỗng, giá không hữu hạn/không dương, số cốc không hữu hạn/không dương. Trả sum(don_gia*so_coc)/sum(so_coc). Xếp bằng key doanh_thu, reverse=True; nêu quy tắc khi hòa."
     }
    ]
   },

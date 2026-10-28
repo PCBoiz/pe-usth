@@ -980,7 +980,7 @@
    }
   },
   "EX01": {
-   "codeHash": "0964ce4eceaf08a1",
+   "codeHash": "d126d2fa1311a686",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -994,7 +994,7 @@
    }
   },
   "EX02": {
-   "codeHash": "13dddcd54075df06",
+   "codeHash": "1133a090d2451da4",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -1210,14 +1210,14 @@
    }
   },
   "EX06": {
-   "codeHash": "1cc1cd55386a3454",
+   "codeHash": "b339da503bd112e5",
    "blocks": {
     "0": {
      "predict": {
       "kind": "final",
       "var": "restored",
       "prompt": "Sau khi chạy xong, `restored` bằng mấy?",
-      "answer": "{'marks': [6, 8]}"
+      "answer": "{'so_coc': [6, 8]}"
      },
      "rows": [
       {
@@ -1251,7 +1251,7 @@
        "set": [
         [
          "data",
-         "{'marks': [6, 8]}"
+         "{'so_coc': [6, 8]}"
         ]
        ]
       },
@@ -1260,7 +1260,7 @@
        "set": [
         [
          "folder",
-         "'C:\\\\Users\\\\sonkh\\\\AppData\\\\Local\\\\Temp\\\\tmpcegn0rfr'"
+         "'C:\\\\Users\\\\sonkh\\\\AppData\\\\Local\\\\Temp\\\\tmp_mb_vsfm'"
         ]
        ]
       },
@@ -1269,7 +1269,7 @@
        "set": [
         [
          "path",
-         "WindowsPath: WindowsPath('C:/Users/sonkh/AppData/Local/Temp/tmpcegn0rfr…"
+         "WindowsPath: WindowsPath('C:/Users/sonkh/AppData/Local/Temp/tmp_mb_vsfm…"
         ]
        ]
       },
@@ -1308,7 +1308,7 @@
        "set": [
         [
          "restored",
-         "{'marks': [6, 8]}"
+         "{'so_coc': [6, 8]}"
         ]
        ]
       },
@@ -1585,13 +1585,13 @@
    }
   },
   "GU12": {
-   "codeHash": "f46586511ce444e2",
+   "codeHash": "0149d528a5a4a73d",
    "blocks": {
     "0": {
      "predict": {
       "kind": "final",
-      "var": "marks",
-      "prompt": "Sau khi chạy xong, `marks` bằng mấy?",
+      "var": "luong",
+      "prompt": "Sau khi chạy xong, `luong` bằng mấy?",
       "answer": "['14.29', '16.00']"
      },
      "rows": [
@@ -1612,7 +1612,7 @@
        "line": 2,
        "set": [
         [
-         "marks",
+         "luong",
          "['14.29', '16.00']"
         ]
        ]
@@ -1621,7 +1621,7 @@
        "line": 3,
        "set": [
         [
-         "m",
+         "x",
          "'14.29'"
         ]
        ]
@@ -1630,7 +1630,7 @@
        "line": 3,
        "set": [
         [
-         "m",
+         "x",
          "'16.00'"
         ]
        ]
@@ -1647,7 +1647,7 @@
          "'ROUND_FLOOR'"
         ],
         [
-         "marks",
+         "luong",
          "['14.29', '16.00']"
         ],
         [
@@ -1665,18 +1665,18 @@
     "1": {
      "predict": {
       "kind": "mid",
-      "var": "course",
+      "var": "gam",
       "line": 3,
-      "prompt": "Ngay sau khi dòng 3 chạy, `course` bằng mấy?",
-      "answer": "'PY'"
+      "prompt": "Ngay sau khi dòng 3 chạy, `gam` bằng mấy?",
+      "answer": "14.0"
      },
      "rows": [
       {
        "line": 1,
        "set": [
         [
-         "marks",
-         "{'PY': 14.0, 'DA': 18.0}"
+         "luong",
+         "{'ca-phe-hat': 14.0, 'sua-tuoi': 18.0}"
         ]
        ]
       },
@@ -1684,8 +1684,8 @@
        "line": 2,
        "set": [
         [
-         "credits",
-         "{'PY': 2, 'DA': 3, 'GUI': 1}"
+         "so_coc",
+         "{'ca-phe-hat': 2, 'sua-tuoi': 3, 'duong': 1}"
         ]
        ]
       },
@@ -1710,12 +1710,12 @@
        "depth": 1,
        "set": [
         [
-         "course",
-         "'PY'"
+         "gam",
+         "14.0"
         ],
         [
-         "mark",
-         "14.0"
+         "ten",
+         "'ca-phe-hat'"
         ]
        ]
       },
@@ -1736,12 +1736,12 @@
          "dict_itemiterator: <dict_itemiterator object>"
         ],
         [
-         "course",
-         "'PY'"
+         "gam",
+         "14.0"
         ],
         [
-         "mark",
-         "14.0"
+         "ten",
+         "'ca-phe-hat'"
         ]
        ]
       },
@@ -1751,12 +1751,12 @@
        "depth": 1,
        "set": [
         [
-         "course",
-         "'DA'"
+         "gam",
+         "18.0"
         ],
         [
-         "mark",
-         "18.0"
+         "ten",
+         "'sua-tuoi'"
         ]
        ]
       },
@@ -1777,12 +1777,12 @@
          "dict_itemiterator: <dict_itemiterator object>"
         ],
         [
-         "course",
-         "'DA'"
+         "gam",
+         "18.0"
         ],
         [
-         "mark",
-         "18.0"
+         "ten",
+         "'sua-tuoi'"
         ]
        ]
       },
@@ -1818,8 +1818,8 @@
        "depth": 1,
        "set": [
         [
-         "course",
-         "'PY'"
+         "ten",
+         "'ca-phe-hat'"
         ]
        ]
       },
@@ -1840,8 +1840,8 @@
          "dict_keyiterator: <dict_keyiterator object>"
         ],
         [
-         "course",
-         "'PY'"
+         "ten",
+         "'ca-phe-hat'"
         ]
        ]
       },
@@ -1851,8 +1851,8 @@
        "depth": 1,
        "set": [
         [
-         "course",
-         "'DA'"
+         "ten",
+         "'sua-tuoi'"
         ]
        ]
       },
@@ -1873,8 +1873,8 @@
          "dict_keyiterator: <dict_keyiterator object>"
         ],
         [
-         "course",
-         "'DA'"
+         "ten",
+         "'sua-tuoi'"
         ]
        ]
       },
@@ -1971,7 +1971,7 @@
    }
   },
   "NP06": {
-   "codeHash": "0c53a8b5b2ef66fb",
+   "codeHash": "da4f59f1ec6658e5",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2041,7 +2041,7 @@
    }
   },
   "NP11": {
-   "codeHash": "90bd92552f3dc268",
+   "codeHash": "5dc9f6e338b05226",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2069,7 +2069,7 @@
    }
   },
   "NP13": {
-   "codeHash": "7b2f7d481fc44455",
+   "codeHash": "4ea213c1f11d3121",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2083,7 +2083,7 @@
    }
   },
   "NP14": {
-   "codeHash": "3df4dcc106bba340",
+   "codeHash": "343b2f542a18d52c",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2111,7 +2111,7 @@
    }
   },
   "NP16": {
-   "codeHash": "b52b54c0b6c4b9a3",
+   "codeHash": "08882467e876d8ef",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2209,7 +2209,7 @@
    }
   },
   "NP23": {
-   "codeHash": "f26c50ac1d726274",
+   "codeHash": "abfdf261b040b4f4",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2385,7 +2385,7 @@
    }
   },
   "PD08": {
-   "codeHash": "73ff870282856aa3",
+   "codeHash": "568cec41bb93fb63",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2565,7 +2565,7 @@
    }
   },
   "PD18": {
-   "codeHash": "511533b6ae59811a",
+   "codeHash": "ac566f3ce1137948",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2705,7 +2705,7 @@
    }
   },
   "PD28": {
-   "codeHash": "897d388d089f34aa",
+   "codeHash": "4ccd488b8683b304",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2719,7 +2719,7 @@
    }
   },
   "PD29": {
-   "codeHash": "dde5018977aacc2e",
+   "codeHash": "3fddb8ef35a6a9a0",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -3074,7 +3074,7 @@
    }
   },
   "RD05": {
-   "codeHash": "da4388eee4ee22e5",
+   "codeHash": "b8a21314f0f7e709",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -3404,7 +3404,7 @@
    }
   },
   "SY05": {
-   "codeHash": "d1657b5e633454eb",
+   "codeHash": "5f57389c11a9932e",
    "blocks": {
     "0": {
      "predict": {
@@ -3412,7 +3412,7 @@
       "var": "self",
       "line": 2,
       "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-      "answer": "Student()"
+      "answer": "Item()"
      },
      "rows": [
       {
@@ -3420,18 +3420,18 @@
       },
       {
        "line": 1,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "enter": true
       },
       {
        "line": 1,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1
       },
       {
        "line": 2,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "set": [
         [
@@ -3442,7 +3442,7 @@
       },
       {
        "line": 6,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "set": [
         [
@@ -3453,7 +3453,7 @@
       },
       {
        "line": 6,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "ret": "None"
       },
@@ -3467,20 +3467,20 @@
        "enter": true,
        "set": [
         [
-         "dob",
-         "'2005-01-02'"
+         "code",
+         "'latte'"
+        ],
+        [
+         "group",
+         "'Ca phe'"
         ],
         [
          "name",
-         "'An'"
+         "'Latte'"
         ],
         [
          "self",
-         "Student()"
-        ],
-        [
-         "sid",
-         "'S01'"
+         "Item()"
         ]
        ]
       },
@@ -3491,7 +3491,7 @@
        "set": [
         [
          "self",
-         "Student(sid='S01')"
+         "Item(code='latte')"
         ]
        ]
       },
@@ -3502,7 +3502,7 @@
        "set": [
         [
          "self",
-         "Student(sid='S01', name='An')"
+         "Item(code='latte', name='Latte')"
         ]
        ]
       },
@@ -3513,7 +3513,7 @@
        "set": [
         [
          "self",
-         "Student(sid='S01', name='An', dob='2005-01-02')"
+         "Item(code='latte', name='Latte', group='Ca phe')"
         ]
        ]
       },
@@ -3534,7 +3534,7 @@
        "set": [
         [
          "self",
-         "Student(sid='S01', name='An', dob='2005-01-02')"
+         "Item(code='latte', name='Latte', group='Ca phe')"
         ]
        ]
       },
@@ -3547,8 +3547,8 @@
        "line": 7,
        "fn": "label",
        "depth": 1,
-       "ret": "'S01: An'",
-       "out": "S01: An"
+       "ret": "'latte: Latte'",
+       "out": "latte: Latte"
       }
      ]
     },
@@ -3558,7 +3558,7 @@
       "var": "self",
       "line": 2,
       "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-      "answer": "Student()"
+      "answer": "Item()"
      },
      "rows": [
       {
@@ -3566,18 +3566,18 @@
       },
       {
        "line": 1,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "enter": true
       },
       {
        "line": 1,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1
       },
       {
        "line": 2,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "set": [
         [
@@ -3588,7 +3588,7 @@
       },
       {
        "line": 2,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "ret": "None"
       },
@@ -3603,11 +3603,11 @@
        "set": [
         [
          "name",
-         "'An'"
+         "'Latte'"
         ],
         [
          "self",
-         "Student()"
+         "Item()"
         ]
        ]
       },
@@ -3618,7 +3618,7 @@
        "set": [
         [
          "self",
-         "Student(name='An')"
+         "Item(name='Latte')"
         ]
        ]
       },
@@ -3639,11 +3639,11 @@
        "set": [
         [
          "name",
-         "'Binh'"
+         "'Mocha'"
         ],
         [
          "self",
-         "Student()"
+         "Item()"
         ]
        ]
       },
@@ -3654,7 +3654,7 @@
        "set": [
         [
          "self",
-         "Student(name='Binh')"
+         "Item(name='Mocha')"
         ]
        ]
       },
@@ -3669,13 +3669,13 @@
        "set": [
         [
          "first",
-         "Student(name='Anh')"
+         "Item(name='Latte da')"
         ]
        ]
       },
       {
        "line": 7,
-       "out": "Anh Binh"
+       "out": "Latte da Mocha"
       }
      ]
     },
@@ -3685,7 +3685,7 @@
       "var": "self",
       "line": 2,
       "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-      "answer": "Student()"
+      "answer": "Item()"
      },
      "rows": [
       {
@@ -3693,18 +3693,18 @@
       },
       {
        "line": 1,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "enter": true
       },
       {
        "line": 1,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1
       },
       {
        "line": 2,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "set": [
         [
@@ -3715,7 +3715,7 @@
       },
       {
        "line": 2,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "ret": "None"
       },
@@ -3730,11 +3730,11 @@
        "set": [
         [
          "name",
-         "'An'"
+         "'Latte'"
         ],
         [
          "self",
-         "Student()"
+         "Item()"
         ]
        ]
       },
@@ -3745,7 +3745,7 @@
        "set": [
         [
          "self",
-         "Student(name='An')"
+         "Item(name='Latte')"
         ]
        ]
       },
@@ -3760,7 +3760,7 @@
        "set": [
         [
          "alias",
-         "Student(name='An')"
+         "Item(name='Latte')"
         ]
        ]
       },
@@ -3769,17 +3769,17 @@
        "set": [
         [
          "alias",
-         "Student(name='Anh')"
+         "Item(name='Latte da')"
         ],
         [
          "first",
-         "Student(name='Anh')"
+         "Item(name='Latte da')"
         ]
        ]
       },
       {
        "line": 7,
-       "out": "Anh"
+       "out": "Latte da"
       },
       {
        "line": 8,
@@ -3794,7 +3794,7 @@
    }
   },
   "SY06": {
-   "codeHash": "864c6c43026e897b",
+   "codeHash": "2f14edd4d36b9f78",
    "blocks": {
     "0": {
      "predict": {
@@ -3802,7 +3802,7 @@
       "var": "self",
       "line": 2,
       "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-      "answer": "Grade()"
+      "answer": "Cups()"
      },
      "rows": [
       {
@@ -3810,18 +3810,18 @@
       },
       {
        "line": 1,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "enter": true
       },
       {
        "line": 1,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1
       },
       {
        "line": 2,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "set": [
         [
@@ -3832,7 +3832,7 @@
       },
       {
        "line": 3,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "set": [
         [
@@ -3843,7 +3843,7 @@
       },
       {
        "line": 3,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "ret": "None"
       },
@@ -3858,7 +3858,7 @@
        "set": [
         [
          "self",
-         "Grade()"
+         "Cups()"
         ],
         [
          "value",
@@ -3873,7 +3873,7 @@
        "set": [
         [
          "self",
-         "Grade(value=8)"
+         "Cups(value=8)"
         ]
        ]
       },
@@ -3891,7 +3891,7 @@
        "set": [
         [
          "self",
-         "Grade(value=8)"
+         "Cups(value=8)"
         ]
        ]
       },
@@ -3904,8 +3904,8 @@
        "line": 3,
        "fn": "__str__",
        "depth": 1,
-       "ret": "'Diem 8'",
-       "out": "Diem 8"
+       "ret": "'8 coc'",
+       "out": "8 coc"
       }
      ]
     },
@@ -3915,7 +3915,7 @@
       "var": "self",
       "line": 2,
       "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-      "answer": "Grade()"
+      "answer": "Cups()"
      },
      "rows": [
       {
@@ -3923,18 +3923,18 @@
       },
       {
        "line": 1,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "enter": true
       },
       {
        "line": 1,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1
       },
       {
        "line": 2,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "set": [
         [
@@ -3945,7 +3945,7 @@
       },
       {
        "line": 3,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "set": [
         [
@@ -3956,7 +3956,7 @@
       },
       {
        "line": 3,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "ret": "None"
       },
@@ -3971,7 +3971,7 @@
        "set": [
         [
          "self",
-         "Grade()"
+         "Cups()"
         ],
         [
          "value",
@@ -3986,7 +3986,7 @@
        "set": [
         [
          "self",
-         "Grade(value=5)"
+         "Cups(value=5)"
         ]
        ]
       },
@@ -3998,7 +3998,7 @@
        "set": [
         [
          "self",
-         "Grade()"
+         "Cups()"
         ],
         [
          "value",
@@ -4014,7 +4014,7 @@
        "set": [
         [
          "self",
-         "Grade()"
+         "Cups()"
         ],
         [
          "value",
@@ -4029,7 +4029,7 @@
        "set": [
         [
          "self",
-         "Grade(value=8)"
+         "Cups(value=8)"
         ]
        ]
       },
@@ -4047,11 +4047,11 @@
        "set": [
         [
          "other",
-         "Grade(value=8)"
+         "Cups(value=8)"
         ],
         [
          "self",
-         "Grade(value=5)"
+         "Cups(value=5)"
         ]
        ]
       },
@@ -4083,7 +4083,7 @@
        "set": [
         [
          "self",
-         "Grade()"
+         "Cups()"
         ],
         [
          "value",
@@ -4098,7 +4098,7 @@
        "set": [
         [
          "self",
-         "Grade(value=8)"
+         "Cups(value=8)"
         ]
        ]
       },
@@ -4110,7 +4110,7 @@
        "set": [
         [
          "self",
-         "Grade()"
+         "Cups()"
         ],
         [
          "value",
@@ -4126,7 +4126,7 @@
        "set": [
         [
          "self",
-         "Grade()"
+         "Cups()"
         ],
         [
          "value",
@@ -4141,7 +4141,7 @@
        "set": [
         [
          "self",
-         "Grade(value=5)"
+         "Cups(value=5)"
         ]
        ]
       },
@@ -4159,11 +4159,11 @@
        "set": [
         [
          "other",
-         "Grade(value=8)"
+         "Cups(value=8)"
         ],
         [
          "self",
-         "Grade(value=5)"
+         "Cups(value=5)"
         ]
        ]
       },
@@ -4187,8 +4187,8 @@
        "line": 7,
        "set": [
         [
-         "g",
-         "Grade(value=8)"
+         "c",
+         "Cups(value=8)"
         ]
        ]
       },
@@ -4196,8 +4196,8 @@
        "line": 7,
        "set": [
         [
-         "Grade",
-         "<lớp Grade>"
+         "Cups",
+         "<lớp Cups>"
         ]
        ],
        "out": "[5, 8]"
@@ -4210,7 +4210,7 @@
       "var": "self",
       "line": 2,
       "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-      "answer": "Grade()"
+      "answer": "Cups()"
      },
      "rows": [
       {
@@ -4218,18 +4218,18 @@
       },
       {
        "line": 1,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "enter": true
       },
       {
        "line": 1,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1
       },
       {
        "line": 2,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "set": [
         [
@@ -4240,7 +4240,7 @@
       },
       {
        "line": 3,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "set": [
         [
@@ -4251,7 +4251,7 @@
       },
       {
        "line": 3,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "ret": "None"
       },
@@ -4269,7 +4269,7 @@
        "set": [
         [
          "self",
-         "Grade()"
+         "Cups()"
         ],
         [
          "value",
@@ -4284,7 +4284,7 @@
        "set": [
         [
          "self",
-         "Grade(value=5)"
+         "Cups(value=5)"
         ]
        ]
       },
@@ -4306,7 +4306,7 @@
         ],
         [
          "self",
-         "Grade(value=5)"
+         "Cups(value=5)"
         ]
        ]
       },
@@ -4323,7 +4323,7 @@
       },
       {
        "line": 7,
-       "exc": "TypeError: '<' not supported between instances of 'Grade' and 'str'"
+       "exc": "TypeError: '<' not supported between instances of 'Cups' and 'str'"
       },
       {
        "line": 8
@@ -4355,7 +4355,7 @@
    }
   },
   "SY08": {
-   "codeHash": "a27891f0f3dded12",
+   "codeHash": "4fb743430dd04a8c",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -4559,7 +4559,7 @@
    }
   },
   "SY10": {
-   "codeHash": "0cf0726b1ec0005b",
+   "codeHash": "a17e79545c5ed064",
    "blocks": {
     "0": {
      "predict": {
@@ -4567,7 +4567,7 @@
       "var": "self",
       "line": 2,
       "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-      "answer": "Grade()"
+      "answer": "Cups()"
      },
      "rows": [
       {
@@ -4575,18 +4575,18 @@
       },
       {
        "line": 1,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "enter": true
       },
       {
        "line": 1,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1
       },
       {
        "line": 2,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "set": [
         [
@@ -4597,7 +4597,7 @@
       },
       {
        "line": 3,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "set": [
         [
@@ -4608,7 +4608,7 @@
       },
       {
        "line": 4,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "set": [
         [
@@ -4619,7 +4619,7 @@
       },
       {
        "line": 4,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "ret": "None"
       },
@@ -4634,7 +4634,7 @@
        "set": [
         [
          "self",
-         "Grade()"
+         "Cups()"
         ],
         [
          "value",
@@ -4655,7 +4655,7 @@
        "set": [
         [
          "self",
-         "Grade()"
+         "Cups()"
         ],
         [
          "value",
@@ -4675,7 +4675,7 @@
        "set": [
         [
          "self",
-         "Grade(_value=8)"
+         "Cups(_value=8)"
         ]
        ]
       },
@@ -4702,7 +4702,7 @@
        "set": [
         [
          "self",
-         "Grade(_value=8)"
+         "Cups(_value=8)"
         ]
        ]
       },
@@ -4726,7 +4726,7 @@
       "var": "self",
       "line": 2,
       "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-      "answer": "Salary()"
+      "answer": "Revenue()"
      },
      "rows": [
       {
@@ -4734,18 +4734,18 @@
       },
       {
        "line": 1,
-       "fn": "Salary",
+       "fn": "Revenue",
        "depth": 1,
        "enter": true
       },
       {
        "line": 1,
-       "fn": "Salary",
+       "fn": "Revenue",
        "depth": 1
       },
       {
        "line": 2,
-       "fn": "Salary",
+       "fn": "Revenue",
        "depth": 1,
        "set": [
         [
@@ -4756,7 +4756,7 @@
       },
       {
        "line": 3,
-       "fn": "Salary",
+       "fn": "Revenue",
        "depth": 1,
        "set": [
         [
@@ -4767,7 +4767,7 @@
       },
       {
        "line": 3,
-       "fn": "Salary",
+       "fn": "Revenue",
        "depth": 1,
        "ret": "None"
       },
@@ -4782,7 +4782,7 @@
        "set": [
         [
          "self",
-         "Salary()"
+         "Revenue()"
         ]
        ]
       },
@@ -4793,7 +4793,7 @@
        "set": [
         [
          "self",
-         "Salary(_Salary__value=100)"
+         "Revenue(_Revenue__value=100)"
         ]
        ]
       },
@@ -4814,7 +4814,7 @@
        "set": [
         [
          "self",
-         "Salary(_Salary__value=100)"
+         "Revenue(_Revenue__value=100)"
         ]
        ]
       },
@@ -4842,7 +4842,7 @@
       "var": "self",
       "line": 2,
       "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-      "answer": "Grade()"
+      "answer": "Cups()"
      },
      "rows": [
       {
@@ -4850,18 +4850,18 @@
       },
       {
        "line": 1,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "enter": true
       },
       {
        "line": 1,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1
       },
       {
        "line": 2,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "set": [
         [
@@ -4872,22 +4872,22 @@
       },
       {
        "line": 3,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1
       },
       {
        "line": 4,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1
       },
       {
        "line": 3,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1
       },
       {
        "line": 4,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "set": [
         [
@@ -4898,27 +4898,27 @@
       },
       {
        "line": 5,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1
       },
       {
        "line": 6,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1
       },
       {
        "line": 5,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1
       },
       {
        "line": 6,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1
       },
       {
        "line": 6,
-       "fn": "Grade",
+       "fn": "Cups",
        "depth": 1,
        "ret": "None"
       },
@@ -4933,7 +4933,7 @@
        "set": [
         [
          "self",
-         "Grade()"
+         "Cups()"
         ],
         [
          "value",
@@ -4948,7 +4948,7 @@
        "set": [
         [
          "self",
-         "Grade(_value=8)"
+         "Cups(_value=8)"
         ]
        ]
       },
@@ -4969,7 +4969,7 @@
        "set": [
         [
          "self",
-         "Grade(_value=8)"
+         "Cups(_value=8)"
         ],
         [
          "value",
@@ -4986,7 +4986,7 @@
        "line": 7,
        "fn": "value",
        "depth": 1,
-       "exc": "ValueError: score"
+       "exc": "ValueError: cups"
       },
       {
        "line": 7,
@@ -4996,7 +4996,7 @@
       },
       {
        "line": 10,
-       "exc": "ValueError: score"
+       "exc": "ValueError: cups"
       },
       {
        "line": 11,
@@ -5013,7 +5013,7 @@
        "set": [
         [
          "self",
-         "Grade(_value=8)"
+         "Cups(_value=8)"
         ]
        ]
       },
@@ -5038,7 +5038,7 @@
    }
   },
   "SY11": {
-   "codeHash": "5d268ab7827abe72",
+   "codeHash": "d1fb65e34be5cc0b",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -5052,7 +5052,7 @@
    }
   },
   "SY12": {
-   "codeHash": "cba2819befaef63e",
+   "codeHash": "f062d71a30ada583",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -5060,7 +5060,7 @@
    }
   },
   "SY13": {
-   "codeHash": "92ca428bd4bef43d",
+   "codeHash": "ac1cefffdae3a118",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -5074,15 +5074,15 @@
       "var": "x",
       "line": 2,
       "prompt": "Ngay sau khi dòng 2 chạy, `x` bằng mấy?",
-      "answer": "{'id': 'A', 'gpa': 7.5}"
+      "answer": "{'id': 'ca-phe-den', 'doanh_thu': 7.5}"
      },
      "rows": [
       {
        "line": 1,
        "set": [
         [
-         "students",
-         "[{'id': 'A', 'gpa': 7.5}, {'id': 'B', 'gpa': 8.0}]"
+         "mon",
+         "[{'id': 'ca-phe-den', 'doanh_thu': 7.5}, {'id': 'latte', 'doanh_thu': 8…"
         ]
        ]
       },
@@ -5097,7 +5097,7 @@
        "set": [
         [
          "x",
-         "{'id': 'A', 'gpa': 7.5}"
+         "{'id': 'ca-phe-den', 'doanh_thu': 7.5}"
         ]
        ]
       },
@@ -5114,7 +5114,7 @@
        "set": [
         [
          "x",
-         "{'id': 'B', 'gpa': 8.0}"
+         "{'id': 'latte', 'doanh_thu': 8.0}"
         ]
        ]
       },
@@ -5126,7 +5126,7 @@
        "set": [
         [
          "x",
-         "{'id': 'B', 'gpa': 8.0}"
+         "{'id': 'latte', 'doanh_thu': 8.0}"
         ]
        ]
       },
@@ -5145,8 +5145,8 @@
        "line": 3,
        "set": [
         [
-         "s",
-         "{'id': 'B', 'gpa': 8.0}"
+         "m",
+         "{'id': 'latte', 'doanh_thu': 8.0}"
         ]
        ]
       },
@@ -5154,8 +5154,8 @@
        "line": 3,
        "set": [
         [
-         "s",
-         "{'id': 'A', 'gpa': 7.5}"
+         "m",
+         "{'id': 'ca-phe-den', 'doanh_thu': 7.5}"
         ]
        ]
       },
@@ -5163,22 +5163,22 @@
        "line": 3,
        "set": [
         [
-         "ranked",
-         "[{'id': 'B', 'gpa': 8.0}, {'id': 'A', 'gpa': 7.5}]"
+         "mon",
+         "[{'id': 'ca-phe-den', 'doanh_thu': 7.5}, {'id': 'latte', 'doanh_thu': 8…"
         ],
         [
-         "students",
-         "[{'id': 'A', 'gpa': 7.5}, {'id': 'B', 'gpa': 8.0}]"
+         "ranked",
+         "[{'id': 'latte', 'doanh_thu': 8.0}, {'id': 'ca-phe-den', 'doanh_thu': 7…"
         ]
        ],
-       "out": "['B', 'A']"
+       "out": "['latte', 'ca-phe-den']"
       },
       {
        "line": 4,
        "set": [
         [
-         "s",
-         "{'id': 'A', 'gpa': 7.5}"
+         "m",
+         "{'id': 'ca-phe-den', 'doanh_thu': 7.5}"
         ]
        ]
       },
@@ -5186,8 +5186,8 @@
        "line": 4,
        "set": [
         [
-         "s",
-         "{'id': 'B', 'gpa': 8.0}"
+         "m",
+         "{'id': 'latte', 'doanh_thu': 8.0}"
         ]
        ]
       },
@@ -5195,15 +5195,15 @@
        "line": 4,
        "set": [
         [
-         "ranked",
-         "[{'id': 'B', 'gpa': 8.0}, {'id': 'A', 'gpa': 7.5}]"
+         "mon",
+         "[{'id': 'ca-phe-den', 'doanh_thu': 7.5}, {'id': 'latte', 'doanh_thu': 8…"
         ],
         [
-         "students",
-         "[{'id': 'A', 'gpa': 7.5}, {'id': 'B', 'gpa': 8.0}]"
+         "ranked",
+         "[{'id': 'latte', 'doanh_thu': 8.0}, {'id': 'ca-phe-den', 'doanh_thu': 7…"
         ]
        ],
-       "out": "['A', 'B']"
+       "out": "['ca-phe-den', 'latte']"
       },
       {
        "line": 4,
@@ -5486,7 +5486,7 @@
    }
   },
   "SY20": {
-   "codeHash": "2e37242f800a4628",
+   "codeHash": "5d1d6753202661aa",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -5499,7 +5499,7 @@
       "kind": "final",
       "var": "name",
       "prompt": "Sau khi chạy xong, `name` bằng mấy?",
-      "answer": "'marks.txt'"
+      "answer": "'recipe.txt'"
      },
      "rows": [
       {
@@ -5513,7 +5513,7 @@
        "set": [
         [
          "files",
-         "{'students.txt': b'A', 'courses.txt': b'B', 'marks.txt': b'C'}"
+         "{'items.txt': b'A', 'ingredients.txt': b'B', 'recipe.txt': b'C'}"
         ]
        ]
       },
@@ -5534,7 +5534,7 @@
        "set": [
         [
          "archive",
-         "ZipFile(_allowZip64=True, _didModify=True, debug=0, NameToInfo={'studen…"
+         "ZipFile(_allowZip64=True, _didModify=True, debug=0, NameToInfo={'items.…"
         ],
         [
          "data",
@@ -5542,7 +5542,7 @@
         ],
         [
          "name",
-         "'students.txt'"
+         "'items.txt'"
         ]
        ]
       },
@@ -5555,7 +5555,7 @@
         ],
         [
          "name",
-         "'courses.txt'"
+         "'ingredients.txt'"
         ]
        ]
       },
@@ -5568,7 +5568,7 @@
         ],
         [
          "name",
-         "'marks.txt'"
+         "'recipe.txt'"
         ]
        ]
       },
@@ -5583,7 +5583,7 @@
        "set": [
         [
          "archive",
-         "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'stude…"
+         "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'items…"
         ]
        ]
       },
@@ -5592,7 +5592,7 @@
        "set": [
         [
          "name",
-         "'students.txt'"
+         "'items.txt'"
         ]
        ]
       },
@@ -5601,7 +5601,7 @@
        "set": [
         [
          "name",
-         "'courses.txt'"
+         "'ingredients.txt'"
         ]
        ]
       },
@@ -5610,7 +5610,7 @@
        "set": [
         [
          "name",
-         "'marks.txt'"
+         "'recipe.txt'"
         ]
        ]
       },
@@ -5623,7 +5623,7 @@
         ],
         [
          "archive",
-         "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'stude…"
+         "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'items…"
         ],
         [
          "buffer",
@@ -5635,11 +5635,11 @@
         ],
         [
          "files",
-         "{'students.txt': b'A', 'courses.txt': b'B', 'marks.txt': b'C'}"
+         "{'items.txt': b'A', 'ingredients.txt': b'B', 'recipe.txt': b'C'}"
         ],
         [
          "restored",
-         "{'students.txt': b'A', 'courses.txt': b'B', 'marks.txt': b'C'}"
+         "{'items.txt': b'A', 'ingredients.txt': b'B', 'recipe.txt': b'C'}"
         ],
         [
          "zipfile",
@@ -5663,14 +5663,14 @@
    }
   },
   "SY21": {
-   "codeHash": "ae5e7ef0326bd4b9",
+   "codeHash": "b680eaaa2c0dccdb",
    "blocks": {
     "0": {
      "predict": {
       "kind": "final",
       "var": "b",
       "prompt": "Sau khi chạy xong, `b` bằng mấy?",
-      "answer": "['S01', [8, 9]]"
+      "answer": "['DH-001', [8, 9]]"
      },
      "rows": [
       {
@@ -5691,7 +5691,7 @@
        "set": [
         [
          "record",
-         "('S01', [8, 9])"
+         "('DH-001', [8, 9])"
         ]
        ]
       },
@@ -5700,7 +5700,7 @@
        "set": [
         [
          "a",
-         "('S01', [8, 9])"
+         "('DH-001', [8, 9])"
         ]
        ]
       },
@@ -5709,7 +5709,7 @@
        "set": [
         [
          "b",
-         "['S01', [8, 9]]"
+         "['DH-001', [8, 9]]"
         ]
        ]
       },
@@ -5724,67 +5724,7 @@
      ]
     },
     "1": {
-     "predict": {
-      "kind": "final",
-      "var": "restored",
-      "prompt": "Sau khi chạy xong, `restored` bằng mấy?",
-      "answer": "{'ids': {'S01', 'S02'}, 'marks': (8, 9)}"
-     },
-     "rows": [
-      {
-       "line": 1,
-       "set": [
-        [
-         "tempfile",
-         "<thư viện tempfile>"
-        ]
-       ]
-      },
-      {
-       "line": 2,
-       "set": [
-        [
-         "state",
-         "{'ids': {'S01', 'S02'}, 'marks': (8, 9)}"
-        ]
-       ]
-      },
-      {
-       "line": 3,
-       "set": [
-        [
-         "f",
-         "_TemporaryFileWrapper(file=BufferedRandom(), name='C:\\\\Users\\\\sonkh\\\\Ap…"
-        ]
-       ]
-      },
-      {
-       "line": 4
-      },
-      {
-       "line": 5
-      },
-      {
-       "line": 6,
-       "set": [
-        [
-         "restored",
-         "{'ids': {'S01', 'S02'}, 'marks': (8, 9)}"
-        ]
-       ]
-      },
-      {
-       "line": 3
-      },
-      {
-       "line": 7,
-       "out": "True"
-      },
-      {
-       "line": 8,
-       "out": "set"
-      }
-     ]
+     "skip": "không có câu dự đoán nào bảng trả lời được"
     },
     "2": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -5800,7 +5740,7 @@
    }
   },
   "SY25": {
-   "codeHash": "63bdc6789c79cc3b",
+   "codeHash": "910fc7703f6a96d1",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -5808,18 +5748,18 @@
     "1": {
      "predict": {
       "kind": "mid",
-      "var": "cid",
+      "var": "ing",
       "line": 2,
-      "prompt": "Ngay sau khi dòng 2 chạy, `cid` bằng mấy?",
-      "answer": "'PY'"
+      "prompt": "Ngay sau khi dòng 2 chạy, `ing` bằng mấy?",
+      "answer": "'ca-phe-hat'"
      },
      "rows": [
       {
        "line": 1,
        "set": [
         [
-         "course_marks",
-         "<hàm course_marks>"
+         "ingredient_lines",
+         "<hàm ingredient_lines>"
         ]
        ]
       },
@@ -5827,8 +5767,8 @@
        "line": 3,
        "set": [
         [
-         "students",
-         "{'S01': {'name': 'An', 'dob': '2005-01-02'}, 'S02': {'name': 'Binh', 'd…"
+         "items",
+         "{'latte': {'name': 'Latte', 'group': 'Ca phe'}, 'mocha': {'name': 'Moch…"
         ]
        ]
       },
@@ -5836,8 +5776,8 @@
        "line": 4,
        "set": [
         [
-         "marks",
-         "{('S01', 'PY'): 8, ('S02', 'PY'): 0, ('S01', 'DB'): 7}"
+         "recipe",
+         "{('latte', 'ca-phe-hat'): 8, ('mocha', 'ca-phe-hat'): 0, ('latte', 'sua…"
         ]
        ]
       },
@@ -5846,88 +5786,88 @@
       },
       {
        "line": 1,
-       "fn": "course_marks",
+       "fn": "ingredient_lines",
        "depth": 1,
        "enter": true,
        "set": [
         [
-         "course_id",
-         "'PY'"
+         "ingredient_id",
+         "'ca-phe-hat'"
         ],
         [
-         "marks",
-         "{('S01', 'PY'): 8, ('S02', 'PY'): 0, ('S01', 'DB'): 7}"
+         "items",
+         "{'latte': {'name': 'Latte', 'group': 'Ca phe'}, 'mocha': {'name': 'Moch…"
         ],
         [
-         "students",
-         "{'S01': {'name': 'An', 'dob': '2005-01-02'}, 'S02': {'name': 'Binh', 'd…"
+         "recipe",
+         "{('latte', 'ca-phe-hat'): 8, ('mocha', 'ca-phe-hat'): 0, ('latte', 'sua…"
         ]
        ]
       },
       {
        "line": 2,
-       "fn": "course_marks",
+       "fn": "ingredient_lines",
        "depth": 1,
        "set": [
         [
-         "cid",
-         "'PY'"
-        ],
-        [
-         "score",
+         "amount",
          "8"
         ],
         [
-         "sid",
-         "'S01'"
+         "iid",
+         "'latte'"
+        ],
+        [
+         "ing",
+         "'ca-phe-hat'"
         ]
        ]
       },
       {
        "line": 2,
-       "fn": "course_marks",
+       "fn": "ingredient_lines",
        "depth": 1,
        "set": [
         [
-         "score",
+         "amount",
          "0"
         ],
         [
-         "sid",
-         "'S02'"
+         "iid",
+         "'mocha'"
         ]
        ]
       },
       {
        "line": 2,
-       "fn": "course_marks",
+       "fn": "ingredient_lines",
        "depth": 1,
        "set": [
         [
-         "cid",
-         "'DB'"
-        ],
-        [
-         "score",
+         "amount",
          "7"
         ],
         [
-         "sid",
-         "'S01'"
+         "iid",
+         "'latte'"
+        ],
+        [
+         "ing",
+         "'sua-tuoi'"
         ]
        ]
       },
       {
        "line": 2,
-       "fn": "course_marks",
+       "fn": "ingredient_lines",
        "depth": 1
       },
       {
        "line": 2,
-       "fn": "course_marks",
+       "fn": "ingredient_lines",
        "depth": 1,
-       "ret": "[('S01', 'An', 8), ('S02', 'Binh', 0)]",
-       "out": "[('S01', 'An', 8), ('S02', 'Binh', 0)]"
+       "ret": "[('latte', 'Latte', 8), ('mocha', 'Mocha', 0)]",
+       "out": "[('latte', 'Latte', 8), ('mocha', 'Mocha', 0)]"
       }
      ]
     },
@@ -5935,22 +5875,22 @@
      "predict": {
       "kind": "mid",
       "var": "prompt",
-      "line": 10,
-      "prompt": "Ngay sau khi dòng 10 chạy, `prompt` bằng mấy?",
-      "answer": "'Student id: '"
+      "line": 9,
+      "prompt": "Ngay sau khi dòng 9 chạy, `prompt` bằng mấy?",
+      "answer": "'Ma mon: '"
      },
      "rows": [
       {
        "line": 1,
        "set": [
         [
-         "read_student",
-         "<hàm read_student>"
+         "read_item",
+         "<hàm read_item>"
         ]
        ]
       },
       {
-       "line": 9,
+       "line": 8,
        "set": [
         [
          "answers",
@@ -5959,11 +5899,11 @@
        ]
       },
       {
-       "line": 10
+       "line": 9
       },
       {
        "line": 1,
-       "fn": "read_student",
+       "fn": "read_item",
        "depth": 1,
        "enter": true,
        "set": [
@@ -5975,126 +5915,115 @@
       },
       {
        "line": 2,
-       "fn": "read_student",
+       "fn": "read_item",
        "depth": 1
       },
       {
-       "line": 10,
+       "line": 9,
        "fn": "<lambda>",
        "depth": 2,
        "enter": true,
        "set": [
         [
          "prompt",
-         "'Student id: '"
+         "'Ma mon: '"
         ]
        ]
       },
       {
-       "line": 10,
+       "line": 9,
        "fn": "<lambda>",
        "depth": 2
       },
       {
-       "line": 10,
+       "line": 9,
        "fn": "<lambda>",
        "depth": 2,
-       "ret": "'S01'"
+       "ret": "'latte'"
       },
       {
        "line": 3,
-       "fn": "read_student",
+       "fn": "read_item",
        "depth": 1
       },
       {
-       "line": 10,
+       "line": 9,
        "fn": "<lambda>",
        "depth": 2,
        "enter": true,
        "set": [
         [
          "prompt",
-         "'Name: '"
+         "'Ten mon: '"
         ]
        ]
       },
       {
-       "line": 10,
+       "line": 9,
        "fn": "<lambda>",
        "depth": 2
       },
       {
-       "line": 10,
+       "line": 9,
        "fn": "<lambda>",
        "depth": 2,
-       "ret": "'An'"
+       "ret": "'Latte'"
       },
       {
        "line": 4,
-       "fn": "read_student",
+       "fn": "read_item",
        "depth": 1
       },
       {
-       "line": 10,
+       "line": 9,
        "fn": "<lambda>",
        "depth": 2,
        "enter": true,
        "set": [
         [
          "prompt",
-         "'DoB YYYY-MM-DD: '"
+         "'Nhom mon: '"
         ]
        ]
       },
       {
-       "line": 10,
+       "line": 9,
        "fn": "<lambda>",
        "depth": 2
       },
       {
-       "line": 10,
+       "line": 9,
        "fn": "<lambda>",
        "depth": 2,
-       "ret": "'2005-01-02'"
+       "ret": "'Ca phe'"
       },
       {
        "line": 5,
-       "fn": "read_student",
+       "fn": "read_item",
        "depth": 1
       },
       {
        "line": 6,
-       "fn": "read_student",
-       "depth": 1,
-       "set": [
-        [
-         "datetime",
-         "<lớp datetime>"
-        ]
-       ]
+       "fn": "read_item",
+       "depth": 1
       },
       {
        "line": 7,
-       "fn": "read_student",
+       "fn": "read_item",
        "depth": 1
       },
       {
-       "line": 8,
-       "fn": "read_student",
-       "depth": 1
-      },
-      {
-       "line": 8,
-       "fn": "read_student",
+       "line": 7,
+       "fn": "read_item",
        "depth": 1,
-       "ret": "('S01', {'name': 'An', 'dob': '2005-01-02'})"
+       "ret": "('latte', {'name': 'Latte', 'group': 'Ca phe'})"
       },
       {
-       "line": 11,
-       "out": "S01 An 2005-01-02"
+       "line": 10,
+       "out": "latte Latte Ca phe"
       },
       {
-       "line": 11,
+       "line": 10,
        "ret": "None"
       }
      ]
@@ -6102,7 +6031,7 @@
    }
   },
   "SY26": {
-   "codeHash": "28f417d7d27309ad",
+   "codeHash": "10050ccef850f361",
    "blocks": {
     "0": {
      "predict": {
@@ -6110,7 +6039,7 @@
       "var": "self",
       "line": 2,
       "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-      "answer": "Student()"
+      "answer": "Item()"
      },
      "rows": [
       {
@@ -6118,18 +6047,18 @@
       },
       {
        "line": 1,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "enter": true
       },
       {
        "line": 1,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1
       },
       {
        "line": 2,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "set": [
         [
@@ -6140,7 +6069,7 @@
       },
       {
        "line": 3,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "set": [
         [
@@ -6151,7 +6080,7 @@
       },
       {
        "line": 3,
-       "fn": "Student",
+       "fn": "Item",
        "depth": 1,
        "ret": "None"
       },
@@ -6160,18 +6089,18 @@
       },
       {
        "line": 4,
-       "fn": "Course",
+       "fn": "Ingredient",
        "depth": 1,
        "enter": true
       },
       {
        "line": 4,
-       "fn": "Course",
+       "fn": "Ingredient",
        "depth": 1
       },
       {
        "line": 5,
-       "fn": "Course",
+       "fn": "Ingredient",
        "depth": 1,
        "set": [
         [
@@ -6182,7 +6111,7 @@
       },
       {
        "line": 6,
-       "fn": "Course",
+       "fn": "Ingredient",
        "depth": 1,
        "set": [
         [
@@ -6193,7 +6122,7 @@
       },
       {
        "line": 6,
-       "fn": "Course",
+       "fn": "Ingredient",
        "depth": 1,
        "ret": "None"
       },
@@ -6207,20 +6136,20 @@
        "enter": true,
        "set": [
         [
-         "dob",
-         "'2005-01-02'"
+         "code",
+         "'latte'"
+        ],
+        [
+         "group",
+         "'Ca phe'"
         ],
         [
          "name",
-         "'An'"
+         "'Latte'"
         ],
         [
          "self",
-         "Student()"
-        ],
-        [
-         "sid",
-         "'S01'"
+         "Item()"
         ]
        ]
       },
@@ -6231,7 +6160,7 @@
        "set": [
         [
          "self",
-         "Student(sid='S01', name='An', dob='2005-01-02')"
+         "Item(code='latte', name='Latte', group='Ca phe')"
         ]
        ]
       },
@@ -6242,20 +6171,20 @@
        "ret": "None",
        "set": [
         [
-         "cid",
-         "'PY'"
-        ],
-        [
-         "credits",
-         "3"
+         "code",
+         "'ca-phe-hat'"
         ],
         [
          "name",
-         "'Python'"
+         "'Ca phe hat'"
         ],
         [
          "self",
-         "Course()"
+         "Ingredient()"
+        ],
+        [
+         "unit",
+         "'g'"
         ]
        ]
       },
@@ -6266,20 +6195,20 @@
        "enter": true,
        "set": [
         [
-         "cid",
-         "'PY'"
-        ],
-        [
-         "credits",
-         "3"
+         "code",
+         "'ca-phe-hat'"
         ],
         [
          "name",
-         "'Python'"
+         "'Ca phe hat'"
         ],
         [
          "self",
-         "Course()"
+         "Ingredient()"
+        ],
+        [
+         "unit",
+         "'g'"
         ]
        ]
       },
@@ -6290,7 +6219,7 @@
        "set": [
         [
          "self",
-         "Course(cid='PY', name='Python', credits=3)"
+         "Ingredient(code='ca-phe-hat', name='Ca phe hat', unit='g')"
         ]
        ]
       },
@@ -6311,7 +6240,7 @@
        "set": [
         [
          "self",
-         "Student(sid='S01', name='An', dob='2005-01-02')"
+         "Item(code='latte', name='Latte', group='Ca phe')"
         ]
        ]
       },
@@ -6324,15 +6253,15 @@
        "line": 3,
        "fn": "describe",
        "depth": 1,
-       "ret": "'S01: An (2005-01-02)'",
-       "out": "S01: An (2005-01-02)"
+       "ret": "'latte: Latte (Ca phe)'",
+       "out": "latte: Latte (Ca phe)"
       },
       {
        "line": 7,
        "set": [
         [
-         "item",
-         "Course(cid='PY', name='Python', credits=3)"
+         "row",
+         "Ingredient(code='ca-phe-hat', name='Ca phe hat', unit='g')"
         ]
        ]
       },
@@ -6347,7 +6276,7 @@
        "set": [
         [
          "self",
-         "Course(cid='PY', name='Python', credits=3)"
+         "Ingredient(code='ca-phe-hat', name='Ca phe hat', unit='g')"
         ]
        ]
       },
@@ -6360,8 +6289,8 @@
        "line": 6,
        "fn": "describe",
        "depth": 1,
-       "ret": "'PY: Python'",
-       "out": "PY: Python"
+       "ret": "'ca-phe-hat: Ca phe hat'",
+       "out": "ca-phe-hat: Ca phe hat"
       },
       {
        "line": 7
@@ -6374,7 +6303,7 @@
       "var": "self",
       "line": 4,
       "prompt": "Ngay sau khi dòng 4 chạy, `self` bằng mấy?",
-      "answer": "StudentMark()"
+      "answer": "RecipeLine()"
      },
      "rows": [
       {
@@ -6400,18 +6329,18 @@
       },
       {
        "line": 3,
-       "fn": "StudentMark",
+       "fn": "RecipeLine",
        "depth": 1,
        "enter": true
       },
       {
        "line": 3,
-       "fn": "StudentMark",
+       "fn": "RecipeLine",
        "depth": 1
       },
       {
        "line": 4,
-       "fn": "StudentMark",
+       "fn": "RecipeLine",
        "depth": 1,
        "set": [
         [
@@ -6422,18 +6351,18 @@
       },
       {
        "line": 7,
-       "fn": "StudentMark",
+       "fn": "RecipeLine",
        "depth": 1,
        "set": [
         [
-         "set_score",
-         "<hàm set_score>"
+         "set_amount",
+         "<hàm set_amount>"
         ]
        ]
       },
       {
        "line": 7,
-       "fn": "StudentMark",
+       "fn": "RecipeLine",
        "depth": 1,
        "ret": "None"
       },
@@ -6447,20 +6376,20 @@
        "enter": true,
        "set": [
         [
-         "cid",
-         "'PY'"
-        ],
-        [
-         "score",
+         "amount",
          "8.79"
         ],
         [
-         "self",
-         "StudentMark()"
+         "ingredient_id",
+         "'ca-phe-hat'"
         ],
         [
-         "sid",
-         "'S01'"
+         "item_id",
+         "'latte'"
+        ],
+        [
+         "self",
+         "RecipeLine()"
         ]
        ]
       },
@@ -6471,7 +6400,7 @@
        "set": [
         [
          "self",
-         "StudentMark(sid='S01', cid='PY')"
+         "RecipeLine(item_id='latte', ingredient_id='ca-phe-hat')"
         ]
        ]
       },
@@ -6482,44 +6411,44 @@
       },
       {
        "line": 7,
-       "fn": "set_score",
+       "fn": "set_amount",
        "depth": 2,
        "enter": true,
        "set": [
         [
-         "score",
+         "amount",
          "8.79"
         ],
         [
          "self",
-         "StudentMark(sid='S01', cid='PY')"
+         "RecipeLine(item_id='latte', ingredient_id='ca-phe-hat')"
         ]
        ]
       },
       {
        "line": 8,
-       "fn": "set_score",
+       "fn": "set_amount",
        "depth": 2
       },
       {
        "line": 10,
-       "fn": "set_score",
+       "fn": "set_amount",
        "depth": 2
       },
       {
        "line": 12,
-       "fn": "set_score",
+       "fn": "set_amount",
        "depth": 2,
        "set": [
         [
          "self",
-         "StudentMark(sid='S01', cid='PY', score=8.7)"
+         "RecipeLine(item_id='latte', ingredient_id='ca-phe-hat', amount=8.7)"
         ]
        ]
       },
       {
        "line": 12,
-       "fn": "set_score",
+       "fn": "set_amount",
        "depth": 2,
        "ret": "None"
       },
@@ -6530,16 +6459,16 @@
        "ret": "None",
        "set": [
         [
-         "cid",
-         "'DB'"
-        ],
-        [
-         "score",
+         "amount",
          "6.29"
         ],
         [
+         "item_id",
+         "'mocha'"
+        ],
+        [
          "self",
-         "StudentMark()"
+         "RecipeLine()"
         ]
        ]
       },
@@ -6550,20 +6479,20 @@
        "enter": true,
        "set": [
         [
-         "cid",
-         "'DB'"
-        ],
-        [
-         "score",
+         "amount",
          "6.29"
         ],
         [
-         "self",
-         "StudentMark()"
+         "ingredient_id",
+         "'ca-phe-hat'"
         ],
         [
-         "sid",
-         "'S01'"
+         "item_id",
+         "'mocha'"
+        ],
+        [
+         "self",
+         "RecipeLine()"
         ]
        ]
       },
@@ -6574,7 +6503,7 @@
        "set": [
         [
          "self",
-         "StudentMark(sid='S01', cid='DB')"
+         "RecipeLine(item_id='mocha', ingredient_id='ca-phe-hat')"
         ]
        ]
       },
@@ -6585,44 +6514,44 @@
       },
       {
        "line": 7,
-       "fn": "set_score",
+       "fn": "set_amount",
        "depth": 2,
        "enter": true,
        "set": [
         [
-         "score",
+         "amount",
          "6.29"
         ],
         [
          "self",
-         "StudentMark(sid='S01', cid='DB')"
+         "RecipeLine(item_id='mocha', ingredient_id='ca-phe-hat')"
         ]
        ]
       },
       {
        "line": 8,
-       "fn": "set_score",
+       "fn": "set_amount",
        "depth": 2
       },
       {
        "line": 10,
-       "fn": "set_score",
+       "fn": "set_amount",
        "depth": 2
       },
       {
        "line": 12,
-       "fn": "set_score",
+       "fn": "set_amount",
        "depth": 2,
        "set": [
         [
          "self",
-         "StudentMark(sid='S01', cid='DB', score=6.2)"
+         "RecipeLine(item_id='mocha', ingredient_id='ca-phe-hat', amount=6.2)"
         ]
        ]
       },
       {
        "line": 12,
-       "fn": "set_score",
+       "fn": "set_amount",
        "depth": 2,
        "ret": "None"
       },
@@ -6637,7 +6566,7 @@
        "set": [
         [
          "row",
-         "StudentMark(sid='S01', cid='PY', score=8.7)"
+         "RecipeLine(item_id='latte', ingredient_id='ca-phe-hat', amount=8.7)"
         ]
        ]
       },
@@ -6646,7 +6575,7 @@
        "set": [
         [
          "row",
-         "StudentMark(sid='S01', cid='DB', score=6.2)"
+         "RecipeLine(item_id='mocha', ingredient_id='ca-phe-hat', amount=6.2)"
         ]
        ]
       },
@@ -6654,11 +6583,11 @@
        "line": 14,
        "set": [
         [
-         "StudentMark",
-         "<lớp StudentMark>"
+         "RecipeLine",
+         "<lớp RecipeLine>"
         ],
         [
-         "marks",
+         "amounts",
          "ndarray: array([8.7, 6.2])"
         ],
         [
@@ -6670,8 +6599,12 @@
          "<thư viện numpy>"
         ],
         [
+         "row",
+         "Ingredient(code='ca-phe-hat', name='Ca phe hat', unit='g')"
+        ],
+        [
          "rows",
-         "[StudentMark(sid='S01', cid='PY', score=8.7), StudentMark(sid='S01', ci…"
+         "[RecipeLine(item_id='latte', ingredient_id='ca-phe-hat', amount=8.7), R…"
         ]
        ]
       },
@@ -6679,7 +6612,7 @@
        "line": 15,
        "set": [
         [
-         "credits",
+         "cups",
          "ndarray: array([3, 1])"
         ]
        ]
@@ -6708,7 +6641,7 @@
        "set": [
         [
          "files",
-         "{'input.py': 'doc du lieu', 'output.py': 'curses output', 'domains/stud…"
+         "{'input.py': 'doc du lieu', 'output.py': 'curses output', 'domains/item…"
         ]
        ]
       },
@@ -6754,7 +6687,7 @@
        "set": [
         [
          "name",
-         "'domains/student.py'"
+         "'domains/item.py'"
         ]
        ]
       },
@@ -6762,7 +6695,7 @@
        "line": 3,
        "fn": "<genexpr>",
        "depth": 1,
-       "ret": "'domains/student.py'"
+       "ret": "'domains/item.py'"
       },
       {
        "line": 3,
@@ -6772,7 +6705,7 @@
        "set": [
         [
          "name",
-         "'domains/student.py'"
+         "'domains/item.py'"
         ]
        ]
       },
@@ -6783,7 +6716,7 @@
        "set": [
         [
          "name",
-         "'domains/course.py'"
+         "'domains/ingredient.py'"
         ]
        ]
       },
@@ -6791,7 +6724,7 @@
        "line": 3,
        "fn": "<genexpr>",
        "depth": 1,
-       "ret": "'domains/course.py'"
+       "ret": "'domains/ingredient.py'"
       },
       {
        "line": 3,
@@ -6801,7 +6734,7 @@
        "set": [
         [
          "name",
-         "'domains/course.py'"
+         "'domains/ingredient.py'"
         ]
        ]
       },
@@ -6812,7 +6745,7 @@
        "set": [
         [
          "name",
-         "'domains/mark.py'"
+         "'domains/recipe.py'"
         ]
        ]
       },
@@ -6820,7 +6753,7 @@
        "line": 3,
        "fn": "<genexpr>",
        "depth": 1,
-       "ret": "'domains/mark.py'"
+       "ret": "'domains/recipe.py'"
       },
       {
        "line": 3,
@@ -6830,7 +6763,7 @@
        "set": [
         [
          "name",
-         "'domains/mark.py'"
+         "'domains/recipe.py'"
         ]
        ]
       },
@@ -6913,7 +6846,7 @@
        "fn": "<genexpr>",
        "depth": 1,
        "ret": "None",
-       "out": "['domains/__init__.py', 'domains/course.py', 'domains/mark.py', 'domains/registry.py', 'domains/student.py']"
+       "out": "['domains/__init__.py', 'domains/ingredient.py', 'domains/item.py', 'domains/recipe.py', 'domains/registry.py']"
       },
       {
        "line": 3,
@@ -6924,7 +6857,7 @@
    }
   },
   "SY27": {
-   "codeHash": "db5fb0133c5963f4",
+   "codeHash": "aa4a8593b945d522",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -6934,7 +6867,7 @@
       "kind": "final",
       "var": "name",
       "prompt": "Sau khi chạy xong, `name` bằng mấy?",
-      "answer": "'marks.txt'"
+      "answer": "'recipe.txt'"
      },
      "rows": [
       {
@@ -6960,7 +6893,7 @@
        "set": [
         [
          "texts",
-         "{'students.txt': 'id,name,dob\\nS01,An,2005-01-02\\n', 'courses.txt': 'id…"
+         "{'items.txt': 'id,name,group\\nlatte,Latte,Ca phe\\n', 'ingredients.txt':…"
         ]
        ]
       },
@@ -6987,15 +6920,15 @@
        "set": [
         [
          "archive",
-         "ZipFile(_allowZip64=True, _didModify=True, debug=0, NameToInfo={'studen…"
+         "ZipFile(_allowZip64=True, _didModify=True, debug=0, NameToInfo={'items.…"
         ],
         [
          "name",
-         "'students.txt'"
+         "'items.txt'"
         ],
         [
          "text",
-         "'id,name,dob\\nS01,An,2005-01-02\\n'"
+         "'id,name,group\\nlatte,Latte,Ca phe\\n'"
         ]
        ]
       },
@@ -7004,11 +6937,11 @@
        "set": [
         [
          "name",
-         "'courses.txt'"
+         "'ingredients.txt'"
         ],
         [
          "text",
-         "'id,name,credits\\nPY,Python,3\\n'"
+         "'id,name,unit\\nca-phe-hat,Ca phe hat,g\\n'"
         ]
        ]
       },
@@ -7017,11 +6950,11 @@
        "set": [
         [
          "name",
-         "'marks.txt'"
+         "'recipe.txt'"
         ],
         [
          "text",
-         "'student_id,course_id,score\\nS01,PY,8.7\\n'"
+         "'item_id,ingredient_id,amount\\nlatte,ca-phe-hat,8.7\\n'"
         ]
        ]
       },
@@ -7036,7 +6969,7 @@
        "set": [
         [
          "archive",
-         "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'stude…"
+         "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'items…"
         ]
        ]
       },
@@ -7045,7 +6978,7 @@
        "set": [
         [
          "name",
-         "'students.txt'"
+         "'items.txt'"
         ]
        ]
       },
@@ -7054,7 +6987,7 @@
        "set": [
         [
          "name",
-         "'courses.txt'"
+         "'ingredients.txt'"
         ]
        ]
       },
@@ -7063,7 +6996,7 @@
        "set": [
         [
          "name",
-         "'marks.txt'"
+         "'recipe.txt'"
         ]
        ]
       },
@@ -7076,7 +7009,7 @@
         ],
         [
          "archive",
-         "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'stude…"
+         "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'items…"
         ],
         [
          "buffer",
@@ -7084,15 +7017,15 @@
         ],
         [
          "restored",
-         "{'students.txt': 'id,name,dob\\nS01,An,2005-01-02\\n', 'courses.txt': 'id…"
+         "{'items.txt': 'id,name,group\\nlatte,Latte,Ca phe\\n', 'ingredients.txt':…"
         ],
         [
          "text",
-         "'student_id,course_id,score\\nS01,PY,8.7\\n'"
+         "'item_id,ingredient_id,amount\\nlatte,ca-phe-hat,8.7\\n'"
         ],
         [
          "texts",
-         "{'students.txt': 'id,name,dob\\nS01,An,2005-01-02\\n', 'courses.txt': 'id…"
+         "{'items.txt': 'id,name,group\\nlatte,Latte,Ca phe\\n', 'ingredients.txt':…"
         ],
         [
          "zipfile",
@@ -7115,7 +7048,7 @@
    }
   },
   "SY28": {
-   "codeHash": "7b58c2647a0fa98d",
+   "codeHash": "acfaada60159f874",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -7125,7 +7058,7 @@
       "kind": "final",
       "var": "loaded",
       "prompt": "Sau khi chạy xong, `loaded` bằng mấy?",
-      "answer": "{'version': 1, 'marks': (8, 9)}"
+      "answer": "{'version': 1, 'amounts': (8, 9)}"
      },
      "rows": [
       {
@@ -7151,7 +7084,7 @@
        "set": [
         [
          "folder",
-         "'C:\\\\Users\\\\sonkh\\\\AppData\\\\Local\\\\Temp\\\\tmpi12k9asl'"
+         "'C:\\\\Users\\\\sonkh\\\\AppData\\\\Local\\\\Temp\\\\tmp8h0yw9hn'"
         ]
        ]
       },
@@ -7160,7 +7093,7 @@
        "set": [
         [
          "path",
-         "WindowsPath: WindowsPath('C:/Users/sonkh/AppData/Local/Temp/tmpi12k9asl…"
+         "WindowsPath: WindowsPath('C:/Users/sonkh/AppData/Local/Temp/tmp8h0yw9hn…"
         ]
        ]
       },
@@ -7182,7 +7115,7 @@
         ],
         [
          "loaded",
-         "{'version': 1, 'marks': (8, 9)}"
+         "{'version': 1, 'amounts': (8, 9)}"
         ]
        ]
       },

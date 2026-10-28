@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Tám bài còn lại quay về các chi tiết mà những bài trước đi nhanh qua, trên đúng bảng của quán. File có một dòng tiêu đề và hai cột số. Bạn chỉ cần cột điểm, nên có thể bỏ tiêu đề bằng skiprows=1 và chọn cột bằng usecols. Chỉ số cột bắt đầu từ 0 giống chỉ số phần tử trong array."
+      "text": "Tám bài còn lại quay về các chi tiết mà những bài trước đi nhanh qua, trên đúng bảng của quán. File có một dòng tiêu đề và hai cột số. Bạn chỉ cần cột lượng cà phê hạt, nên có thể bỏ tiêu đề bằng skiprows=1 và chọn cột bằng usecols. Chỉ số cột bắt đầu từ 0 giống chỉ số phần tử trong array."
      },
      {
       "type": "code",
-      "code": "import numpy as np\nfrom io import StringIO\ntext = \"id,mark\\n1,8.5\\n2,7.0\\n\"\nmarks = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1, usecols=(1,), dtype=float)\nprint(marks.tolist())\nprint(marks.shape, len(marks), marks.dtype.kind)",
+      "code": "import numpy as np\nfrom io import StringIO\ntext = \"id,luong\\n1,8.5\\n2,7.0\\n\"\nluong = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1, usecols=(1,), dtype=float)\nprint(luong.tolist())\nprint(luong.shape, len(luong), luong.dtype.kind)",
       "expected": "[8.5, 7.0]\n(2,) 2 f",
       "tryIt": true
      }
@@ -38,8 +38,8 @@
      },
      {
       "type": "code",
-      "code": "import numpy as np\nfrom io import StringIO\ntext = \"name,city\\nMai,Hanoi\\nAn,Hue\\n\"\nnames = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1, usecols=(0,), dtype=str)\nprint(names.tolist())\nprint(names.shape)",
-      "expected": "['Mai', 'An']\n(2,)",
+      "code": "import numpy as np\nfrom io import StringIO\ntext = \"ten_mon,nhom\\nLatte,Ca phe\\nMocha,Ca phe\\n\"\nten_mon = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1, usecols=(0,), dtype=str)\nprint(ten_mon.tolist())\nprint(ten_mon.shape)",
+      "expected": "['Latte', 'Mocha']\n(2,)",
       "tryIt": true
      }
     ],
@@ -50,8 +50,8 @@
      },
      {
       "type": "code",
-      "code": "import tempfile, io, contextlib\nfrom pathlib import Path\nimport numpy as np\nimport pandas as pd\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"marks.txt\"\n    path.write_text(\"Mai,8\\nAn,7\\n\", encoding=\"utf-8\")\n    f = open(path, encoding=\"utf-8\")\n    print(f.readline().strip())\n    print(f.read().strip())\n    f.close()\n    print(f.closed)\n    with open(path, encoding=\"utf-8\") as stream:\n        print(len(stream.readlines()))\ninfo, help_text = io.StringIO(), io.StringIO()\nwith contextlib.redirect_stdout(info):\n    np.info(np.ndarray.dtype)\nwith contextlib.redirect_stdout(help_text):\n    help(pd.read_csv)\nprint(bool(info.getvalue().strip()), \"read_csv\" in help_text.getvalue())",
-      "expected": "Mai,8\nAn,7\nTrue\n2\nTrue True",
+      "code": "import tempfile, io, contextlib\nfrom pathlib import Path\nimport numpy as np\nimport pandas as pd\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"luong.txt\"\n    path.write_text(\"Latte,8\\nMocha,7\\n\", encoding=\"utf-8\")\n    f = open(path, encoding=\"utf-8\")\n    print(f.readline().strip())\n    print(f.read().strip())\n    f.close()\n    print(f.closed)\n    with open(path, encoding=\"utf-8\") as stream:\n        print(len(stream.readlines()))\ninfo, help_text = io.StringIO(), io.StringIO()\nwith contextlib.redirect_stdout(info):\n    np.info(np.ndarray.dtype)\nwith contextlib.redirect_stdout(help_text):\n    help(pd.read_csv)\nprint(bool(info.getvalue().strip()), \"read_csv\" in help_text.getvalue())",
+      "expected": "Latte,8\nMocha,7\nTrue\n2\nTrue True",
       "tryIt": true
      }
     ]
@@ -123,11 +123,11 @@
    ],
    "practice": [
     {
-     "prompt": "File id,mark có tiêu đề và hai cột. Viết cách chỉ đọc mark bằng số thực.",
-     "answer": "np.loadtxt(path, delimiter=\",\", skiprows=1, usecols=(1,), dtype=float). Cột mark có chỉ số 1."
+     "prompt": "File id,luong có tiêu đề và hai cột. Viết cách chỉ đọc luong bằng số thực.",
+     "answer": "np.loadtxt(path, delimiter=\",\", skiprows=1, usecols=(1,), dtype=float). Cột luong có chỉ số 1."
     },
     {
-     "prompt": "Đọc hai tên bằng dtype=str: shape (2,) có nghĩa hai hàng hai cột không?",
+     "prompt": "Đọc hai tên món bằng dtype=str: shape (2,) có nghĩa hai hàng hai cột không?",
      "answer": "Không. Đó là array một chiều gồm hai phần tử. len bằng 2; không có chiều cột thứ hai."
     },
     {
@@ -135,11 +135,11 @@
      "answer": "readline lấy dòng tiếp theo; read lấy phần còn lại. help mô tả API, không lấy dữ liệu bảng. Khối with đóng file khi rời khối; nếu mở thủ công, gọi close và có thể xem thuộc tính closed."
     },
     {
-     "prompt": "Bạn chưa nhớ dtype nhận những giá trị nào. Viết lệnh hỏi trợ giúp cho thuộc tính NumPy này và cho pd.read_csv. Các lệnh có đọc file marks.csv không?",
-     "answer": "np.info(np.ndarray.dtype) và help(pd.read_csv). Chúng hiển thị tài liệu API, không đọc dữ liệu marks.csv. Đọc file vẫn cần lời gọi np.loadtxt hay pd.read_csv cùng đường dẫn và tham số."
+     "prompt": "Bạn chưa nhớ dtype nhận những giá trị nào. Viết lệnh hỏi trợ giúp cho thuộc tính NumPy này và cho pd.read_csv. Các lệnh có đọc file don_hang.csv không?",
+     "answer": "np.info(np.ndarray.dtype) và help(pd.read_csv). Chúng hiển thị tài liệu API, không đọc dữ liệu don_hang.csv. Đọc file vẫn cần lời gọi np.loadtxt hay pd.read_csv cùng đường dẫn và tham số."
     },
     {
-     "prompt": "marks có shape (2,), dtype=float64. len(marks) bằng bao nhiêu? Vì sao import numpy as np cần xuất hiện trước np.loadtxt?",
+     "prompt": "luong có shape (2,), dtype=float64. len(luong) bằng bao nhiêu? Vì sao import numpy as np cần xuất hiện trước np.loadtxt?",
      "answer": "len bằng 2, tức hai phần tử theo chiều đầu. import nạp thư viện và gán tên np; dùng np trước khi tên được định nghĩa sẽ báo NameError trong phiên sạch."
     }
    ]

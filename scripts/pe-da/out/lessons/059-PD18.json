@@ -22,41 +22,41 @@
     [
      {
       "type": "paragraph",
-      "text": "Mỗi ngày cửa hàng gửi một bảng có cùng cấu trúc. Để tạo bảng nhiều ngày, bạn xếp các bảng này nối tiếp theo hàng."
+      "text": "Mỗi tối hai quầy của quán gửi về một bảng đơn hàng cùng cấu trúc. Để có bảng nhiều ngày, bạn xếp các bảng này nối tiếp theo hàng."
      },
      {
       "type": "code",
-      "code": "import pandas as pd\nday1 = pd.DataFrame({'order': ['A'], 'amount': [10]})\nday2 = pd.DataFrame({'order': ['B'], 'amount': [20]})\nall_orders = pd.concat([day1, day2], ignore_index=True)\nprint(all_orders.to_dict('records'))\nprint(all_orders.index.tolist())",
-      "expected": "[{'order': 'A', 'amount': 10}, {'order': 'B', 'amount': 20}]\n[0, 1]",
+      "code": "import pandas as pd\nngay1 = pd.DataFrame({'ma_don': ['DH-01'], 'tong_tien': [10]})\nngay2 = pd.DataFrame({'ma_don': ['DH-02'], 'tong_tien': [20]})\nca_hai = pd.concat([ngay1, ngay2], ignore_index=True)\nprint(ca_hai.to_dict('records'))\nprint(ca_hai.index.tolist())",
+      "expected": "[{'ma_don': 'DH-01', 'tong_tien': 10}, {'ma_don': 'DH-02', 'tong_tien': 20}]\n[0, 1]",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "axis=0 là mặc định và nối theo hàng. ignore_index=True tạo nhãn hàng mới. Nó không bỏ đơn trùng: nếu file ngày bị đọc hai lần, các dòng vẫn lặp."
+      "text": "axis=0 là mặc định và nối theo hàng. ignore_index=True tạo nhãn hàng mới. Nó không bỏ đơn trùng: nếu file của một ngày bị đọc hai lần, các dòng vẫn lặp."
      },
      {
       "type": "code",
-      "code": "import pandas as pd\na = pd.DataFrame({'amount': [10], 'note': ['ok']})\nb = pd.DataFrame({'amount': [20], 'city': ['HN']})\nouter = pd.concat([a, b], ignore_index=True)\ninner = pd.concat([a, b], ignore_index=True, join='inner')\nprint(outer.columns.tolist())\nprint(inner.columns.tolist())",
-      "expected": "['amount', 'note', 'city']\n['amount']",
+      "code": "import pandas as pd\na = pd.DataFrame({'tong_tien': [10], 'ghi_chu': ['ok']})\nb = pd.DataFrame({'tong_tien': [20], 'quay': ['Q2']})\nouter = pd.concat([a, b], ignore_index=True)\ninner = pd.concat([a, b], ignore_index=True, join='inner')\nprint(outer.columns.tolist())\nprint(inner.columns.tolist())",
+      "expected": "['tong_tien', 'ghi_chu', 'quay']\n['tong_tien']",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "Mặc định nối theo hàng giữ hợp tên cột và điền thiếu ở phần không có. join=\"inner\" chỉ giữ các cột chung. Chọn cách nào phụ thuộc việc bạn muốn giữ hay loại thông tin mới trong các lô."
+      "text": "Mặc định nối theo hàng giữ hợp tên cột và điền thiếu ở phần không có. join=\"inner\" chỉ giữ các cột chung. Chọn cách nào phụ thuộc việc bạn muốn giữ hay loại thông tin mới trong các lô của từng quầy."
      },
      {
       "type": "code",
-      "code": "import pandas as pd\nsales = pd.DataFrame({'revenue': [10, 20]}, index=['A', 'B'])\ntargets = pd.DataFrame({'target': [30, 15]}, index=['B', 'A'])\ncombined = pd.concat([sales, targets], axis=1)\nprint(combined['target'].tolist())",
+      "code": "import pandas as pd\nthuc_thu = pd.DataFrame({'thuc_thu': [10, 20]}, index=['Q1', 'Q2'])\nmuc_tieu = pd.DataFrame({'muc_tieu': [30, 15]}, index=['Q2', 'Q1'])\ngop = pd.concat([thuc_thu, muc_tieu], axis=1)\nprint(gop['muc_tieu'].tolist())",
       "expected": "[15, 30]",
       "tryIt": true
      },
      {
       "type": "paragraph",
-      "text": "axis=1 ghép theo cột và căn theo index, không chỉ theo vị trí. Vì vậy target của A là 15. Khi có nhiều lô, thu gom chúng vào list rồi concat một lần, tránh nối lại toàn bộ bảng sau từng hàng."
+      "text": "axis=1 ghép theo cột và căn theo index, không chỉ theo vị trí. Vì vậy mục tiêu của Q1 là 15. Khi có nhiều lô, thu gom chúng vào list rồi concat một lần, tránh nối lại toàn bộ bảng sau từng hàng."
      }
     ]
    ],
@@ -135,9 +135,9 @@
      "answer": "Theo index."
     },
     {
-     "prompt": "Nối ba bảng mỗi bảng một qty là 1, 2, 3; in tổng.",
+     "prompt": "Nối ba bảng mỗi bảng một so_coc là 1, 2, 3; in tổng.",
      "answer": "Tổng là 6.",
-     "answerCode": "import pandas as pd\nparts = [pd.DataFrame({'qty': [v]}) for v in [1, 2, 3]]\nprint(pd.concat(parts, ignore_index=True)['qty'].sum())",
+     "answerCode": "import pandas as pd\nparts = [pd.DataFrame({'so_coc': [v]}) for v in [1, 2, 3]]\nprint(pd.concat(parts, ignore_index=True)['so_coc'].sum())",
      "answerExpected": "6"
     }
    ]

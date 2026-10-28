@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Các lớp ở bài trước đã tách phần việc, nhưng chưa ai canh dữ liệu bên trong. Điểm sinh viên phải từ 0 đến 10. Nếu chỗ nào cũng có thể gán điểm tùy ý, bạn sẽ phải kiểm tra cùng quy tắc nhiều lần. Một setter gom kiểm tra về một nơi:"
+      "text": "Các lớp ở bài trước đã tách phần việc, nhưng chưa ai canh dữ liệu bên trong. Số cốc trên một dòng đơn phải từ 0 đến 10. Nếu chỗ nào cũng có thể gán số cốc tùy ý, bạn sẽ phải kiểm tra cùng quy tắc nhiều lần. Một setter gom kiểm tra về một nơi:"
      },
      {
       "type": "code",
-      "code": "class Grade:\n    def __init__(self, value): self.set_value(value)\n    def get_value(self): return self._value\n    def set_value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\nprint(grade.get_value())",
+      "code": "class Cups:\n    def __init__(self, value): self.set_value(value)\n    def get_value(self): return self._value\n    def set_value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"cups\")\n        self._value = value\ncups = Cups(8)\nprint(cups.get_value())",
       "expected": "8",
       "tryIt": true,
       "trace": {
@@ -35,7 +35,7 @@
         "var": "self",
         "line": 2,
         "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-        "answer": "Grade()"
+        "answer": "Cups()"
        },
        "rows": [
         {
@@ -43,18 +43,18 @@
         },
         {
          "line": 1,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "enter": true
         },
         {
          "line": 1,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1
         },
         {
          "line": 2,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "set": [
           [
@@ -65,7 +65,7 @@
         },
         {
          "line": 3,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "set": [
           [
@@ -76,7 +76,7 @@
         },
         {
          "line": 4,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "set": [
           [
@@ -87,7 +87,7 @@
         },
         {
          "line": 4,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "ret": "None"
         },
@@ -102,7 +102,7 @@
          "set": [
           [
            "self",
-           "Grade()"
+           "Cups()"
           ],
           [
            "value",
@@ -123,7 +123,7 @@
          "set": [
           [
            "self",
-           "Grade()"
+           "Cups()"
           ],
           [
            "value",
@@ -143,7 +143,7 @@
          "set": [
           [
            "self",
-           "Grade(_value=8)"
+           "Cups(_value=8)"
           ]
          ]
         },
@@ -170,7 +170,7 @@
          "set": [
           [
            "self",
-           "Grade(_value=8)"
+           "Cups(_value=8)"
           ]
          ]
         },
@@ -197,7 +197,7 @@
      },
      {
       "type": "code",
-      "code": "class Salary:\n    def __init__(self): self.__value = 100\n    def get_value(self): return self.__value\nsalary = Salary()\nprint(salary.get_value())\nprint(\"_Salary__value\" in vars(salary))",
+      "code": "class Revenue:\n    def __init__(self): self.__value = 100\n    def get_value(self): return self.__value\nrevenue = Revenue()\nprint(revenue.get_value())\nprint(\"_Revenue__value\" in vars(revenue))",
       "expected": "100\nTrue",
       "tryIt": true,
       "trace": {
@@ -206,7 +206,7 @@
         "var": "self",
         "line": 2,
         "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-        "answer": "Salary()"
+        "answer": "Revenue()"
        },
        "rows": [
         {
@@ -214,18 +214,18 @@
         },
         {
          "line": 1,
-         "fn": "Salary",
+         "fn": "Revenue",
          "depth": 1,
          "enter": true
         },
         {
          "line": 1,
-         "fn": "Salary",
+         "fn": "Revenue",
          "depth": 1
         },
         {
          "line": 2,
-         "fn": "Salary",
+         "fn": "Revenue",
          "depth": 1,
          "set": [
           [
@@ -236,7 +236,7 @@
         },
         {
          "line": 3,
-         "fn": "Salary",
+         "fn": "Revenue",
          "depth": 1,
          "set": [
           [
@@ -247,7 +247,7 @@
         },
         {
          "line": 3,
-         "fn": "Salary",
+         "fn": "Revenue",
          "depth": 1,
          "ret": "None"
         },
@@ -262,7 +262,7 @@
          "set": [
           [
            "self",
-           "Salary()"
+           "Revenue()"
           ]
          ]
         },
@@ -273,7 +273,7 @@
          "set": [
           [
            "self",
-           "Salary(_Salary__value=100)"
+           "Revenue(_Revenue__value=100)"
           ]
          ]
         },
@@ -294,7 +294,7 @@
          "set": [
           [
            "self",
-           "Salary(_Salary__value=100)"
+           "Revenue(_Revenue__value=100)"
           ]
          ]
         },
@@ -325,7 +325,7 @@
      },
      {
       "type": "code",
-      "code": "class Grade:\n    def __init__(self, value): self._value = value\n    @property\n    def value(self): return self._value\n    @value.setter\n    def value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\ntry: grade.value = 11\nexcept ValueError: print(\"Tu choi\")\nprint(grade.value)",
+      "code": "class Cups:\n    def __init__(self, value): self._value = value\n    @property\n    def value(self): return self._value\n    @value.setter\n    def value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"cups\")\n        self._value = value\ncups = Cups(8)\ntry: cups.value = 11\nexcept ValueError: print(\"Tu choi\")\nprint(cups.value)",
       "expected": "Tu choi\n8",
       "tryIt": true,
       "trace": {
@@ -334,7 +334,7 @@
         "var": "self",
         "line": 2,
         "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
-        "answer": "Grade()"
+        "answer": "Cups()"
        },
        "rows": [
         {
@@ -342,18 +342,18 @@
         },
         {
          "line": 1,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "enter": true
         },
         {
          "line": 1,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1
         },
         {
          "line": 2,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "set": [
           [
@@ -364,22 +364,22 @@
         },
         {
          "line": 3,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1
         },
         {
          "line": 4,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1
         },
         {
          "line": 3,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1
         },
         {
          "line": 4,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "set": [
           [
@@ -390,27 +390,27 @@
         },
         {
          "line": 5,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1
         },
         {
          "line": 6,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1
         },
         {
          "line": 5,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1
         },
         {
          "line": 6,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1
         },
         {
          "line": 6,
-         "fn": "Grade",
+         "fn": "Cups",
          "depth": 1,
          "ret": "None"
         },
@@ -425,7 +425,7 @@
          "set": [
           [
            "self",
-           "Grade()"
+           "Cups()"
           ],
           [
            "value",
@@ -440,7 +440,7 @@
          "set": [
           [
            "self",
-           "Grade(_value=8)"
+           "Cups(_value=8)"
           ]
          ]
         },
@@ -461,7 +461,7 @@
          "set": [
           [
            "self",
-           "Grade(_value=8)"
+           "Cups(_value=8)"
           ],
           [
            "value",
@@ -478,7 +478,7 @@
          "line": 7,
          "fn": "value",
          "depth": 1,
-         "exc": "ValueError: score"
+         "exc": "ValueError: cups"
         },
         {
          "line": 7,
@@ -488,7 +488,7 @@
         },
         {
          "line": 10,
-         "exc": "ValueError: score"
+         "exc": "ValueError: cups"
         },
         {
          "line": 11,
@@ -505,7 +505,7 @@
          "set": [
           [
            "self",
-           "Grade(_value=8)"
+           "Cups(_value=8)"
           ]
          ]
         },
@@ -532,11 +532,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Property cho cú pháp grade.value trong khi vẫn gọi getter/setter. Kiểm tra trước khi gán giúp trạng thái cũ còn nguyên nếu dữ liệu sai. Trong bài thực tế, bổ sung quy tắc kiểu và số hữu hạn nếu đầu vào có thể chứa bool, NaN (giá trị “không phải số”) hoặc giá trị vô cực."
+      "text": "Property cho cú pháp cups.value trong khi vẫn gọi getter/setter. Kiểm tra trước khi gán giúp trạng thái cũ còn nguyên nếu dữ liệu sai. Trong bài thực tế, bổ sung quy tắc kiểu và số hữu hạn nếu đầu vào có thể chứa bool, NaN (giá trị “không phải số”) hoặc giá trị vô cực."
      },
      {
       "type": "paragraph",
-      "text": "Thuộc tính không có tiền tố đặc biệt, như name, mặc định là public theo quy ước sử dụng. Nếu Employee khai báo `self.__salary`, Python lưu tên đã đổi thành `_Employee__salary`; truy cập `employee.__salary` từ ngoài gây AttributeError. Getter có thể đọc đúng tên từ trong class. Đây là lỗi tìm thuộc tính, không phải bằng chứng dữ liệu đã được mã hóa."
+      "text": "Thuộc tính không có tiền tố đặc biệt, như name, mặc định là public theo quy ước sử dụng. Nếu Till khai báo `self.__revenue`, Python lưu tên đã đổi thành `_Till__revenue`; truy cập `till.__revenue` từ ngoài gây AttributeError. Getter có thể đọc đúng tên từ trong class. Đây là lỗi tìm thuộc tính, không phải bằng chứng dữ liệu đã được mã hóa."
      }
     ]
    ],
@@ -615,12 +615,12 @@
      "answer": "Không. Python đổi tên để tránh đụng tên, vẫn có thể truy cập tên mangled."
     },
     {
-     "prompt": "Sửa Grade để chỉ nhận int/float hữu hạn, bỏ bool và giữ điểm cũ khi sai.",
+     "prompt": "Sửa Cups để chỉ nhận int/float hữu hạn, bỏ bool và giữ số cốc cũ khi sai.",
      "answer": "Kiểm type(value) in (int, float), math.isfinite(value), 0 <= value <= 10 trước self._value = value. Thử 0,10,-1,11,True,float(\"nan\"),float(\"inf\")."
     },
     {
-     "prompt": "name, _name và __salary khác quy tắc gì? Employee có self.__salary: employee.__salary gây lỗi nào và getter đọc được vì sao?",
-     "answer": "name public theo mặc định; _name là quy ước không public, không phải protected được cưỡng chế như Java. __salary bị đổi thành _Employee__salary; truy cập employee.__salary gây AttributeError. Method trong class được đổi tên nhất quán nên getter đọc được. Getter/accessor đọc, setter/mutator kiểm rồi cập nhật."
+     "prompt": "name, _name và __revenue khác quy tắc gì? Till có self.__revenue: till.__revenue gây lỗi nào và getter đọc được vì sao?",
+     "answer": "name public theo mặc định; _name là quy ước không public, không phải protected được cưỡng chế như Java. __revenue bị đổi thành _Till__revenue; truy cập till.__revenue gây AttributeError. Method trong class được đổi tên nhất quán nên getter đọc được. Getter/accessor đọc, setter/mutator kiểm rồi cập nhật."
     }
    ]
   },

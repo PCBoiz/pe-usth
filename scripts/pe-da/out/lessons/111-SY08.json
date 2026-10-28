@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn có một lớp tạo báo cáo và một phần mở rộng thêm tiền tố. Đa kế thừa ghép hành vi từ nhiều lớp, nhưng cần biết thứ tự tìm method:"
+      "text": "Quán có một lớp tạo báo cáo doanh thu và một phần mở rộng thêm tiền tố. Đa kế thừa ghép hành vi từ nhiều lớp, nhưng cần biết thứ tự tìm method:"
      },
      {
       "type": "code",
@@ -38,8 +38,8 @@
      },
      {
       "type": "code",
-      "code": "class Report:\n    def render(self): return \"sales\"\nclass UpperMixin:\n    def render(self): return super().render().upper()\nclass LoudReport(UpperMixin, Report): pass\nprint(LoudReport().render())",
-      "expected": "SALES",
+      "code": "class Report:\n    def render(self): return \"doanh thu\"\nclass UpperMixin:\n    def render(self): return super().render().upper()\nclass LoudReport(UpperMixin, Report): pass\nprint(LoudReport().render())",
+      "expected": "DOANH THU",
       "tryIt": true
      }
     ],
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Khi thứ tự kế thừa khó giải thích hoặc hai lớp cùng quản lý một trạng thái, để một object chứa hoặc sử dụng object khác, gọi là composition, có thể dễ đọc hơn. Đa kế thừa được hỗ trợ nhưng không cần dùng cho mọi báo cáo."
+      "text": "Khi thứ tự kế thừa khó giải thích hoặc hai lớp cùng quản lý một trạng thái, để một object chứa hoặc sử dụng object khác, gọi là composition, có thể dễ đọc hơn. Đa kế thừa được hỗ trợ nhưng không cần dùng cho mọi báo cáo của quán."
      }
     ]
    ],

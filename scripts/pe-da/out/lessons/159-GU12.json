@@ -2,13 +2,13 @@
  "lesson_code": "GU12",
  "sort_order": 159,
  "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
- "title": "GU12 · PW9: ứng dụng quản lý điểm bằng Tkinter",
+ "title": "GU12 · PW9: màn hình nhận đơn tại quầy bằng Tkinter",
  "subtitle": "Nâng cao · M8 · 12 phút",
  "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
-  "title": "GU12 · PW9: ứng dụng quản lý điểm bằng Tkinter",
+  "title": "GU12 · PW9: màn hình nhận đơn tại quầy bằng Tkinter",
   "subtitle": "Nâng cao · M8 · 12 phút",
   "source": {
    "kind": "python-da",
@@ -22,18 +22,18 @@
     [
      {
       "type": "paragraph",
-      "text": "Bài thực hành cuối chuyển hệ thống quản lý điểm sang cửa sổ Tkinter và giữ các chức năng từ PW8. File projects/grade_app.py đi kèm có ba tab Sinh viên, Môn học, Điểm và GPA. Mã sinh viên và mã môn là khóa; điểm mỗi cặp sinh viên–môn chỉ có một giá trị."
+      "text": "Bài thực hành cuối chuyển màn hình của quán sang cửa sổ Tkinter và giữ các chức năng từ PW8. File projects/quay_app.py đi kèm có ba tab Món, Nguyên liệu và Định lượng. Mã món và mã nguyên liệu là khóa; mỗi cặp món–nguyên liệu chỉ có một lượng."
      },
      {
       "type": "code",
-      "code": "from decimal import Decimal, ROUND_FLOOR\nmarks=['14.29','16.00']\nnormalized=[float(Decimal(m).quantize(Decimal('0.1'),rounding=ROUND_FLOOR)) for m in marks]\nprint(normalized)",
+      "code": "from decimal import Decimal, ROUND_FLOOR\nluong=['14.29','16.00']\nnormalized=[float(Decimal(x).quantize(Decimal('0.1'),rounding=ROUND_FLOOR)) for x in luong]\nprint(normalized)",
       "expected": "[14.2, 16.0]",
       "tryIt": true,
       "trace": {
        "predict": {
         "kind": "final",
-        "var": "marks",
-        "prompt": "Sau khi chạy xong, `marks` bằng mấy?",
+        "var": "luong",
+        "prompt": "Sau khi chạy xong, `luong` bằng mấy?",
         "answer": "['14.29', '16.00']"
        },
        "rows": [
@@ -54,7 +54,7 @@
          "line": 2,
          "set": [
           [
-           "marks",
+           "luong",
            "['14.29', '16.00']"
           ]
          ]
@@ -63,7 +63,7 @@
          "line": 3,
          "set": [
           [
-           "m",
+           "x",
            "'14.29'"
           ]
          ]
@@ -72,7 +72,7 @@
          "line": 3,
          "set": [
           [
-           "m",
+           "x",
            "'16.00'"
           ]
          ]
@@ -89,7 +89,7 @@
            "'ROUND_FLOOR'"
           ],
           [
-           "marks",
+           "luong",
            "['14.29', '16.00']"
           ],
           [
@@ -109,28 +109,28 @@
     [
      {
       "type": "paragraph",
-      "text": "Ví dụ hạ điểm xuống một chữ số thập phân theo yêu cầu PW3, không làm tròn tới số gần nhất. Ứng dụng mẫu dùng thang 0–20 và tín chỉ nguyên dương; đây là quy ước minh họa ghi rõ trong form, vì slide không quy định toàn bộ thang điểm."
+      "text": "Ví dụ hạ lượng nguyên liệu xuống một chữ số thập phân theo yêu cầu PW3, không làm tròn tới số gần nhất. Ứng dụng mẫu dùng thang 0–20 gam cho mỗi cốc và số cốc nguyên dương; đây là quy ước minh họa ghi rõ trong form, vì slide không quy định toàn bộ thang đo."
      },
      {
       "type": "code",
-      "code": "marks={'PY':14.0,'DA':18.0}\ncredits={'PY':2,'DA':3,'GUI':1}\nweighted=sum(mark*credits[course] for course,mark in marks.items())\ndenominator=sum(credits[course] for course in marks)\nprint(weighted/denominator)",
+      "code": "luong={'ca-phe-hat':14.0,'sua-tuoi':18.0}\nso_coc={'ca-phe-hat':2,'sua-tuoi':3,'duong':1}\nweighted=sum(gam*so_coc[ten] for ten,gam in luong.items())\ndenominator=sum(so_coc[ten] for ten in luong)\nprint(weighted/denominator)",
       "expected": "16.4",
       "tryIt": true,
       "trace": {
        "predict": {
         "kind": "mid",
-        "var": "course",
+        "var": "gam",
         "line": 3,
-        "prompt": "Ngay sau khi dòng 3 chạy, `course` bằng mấy?",
-        "answer": "'PY'"
+        "prompt": "Ngay sau khi dòng 3 chạy, `gam` bằng mấy?",
+        "answer": "14.0"
        },
        "rows": [
         {
          "line": 1,
          "set": [
           [
-           "marks",
-           "{'PY': 14.0, 'DA': 18.0}"
+           "luong",
+           "{'ca-phe-hat': 14.0, 'sua-tuoi': 18.0}"
           ]
          ]
         },
@@ -138,8 +138,8 @@
          "line": 2,
          "set": [
           [
-           "credits",
-           "{'PY': 2, 'DA': 3, 'GUI': 1}"
+           "so_coc",
+           "{'ca-phe-hat': 2, 'sua-tuoi': 3, 'duong': 1}"
           ]
          ]
         },
@@ -164,12 +164,12 @@
          "depth": 1,
          "set": [
           [
-           "course",
-           "'PY'"
+           "gam",
+           "14.0"
           ],
           [
-           "mark",
-           "14.0"
+           "ten",
+           "'ca-phe-hat'"
           ]
          ]
         },
@@ -190,12 +190,12 @@
            "dict_itemiterator: <dict_itemiterator object>"
           ],
           [
-           "course",
-           "'PY'"
+           "gam",
+           "14.0"
           ],
           [
-           "mark",
-           "14.0"
+           "ten",
+           "'ca-phe-hat'"
           ]
          ]
         },
@@ -205,12 +205,12 @@
          "depth": 1,
          "set": [
           [
-           "course",
-           "'DA'"
+           "gam",
+           "18.0"
           ],
           [
-           "mark",
-           "18.0"
+           "ten",
+           "'sua-tuoi'"
           ]
          ]
         },
@@ -231,12 +231,12 @@
            "dict_itemiterator: <dict_itemiterator object>"
           ],
           [
-           "course",
-           "'DA'"
+           "gam",
+           "18.0"
           ],
           [
-           "mark",
-           "18.0"
+           "ten",
+           "'sua-tuoi'"
           ]
          ]
         },
@@ -272,8 +272,8 @@
          "depth": 1,
          "set": [
           [
-           "course",
-           "'PY'"
+           "ten",
+           "'ca-phe-hat'"
           ]
          ]
         },
@@ -294,8 +294,8 @@
            "dict_keyiterator: <dict_keyiterator object>"
           ],
           [
-           "course",
-           "'PY'"
+           "ten",
+           "'ca-phe-hat'"
           ]
          ]
         },
@@ -305,8 +305,8 @@
          "depth": 1,
          "set": [
           [
-           "course",
-           "'DA'"
+           "ten",
+           "'sua-tuoi'"
           ]
          ]
         },
@@ -327,8 +327,8 @@
            "dict_keyiterator: <dict_keyiterator object>"
           ],
           [
-           "course",
-           "'DA'"
+           "ten",
+           "'sua-tuoi'"
           ]
          ]
         },
@@ -354,12 +354,12 @@
     [
      {
       "type": "paragraph",
-      "text": "GPA mẫu là trung bình có trọng số trên các môn đã có điểm. GUI chưa có điểm nên không nằm trong mẫu số; không coi điểm thiếu bằng 0. Sinh viên chưa có điểm được hiển thị dấu gạch thay vì GPA 0. Danh sách GPA có thể sắp giảm dần."
+      "text": "Lượng trung bình mẫu là trung bình có trọng số trên các nguyên liệu đã khai định lượng. Đường chưa khai nên không nằm trong mẫu số; không coi lượng thiếu bằng 0. Món chưa khai nguyên liệu nào được hiển thị dấu gạch thay vì số 0. Danh sách có thể sắp giảm dần."
      },
      {
       "type": "code",
-      "code": "import gzip,pickle\nsnapshot={'version':1,'students':[{'id':'S01','name':'An','dob':'2005-01-01'}],'courses':[],'marks':[]}\nblob=gzip.compress(pickle.dumps(snapshot))\nloaded=pickle.loads(gzip.decompress(blob))\nprint(loaded['students'][0]['id'])\nprint(loaded==snapshot)",
-      "expected": "S01\nTrue",
+      "code": "import gzip,pickle\nsnapshot={'version':1,'items':[{'id':'latte','name':'Latte','group':'Ca phe'}],'ingredients':[],'recipe':[]}\nblob=gzip.compress(pickle.dumps(snapshot))\nloaded=pickle.loads(gzip.decompress(blob))\nprint(loaded['items'][0]['id'])\nprint(loaded==snapshot)",
+      "expected": "latte\nTrue",
       "tryIt": true
      }
     ],
@@ -370,7 +370,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Chạy bằng `python projects/grade_app.py --data duong-dan/grades.pkl.gz`. Nếu file chưa tồn tại, ứng dụng bắt đầu rỗng; nếu dữ liệu hỏng, nó báo lỗi và không tự ghi đè file đó. Bài kiểm tra tự động đi kèm xác nhận model, GPA, save/load và callback cơ bản. Quy trình giao diện thật, độ dễ dùng và bố cục còn cần kiểm tra thủ công theo rubric. Quán giờ có một màn hình cho người không viết code; hai chặng cuối ôn lại các chi tiết đã đi nhanh."
+      "text": "Chạy bằng `python projects/quay_app.py --data duong-dan/quan.pkl.gz`. Nếu file chưa tồn tại, ứng dụng bắt đầu rỗng; nếu dữ liệu hỏng, nó báo lỗi và không tự ghi đè file đó. Bài kiểm tra tự động đi kèm xác nhận model, lượng trung bình, save/load và callback cơ bản. Quy trình giao diện thật, độ dễ dùng và bố cục còn cần kiểm tra thủ công theo rubric. Quán giờ có một màn hình cho người không viết code; hai chặng cuối ôn lại các chi tiết đã đi nhanh."
      }
     ]
    ],
@@ -441,17 +441,17 @@
    ],
    "practice": [
     {
-     "prompt": "Một sinh viên có điểm PY=14 với 2 tín chỉ, DA=18 với 3 tín chỉ. GPA là bao nhiêu?",
-     "answer": "16.4. Môn chưa có điểm không góp vào mẫu số."
+     "prompt": "Cà phê hạt 14 g đi với 2 cốc, sữa tươi 18 g đi với 3 cốc. Lượng trung bình có trọng số là bao nhiêu?",
+     "answer": "16.4. Nguyên liệu chưa khai định lượng không góp vào mẫu số."
     },
     {
      "prompt": "Vì sao worker nhận snapshot thay vì đọc trực tiếp model đang được UI sửa?",
      "answer": "Để file lưu là một trạng thái nhất quán, không trộn dữ liệu trước và sau thay đổi."
     },
     {
-     "prompt": "Viết phép tính GPA cho điểm 10,20 và tín chỉ 1,3.",
-     "answer": "GPA bằng 17.5.",
-     "answerCode": "marks=[10,20]\ncredits=[1,3]\nprint(sum(m*c for m,c in zip(marks,credits))/sum(credits))",
+     "prompt": "Viết phép tính trung bình có trọng số cho lượng 10, 20 và số cốc 1, 3.",
+     "answer": "Kết quả bằng 17.5.",
+     "answerCode": "luong=[10,20]\nso_coc=[1,3]\nprint(sum(g*c for g,c in zip(luong,so_coc))/sum(so_coc))",
      "answerExpected": "17.5"
     }
    ]
@@ -461,7 +461,7 @@
     "title": "Chạy thử",
     "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
    },
-   "starterCode": "# ── Đoạn 1 ──\nfrom decimal import Decimal, ROUND_FLOOR\nmarks=['14.29','16.00']\nnormalized=[float(Decimal(m).quantize(Decimal('0.1'),rounding=ROUND_FLOOR)) for m in marks]\nprint(normalized)\n\n# ── Đoạn 2 ──\nmarks={'PY':14.0,'DA':18.0}\ncredits={'PY':2,'DA':3,'GUI':1}\nweighted=sum(mark*credits[course] for course,mark in marks.items())\ndenominator=sum(credits[course] for course in marks)\nprint(weighted/denominator)\n\n# ── Đoạn 3 ──\nimport gzip,pickle\nsnapshot={'version':1,'students':[{'id':'S01','name':'An','dob':'2005-01-01'}],'courses':[],'marks':[]}\nblob=gzip.compress(pickle.dumps(snapshot))\nloaded=pickle.loads(gzip.decompress(blob))\nprint(loaded['students'][0]['id'])\nprint(loaded==snapshot)\n"
+   "starterCode": "# ── Đoạn 1 ──\nfrom decimal import Decimal, ROUND_FLOOR\nluong=['14.29','16.00']\nnormalized=[float(Decimal(x).quantize(Decimal('0.1'),rounding=ROUND_FLOOR)) for x in luong]\nprint(normalized)\n\n# ── Đoạn 2 ──\nluong={'ca-phe-hat':14.0,'sua-tuoi':18.0}\nso_coc={'ca-phe-hat':2,'sua-tuoi':3,'duong':1}\nweighted=sum(gam*so_coc[ten] for ten,gam in luong.items())\ndenominator=sum(so_coc[ten] for ten in luong)\nprint(weighted/denominator)\n\n# ── Đoạn 3 ──\nimport gzip,pickle\nsnapshot={'version':1,'items':[{'id':'latte','name':'Latte','group':'Ca phe'}],'ingredients':[],'recipe':[]}\nblob=gzip.compress(pickle.dumps(snapshot))\nloaded=pickle.loads(gzip.decompress(blob))\nprint(loaded['items'][0]['id'])\nprint(loaded==snapshot)\n"
   }
  },
  "_mode": "pyodide",

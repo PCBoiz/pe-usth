@@ -22,23 +22,23 @@
     [
      {
       "type": "paragraph",
-      "text": "Sau khi nhập xong, chương trình phải mở lại được dữ liệu ở lần chạy khác. PW5 yêu cầu ba file riêng: students.txt, courses.txt, marks.txt. Dùng CSV làm định dạng text giúp tên có dấu phẩy vẫn đọc đúng:"
+      "text": "Sau khi nhập xong, chương trình của quán phải mở lại được dữ liệu ở lần chạy khác. PW5 yêu cầu ba file riêng: items.txt, ingredients.txt, recipe.txt. Dùng CSV làm định dạng text giúp tên có dấu phẩy vẫn đọc đúng:"
      },
      {
       "type": "code",
-      "code": "import csv\nfrom io import StringIO\nbuffer = StringIO(newline=\"\")\nwriter = csv.writer(buffer)\nwriter.writerow([\"id\", \"name\", \"dob\"])\nwriter.writerow([\"S01\", \"An, Nguyen\", \"2005-01-02\"])\nbuffer.seek(0)\nprint(list(csv.DictReader(buffer))[0])",
-      "expected": "{'id': 'S01', 'name': 'An, Nguyen', 'dob': '2005-01-02'}",
+      "code": "import csv\nfrom io import StringIO\nbuffer = StringIO(newline=\"\")\nwriter = csv.writer(buffer)\nwriter.writerow([\"id\", \"name\", \"group\"])\nwriter.writerow([\"latte\", \"Latte, nong\", \"Ca phe\"])\nbuffer.seek(0)\nprint(list(csv.DictReader(buffer))[0])",
+      "expected": "{'id': 'latte', 'name': 'Latte, nong', 'group': 'Ca phe'}",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "Không dùng split(\",\") để đọc CSV có quoted field. Courses cần id/name và credits để phục vụ GPA của PW3; marks cần student_id/course_id/score. Sau mỗi nhóm nhập, ghi đúng file tương ứng, không đợi đến lúc program lỗi mới bắt đầu lưu."
+      "text": "Không dùng split(\",\") để đọc CSV có quoted field. Bảng nguyên liệu cần id/name và unit; bảng định lượng cần item_id/ingredient_id/amount. Sau mỗi nhóm nhập, ghi đúng file tương ứng, không đợi đến lúc program lỗi mới bắt đầu lưu."
      },
      {
       "type": "code",
-      "code": "from io import BytesIO\nimport zipfile\ntexts = {\"students.txt\": \"id,name,dob\\nS01,An,2005-01-02\\n\", \"courses.txt\": \"id,name,credits\\nPY,Python,3\\n\", \"marks.txt\": \"student_id,course_id,score\\nS01,PY,8.7\\n\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    for name, text in texts.items(): archive.writestr(name, text)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name).decode(\"utf8\") for name in archive.namelist()}\nprint(restored == texts)",
+      "code": "from io import BytesIO\nimport zipfile\ntexts = {\"items.txt\": \"id,name,group\\nlatte,Latte,Ca phe\\n\", \"ingredients.txt\": \"id,name,unit\\nca-phe-hat,Ca phe hat,g\\n\", \"recipe.txt\": \"item_id,ingredient_id,amount\\nlatte,ca-phe-hat,8.7\\n\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    for name, text in texts.items(): archive.writestr(name, text)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name).decode(\"utf8\") for name in archive.namelist()}\nprint(restored == texts)",
       "expected": "True",
       "tryIt": true,
       "trace": {
@@ -46,7 +46,7 @@
         "kind": "final",
         "var": "name",
         "prompt": "Sau khi chạy xong, `name` bằng mấy?",
-        "answer": "'marks.txt'"
+        "answer": "'recipe.txt'"
        },
        "rows": [
         {
@@ -72,7 +72,7 @@
          "set": [
           [
            "texts",
-           "{'students.txt': 'id,name,dob\\nS01,An,2005-01-02\\n', 'courses.txt': 'id…"
+           "{'items.txt': 'id,name,group\\nlatte,Latte,Ca phe\\n', 'ingredients.txt':…"
           ]
          ]
         },
@@ -99,15 +99,15 @@
          "set": [
           [
            "archive",
-           "ZipFile(_allowZip64=True, _didModify=True, debug=0, NameToInfo={'studen…"
+           "ZipFile(_allowZip64=True, _didModify=True, debug=0, NameToInfo={'items.…"
           ],
           [
            "name",
-           "'students.txt'"
+           "'items.txt'"
           ],
           [
            "text",
-           "'id,name,dob\\nS01,An,2005-01-02\\n'"
+           "'id,name,group\\nlatte,Latte,Ca phe\\n'"
           ]
          ]
         },
@@ -116,11 +116,11 @@
          "set": [
           [
            "name",
-           "'courses.txt'"
+           "'ingredients.txt'"
           ],
           [
            "text",
-           "'id,name,credits\\nPY,Python,3\\n'"
+           "'id,name,unit\\nca-phe-hat,Ca phe hat,g\\n'"
           ]
          ]
         },
@@ -129,11 +129,11 @@
          "set": [
           [
            "name",
-           "'marks.txt'"
+           "'recipe.txt'"
           ],
           [
            "text",
-           "'student_id,course_id,score\\nS01,PY,8.7\\n'"
+           "'item_id,ingredient_id,amount\\nlatte,ca-phe-hat,8.7\\n'"
           ]
          ]
         },
@@ -148,7 +148,7 @@
          "set": [
           [
            "archive",
-           "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'stude…"
+           "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'items…"
           ]
          ]
         },
@@ -157,7 +157,7 @@
          "set": [
           [
            "name",
-           "'students.txt'"
+           "'items.txt'"
           ]
          ]
         },
@@ -166,7 +166,7 @@
          "set": [
           [
            "name",
-           "'courses.txt'"
+           "'ingredients.txt'"
           ]
          ]
         },
@@ -175,7 +175,7 @@
          "set": [
           [
            "name",
-           "'marks.txt'"
+           "'recipe.txt'"
           ]
          ]
         },
@@ -188,7 +188,7 @@
           ],
           [
            "archive",
-           "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'stude…"
+           "ZipFile(_allowZip64=True, _didModify=False, debug=0, NameToInfo={'items…"
           ],
           [
            "buffer",
@@ -196,15 +196,15 @@
           ],
           [
            "restored",
-           "{'students.txt': 'id,name,dob\\nS01,An,2005-01-02\\n', 'courses.txt': 'id…"
+           "{'items.txt': 'id,name,group\\nlatte,Latte,Ca phe\\n', 'ingredients.txt':…"
           ],
           [
            "text",
-           "'student_id,course_id,score\\nS01,PY,8.7\\n'"
+           "'item_id,ingredient_id,amount\\nlatte,ca-phe-hat,8.7\\n'"
           ],
           [
            "texts",
-           "{'students.txt': 'id,name,dob\\nS01,An,2005-01-02\\n', 'courses.txt': 'id…"
+           "{'items.txt': 'id,name,group\\nlatte,Latte,Ca phe\\n', 'ingredients.txt':…"
           ],
           [
            "zipfile",
@@ -226,12 +226,12 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi kết thúc chương trình, lưu gói nén dưới tên students.dat. Tên .dat chỉ là tên do đề chọn; bên trong ví dụ này vẫn là ZIP. Khi khởi động lại, kiểm file tồn tại rồi đọc đủ ba thành viên trước khi nạp state."
+      "text": "Khi kết thúc chương trình, lưu gói nén dưới tên quan.dat. Tên .dat chỉ là tên do đề chọn; bên trong ví dụ này vẫn là ZIP. Khi khởi động lại, kiểm file tồn tại rồi đọc đủ ba thành viên trước khi nạp state."
      },
      {
       "type": "code",
-      "code": "import tempfile, zipfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    print(path.exists())\n    with zipfile.ZipFile(path, \"w\") as archive:\n        archive.writestr(\"students.txt\", \"S01,An,2005-01-02\\n\")\n    with zipfile.ZipFile(path) as archive:\n        print(archive.read(\"students.txt\").decode().strip())",
-      "expected": "False\nS01,An,2005-01-02",
+      "code": "import tempfile, zipfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"quan.dat\"\n    print(path.exists())\n    with zipfile.ZipFile(path, \"w\") as archive:\n        archive.writestr(\"items.txt\", \"latte,Latte,Ca phe\\n\")\n    with zipfile.ZipFile(path) as archive:\n        print(archive.read(\"items.txt\").decode().strip())",
+      "expected": "False\nlatte,Latte,Ca phe",
       "tryIt": true
      },
      {
@@ -311,12 +311,12 @@
      "answer": "Không nói chung. Dùng csv.writer/DictReader với quoting và newline phù hợp."
     },
     {
-     "prompt": "students.dat có nhất thiết là định dạng nhị phân mới tự thiết kế không?",
+     "prompt": "quan.dat có nhất thiết là định dạng nhị phân mới tự thiết kế không?",
      "answer": "Không. Có thể là ZIP chứa ba file text, miễn công bố codec và khôi phục đúng."
     },
     {
      "prompt": "Hoàn thiện PW5 và chứng minh dữ liệu tồn tại qua lần chạy.",
-     "answer": "Ghi students.txt(id/name/DoB),courses.txt(id/name/credits),marks.txt(student_id/course_id/score) sau từng nhóm nhập. Khi thoát đóng cả3 vào students.dat; khởi động kiểm tồn tại, đọc đủ thành viên, parse/kiểm mã duy nhất/tham chiếu/điểm rồi thay registry sau khi tất cả hợp lệ. Test chạy 1 nhập 2 SV/2 môn, thoát; chạy 2 không nhập lại vẫn list/GPA đúng. Test file thiếu, archive hỏng, thiếu thành viên, tên có dấu phẩy. Không đánh dấu hoàn thành chỉ vì tạo được .dat."
+     "answer": "Ghi items.txt(id/name/nhóm), ingredients.txt(id/name/unit), recipe.txt(item_id/ingredient_id/amount) sau từng nhóm nhập. Khi thoát đóng cả ba vào quan.dat; khởi động kiểm tồn tại, đọc đủ thành viên, parse/kiểm mã duy nhất/tham chiếu/lượng rồi thay registry sau khi tất cả hợp lệ. Test chạy 1 nhập 2 món/2 nguyên liệu, thoát; chạy 2 không nhập lại vẫn list và tính trung bình đúng. Test file thiếu, archive hỏng, thiếu thành viên, tên có dấu phẩy. Không đánh dấu hoàn thành chỉ vì tạo được .dat."
     }
    ]
   },
@@ -325,7 +325,7 @@
     "title": "Chạy thử",
     "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport csv\nfrom io import StringIO\nbuffer = StringIO(newline=\"\")\nwriter = csv.writer(buffer)\nwriter.writerow([\"id\", \"name\", \"dob\"])\nwriter.writerow([\"S01\", \"An, Nguyen\", \"2005-01-02\"])\nbuffer.seek(0)\nprint(list(csv.DictReader(buffer))[0])\n\n# ── Đoạn 2 ──\nfrom io import BytesIO\nimport zipfile\ntexts = {\"students.txt\": \"id,name,dob\\nS01,An,2005-01-02\\n\", \"courses.txt\": \"id,name,credits\\nPY,Python,3\\n\", \"marks.txt\": \"student_id,course_id,score\\nS01,PY,8.7\\n\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    for name, text in texts.items(): archive.writestr(name, text)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name).decode(\"utf8\") for name in archive.namelist()}\nprint(restored == texts)\n\n# ── Đoạn 3 ──\nimport tempfile, zipfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    print(path.exists())\n    with zipfile.ZipFile(path, \"w\") as archive:\n        archive.writestr(\"students.txt\", \"S01,An,2005-01-02\\n\")\n    with zipfile.ZipFile(path) as archive:\n        print(archive.read(\"students.txt\").decode().strip())\n"
+   "starterCode": "# ── Đoạn 1 ──\nimport csv\nfrom io import StringIO\nbuffer = StringIO(newline=\"\")\nwriter = csv.writer(buffer)\nwriter.writerow([\"id\", \"name\", \"group\"])\nwriter.writerow([\"latte\", \"Latte, nong\", \"Ca phe\"])\nbuffer.seek(0)\nprint(list(csv.DictReader(buffer))[0])\n\n# ── Đoạn 2 ──\nfrom io import BytesIO\nimport zipfile\ntexts = {\"items.txt\": \"id,name,group\\nlatte,Latte,Ca phe\\n\", \"ingredients.txt\": \"id,name,unit\\nca-phe-hat,Ca phe hat,g\\n\", \"recipe.txt\": \"item_id,ingredient_id,amount\\nlatte,ca-phe-hat,8.7\\n\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    for name, text in texts.items(): archive.writestr(name, text)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name).decode(\"utf8\") for name in archive.namelist()}\nprint(restored == texts)\n\n# ── Đoạn 3 ──\nimport tempfile, zipfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"quan.dat\"\n    print(path.exists())\n    with zipfile.ZipFile(path, \"w\") as archive:\n        archive.writestr(\"items.txt\", \"latte,Latte,Ca phe\\n\")\n    with zipfile.ZipFile(path) as archive:\n        print(archive.read(\"items.txt\").decode().strip())\n"
   }
  },
  "_mode": "pyodide",

@@ -2,13 +2,13 @@
  "lesson_code": "SY25",
  "sort_order": 128,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
- "title": "SY25 · PW1: quản lý sinh viên, môn học và điểm bằng collection",
+ "title": "SY25 · PW1: quản lý món, nguyên liệu và định lượng bằng collection",
  "subtitle": "Trung cấp · M5 · 12 phút",
  "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
-  "title": "SY25 · PW1: quản lý sinh viên, môn học và điểm bằng collection",
+  "title": "SY25 · PW1: quản lý món, nguyên liệu và định lượng bằng collection",
   "subtitle": "Trung cấp · M5 · 12 phút",
   "source": {
    "kind": "python-da",
@@ -22,40 +22,40 @@
     [
      {
       "type": "paragraph",
-      "text": "Mọi thứ của chặng này nay gộp vào một bài thực hành nối tiếp nhau. Lớp có nhiều sinh viên và nhiều môn. Mỗi điểm phải gắn cả mã sinh viên lẫn mã môn; một danh sách điểm rời sẽ khó biết điểm thuộc về ai. Bắt đầu bằng cấu trúc dễ tra cứu:"
+      "text": "Mọi thứ của chặng này nay gộp vào một bài thực hành nối tiếp nhau. Quán có nhiều món và nhiều nguyên liệu. Mỗi định lượng phải gắn cả mã món lẫn mã nguyên liệu; một danh sách số gam rời sẽ khó biết nó thuộc về món nào. Bắt đầu bằng cấu trúc dễ tra cứu:"
      },
      {
       "type": "code",
-      "code": "students = {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}\ncourses = {\"PY\": {\"name\": \"Python\"}}\nmarks = {(\"S01\", \"PY\"): 8.0}\nprint(students[\"S01\"][\"dob\"])\nprint(marks[(\"S01\", \"PY\")])",
-      "expected": "2005-01-02\n8.0",
+      "code": "items = {\"latte\": {\"name\": \"Latte\", \"group\": \"Ca phe\"}}\ningredients = {\"ca-phe-hat\": {\"name\": \"Ca phe hat\", \"unit\": \"g\"}}\nrecipe = {(\"latte\", \"ca-phe-hat\"): 8.0}\nprint(items[\"latte\"][\"group\"])\nprint(recipe[(\"latte\", \"ca-phe-hat\")])",
+      "expected": "Ca phe\n8.0",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "Dictionary giúp tra theo mã; tuple (student_id, course_id) làm khóa của một điểm. Ở PW1, bạn chỉ dùng collection và hàm để tổ chức dữ liệu, chưa cần class cho sinh viên hay môn học. Mỗi hồ sơ vẫn cần ngày sinh (DoB), dù trường này không tham gia công thức GPA."
+      "text": "Dictionary giúp tra theo mã; tuple (item_id, ingredient_id) làm khóa của một định lượng. Ở PW1, bạn chỉ dùng collection và hàm để tổ chức dữ liệu, chưa cần class cho món hay nguyên liệu. Mỗi món vẫn cần nhóm món, dù trường này không tham gia công thức lượng trung bình."
      },
      {
       "type": "code",
-      "code": "def course_marks(students, marks, course_id):\n    return [(sid, students[sid][\"name\"], score) for (sid, cid), score in marks.items() if cid == course_id]\nstudents = {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}, \"S02\": {\"name\": \"Binh\", \"dob\": \"2005-02-03\"}}\nmarks = {(\"S01\", \"PY\"): 8, (\"S02\", \"PY\"): 0, (\"S01\", \"DB\"): 7}\nprint(course_marks(students, marks, \"PY\"))",
-      "expected": "[('S01', 'An', 8), ('S02', 'Binh', 0)]",
+      "code": "def ingredient_lines(items, recipe, ingredient_id):\n    return [(iid, items[iid][\"name\"], amount) for (iid, ing), amount in recipe.items() if ing == ingredient_id]\nitems = {\"latte\": {\"name\": \"Latte\", \"group\": \"Ca phe\"}, \"mocha\": {\"name\": \"Mocha\", \"group\": \"Ca phe\"}}\nrecipe = {(\"latte\", \"ca-phe-hat\"): 8, (\"mocha\", \"ca-phe-hat\"): 0, (\"latte\", \"sua-tuoi\"): 7}\nprint(ingredient_lines(items, recipe, \"ca-phe-hat\"))",
+      "expected": "[('latte', 'Latte', 8), ('mocha', 'Mocha', 0)]",
       "tryIt": true,
       "trace": {
        "predict": {
         "kind": "mid",
-        "var": "cid",
+        "var": "ing",
         "line": 2,
-        "prompt": "Ngay sau khi dòng 2 chạy, `cid` bằng mấy?",
-        "answer": "'PY'"
+        "prompt": "Ngay sau khi dòng 2 chạy, `ing` bằng mấy?",
+        "answer": "'ca-phe-hat'"
        },
        "rows": [
         {
          "line": 1,
          "set": [
           [
-           "course_marks",
-           "<hàm course_marks>"
+           "ingredient_lines",
+           "<hàm ingredient_lines>"
           ]
          ]
         },
@@ -63,8 +63,8 @@
          "line": 3,
          "set": [
           [
-           "students",
-           "{'S01': {'name': 'An', 'dob': '2005-01-02'}, 'S02': {'name': 'Binh', 'd…"
+           "items",
+           "{'latte': {'name': 'Latte', 'group': 'Ca phe'}, 'mocha': {'name': 'Moch…"
           ]
          ]
         },
@@ -72,8 +72,8 @@
          "line": 4,
          "set": [
           [
-           "marks",
-           "{('S01', 'PY'): 8, ('S02', 'PY'): 0, ('S01', 'DB'): 7}"
+           "recipe",
+           "{('latte', 'ca-phe-hat'): 8, ('mocha', 'ca-phe-hat'): 0, ('latte', 'sua…"
           ]
          ]
         },
@@ -82,88 +82,88 @@
         },
         {
          "line": 1,
-         "fn": "course_marks",
+         "fn": "ingredient_lines",
          "depth": 1,
          "enter": true,
          "set": [
           [
-           "course_id",
-           "'PY'"
+           "ingredient_id",
+           "'ca-phe-hat'"
           ],
           [
-           "marks",
-           "{('S01', 'PY'): 8, ('S02', 'PY'): 0, ('S01', 'DB'): 7}"
+           "items",
+           "{'latte': {'name': 'Latte', 'group': 'Ca phe'}, 'mocha': {'name': 'Moch…"
           ],
           [
-           "students",
-           "{'S01': {'name': 'An', 'dob': '2005-01-02'}, 'S02': {'name': 'Binh', 'd…"
+           "recipe",
+           "{('latte', 'ca-phe-hat'): 8, ('mocha', 'ca-phe-hat'): 0, ('latte', 'sua…"
           ]
          ]
         },
         {
          "line": 2,
-         "fn": "course_marks",
+         "fn": "ingredient_lines",
          "depth": 1,
          "set": [
           [
-           "cid",
-           "'PY'"
-          ],
-          [
-           "score",
+           "amount",
            "8"
           ],
           [
-           "sid",
-           "'S01'"
+           "iid",
+           "'latte'"
+          ],
+          [
+           "ing",
+           "'ca-phe-hat'"
           ]
          ]
         },
         {
          "line": 2,
-         "fn": "course_marks",
+         "fn": "ingredient_lines",
          "depth": 1,
          "set": [
           [
-           "score",
+           "amount",
            "0"
           ],
           [
-           "sid",
-           "'S02'"
+           "iid",
+           "'mocha'"
           ]
          ]
         },
         {
          "line": 2,
-         "fn": "course_marks",
+         "fn": "ingredient_lines",
          "depth": 1,
          "set": [
           [
-           "cid",
-           "'DB'"
-          ],
-          [
-           "score",
+           "amount",
            "7"
           ],
           [
-           "sid",
-           "'S01'"
+           "iid",
+           "'latte'"
+          ],
+          [
+           "ing",
+           "'sua-tuoi'"
           ]
          ]
         },
         {
          "line": 2,
-         "fn": "course_marks",
+         "fn": "ingredient_lines",
          "depth": 1
         },
         {
          "line": 2,
-         "fn": "course_marks",
+         "fn": "ingredient_lines",
          "depth": 1,
-         "ret": "[('S01', 'An', 8), ('S02', 'Binh', 0)]",
-         "out": "[('S01', 'An', 8), ('S02', 'Binh', 0)]"
+         "ret": "[('latte', 'Latte', 8), ('mocha', 'Mocha', 0)]",
+         "out": "[('latte', 'Latte', 8), ('mocha', 'Mocha', 0)]"
         }
        ]
       }
@@ -172,33 +172,33 @@
     [
      {
       "type": "paragraph",
-      "text": "Điểm 0 là dữ liệu hợp lệ, khác chưa có điểm. Khi liệt kê một môn, chọn đúng các cặp khóa của môn đó. Trong màn hình nhập, kiểm mã môn và mã sinh viên tồn tại trước khi nhận điểm."
+      "text": "Lượng 0 là dữ liệu hợp lệ, khác với chưa khai định lượng. Khi liệt kê một nguyên liệu, chọn đúng các cặp khóa của nguyên liệu đó. Trong màn hình nhập, kiểm mã món và mã nguyên liệu tồn tại trước khi nhận lượng."
      },
      {
       "type": "code",
-      "code": "def read_student(ask):\n    sid = ask(\"Student id: \").strip()\n    name = ask(\"Name: \").strip()\n    dob = ask(\"DoB YYYY-MM-DD: \").strip()\n    if not sid or not name: raise ValueError(\"empty field\")\n    from datetime import datetime\n    datetime.strptime(dob, \"%Y-%m-%d\")\n    return sid, {\"name\": name, \"dob\": dob}\nanswers = iter([\"S01\", \"An\", \"2005-01-02\"])\nsid, info = read_student(lambda prompt: next(answers))\nprint(sid, info[\"name\"], info[\"dob\"])",
-      "expected": "S01 An 2005-01-02",
+      "code": "def read_item(ask):\n    iid = ask(\"Ma mon: \").strip()\n    name = ask(\"Ten mon: \").strip()\n    group = ask(\"Nhom mon: \").strip()\n    if not iid or not name: raise ValueError(\"empty field\")\n    if group not in (\"Ca phe\", \"Tra\", \"Da xay\", \"Banh\"): raise ValueError(\"group\")\n    return iid, {\"name\": name, \"group\": group}\nanswers = iter([\"latte\", \"Latte\", \"Ca phe\"])\niid, info = read_item(lambda prompt: next(answers))\nprint(iid, info[\"name\"], info[\"group\"])",
+      "expected": "latte Latte Ca phe",
       "tryIt": true,
       "trace": {
        "predict": {
         "kind": "mid",
         "var": "prompt",
-        "line": 10,
-        "prompt": "Ngay sau khi dòng 10 chạy, `prompt` bằng mấy?",
-        "answer": "'Student id: '"
+        "line": 9,
+        "prompt": "Ngay sau khi dòng 9 chạy, `prompt` bằng mấy?",
+        "answer": "'Ma mon: '"
        },
        "rows": [
         {
          "line": 1,
          "set": [
           [
-           "read_student",
-           "<hàm read_student>"
+           "read_item",
+           "<hàm read_item>"
           ]
          ]
         },
         {
-         "line": 9,
+         "line": 8,
          "set": [
           [
            "answers",
@@ -207,11 +207,11 @@
          ]
         },
         {
-         "line": 10
+         "line": 9
         },
         {
          "line": 1,
-         "fn": "read_student",
+         "fn": "read_item",
          "depth": 1,
          "enter": true,
          "set": [
@@ -223,126 +223,115 @@
         },
         {
          "line": 2,
-         "fn": "read_student",
+         "fn": "read_item",
          "depth": 1
         },
         {
-         "line": 10,
+         "line": 9,
          "fn": "<lambda>",
          "depth": 2,
          "enter": true,
          "set": [
           [
            "prompt",
-           "'Student id: '"
+           "'Ma mon: '"
           ]
          ]
         },
         {
-         "line": 10,
+         "line": 9,
          "fn": "<lambda>",
          "depth": 2
         },
         {
-         "line": 10,
+         "line": 9,
          "fn": "<lambda>",
          "depth": 2,
-         "ret": "'S01'"
+         "ret": "'latte'"
         },
         {
          "line": 3,
-         "fn": "read_student",
+         "fn": "read_item",
          "depth": 1
         },
         {
-         "line": 10,
+         "line": 9,
          "fn": "<lambda>",
          "depth": 2,
          "enter": true,
          "set": [
           [
            "prompt",
-           "'Name: '"
+           "'Ten mon: '"
           ]
          ]
         },
         {
-         "line": 10,
+         "line": 9,
          "fn": "<lambda>",
          "depth": 2
         },
         {
-         "line": 10,
+         "line": 9,
          "fn": "<lambda>",
          "depth": 2,
-         "ret": "'An'"
+         "ret": "'Latte'"
         },
         {
          "line": 4,
-         "fn": "read_student",
+         "fn": "read_item",
          "depth": 1
         },
         {
-         "line": 10,
+         "line": 9,
          "fn": "<lambda>",
          "depth": 2,
          "enter": true,
          "set": [
           [
            "prompt",
-           "'DoB YYYY-MM-DD: '"
+           "'Nhom mon: '"
           ]
          ]
         },
         {
-         "line": 10,
+         "line": 9,
          "fn": "<lambda>",
          "depth": 2
         },
         {
-         "line": 10,
+         "line": 9,
          "fn": "<lambda>",
          "depth": 2,
-         "ret": "'2005-01-02'"
+         "ret": "'Ca phe'"
         },
         {
          "line": 5,
-         "fn": "read_student",
+         "fn": "read_item",
          "depth": 1
         },
         {
          "line": 6,
-         "fn": "read_student",
-         "depth": 1,
-         "set": [
-          [
-           "datetime",
-           "<lớp datetime>"
-          ]
-         ]
+         "fn": "read_item",
+         "depth": 1
         },
         {
          "line": 7,
-         "fn": "read_student",
+         "fn": "read_item",
          "depth": 1
         },
         {
-         "line": 8,
-         "fn": "read_student",
-         "depth": 1
-        },
-        {
-         "line": 8,
-         "fn": "read_student",
+         "line": 7,
+         "fn": "read_item",
          "depth": 1,
-         "ret": "('S01', {'name': 'An', 'dob': '2005-01-02'})"
+         "ret": "('latte', {'name': 'Latte', 'group': 'Ca phe'})"
         },
         {
-         "line": 11,
-         "out": "S01 An 2005-01-02"
+         "line": 10,
+         "out": "latte Latte Ca phe"
         },
         {
-         "line": 11,
+         "line": 10,
          "ret": "None"
         }
        ]
@@ -350,7 +339,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Truyền ask làm ví dụ tự chạy được với dữ liệu cố định; khi mở CLI dùng read_student(input). Bài hoàn chỉnh cần hàm nhập số lượng sinh viên, nhập từng hồ sơ; nhập số môn và id/name từng môn; chọn môn nhập điểm từng sinh viên; liệt kê sinh viên/môn/điểm môn. Giữ một state chung để danh sách và điểm không bị lệch."
+      "text": "Truyền ask làm ví dụ tự chạy được với dữ liệu cố định; khi mở CLI dùng read_item(input). Bài hoàn chỉnh cần hàm nhập số món, nhập từng món; nhập số nguyên liệu và id/name từng nguyên liệu; chọn nguyên liệu rồi nhập lượng cho từng món; liệt kê món, nguyên liệu và định lượng. Giữ một state chung để danh sách và định lượng không bị lệch."
      }
     ]
    ],
@@ -421,16 +410,16 @@
    ],
    "practice": [
     {
-     "prompt": "Khóa điểm vì sao có hai thành phần?",
-     "answer": "Một sinh viên có thể có nhiều môn; (student_id, course_id) xác định điểm thuộc đúng cặp."
+     "prompt": "Khóa định lượng vì sao có hai thành phần?",
+     "answer": "Một món có thể dùng nhiều nguyên liệu; (item_id, ingredient_id) xác định lượng thuộc đúng cặp."
     },
     {
-     "prompt": "Nếu điểm bằng 0 có được bỏ như chưa nhập không?",
-     "answer": "Không. Kiểm sự tồn tại của key; 0 là điểm hợp lệ."
+     "prompt": "Nếu lượng bằng 0 có được bỏ như chưa khai không?",
+     "answer": "Không. Kiểm sự tồn tại của key; 0 là lượng hợp lệ."
     },
     {
      "prompt": "Hoàn thiện PW1 không dùng class domain và tự kiểm đủ yêu cầu.",
-     "answer": "Nộp 1.student.mark.py có read_count (int không âm), read_students(count) với id/name/DoB không trùng, read_courses(count) id/name không trùng, read_marks(course_id) kiểm điểm hữu hạn 0..10; list_students/list_courses/list_course_marks. CLI đọc count, các hồ sơ, rồi menu lặp chọn môn/nhập/xem/thoát. Dùng input cho tương tác thật, có thể truyền ask để test. Thử 2 sinh viên trùng tên khác mã, 2 môn, điểm 0, mã lạ, count sai và ngày không tồn tại. Nộp kết quả listing đúng từng môn và commit lên fork; không chỉ in dữ liệu mẫu."
+     "answer": "Nộp 1.mon.dinhluong.py có read_count (int không âm), read_items(count) với id/name/nhóm không trùng, read_ingredients(count) id/name không trùng, read_amounts(ingredient_id) kiểm lượng hữu hạn 0..50; list_items/list_ingredients/list_ingredient_lines. CLI đọc count, các hồ sơ, rồi menu lặp chọn nguyên liệu/nhập/xem/thoát. Dùng input cho tương tác thật, có thể truyền ask để test. Thử 2 món trùng tên khác mã, 2 nguyên liệu, lượng 0, mã lạ, count sai và nhóm món không hợp lệ. Nộp kết quả listing đúng từng nguyên liệu và commit lên fork; không chỉ in dữ liệu mẫu."
     }
    ]
   },
@@ -439,7 +428,7 @@
     "title": "Chạy thử",
     "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
    },
-   "starterCode": "# ── Đoạn 1 ──\nstudents = {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}\ncourses = {\"PY\": {\"name\": \"Python\"}}\nmarks = {(\"S01\", \"PY\"): 8.0}\nprint(students[\"S01\"][\"dob\"])\nprint(marks[(\"S01\", \"PY\")])\n\n# ── Đoạn 2 ──\ndef course_marks(students, marks, course_id):\n    return [(sid, students[sid][\"name\"], score) for (sid, cid), score in marks.items() if cid == course_id]\nstudents = {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}, \"S02\": {\"name\": \"Binh\", \"dob\": \"2005-02-03\"}}\nmarks = {(\"S01\", \"PY\"): 8, (\"S02\", \"PY\"): 0, (\"S01\", \"DB\"): 7}\nprint(course_marks(students, marks, \"PY\"))\n\n# ── Đoạn 3 ──\ndef read_student(ask):\n    sid = ask(\"Student id: \").strip()\n    name = ask(\"Name: \").strip()\n    dob = ask(\"DoB YYYY-MM-DD: \").strip()\n    if not sid or not name: raise ValueError(\"empty field\")\n    from datetime import datetime\n    datetime.strptime(dob, \"%Y-%m-%d\")\n    return sid, {\"name\": name, \"dob\": dob}\nanswers = iter([\"S01\", \"An\", \"2005-01-02\"])\nsid, info = read_student(lambda prompt: next(answers))\nprint(sid, info[\"name\"], info[\"dob\"])\n"
+   "starterCode": "# ── Đoạn 1 ──\nitems = {\"latte\": {\"name\": \"Latte\", \"group\": \"Ca phe\"}}\ningredients = {\"ca-phe-hat\": {\"name\": \"Ca phe hat\", \"unit\": \"g\"}}\nrecipe = {(\"latte\", \"ca-phe-hat\"): 8.0}\nprint(items[\"latte\"][\"group\"])\nprint(recipe[(\"latte\", \"ca-phe-hat\")])\n\n# ── Đoạn 2 ──\ndef ingredient_lines(items, recipe, ingredient_id):\n    return [(iid, items[iid][\"name\"], amount) for (iid, ing), amount in recipe.items() if ing == ingredient_id]\nitems = {\"latte\": {\"name\": \"Latte\", \"group\": \"Ca phe\"}, \"mocha\": {\"name\": \"Mocha\", \"group\": \"Ca phe\"}}\nrecipe = {(\"latte\", \"ca-phe-hat\"): 8, (\"mocha\", \"ca-phe-hat\"): 0, (\"latte\", \"sua-tuoi\"): 7}\nprint(ingredient_lines(items, recipe, \"ca-phe-hat\"))\n\n# ── Đoạn 3 ──\ndef read_item(ask):\n    iid = ask(\"Ma mon: \").strip()\n    name = ask(\"Ten mon: \").strip()\n    group = ask(\"Nhom mon: \").strip()\n    if not iid or not name: raise ValueError(\"empty field\")\n    if group not in (\"Ca phe\", \"Tra\", \"Da xay\", \"Banh\"): raise ValueError(\"group\")\n    return iid, {\"name\": name, \"group\": group}\nanswers = iter([\"latte\", \"Latte\", \"Ca phe\"])\niid, info = read_item(lambda prompt: next(answers))\nprint(iid, info[\"name\"], info[\"group\"])\n"
   }
  },
  "_mode": "pyodide",

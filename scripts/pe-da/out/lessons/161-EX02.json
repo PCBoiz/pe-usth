@@ -22,23 +22,23 @@
     [
      {
       "type": "paragraph",
-      "text": "Một bảng gồm tên học viên và điểm cần lưu chữ và số ở các cột khác nhau. `genfromtxt` có thể đọc bảng này thành structured array: mỗi phần tử là một bản ghi học viên, bên trong có các trường (field) mang tên và kiểu riêng. `names=True` lấy tên các trường từ dòng đầu."
+      "text": "Một bảng gồm tên món và lượng cà phê hạt cần lưu chữ và số ở các cột khác nhau. `genfromtxt` có thể đọc bảng này thành structured array: mỗi phần tử là một bản ghi món, bên trong có các trường (field) mang tên và kiểu riêng. `names=True` lấy tên các trường từ dòng đầu."
      },
      {
       "type": "code",
-      "code": "import numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8.5\\nAn,7.0\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.dtype.names)\nprint(table[\"name\"].tolist())\nprint(table[\"mark\"].tolist())",
-      "expected": "('name', 'mark')\n['Mai', 'An']\n[8.5, 7.0]",
+      "code": "import numpy as np\nfrom io import StringIO\nraw = \"mon,luong\\nlatte,8.5\\nmocha,7.0\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.dtype.names)\nprint(table[\"mon\"].tolist())\nprint(table[\"luong\"].tolist())",
+      "expected": "('mon', 'luong')\n['latte', 'mocha']\n[8.5, 7.0]",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "dtype=None cho phép suy luận kiểu của từng field; encoding=\"utf-8\" giữ phần tên dưới dạng chuỗi. table[\"mark\"] chọn một field, khác với table[0] chọn bản ghi đầu tiên. Đừng mặc định shape có hai chiều chỉ vì nguồn có hai cột."
+      "text": "dtype=None cho phép suy luận kiểu của từng field; encoding=\"utf-8\" giữ phần tên dưới dạng chuỗi. table[\"luong\"] chọn một field, khác với table[0] chọn bản ghi đầu tiên. Đừng mặc định shape có hai chiều chỉ vì nguồn có hai cột."
      },
      {
       "type": "code",
-      "code": "import numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8.5\\nAn,\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.shape)\nprint(bool(np.isnan(table[\"mark\"][1])))",
+      "code": "import numpy as np\nfrom io import StringIO\nraw = \"mon,luong\\nlatte,8.5\\nmocha,\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.shape)\nprint(bool(np.isnan(table[\"luong\"][1])))",
       "expected": "(2,)\nTrue",
       "tryIt": true
      }
@@ -46,12 +46,12 @@
     [
      {
       "type": "paragraph",
-      "text": "Ô điểm trống thành NaN trong field số thực này. Cách suy luận còn phụ thuộc dữ liệu: một cột chỉ có số nguyên và ô trống có thể dùng giá trị điền khác, nên cần xem dtype và chỉ định kiểu hoặc missing policy nếu quy tắc phải ổn định. recfromcsv trong tờ tóm tắt là API cũ đã bị bỏ ở NumPy 2; dùng genfromtxt với các tham số rõ, không cài phiên bản cũ chỉ để giữ tên hàm."
+      "text": "Ô lượng trống thành NaN trong field số thực này. Cách suy luận còn phụ thuộc dữ liệu: một cột chỉ có số nguyên và ô trống có thể dùng giá trị điền khác, nên cần xem dtype và chỉ định kiểu hoặc missing policy nếu quy tắc phải ổn định. recfromcsv trong tờ tóm tắt là API cũ đã bị bỏ ở NumPy 2; dùng genfromtxt với các tham số rõ, không cài phiên bản cũ chỉ để giữ tên hàm."
      },
      {
       "type": "code",
-      "code": "import numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8\\nAn,7\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=[(\"name\", \"U8\"), (\"mark\", float)], encoding=\"utf-8\")\nprint(table[\"name\"][0], float(table[\"mark\"][0]))\nprint(table[\"mark\"].dtype.kind)",
-      "expected": "Mai 8.0\nf",
+      "code": "import numpy as np\nfrom io import StringIO\nraw = \"mon,luong\\nlatte,8\\nmocha,7\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=[(\"mon\", \"U8\"), (\"luong\", float)], encoding=\"utf-8\")\nprint(table[\"mon\"][0], float(table[\"luong\"][0]))\nprint(table[\"luong\"].dtype.kind)",
+      "expected": "latte 8.0\nf",
       "tryIt": true
      }
     ]
@@ -123,16 +123,16 @@
    ],
    "practice": [
     {
-     "prompt": "names=True lấy gì từ dòng đầu? Muốn cột mark viết gì?",
-     "answer": "Lấy tên field. Dùng table[\"mark\"]; table[0] là bản ghi đầu tiên, không phải cột đầu."
+     "prompt": "names=True lấy gì từ dòng đầu? Muốn cột luong viết gì?",
+     "answer": "Lấy tên field. Dùng table[\"luong\"]; table[0] là bản ghi đầu tiên, không phải cột đầu."
     },
     {
      "prompt": "Structured array có shape (2,) và hai field thì có bao nhiêu bản ghi?",
      "answer": "Hai bản ghi, mỗi bản ghi có hai field. shape không liệt kê số field như một chiều array thường."
     },
     {
-     "prompt": "Một ví dụ cũ gọi recfromcsv không chạy trên NumPy 2. Sửa hướng nào, và làm sao bảo đảm điểm trống được lưu như số thực thiếu?",
-     "answer": "Đổi sang genfromtxt(delimiter=\",\", names=True, ...) và chọn dtype cho field điểm là float; đặt missing_values/filling_values rõ nếu định dạng cần. Kiểm dtype và np.isnan, không giả định mọi cột suy luận đều cùng cách điền."
+     "prompt": "Một ví dụ cũ gọi recfromcsv không chạy trên NumPy 2. Sửa hướng nào, và làm sao bảo đảm ô lượng trống được lưu như số thực thiếu?",
+     "answer": "Đổi sang genfromtxt(delimiter=\",\", names=True, ...) và chọn dtype cho field luong là float; đặt missing_values/filling_values rõ nếu định dạng cần. Kiểm dtype và np.isnan, không giả định mọi cột suy luận đều cùng cách điền."
     }
    ]
   },

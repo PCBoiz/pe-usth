@@ -78,7 +78,7 @@
    ],
    "context": {
     "level": "Trung cấp",
-    "prereq": "NP04 · Tính trên từng phần tử, NP07 · Đọc shape, ndim và size, NP12 · Tổng từng hàng và bài ghép, NP15 · Gắn nhãn và giới hạn điểm, NP16 · Thống kê và điểm có trọng số"
+    "prereq": "NP04 · Tính trên từng phần tử, NP07 · Đọc shape, ndim và size, NP12 · Tổng từng hàng và bài ghép, NP15 · Gắn nhãn và giới hạn điểm, NP16 · Thống kê và giá trung bình có trọng số"
    }
   },
   "step_2": {

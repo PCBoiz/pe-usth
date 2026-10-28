@@ -22,12 +22,12 @@
     [
      {
       "type": "paragraph",
-      "text": "Hai nút chọn ở bài trước đủ cho hai mức; thực đơn của quán thì dài hơn. Form nhập điểm cần chọn sinh viên và môn học. Listbox hiển thị nhiều phần tử, còn Combobox tiết kiệm chỗ bằng danh sách thả xuống."
+      "text": "Hai nút chọn ở bài trước đủ cho hai mức; thực đơn của quán thì dài hơn. Màn hình nhận đơn cần chọn món và chọn nhóm món. Listbox hiển thị nhiều phần tử, còn Combobox tiết kiệm chỗ bằng danh sách thả xuống."
      },
      {
       "type": "code",
-      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nbox=tk.Listbox(r)\nbox.insert(tk.END,'An','Binh','Chi')\nbox.activate(1)\nprint(box.get(tk.ACTIVE))\nprint(box.size())\nr.destroy()",
-      "expected": "Binh\n3"
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nbox=tk.Listbox(r)\nbox.insert(tk.END,'Latte','Mocha','Tra sen')\nbox.activate(1)\nprint(box.get(tk.ACTIVE))\nprint(box.size())\nr.destroy()",
+      "expected": "Mocha\n3"
      }
     ],
     [
@@ -37,19 +37,19 @@
      },
      {
       "type": "code",
-      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nbox=tk.Listbox(r,selectmode=tk.MULTIPLE)\nbox.insert(tk.END,'An','Binh','Chi')\nbox.activate(2);box.selection_set(0)\nprint(box.get(tk.ACTIVE))\nprint([box.get(i) for i in box.curselection()])\nr.destroy()",
-      "expected": "Chi\n['An']"
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nbox=tk.Listbox(r,selectmode=tk.MULTIPLE)\nbox.insert(tk.END,'Latte','Mocha','Tra sen')\nbox.activate(2);box.selection_set(0)\nprint(box.get(tk.ACTIVE))\nprint([box.get(i) for i in box.curselection()])\nr.destroy()",
+      "expected": "Tra sen\n['Latte']"
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "Ví dụ cố ý để active ở Chi nhưng selected ở An. curselection trả các vị trí đã chọn; danh sách có thể rỗng, nên cần kiểm tra trước khi lấy phần tử đầu."
+      "text": "Ví dụ cố ý để active ở Tra sen nhưng selected ở Latte. curselection trả các vị trí đã chọn; danh sách có thể rỗng, nên cần kiểm tra trước khi lấy phần tử đầu."
      },
      {
       "type": "code",
-      "code": "import tkinter as tk\nfrom tkinter import ttk\nr=tk.Tk();r.withdraw()\ncombo=ttk.Combobox(r,values=['Python','Statistics'],state='readonly')\ncombo.current(1)\nprint(combo.get())\nprint(combo.cget('state'))\nr.destroy()",
-      "expected": "Statistics\nreadonly"
+      "code": "import tkinter as tk\nfrom tkinter import ttk\nr=tk.Tk();r.withdraw()\ncombo=ttk.Combobox(r,values=['Ca phe','Tra'],state='readonly')\ncombo.current(1)\nprint(combo.get())\nprint(combo.cget('state'))\nr.destroy()",
+      "expected": "Tra\nreadonly"
      },
      {
       "type": "paragraph",
@@ -138,8 +138,8 @@
      "answerExpected": "A"
     },
     {
-     "prompt": "Để thêm An ở cuối Listbox rồi đọc phần tử active, dùng các lời gọi nào? Với Combobox lấy chữ đang chọn thế nào?",
-     "answer": "box.insert(tk.END,\"An\"); box.get(tk.ACTIVE). Active có thể khác selected; selected lấy qua curselection. Tạo ttk.Combobox(values=[...]) và lấy chữ bằng combo.get()."
+     "prompt": "Để thêm Latte ở cuối Listbox rồi đọc phần tử active, dùng các lời gọi nào? Với Combobox lấy chữ đang chọn thế nào?",
+     "answer": "box.insert(tk.END,\"Latte\"); box.get(tk.ACTIVE). Active có thể khác selected; selected lấy qua curselection. Tạo ttk.Combobox(values=[...]) và lấy chữ bằng combo.get()."
     }
    ]
   },

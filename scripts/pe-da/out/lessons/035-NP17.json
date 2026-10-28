@@ -76,7 +76,7 @@
    ],
    "context": {
     "level": "Trung cấp",
-    "prereq": "NP03 · Kiểu dữ liệu của array, NP14 · Lọc dữ liệu bằng mask, NP16 · Thống kê và điểm có trọng số"
+    "prereq": "NP03 · Kiểu dữ liệu của array, NP14 · Lọc dữ liệu bằng mask, NP16 · Thống kê và giá trung bình có trọng số"
    }
   },
   "step_2": {

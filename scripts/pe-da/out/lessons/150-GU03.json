@@ -22,12 +22,12 @@
     [
      {
       "type": "paragraph",
-      "text": "Một form nhập điểm thường có vùng thông tin sinh viên và vùng nhập môn học. Khung (frame) nhóm các widget của từng vùng để bạn bố trí và quản lý chúng cùng nhau."
+      "text": "Màn hình nhận đơn của quán có vùng chọn món và vùng nhập số cốc. Khung (frame) nhóm các widget của từng vùng để bạn bố trí và quản lý chúng cùng nhau."
      },
      {
       "type": "code",
-      "code": "import tkinter as tk\nroot=tk.Tk();root.withdraw()\npanel=tk.Frame(root, width=300, height=100, bg='white')\nlabel=tk.Label(panel, text='Sinh vien', bg='white')\nprint(label.cget('text'))\nprint(label.master is panel)\nroot.destroy()",
-      "expected": "Sinh vien\nTrue"
+      "code": "import tkinter as tk\nroot=tk.Tk();root.withdraw()\npanel=tk.Frame(root, width=300, height=100, bg='white')\nlabel=tk.Label(panel, text='Mon', bg='white')\nprint(label.cget('text'))\nprint(label.master is panel)\nroot.destroy()",
+      "expected": "Mon\nTrue"
      }
     ],
     [
@@ -37,8 +37,8 @@
      },
      {
       "type": "code",
-      "code": "import tkinter as tk\nroot=tk.Tk();root.withdraw()\nlabel=tk.Label(root, text='Chua chon', width=20, height=2, bg='white')\nlabel.configure(text='Da chon S01')\nprint(label.cget('text'))\nprint(label.cget('width'), label.cget('height'))\nroot.destroy()",
-      "expected": "Da chon S01\n20 2"
+      "code": "import tkinter as tk\nroot=tk.Tk();root.withdraw()\nlabel=tk.Label(root, text='Chua chon', width=20, height=2, bg='white')\nlabel.configure(text='Da chon latte')\nprint(label.cget('text'))\nprint(label.cget('width'), label.cget('height'))\nroot.destroy()",
+      "expected": "Da chon latte\n20 2"
      }
     ],
     [

@@ -22,12 +22,12 @@
     [
      {
       "type": "paragraph",
-      "text": "Một file có hàng chục cột, nhưng báo cáo chỉ cần mã cửa hàng và doanh thu. Cách tiết kiệm bộ nhớ đầu tiên là không đọc những cột bạn không dùng."
+      "text": "Bảng nhiều cấp ở bài trước đã lớn, và sổ đơn hàng của quán còn hàng chục cột. Báo cáo thì chỉ cần mã quầy và tiền thu. Cách tiết kiệm bộ nhớ đầu tiên là không đọc những cột bạn không dùng."
      },
      {
       "type": "code",
-      "code": "import pandas as pd\nfrom io import StringIO\ntext = 'store,amount,note\\nA,10,long note\\nB,20,another note\\n'\ndf = pd.read_csv(StringIO(text), usecols=['store', 'amount'])\nprint(df.columns.tolist())\nprint(df['amount'].sum())",
-      "expected": "['store', 'amount']\n30",
+      "code": "import pandas as pd\nfrom io import StringIO\ntext = 'quay,tong_tien,ghi_chu\\nQ1,10,ghi tay\\nQ2,20,ghi tay\\n'\ndf = pd.read_csv(StringIO(text), usecols=['quay', 'tong_tien'])\nprint(df.columns.tolist())\nprint(df['tong_tien'].sum())",
+      "expected": "['quay', 'tong_tien']\n30",
       "tryIt": true
      }
     ],
@@ -38,7 +38,7 @@
      },
      {
       "type": "code",
-      "code": "import pandas as pd\nnames = pd.Series(['north', 'south'] * 1000, dtype='object')\ncategories = names.astype('category')\nprint(categories.memory_usage(deep=True) < names.memory_usage(deep=True))\nprint(categories.astype('object').equals(names))",
+      "code": "import pandas as pd\nma_quay = pd.Series(['Q1', 'Q2'] * 1000, dtype='object')\nrut_gon = ma_quay.astype('category')\nprint(rut_gon.memory_usage(deep=True) < ma_quay.memory_usage(deep=True))\nprint(rut_gon.astype('object').equals(ma_quay))",
       "expected": "True\nTrue",
       "tryIt": true
      }
@@ -46,17 +46,17 @@
     [
      {
       "type": "paragraph",
-      "text": "deep=True tính cả phần bộ nhớ chứa các đối tượng chữ. Ở dãy có ít tên lặp nhiều lần này, category dùng ít bộ nhớ hơn và giữ các giá trị. Kết quả cụ thể phụ thuộc dữ liệu, nên hãy đo thay vì mặc định mọi category đều có lợi."
+      "text": "deep=True tính cả phần bộ nhớ chứa các đối tượng chữ. Ở dãy chỉ có hai mã quầy lặp nhiều lần này, category dùng ít bộ nhớ hơn và giữ các giá trị. Kết quả cụ thể phụ thuộc dữ liệu, nên hãy đo thay vì mặc định mọi category đều có lợi."
      },
      {
       "type": "code",
-      "code": "import pandas as pd\nfrom io import StringIO\ntext = 'amount\\n10\\n20\\n30\\n40\\n'\ntotal = 0\nrows = 0\nfor chunk in pd.read_csv(StringIO(text), chunksize=2):\n    total += chunk['amount'].sum()\n    rows += len(chunk)\nprint(total, rows)\nprint(total / rows)",
+      "code": "import pandas as pd\nfrom io import StringIO\ntext = 'tong_tien\\n10\\n20\\n30\\n40\\n'\ntong = 0\nhang = 0\nfor lo in pd.read_csv(StringIO(text), chunksize=2):\n    tong += lo['tong_tien'].sum()\n    hang += len(lo)\nprint(tong, hang)\nprint(tong / hang)",
       "expected": "100 4\n25.0",
       "tryIt": true
      },
      {
       "type": "paragraph",
-      "text": "chunksize trả từng lô để cộng dồn. Trung bình toàn bộ phải tính tổng chia số quan sát phù hợp; không cộng hoặc lấy trung bình các trung bình lô khi kích thước lô khác nhau. Các phép cần toàn bộ dữ liệu như sắp xếp toàn cục không được giải quyết chỉ bằng chunksize. Khi đo tốc độ, kiểm tra hai cách cho cùng kết quả và đo nhiều lần với cùng dữ liệu."
+      "text": "chunksize trả từng lô để cộng dồn. Trung bình toàn bộ phải tính tổng chia số đơn phù hợp; không cộng hoặc lấy trung bình các trung bình lô khi kích thước lô khác nhau. Các phép cần toàn bộ dữ liệu như sắp xếp toàn cục không được giải quyết chỉ bằng chunksize. Khi đo tốc độ, kiểm tra hai cách cho cùng kết quả và đo nhiều lần với cùng dữ liệu."
      }
     ]
    ],
@@ -135,9 +135,9 @@
      "answer": "Vì mỗi lô sẽ có trọng số bằng nhau dù số quan sát khác nhau; phải cộng tổng và số quan sát."
     },
     {
-     "prompt": "Đọc cột x gồm 1,2,3 theo chunksize=2 rồi cộng dồn.",
+     "prompt": "Đọc cột so_coc gồm 1,2,3 theo chunksize=2 rồi cộng dồn.",
      "answer": "Tổng là 6.",
-     "answerCode": "import pandas as pd\nfrom io import StringIO\ntotal = 0\nfor chunk in pd.read_csv(StringIO('x\\n1\\n2\\n3'), chunksize=2):\n    total += chunk['x'].sum()\nprint(total)",
+     "answerCode": "import pandas as pd\nfrom io import StringIO\ntotal = 0\nfor chunk in pd.read_csv(StringIO('so_coc\\n1\\n2\\n3'), chunksize=2):\n    total += chunk['so_coc'].sum()\nprint(total)",
      "answerExpected": "6"
     }
    ]

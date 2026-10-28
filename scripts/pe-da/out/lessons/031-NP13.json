@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Phép cộng ở bài trước dùng cả bảng; lần này bạn cần đánh dấu riêng những ô đạt điều kiện. Lượng mưa trong ba ngày là 0, 2.5 và 0 mm. Để biết ngày nào có mưa, bạn so sánh từng số với 0:"
+      "text": "Phép cộng ở bài trước dùng cả bảng; lần này bạn cần đánh dấu riêng những ô đạt điều kiện. Lượng sữa tươi quán dùng trong ba ngày là 0, 2.5 và 0 lít. Để biết ngày nào có pha món cần sữa, bạn so sánh từng số với 0:"
      },
      {
       "type": "code",
-      "code": "import numpy as np\n\nrain = np.array([0., 2.5, 0.])\nprint(rain > 0)",
+      "code": "import numpy as np\n\nsua = np.array([0., 2.5, 0.])\nprint(sua > 0)",
       "expected": "[False  True False]",
       "tryIt": true
      }
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`False` nghĩa là điều kiện không đúng; `True` nghĩa là điều kiện đúng. Ngày thứ hai có lượng mưa lớn hơn 0 nên được đánh dấu `True`. Hai ngày còn lại được đánh dấu `False`."
+      "text": "`False` nghĩa là điều kiện không đúng; `True` nghĩa là điều kiện đúng. Ngày thứ hai dùng hơn 0 lít nên được đánh dấu `True`. Hai ngày còn lại được đánh dấu `False`."
      },
      {
       "type": "paragraph",
@@ -42,7 +42,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Ví dụ, để đánh dấu những điểm từ 5 trở lên:"
+      "text": "Ví dụ, để đánh dấu những món bán được từ 5 cốc trở lên:"
      },
      {
       "type": "code",
@@ -54,7 +54,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Điểm 3 không đạt điều kiện, còn 5 và 8 đạt điều kiện. Dấu `>=` có nghĩa là lớn hơn hoặc bằng, nên điểm 5 cũng được đánh dấu `True`."
+      "text": "Món bán 3 cốc không đạt điều kiện, còn 5 và 8 cốc thì đạt. Dấu `>=` có nghĩa là lớn hơn hoặc bằng, nên 5 cốc cũng được đánh dấu `True`."
      },
      {
       "type": "paragraph",
@@ -143,13 +143,13 @@
      "answer": "Mask là `[False, True]`: 4 không đạt, 6 đạt điều kiện."
     },
     {
-     "prompt": "Điền phép so sánh để đánh dấu điểm từ 5 trở lên: `scores ___ 5`.",
+     "prompt": "Điền phép so sánh để đánh dấu món bán từ 5 cốc trở lên: `so_coc ___ 5`.",
      "answer": "Điền `>=`, nghĩa là lớn hơn hoặc bằng."
     },
     {
-     "prompt": "Tạo mask đánh dấu nhiệt độ lớn hơn 30 trong dãy `[28, 32, 30]`.",
+     "prompt": "Tạo mask đánh dấu số cốc lớn hơn 30 trong dãy `[28, 32, 30]`.",
      "answer": "So sánh từng số đo với 30:",
-     "answerCode": "import numpy as np\n\ntemps = np.array([28, 32, 30])\nprint(temps > 30)",
+     "answerCode": "import numpy as np\n\nso_coc = np.array([28, 32, 30])\nprint(so_coc > 30)",
      "answerExpected": "[False  True False]"
     }
    ]

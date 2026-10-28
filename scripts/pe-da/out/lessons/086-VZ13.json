@@ -73,7 +73,7 @@
    ],
    "context": {
     "level": "Nâng cao",
-    "prereq": "VZ07 · Boxplot và violinplot: đọc phân bố theo nhóm, NP16 · Thống kê và điểm có trọng số"
+    "prereq": "VZ07 · Boxplot và violinplot: đọc phân bố theo nhóm, NP16 · Thống kê và giá trung bình có trọng số"
    }
   },
   "step_2": {

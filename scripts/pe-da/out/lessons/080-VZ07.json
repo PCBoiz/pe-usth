@@ -73,7 +73,7 @@
    ],
    "context": {
     "level": "Trung cấp",
-    "prereq": "VZ06 · Histogram: khoảng chia, tần số và mật độ, NP16 · Thống kê và điểm có trọng số"
+    "prereq": "VZ06 · Histogram: khoảng chia, tần số và mật độ, NP16 · Thống kê và giá trung bình có trọng số"
    }
   },
   "step_2": {

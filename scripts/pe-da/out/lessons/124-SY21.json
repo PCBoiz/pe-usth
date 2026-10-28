@@ -3,13 +3,13 @@
  "sort_order": 124,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY21 · Pickle, JSON và khôi phục trạng thái",
- "subtitle": "Trung cấp · M5 · 15 phút",
- "estimated_minutes": 15,
- "xp_reward": 9,
+ "subtitle": "Trung cấp · M5 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY21 · Pickle, JSON và khôi phục trạng thái",
-  "subtitle": "Trung cấp · M5 · 15 phút",
+  "subtitle": "Trung cấp · M5 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY21",
@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Nhiều file đã gom được vào một gói nén rồi, nhưng dữ liệu trong bộ nhớ thì khác. Bạn lưu một tuple gồm mã sinh viên và danh sách điểm. JSON và pickle (định dạng nhị phân riêng của Python) đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
+      "text": "Nhiều file đã gom được vào một gói nén rồi, nhưng dữ liệu trong bộ nhớ thì khác. Bạn lưu một tuple gồm mã đơn của quán và danh sách số cốc. JSON và pickle (định dạng nhị phân riêng của Python) đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
      },
      {
       "type": "code",
-      "code": "import pickle, json\nrecord = (\"S01\", [8, 9])\na = pickle.loads(pickle.dumps(record))\nb = json.loads(json.dumps(record))\nprint(type(a).__name__, type(b).__name__)\nprint(a == record)",
+      "code": "import pickle, json\nrecord = (\"DH-001\", [8, 9])\na = pickle.loads(pickle.dumps(record))\nb = json.loads(json.dumps(record))\nprint(type(a).__name__, type(b).__name__)\nprint(a == record)",
       "expected": "tuple list\nTrue",
       "tryIt": true,
       "trace": {
@@ -34,7 +34,7 @@
         "kind": "final",
         "var": "b",
         "prompt": "Sau khi chạy xong, `b` bằng mấy?",
-        "answer": "['S01', [8, 9]]"
+        "answer": "['DH-001', [8, 9]]"
        },
        "rows": [
         {
@@ -55,7 +55,7 @@
          "set": [
           [
            "record",
-           "('S01', [8, 9])"
+           "('DH-001', [8, 9])"
           ]
          ]
         },
@@ -64,7 +64,7 @@
          "set": [
           [
            "a",
-           "('S01', [8, 9])"
+           "('DH-001', [8, 9])"
           ]
          ]
         },
@@ -73,7 +73,7 @@
          "set": [
           [
            "b",
-           "['S01', [8, 9]]"
+           "['DH-001', [8, 9]]"
           ]
          ]
         },
@@ -96,72 +96,9 @@
      },
      {
       "type": "code",
-      "code": "import pickle, tempfile\nstate = {\"ids\": {\"S01\", \"S02\"}, \"marks\": (8, 9)}\nwith tempfile.TemporaryFile(mode=\"w+b\") as f:\n    pickle.dump(state, f)\n    f.seek(0)\n    restored = pickle.load(f)\nprint(restored == state)\nprint(type(restored[\"ids\"]).__name__)",
+      "code": "import pickle, tempfile\nstate = {\"ids\": {\"DH-001\", \"DH-002\"}, \"so_coc\": (8, 9)}\nwith tempfile.TemporaryFile(mode=\"w+b\") as f:\n    pickle.dump(state, f)\n    f.seek(0)\n    restored = pickle.load(f)\nprint(restored == state)\nprint(type(restored[\"ids\"]).__name__)",
       "expected": "True\nset",
-      "tryIt": true,
-      "trace": {
-       "predict": {
-        "kind": "final",
-        "var": "restored",
-        "prompt": "Sau khi chạy xong, `restored` bằng mấy?",
-        "answer": "{'ids': {'S01', 'S02'}, 'marks': (8, 9)}"
-       },
-       "rows": [
-        {
-         "line": 1,
-         "set": [
-          [
-           "tempfile",
-           "<thư viện tempfile>"
-          ]
-         ]
-        },
-        {
-         "line": 2,
-         "set": [
-          [
-           "state",
-           "{'ids': {'S01', 'S02'}, 'marks': (8, 9)}"
-          ]
-         ]
-        },
-        {
-         "line": 3,
-         "set": [
-          [
-           "f",
-           "_TemporaryFileWrapper(file=BufferedRandom(), name='C:\\\\Users\\\\sonkh\\\\Ap…"
-          ]
-         ]
-        },
-        {
-         "line": 4
-        },
-        {
-         "line": 5
-        },
-        {
-         "line": 6,
-         "set": [
-          [
-           "restored",
-           "{'ids': {'S01', 'S02'}, 'marks': (8, 9)}"
-          ]
-         ]
-        },
-        {
-         "line": 3
-        },
-        {
-         "line": 7,
-         "out": "True"
-        },
-        {
-         "line": 8,
-         "out": "set"
-        }
-       ]
-      }
+      "tryIt": true
      }
     ],
     [
@@ -171,8 +108,8 @@
      },
      {
       "type": "code",
-      "code": "import gzip, pickle\nstate = {\"version\": 1, \"students\": {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}}\npacked = gzip.compress(pickle.dumps(state))\nrestored = pickle.loads(gzip.decompress(packed))\nprint(restored[\"version\"])\nprint(restored[\"students\"][\"S01\"][\"name\"])",
-      "expected": "1\nAn",
+      "code": "import gzip, pickle\nstate = {\"version\": 1, \"items\": {\"latte\": {\"name\": \"Latte\", \"group\": \"Ca phe\"}}}\npacked = gzip.compress(pickle.dumps(state))\nrestored = pickle.loads(gzip.decompress(packed))\nprint(restored[\"version\"])\nprint(restored[\"items\"][\"latte\"][\"name\"])",
+      "expected": "1\nLatte",
       "tryIt": true
      }
     ],
@@ -263,7 +200,7 @@
     },
     {
      "prompt": "Làm PW6 thay state text bằng gzip+pickle, giữ kiểu và version.",
-     "answer": "Lưu dict version/students/courses/marks qua pickle.dump trong gzip.open(...,\"wb\"); load bằng rb, kiểm version trước dùng. Thử mở lại sau khi reset state, tuple/set, file thiếu, gzip hỏng. Không trả state rỗng khi có file hỏng mà không báo lỗi."
+     "answer": "Lưu dict version/items/ingredients/recipe qua pickle.dump trong gzip.open(...,\"wb\"); load bằng rb, kiểm version trước dùng. Thử mở lại sau khi reset state, tuple/set, file thiếu, gzip hỏng. Không trả state rỗng khi có file hỏng mà không báo lỗi."
     },
     {
      "prompt": "Pickle scalar/collection có luôn được không? Lưu function/class cấp module và file/socket khác nhau thế nào?",
@@ -350,8 +287,8 @@
  "_bai_tap": "cham",
  "_vet": {
   "can": 3,
-  "co": 2,
-  "bo": 1,
+  "co": 1,
+  "bo": 2,
   "loi": []
  }
 }

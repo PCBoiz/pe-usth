@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Phép nhân ma trận ở bài trước cần số liệu; khi chưa có, bạn tự sinh ra chúng. Bạn muốn thử chương trình đọc nhiệt độ khi chưa có dữ liệu cảm biến thật. Bộ sinh có thể tạo số theo phân phối chuẩn với trung bình và độ lệch chuẩn bạn chọn. Đây là giả định để mô phỏng, không phải bằng chứng nhiệt độ thực có phân phối đó."
+      "text": "Phép nhân ma trận ở bài trước cần số liệu; khi chưa có, bạn tự sinh ra chúng. Bạn muốn thử chương trình báo cáo khi quán chưa đủ số liệu thật. Bộ sinh có thể tạo số theo phân phối chuẩn với trung bình và độ lệch chuẩn bạn chọn. Đây là giả định để mô phỏng, không phải bằng chứng số cốc thực có phân phối đó."
      },
      {
       "type": "code",
-      "code": "import numpy as np\nrng = np.random.default_rng(7)\ntemps = rng.normal(loc=25, scale=2, size=100)\nprint(temps.shape)\nprint(bool(np.isfinite(temps).all()))",
+      "code": "import numpy as np\nrng = np.random.default_rng(7)\ncups = rng.normal(loc=25, scale=2, size=100)\nprint(cups.shape)\nprint(bool(np.isfinite(cups).all()))",
       "expected": "(100,)\nTrue",
       "tryIt": true
      }
@@ -68,7 +68,7 @@
    ],
    "context": {
     "level": "Nâng cao",
-    "prereq": "NP16 · Thống kê và điểm có trọng số, NP22 · Tạo dữ liệu thử với seed, NP18 · Broadcasting từ ví dụ giá bán"
+    "prereq": "NP16 · Thống kê và giá trung bình có trọng số, NP22 · Tạo dữ liệu thử với seed, NP18 · Broadcasting từ ví dụ giá bán"
    }
   },
   "step_2": {

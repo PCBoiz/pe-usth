@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Dữ liệu bán hàng nằm trong cơ sở dữ liệu. Bạn có thể để SQL chọn các hàng cần thiết, rồi nhận kết quả thành DataFrame để tiếp tục phân tích."
+      "text": "Sổ đơn hàng của quán đã nằm trong một cơ sở dữ liệu. Bạn có thể để SQL chọn các hàng cần thiết, rồi nhận kết quả thành DataFrame để tiếp tục phân tích."
      },
      {
       "type": "code",
-      "code": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    df = pd.read_sql_query('SELECT store, amount FROM sales', connection)\n    print(df['amount'].sum())",
+      "code": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'quay': ['Q1', 'Q1', 'Q2'], 'tong_tien': [10, 20, 40]}).to_sql('don_hang', connection, index=False)\n    df = pd.read_sql_query('SELECT quay, tong_tien FROM don_hang', connection)\n    print(df['tong_tien'].sum())",
       "expected": "70",
       "tryIt": true
      }
@@ -38,7 +38,7 @@
      },
      {
       "type": "code",
-      "code": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'B'], 'amount': [10, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT amount FROM sales WHERE amount > ?'\n    result = pd.read_sql_query(sql, connection, params=(20,))\n    print(result['amount'].tolist())",
+      "code": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'quay': ['Q1', 'Q2'], 'tong_tien': [10, 40]}).to_sql('don_hang', connection, index=False)\n    sql = 'SELECT tong_tien FROM don_hang WHERE tong_tien > ?'\n    result = pd.read_sql_query(sql, connection, params=(20,))\n    print(result['tong_tien'].tolist())",
       "expected": "[40]",
       "tryIt": true
      }
@@ -50,8 +50,8 @@
      },
      {
       "type": "code",
-      "code": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT store, SUM(amount) AS revenue FROM sales GROUP BY store ORDER BY store'\n    print(pd.read_sql_query(sql, connection).to_dict('records'))",
-      "expected": "[{'store': 'A', 'revenue': 30}, {'store': 'B', 'revenue': 40}]",
+      "code": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'quay': ['Q1', 'Q1', 'Q2'], 'tong_tien': [10, 20, 40]}).to_sql('don_hang', connection, index=False)\n    sql = 'SELECT quay, SUM(tong_tien) AS doanh_thu FROM don_hang GROUP BY quay ORDER BY quay'\n    print(pd.read_sql_query(sql, connection).to_dict('records'))",
+      "expected": "[{'quay': 'Q1', 'doanh_thu': 30}, {'quay': 'Q2', 'doanh_thu': 40}]",
       "tryIt": true
      },
      {
@@ -135,9 +135,9 @@
      "answer": "Để driver xử lý giá trị riêng với cú pháp SQL, tránh lỗi quoting và SQL injection qua giá trị."
     },
     {
-     "prompt": "Tạo bảng amount=[5,8], dùng SQL tính SUM và nhận kết quả bằng pandas.",
+     "prompt": "Tạo bảng tong_tien=[5,8], dùng SQL tính SUM và nhận kết quả bằng pandas.",
      "answer": "Tổng là 13.",
-     "answerCode": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as con:\n    pd.DataFrame({'amount': [5, 8]}).to_sql('sales', con, index=False)\n    print(pd.read_sql_query('SELECT SUM(amount) AS total FROM sales', con).loc[0, 'total'])",
+     "answerCode": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as con:\n    pd.DataFrame({'tong_tien': [5, 8]}).to_sql('don_hang', con, index=False)\n    print(pd.read_sql_query('SELECT SUM(tong_tien) AS total FROM don_hang', con).loc[0, 'total'])",
      "answerExpected": "13"
     }
    ]

@@ -22,11 +22,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn có lượng mưa bốn ngày và chỉ muốn lấy số đo của những ngày có mưa. Trước tiên tạo mask, sau đó dùng mask để chọn dữ liệu:"
+      "text": "Bạn có lượng sữa tươi quán dùng bốn ngày và chỉ muốn lấy số đo của những ngày có dùng tới sữa. Trước tiên tạo mask, sau đó dùng mask để chọn dữ liệu:"
      },
      {
       "type": "code",
-      "code": "import numpy as np\n\nrain = np.array([0., 2.5, 0., 7.])\nwet = rain > 0\nprint(rain[wet])",
+      "code": "import numpy as np\n\nsua = np.array([0., 2.5, 0., 7.])\nco_dung = sua > 0\nprint(sua[co_dung])",
       "expected": "[2.5 7. ]",
       "tryIt": true
      }
@@ -34,11 +34,11 @@
     [
      {
       "type": "paragraph",
-      "text": "`wet` đánh dấu `True` ở các vị trí có lượng mưa lớn hơn 0. `rain[wet]` chỉ giữ giá trị ở những vị trí đó, nên còn 2.5 và 7. Thứ tự các giá trị được giữ nguyên."
+      "text": "`co_dung` đánh dấu `True` ở các vị trí dùng hơn 0 lít. `sua[co_dung]` chỉ giữ giá trị ở những vị trí đó, nên còn 2.5 và 7. Thứ tự các giá trị được giữ nguyên."
      },
      {
       "type": "paragraph",
-      "text": "Lọc điểm cũng làm theo hai bước tương tự:"
+      "text": "Lọc số cốc cũng làm theo hai bước tương tự:"
      },
      {
       "type": "code",
@@ -54,7 +54,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Để giữ các điểm trong khoảng từ 0 đến 10, bạn cần hai điều kiện cùng đúng:"
+      "text": "Để giữ số cốc trong khoảng từ 0 đến 10, bạn cần hai điều kiện cùng đúng:"
      },
      {
       "type": "code",
@@ -141,15 +141,15 @@
    ],
    "practice": [
     {
-     "prompt": "Lọc dãy `[2, 7, 9]` bằng điều kiện lớn hơn 5 thì còn các giá trị nào?",
+     "prompt": "Lọc dãy số cốc `[2, 7, 9]` bằng điều kiện lớn hơn 5 thì còn các giá trị nào?",
      "answer": "Còn 7 và 9."
     },
     {
-     "prompt": "Giữ điểm từ 0 đến 10: `(a >= 0) ___ (a <= 10)` cần điền gì?",
+     "prompt": "Giữ số cốc từ 0 đến 10: `(a >= 0) ___ (a <= 10)` cần điền gì?",
      "answer": "Điền `&`, vì cả hai điều kiện phải đúng."
     },
     {
-     "prompt": "Tạo một array nhiệt độ và lọc các giá trị từ 20 đến 35, kể cả hai biên.",
+     "prompt": "Tạo một array đơn giá và lọc các giá trị từ 20 đến 35, kể cả hai biên.",
      "answer": "Đặt từng điều kiện trong ngoặc; giữ cả hai biên:",
      "answerCode": "import numpy as np\n\na = np.array([18, 20, 28, 35, 40])\nprint(a[(a >= 20) & (a <= 35)])",
      "answerExpected": "[20 28 35]"
