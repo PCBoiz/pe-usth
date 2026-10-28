@@ -51,17 +51,17 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | **32 bộ, 396 ca**, tất cả đạt |
-| Backend lint | 225 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
+| Backend test | **33 bộ, 460 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
+| Backend lint | 219 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **393 ca** / 31 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **410 ca** / 33 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
-| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 556 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 373 phút; 131 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
-| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 146 bài, 408 đoạn code, **0 hỏng**, 14 cảnh báo, ~36 s |
+| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 557 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 376 phút; 131 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
+| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 146 bài, 409 đoạn code, **0 hỏng**, 14 cảnh báo, ~34 s |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 124 bài, **415 ca đạt**, 556 biến thể sai đều trượt, ~15 s (pha 1 ~10 s) |
-| pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **57 vết / 356 khối đủ điều kiện** (299 bỏ qua, 277 trong đó vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
+| pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 356 khối đủ điều kiện** (300 bỏ qua, phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
@@ -73,16 +73,20 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 393 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 410 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · consent-banner 15 · course-resume 8 ·
-editor-load-gate 14 · feedback-link 9 · forum-xss 1 · ide-brief-code 12 ·
-ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 · ide-trace 38 ·
-inline-code 3 · label-version 2 · learning-events 48 · lesson-back 7 ·
-lesson-load 7 · mcq-code 9 · mcq-next-after-wrong 23 · practice-contract 14 ·
-prewarm-gate 5 · read-diagram 12 · read-trace 15 · read-try-it 20 · run-stale 15 ·
-session-marker 5 · studio-lesson 41 · tracer-limits 7 · tracer-web-sync 5 ·
-trap-leak 3 · worker-csp 7 = 393.
-Mốc trước là 378; thêm read-trace 15 (BẢNG TỪNG BƯỚC của màn đọc — xem bẫy cuối file).
+data-files 15 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
+ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
+ide-trace 38 · inline-code 3 · insert-gate-sync 2 · label-version 2 ·
+learning-events 48 · lesson-back 7 · lesson-load 7 · mcq-code 9 ·
+mcq-next-after-wrong 23 · practice-contract 14 · prewarm-gate 5 · read-diagram 12 ·
+read-trace 15 · read-try-it 20 · run-stale 15 · session-marker 5 ·
+studio-lesson 41 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
+worker-csp 7 = 410.
+Mốc trước là 393; thêm data-files 15 (CƠ CHẾ NẠP FILE DỮ LIỆU — xem bẫy dưới) và
+insert-gate-sync 2 (cổng INSERT của backend phải biết đúng mọi nguồn màn mà
+`buildScreens` dựng — xem bẫy "Luật 6 của cổng INSERT" dưới).
+Trước đó 378 → 393 là read-trace 15 (BẢNG TỪNG BƯỚC của màn đọc — xem bẫy cuối file).
 Trước đó 351 → 378 là run-stale 15 ("kết quả này của bản code trước") và
 read-diagram 12 (sơ đồ bằng DOM) — xem hai bẫy cuối file.
 Trước đó 328 → 351 là mcq-next-after-wrong 23.
@@ -1135,6 +1139,89 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   code rồi chạy lại" KHÔNG áp dụng ở đây: chỗ đó là `/ide`, và nút "Thử ngay trong IDE"
   ngay trên nút này đã bàn giao đúng tiền tố mã sang đó. Dựng thêm một ô soạn mã ở màn đọc
   là dựng lại `/ide` trong một cái accordion.
+
+- **CƠ CHẾ NẠP FILE DỮ LIỆU: `step_4.dataFiles`, cấp BÀI, chỉ TÊN — và NĂM chỗ phải đi
+  cùng lúc.** Trước bản này không có đường nào để một file dữ liệu tới được Pyodide: không
+  `FS.writeFile` ở worker nào, và 499 khối code đều tự dựng dữ liệu tại chỗ (`tempfile` 36 ·
+  `StringIO` 19 · `open()` 18 · `read_csv` đúng **7**). Năm chỗ: `build.py` (bảng `KHOI_DU_LIEU`
+  + cổng ở `main()`), `studio-lesson.schema.ts` (**cửa duy nhất vào DB**), hai worker,
+  `check.py`, và `check-pyodide.mjs`.
+  **Cấp BÀI chứ không cấp KHỐI, có lý do:** `_prepare_dir()` tạo MỘT thư mục rồi `chdir` cho
+  cả lần chạy, mà ô "Chạy thử" nối mọi khối thành một chương trình — "file này chỉ có ở khối
+  3" là lời hứa hệ tệp không giữ được.
+  **Chỉ TÊN, không nội dung.** Nhúng `don_hang.csv` (1,29 MB) vào `content_json` như
+  `step_4.files` là nhồi nó vào DB và bắt mọi lượt mở bài tải nó qua API. Worker tải theo tên
+  rồi gộp vào CHÍNH tham số `files` của `_studio_main`, nên `studio-harness.py` **không phải
+  sửa một dòng nào**.
+  **KHÔNG gzip, và đã đo:** Next.js đã trả `Content-Encoding: gzip` — 185 075 byte thay cho
+  1 289 915 (14,3%). Nén tay chỉ mua thêm một bản `.gz` thứ hai phải giữ đồng bộ.
+  **Nhánh Node và nhánh trình duyệt là HAI, và đó là điều kiện để hàng rào sống.** Trình
+  duyệt `fetch('/static/da-dulieu/<tên>')` cùng origin; Node `readFileSync`. Ba bộ chấm vẫn
+  vá `globalThis.fetch` để từ chối mọi `http(s)://` — **không gỡ một dòng nào**. Kiểm lại:
+  giấu `mon.csv` đi rồi `node scripts/pe-da/check-pyodide.mjs PD13` phải ĐỎ với "thiếu file
+  dữ liệu". Đã thử: đỏ. Nếu nó XANH thì cơ chế đang lặng lẽ rơi về CDN.
+  **Bài mẫu là PD13, không phải PD12** — PD12 hợp chủ đề hơn nhưng có BÀI TẬP ĐƯỢC CHẤM, nên
+  `step_4` của nó là bài tập và mã bài đọc không còn ai bấm Chạy; khối dữ liệu ở đó lại thành
+  một thứ không có đường tới người học.
+  **`check-practice.mjs` CHƯA nạp được file dữ liệu** — việc đầu tiên phải làm cho module
+  thực hành. Hôm nay nó không phải lỗ hổng im lặng: build.py dừng hẳn nếu một bài vừa có
+  `tests` vừa khai `dataFiles`. Nhánh cần chép là `fileDuLieu()` trong `check-pyodide.mjs`.
+  **`check-pyodide.mjs` nay đọc BẢN DỰNG, không đọc `source/course.json`** — nếu không thì nó
+  mù với mọi khối do build phát ra (dữ liệu, sơ đồ).
+
+- **Luật 6 của cổng INSERT từng TỪ CHỐI OAN, và lối thoát duy nhất là bịa nội dung.**
+  `planLessonInserts` đòi bài phải có `step_1.read` HOẶC `play`. Hai khoá đó đúng là thứ
+  172 + 48 bài đang có nên nó trông đủ — nhưng `buildScreens()` dựng màn từ `step_1.memory`,
+  `step_2.mcq`, `step_3.trace`, `step_4.tests` mà KHÔNG cần hai khoá ấy. Bài nhập từ tài liệu
+  theo mẫu `## S1..## S4` rơi đúng vào khe đó: dựng đủ màn trong trình duyệt, mà cổng bảo
+  "gói dựng dở". Khi một cổng sai, cách đi tiếp luôn trông hợp lý — ở đây là thêm một phần
+  `## Đọc` cho qua cửa, tức bắt người soạn đổi NỘI DUNG để chiều một phép kiểm sai. **Sửa
+  cổng, đừng sửa nội dung.**
+  Luật 6 nay là `sinhDuocManNao()` — bản CHÉP điều kiện của `buildScreens`. Chép chứ không
+  import được (một bên `src/` chạy Jest, một bên `frontend/src/` chạy `node --test`), nên nó
+  SẼ TRÔI, và trôi im lặng theo đúng chiều nguy hiểm. `insert-gate-sync.test.mjs` đọc cả hai
+  cây mã và bắt hai danh sách khoá phải khớp — cùng khuôn `tracer-web-sync.test.mjs`. Ca thứ
+  hai của bộ đó kiểm chính phép quét tìm được khoá, vì regex trượt hết thì hai tập cùng RỖNG
+  và ca thứ nhất vẫn XANH trong khi không còn chứng minh gì.
+  Ablate: trả luật 6 về bản cũ → 1 đỏ ở `lesson-insert.spec.ts`; gỡ một nhánh của bản chép →
+  1 đỏ ở đó **và** 1 đỏ ở `insert-gate-sync` kèm đúng tên khoá còn thiếu.
+
+- **Đường nhập tài liệu đã bỏ nhánh AI, nhưng 7 biến `GEMINI_*` phải Ở LẠI.**
+  `lesson-import.service.ts` không còn `parseWithGemini()`: file không khớp mẫu thì báo lỗi
+  nói rõ sai ở đâu, không đoán. **Nhưng đừng dọn biến môi trường theo.** Có **7** biến
+  `GEMINI_*` (không phải 4) và cả 7 đang được `ChatbotModule` đọc — module còn đăng ký ở
+  `app.module.ts`. Gỡ chúng khỏi `env.validation.ts` là làm Joi TỪ CHỐI một `.env` production
+  đang chạy, và `config.get<number>('GEMINI_TIMEOUT_MS')` quay lại dạng CHUỖI — đúng sự cố
+  13/10/2026, chỉ theo chiều ngược.
+  **PDF: thụt lề DỰNG LẠI từ toạ độ chữ, không đọc văn bản phẳng.** `pdf-parse` trả văn bản
+  phẳng và thụt lề mất sạch — thân hàm Python về cột 0. `validateStudioLesson` KHÔNG đọc nội
+  dung mã nên không chặn được: lọt là bài vào DB rồi ném `IndentationError` ở tay học viên,
+  một lỗi không ai truy ngược về PDF. Đo trên file mẫu: 1 294 mẩu chữ, 1 901 phép đo bề rộng
+  ký tự, **100,0% ra 4,951 pt** ⇒ lưới chữ đều bề, nên `cột = (x − lề trái) / bề rộng`. Dựng
+  lại trùng TỪNG BYTE **110/114 dòng** so với bản `.md` gốc.
+  **Đo không ra lưới đều bề thì QUAY VỀ đường phẳng, không đoán** (ngưỡng: ≥90% phép đo trùng
+  trong sai số 2%, ≥20 phép đo) — và `kiemThutLe()` ở lại làm lưới an toàn, **đừng nới nó cho
+  một file qua được**.
+  **Cắt dòng theo bề rộng trang thì KHÔNG chữa được**, kể cả bằng toạ độ: dòng tiếp theo của
+  một dòng bị cắt nằm ở đúng cột 0 như một dòng mới thật. `f"{x!r}"` thành `f"`. Vì vậy mọi
+  nguồn PDF vẫn kèm một cảnh báo bắt đọc lại bản xem trước.
+  **`pdf-parse` KHÔNG chạy được dưới Jest** (`pdfjs-dist` `import()` động, vm của Jest ném
+  `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG`). Cách chia vai: phần đọc file chạy thật qua
+  `scripts/import-lesson.ts`, còn toàn bộ phần CÓ THỂ SAI là hàm thuần và Jest chấm nó bằng
+  toạ độ THẬT chụp từ PDF (`__fixtures__/pdf-mau-chu.json`). Chụp lại bằng cờ `--chup`, đừng
+  gõ tay — và có một ca bắt bản chụp phải BẰNG thứ phép dựng hôm nay sinh ra, vì không có nó
+  thì sửa phép bóc mà quên chụp lại vẫn xanh trên dữ liệu cũ.
+
+- **32 bài đã đổi miền sang quán cà phê, và `topics` CỐ Ý không đổi theo.** SY25–SY28 và GU12
+  đổi từ "quản lý sinh viên, môn học và điểm" sang "quản lý món, nguyên liệu và định lượng"
+  (chủ dự án cho phép 29/10); NP06/NP11/NP23 từ điểm kiểm tra sang số cốc; NP13/NP14 từ lượng
+  mưa sang lượng sữa; PD08/VZ28/RD05 từ nhiệt độ sang doanh thu/số cốc. `topics`, `sourceRefs`,
+  `sourcePages` vẫn trỏ về slide gốc — đó là lý lịch ĐÚNG, không phải chú thích lỗi thời; đã
+  kiểm `topics` không được `build.py` hay `check.py` đọc một lần nào. Lý do ghi ở
+  `scripts/pe-da/CAU-CHUYEN.md`.
+  **Còn hai chỗ nói tiếng cũ:** ba ảnh `VZ28-*.png` mang nhãn `Temperature (arbitrary units)`
+  TRONG PIXEL (ảnh xuất sẵn trong gói nguồn, `chep_anh()` chỉ chép — sửa phải xuất lại từ gói
+  nguồn, mà gói đó nằm ngoài repo), và `source/practice.json` vẫn dùng `region`/`qty`/`E`/`W`.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
