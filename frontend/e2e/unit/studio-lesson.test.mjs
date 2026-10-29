@@ -886,9 +886,14 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
   // đầu tiên của khoá đọc một FILE chứ không dựng dữ liệu bằng `StringIO`.
   // Nguồn khai báo nằm ở `KHOI_DU_LIEU` trong build.py, không phải course.json,
   // vì cùng lý lẽ với SO_DO_DOC: đây là phép thử cho cơ chế nạp file.
+  // 29/10/2026 (đợt FILE DỮ LIỆU cho BÀI TẬP): +1 paragraph và +1 code nữa.
+  // Khối thứ hai đọc `mon.csv`, chèn vào cuối PD16 — bài ĐẦU TIÊN vừa có ca
+  // chấm vừa khai `dataFiles`, thứ mà cổng cấm cũ của build.py/check.py không
+  // cho phép (gỡ được vì `check-practice.mjs` nay nạp file từ đĩa). Mọi loại
+  // khối khác không nhúc nhích.
   assert.deepEqual(count, {
-    paragraph: 774,
-    code: 500,
+    paragraph: 775,
+    code: 501,
     terminal: 17,
     figure: 80,
     table: 1,

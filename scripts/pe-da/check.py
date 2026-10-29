@@ -532,9 +532,10 @@ def kiem_du_lieu(bai: list[dict]) -> None:
          lần bấm Chạy đầu bằng một câu lỗi hạ tầng người học không gỡ được —
          còn bộ chấm nội dung thì đỏ, nên luật này chỉ là chặn SỚM hơn;
       3. không khai trùng;
-      4. bài khai file thì phải CÓ khối code đọc file đó. Khai mà không đọc là
-         bắt mọi học viên của bài tải thêm 1,29 MB cho một file không ai dùng —
-         và nó không hỏng gì cả, nên không có cách nào khác để biết;
+      4. bài khai file thì phải CÓ mã đọc file đó — khối code của màn đọc, hoặc
+         mã của bài tập được chấm. Khai mà không đọc là bắt mọi học viên của bài
+         tải thêm 1,29 MB cho một file không ai dùng — và nó không hỏng gì cả,
+         nên không có cách nào khác để biết;
       5. ngược lại: khối nào gọi `read_csv('<tên trong bộ dữ liệu>')` thì bài
          PHẢI khai tên đó. Đây là luật bắt được lỗi ngược — thêm một đoạn đọc
          `don_hang.csv` mà quên khai là FileNotFoundError trước mặt học viên;
@@ -544,10 +545,16 @@ def kiem_du_lieu(bai: list[dict]) -> None:
       6b. và KHÔNG được mang `tryIt`: /ide chưa nạp được file, nên bàn giao
          sang đó là `FileNotFoundError` trước mặt người học — xem luật 3 của
          `kiem_thu_trong_ide` để biết vì sao cả khối SAU nó cũng mất nút;
-      7. bài có BÀI TẬP ĐƯỢC CHẤM thì không được khai file dữ liệu:
-         `check-practice.mjs` chưa có nhánh nạp file, nên ca chấm sẽ trượt ở CI
-         bằng FileNotFoundError. build.py cũng chặn; ở đây chặn lần hai vì đây
-         là phía đối chứng.
+      7. mã của BÀI TẬP ĐƯỢC CHẤM (`starterCode`/`solutionCode`) gọi tên một
+         file của bộ dữ liệu thì bài PHẢI khai tên đó. Đây là chiều ngược của
+         luật 5, ở phía bài tập: thiếu khai là mọi ca chấm trượt bằng
+         FileNotFoundError trên một lời giải ĐÚNG.
+
+    Luật 8 cũ — "bài có `tests` thì không được khai `dataFiles`" — đã BỎ ngày
+    29/10. Nó ra đời vì `check-practice.mjs` chưa có nhánh nạp file; nay bộ đó
+    đọc file từ đĩa và có hẳn một pha canh việc file tới được mã học viên ở MỌI
+    lần chạy lại của từng ca. Giữ lại cổng ấy nghĩa là không bài tập nào được
+    chấm trên dữ liệu thật — đúng thứ đang chặn module thực hành.
     """
     co_san = {p.name for p in DU_LIEU.glob('*.csv')} if DU_LIEU.is_dir() else set()
     for b in bai:
@@ -577,13 +584,22 @@ def kiem_du_lieu(bai: list[dict]) -> None:
         ten_can_do = co_san | set(khai)
         doc_file = {ten for ten in ten_can_do
                     for k in khoi_code if f"'{ten}'" in k['code'] or f'"{ten}"' in k['code']}
+        # Mã của BÀI TẬP ĐƯỢC CHẤM cũng đọc file được, từ 29/10 (xem luật 7).
+        # Nó tính vào CẢ HAI chiều: một bài khai file mà chỉ bài tập dùng tới
+        # thì không phải "khai thừa", và một bài tập gọi tên file mà bài không
+        # khai thì phải đỏ.
+        bon = c.get('step_4') or {}
+        ma_bai_tap = (f'{bon.get("starterCode") or ""}\n{bon.get("solutionCode") or ""}'
+                      if bon.get('tests') else '')
+        doc_file |= {ten for ten in ten_can_do
+                     if f"'{ten}'" in ma_bai_tap or f'"{ten}"' in ma_bai_tap}
         thua = set(khai) - doc_file
         if thua:
             loi(f'{ma}: khai file dữ liệu {sorted(thua)} nhưng không khối code nào '
                 f'đọc chúng — học viên tải thêm một file không ai dùng')
         thieu = doc_file - set(khai)
         if thieu:
-            loi(f'{ma}: có khối đọc {sorted(thieu)} nhưng bài KHÔNG khai trong '
+            loi(f'{ma}: có mã đọc {sorted(thieu)} nhưng bài KHÔNG khai trong '
                 f'step_4.dataFiles — chạy là FileNotFoundError')
 
         chi_so = set(bao_cao.get('blocks') or [])
@@ -594,9 +610,6 @@ def kiem_du_lieu(bai: list[dict]) -> None:
             if i in chi_so and k.get('tryIt'):
                 loi(f'{ma}: khối {i} đọc file dữ liệu mà vẫn có nút Thử-trong-IDE — '
                     '/ide không có cơ chế nạp file, người học sẽ nhận FileNotFoundError')
-        if khai and (c.get('step_4') or {}).get('tests'):
-            loi(f'{ma}: vừa có ca chấm vừa khai file dữ liệu — check-practice.mjs '
-                'chưa nạp được file, ca chấm sẽ trượt ở CI')
 
 
 def _code_bai_doc(c: dict) -> list[str]:

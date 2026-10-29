@@ -62,7 +62,7 @@
    ],
    "context": {
     "level": "Trung cấp",
-    "prereq": "PD16 · Merge: nối đơn hàng với bảng khách"
+    "prereq": "PD16 · Merge: nối đơn hàng với bảng món"
    }
   },
   "step_2": {

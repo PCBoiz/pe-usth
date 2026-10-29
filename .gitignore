@@ -41,3 +41,7 @@ NHAT-KY-SUA.md
 # Commit a2169f2 đã bỏ theo dõi thư mục này nhưng quên ghi luật, nên mỗi lần nạp
 # lại hiện ra trong `git status` và dễ bị `git add -A` kéo lên.
 /backups/
+# Sao lưu content_json do update-lesson-content.ts/add-lessons.ts ghi ra trước khi
+# nạp. Là ảnh chụp DB thật, 1,4 MB mỗi lần, và chỉ có nghĩa trên máy vừa nạp —
+# commit nhầm là đóng băng một bản nội dung cũ vào lịch sử.
+/backup-*.json

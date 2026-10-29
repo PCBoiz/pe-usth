@@ -142,7 +142,12 @@ tên thì chỉ bài nào khai mới tải, và tải một lần cho cả phiê
 | nơi chạy | lấy file bằng | vì sao không dùng cách kia |
 |---|---|---|
 | trình duyệt (`studio-lesson.worker.js`) | `fetch('/static/da-dulieu/<tên>')` | Node không có server nào để fetch |
-| Node (`check-pyodide.mjs`) | `readFileSync` | ba bộ chấm đã vá `fetch` để TỪ CHỐI mọi địa chỉ `http(s)` — xem AGENTS.md |
+| Node (`check-pyodide.mjs`, `check-practice.mjs`) | `readFileSync` | ba bộ chấm đã vá `fetch` để TỪ CHỐI mọi địa chỉ `http(s)` — xem AGENTS.md |
+
+Hàm `fileDuLieu()` ở hai bộ chấm Node là hai bản CHÉP, không phải một import:
+`check-pyodide.mjs` dựng Pyodide và chấm cả 172 bài ngay ở tầm module, nên một
+dòng `import` từ nó là chạy cả bộ chấm nội dung. Hai bản được ghim giống nhau
+từng ký tự bởi `frontend/e2e/unit/data-files.test.mjs`.
 
 CSP không phải sửa: `frontend/next.config.ts` đã có entry riêng cho ba file
 worker với `connect-src 'self'`, nên fetch cùng origin được phép (và một địa chỉ
@@ -169,15 +174,29 @@ bằng CPython ở `gen_traces.py` trong một thư mục tạm không có file 
 giao là TIỀN TỐ, nên một khối cần dữ liệu làm mọi khối SAU nó cũng không bàn
 giao được.
 
-**Bài có `tests` (bài tập được chấm) chưa được khai `dataFiles`** —
-`check-practice.mjs` chưa có nhánh nạp file, nên ca chấm sẽ trượt ở CI bằng
-`FileNotFoundError`. build.py dừng hẳn và check.py báo lỗi; thêm nhánh đó vào
-`check-practice.mjs` trước khi bỏ luật này. Đây là việc đầu tiên phải làm khi
-module thực hành (module 11) cần bộ dữ liệu.
+**Bài có `tests` (bài tập được chấm) khai được `dataFiles`, từ 29/10/2026.**
+Trước đó `build.py` dừng hẳn và `check.py` báo lỗi, vì `check-practice.mjs` chưa
+có nhánh nạp file — hệ quả thật của cổng đó là KHÔNG bài tập nào được chấm trên
+dữ liệu thật, đúng thứ chặn module thực hành. Nay bộ chấm ấy đọc file từ đĩa
+bằng cùng `fileDuLieu()` và truyền vào CẢ BA lời gọi bộ chấm (pha 1 lời giải
+mẫu, pha 2 lời giải sai, pha 3 cổng dữ liệu).
 
-Hôm nay đúng **một** bài dùng: PD13 ("JSON và Excel: chọn đúng bảng cần đọc") đọc
-`mon.csv` + `quay.csv`. Khai báo nằm ở `KHOI_DU_LIEU` trong `build.py`, không
-phải trường mới của `source/course.json` — cùng lý lẽ với `SO_DO_DOC`.
+**Thay cho cổng cấm là pha 3 của `check-practice.mjs`.** Hợp đồng dữ liệu chạy
+LẠI cả chương trình cho TỪNG ca (`_execute` gọi `_prepare_dir(files)` mỗi lần),
+nên file phải được ghi lại ở MỌI thư mục chạy, không chỉ lần đầu. Pha 3 chạy một
+chương trình đọc từng file đã khai ở tầm module và trả lại dòng đầu của chúng,
+qua hai ca — đo được: bỏ tham số `files` ở pha 1 và pha 2 thì cả hai pha vẫn
+XANH (hôm nay không bài tập nào ĐỌC file) và chỉ pha 3 đỏ. Pha 3 cũng đỏ khi
+chạy cả bộ mà KHÔNG bài tập nào khai `dataFiles`: gỡ một cổng rồi không ai đi
+qua chỗ nó từng đứng thì nhánh mới không được gọi lần nào.
+
+Hôm nay **hai** bài dùng, khai báo ở `KHOI_DU_LIEU` trong `build.py` (không phải
+trường mới của `source/course.json` — cùng lý lẽ với `SO_DO_DOC`):
+
+| bài | file | `step_4` là gì | vì sao bài này |
+|---|---|---|---|
+| PD13 · JSON và Excel: chọn đúng bảng cần đọc | `mon.csv` + `quay.csv` | ô "Chạy thử" | bài pandas duy nhất mà bài tập của gói không chấm được (openpyxl thiếu wheel), nên khối dữ liệu CÓ người bấm Chạy |
+| PD16 · Merge: nối đơn hàng với bảng khách | `mon.csv` | bài tập được chấm (3 ca) | bài đầu tiên có CẢ HAI — thứ cổng cấm cũ không cho phép. Giá phải trả: học viên tải `mon.csv` (479 byte) rồi chỉ ĐỌC khối dữ liệu chứ không chạy lại được nó; đổi lại file nằm sẵn trong thư mục chạy của bài tập |
 
 ## Không khai gì nữa
 

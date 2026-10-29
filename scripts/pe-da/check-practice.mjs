@@ -14,6 +14,11 @@
  * Không đạt thì một trong hai sai — ca chấm, hoặc lời giải — và cả hai đều là
  * lỗi phải sửa trước khi bài tới tay người học.
  *
+ * BA PHA: (1) lời giải mẫu phải ĐẠT; (2) lời giải SAI phải TRƯỢT; (3) cổng
+ * FILE DỮ LIỆU — file bài khai (`step_4.dataFiles`) phải có mặt ở MỌI lần chạy,
+ * kể cả những lần chạy lại mà từng ca chấm sinh ra. Pha 3 thay cho cổng cấm cũ
+ * ("bài có `tests` thì không được khai `dataFiles`"), xem chú thích của nó.
+ *
  *   npm i --no-save pyodide@314.0.7
  *   py scripts/pe-da/build.py            # bộ này đọc BẢN DỰNG, nên dựng trước
  *   node scripts/pe-da/check-practice.mjs [MA,MA...] [--verbose]
@@ -63,10 +68,48 @@ const goi = {
         referenceSolution: b.content_json.step_4.solutionCode ?? '',
         tests: b.content_json.step_4.tests,
         packages: b.content_json.step_4.packages ?? [],
+        // TÊN file dữ liệu bài khai. Nội dung đọc từ đĩa ngay dưới — xem
+        // `fileDuLieu`.
+        dataFiles: b.content_json.step_4.dataFiles ?? [],
         ...(b.content_json.step_4.contract ?? {}),
       }],
     })),
 };
+
+/**
+ * Thư mục FILE DỮ LIỆU — nhánh ĐỌC-TỪ-ĐĨA, CHÉP ngữ nghĩa từ `fileDuLieu()`
+ * trong `check-pyodide.mjs` (cùng thư mục, cùng regex tên, cùng cache).
+ *
+ * Trong trình duyệt `studio-lesson.worker.js` lấy các file này bằng
+ * `fetch('/static/da-dulieu/<tên>')`. Ở đây KHÔNG được fetch: bộ chấm đã cố ý
+ * vá `globalThis.fetch` để từ chối mọi địa chỉ http(s) (xem khối "CẤM ĐI MẠNG"
+ * ngay dưới). Đọc thẳng từ đĩa cũng đúng hơn về mặt bằng chứng: nó chứng minh
+ * CHÍNH file trong repo dùng được, không phải một bản nào đó trên mạng.
+ *
+ * VÌ SAO CHÉP chứ không import từ check-pyodide.mjs: file đó chạy ngay khi
+ * được nạp (nó dựng Pyodide và chấm cả 172 bài ở tầm module), nên một dòng
+ * `import` ở đây là chạy cả bộ chấm nội dung trước khi bộ này bắt đầu. Hai bản
+ * giống nhau được canh bằng một ca trong `frontend/e2e/unit/data-files.test.mjs`.
+ */
+const DU_LIEU = join(ROOT, 'frontend', 'public', 'static', 'da-dulieu');
+/** Khớp TEN_FILE_DU_LIEU của build.py và TEN_DU_LIEU của worker. */
+const TEN_DU_LIEU = /^[a-z0-9_-]+\.csv$/;
+/** Đọc một lần rồi giữ: nhiều bài có thể cùng khai `don_hang.csv` (1,29 MB). */
+const daDoc = new Map();
+
+/**
+ * `files` cho `_studio_main` — cùng hợp đồng mà worker gửi đi:
+ * [{ name, content }] được `_prepare_dir` ghi vào thư mục chạy, nên mã học viên
+ * đọc bằng TÊN TRƠN (`pd.read_csv('mon.csv')`).
+ */
+function fileDuLieu(ten_list) {
+  return (ten_list || []).map((raw) => {
+    const ten = String(raw);
+    if (!TEN_DU_LIEU.test(ten)) throw new Error(`tên file dữ liệu không hợp lệ: ${ten}`);
+    if (!daDoc.has(ten)) daDoc.set(ten, readFileSync(join(DU_LIEU, ten), 'utf8'));
+    return { name: ten, content: daDoc.get(ten) };
+  });
+}
 
 const lock = JSON.parse(readFileSync(join(RUNTIME, 'pyodide-lock.json'), 'utf8'));
 const coTrongLock = new Set(Object.keys(lock.packages));
@@ -146,6 +189,20 @@ const batDau = Date.now();
 for (const bai of goi.lessons) {
   if (only && !only.has(bai.id)) continue;
   for (const bt of bai.exercises) {
+    // FILE DỮ LIỆU của bài. Đọc TRƯỚC khi chạy, và để lỗi nổ thành một mục
+    // `hong` mang tên file — thiếu file là lỗi của bản dựng, không phải lỗi
+    // của bài tập. `continue` ở đây giữ bài ra khỏi `chamDuoc`, nên pha 2 cũng
+    // không chạy nó: chấm một bài tập đọc file mà không có file thì mọi biến
+    // thể sai đều "trượt" vì FileNotFoundError, tức pha 2 xanh vì lý do sai.
+    let fileCuaBai;
+    try {
+      fileCuaBai = fileDuLieu(bt.dataFiles);
+    } catch (e) {
+      hong.push({ ma: bai.id, id: bt.id, loai: 'thiếu file dữ liệu',
+        chiTiet: String(e.message) });
+      continue;
+    }
+
     // Dùng `packages` mà BẢN DỰNG khai, hợp nhất với phép quét. Dùng bản dựng
     // là để kiểm chính nó: build.py khai thiếu một gói thì import nổ ở đây,
     // đúng như nó sẽ nổ trong trình duyệt.
@@ -189,8 +246,8 @@ for (const bai of goi.lessons) {
     const t0 = Date.now();
     let res;
     try {
-      res = JSON.parse(grade(bt.referenceSolution, JSON.stringify(cases), '[]', '[]',
-        'null', JSON.stringify(hopDong)));
+      res = JSON.parse(grade(bt.referenceSolution, JSON.stringify(cases),
+        JSON.stringify(fileCuaBai), '[]', 'null', JSON.stringify(hopDong)));
     } catch (e) {
       hong.push({ ma: bai.id, id: bt.id, loai: 'bộ chấm nổ', chiTiet: String(e).slice(0, 240) });
       continue;
@@ -264,7 +321,8 @@ console.log(`\n${soBai} bài tự làm · ${soCa} ca chấm · ${soDat} đạt �
 console.log(`bài chậm nhất: ${chamNhat.ms} ms (${chamNhat.ten}) — trần ${LIMIT_MS} ms`);
 console.log(`không chấm được vì runtime thiếu thư viện: ${khongChayDuoc.length} bài`);
 
-for (const nhom of ['bộ chấm nổ', 'lời giải mẫu NỔ', 'quá hạn 5 giây', 'ca TRƯỢT']) {
+for (const nhom of ['thiếu file dữ liệu', 'bộ chấm nổ', 'lời giải mẫu NỔ',
+  'quá hạn 5 giây', 'ca TRƯỢT']) {
   const ds = hong.filter((h) => h.loai === nhom);
   if (!ds.length) continue;
   console.log(`\n=== ${nhom} (${ds.length}) ===`);
@@ -480,6 +538,12 @@ for (const bai of goi.lessons) {
     const cases = (bt.tests || []).map((t) => ({
       name: t.name, input: t.input ?? null, expected: t.expected ?? null,
     }));
+    // Pha 2 cũng phải có file dữ liệu, và đây là chỗ dễ bỏ quên nhất: mỗi ca
+    // chạy LẠI cả chương trình trên một thư mục mới, nên một biến thể sai mà
+    // thiếu file sẽ trượt vì FileNotFoundError — tức "lời giải sai bị đánh
+    // trượt" trở thành một câu đúng vì lý do sai, và phép ablate của pha 2
+    // không còn chứng minh được gì. Không ném: pha 1 đã đọc các file này rồi.
+    const fileCuaBai = fileDuLieu(bt.dataFiles);
 
     // Mỗi KIỂU đáp án mà bài có sinh ra một biến thể "trả rỗng" riêng, dedupe
     // theo repr: bài trả list thì thử `[]`, bài trả dict thì `{}`, bài có ca
@@ -502,8 +566,8 @@ for (const bai of goi.lessons) {
       soBienThe += 1;
       let res;
       try {
-        res = JSON.parse(grade(code, JSON.stringify(cases), '[]', '[]', 'null',
-          JSON.stringify(hopDong)));
+        res = JSON.parse(grade(code, JSON.stringify(cases),
+          JSON.stringify(fileCuaBai), '[]', 'null', JSON.stringify(hopDong)));
       } catch (e) {
         // Bộ chấm nổ trên mã sai là một lỗi riêng: học viên nào gửi mã sai kiểu
         // đó cũng không nhận được phản hồi nào.
@@ -600,7 +664,90 @@ if (choPhepSai.length) {
   if (choPhepSai.length > 30) console.log(`  … còn ${choPhepSai.length - 30}`);
 }
 
-const tongVanDe = hong.length + choPhepSai.length;
+/* ------------------------------------------------------------------ PHA 3
+ *
+ * CỔNG FILE DỮ LIỆU — file có mặt ở MỌI lần chạy, không chỉ lần đầu.
+ *
+ * Đây là thứ THAY cho cổng cấm cũ. Trước bản này `build.py` và `check.py` cùng
+ * chặn một bài vừa có `step_4.tests` vừa khai `step_4.dataFiles`, vì bộ chấm
+ * này chưa nạp được file — chặn là đúng lúc đó, nhưng nó cũng có nghĩa là
+ * KHÔNG bài tập nào được chấm trên dữ liệu thật. Cổng đó mất lý do tồn tại khi
+ * nhánh đọc-từ-đĩa ở trên chạy; cái phải thay vào chỗ nó là một phép kiểm nói
+ * được rằng nhánh ấy THẬT SỰ đưa file tới nơi mã học viên đọc.
+ *
+ * Vì sao pha 1 và pha 2 KHÔNG đủ, và đây là số ĐÃ ĐO chứ không phải lo xa: hôm
+ * nay đúng một bài khai `dataFiles` kèm ca chấm (PD16), và bài tập của nó —
+ * lấy từ `source/practice.json` — KHÔNG đọc file đó; file chỉ nằm sẵn trong
+ * thư mục chạy. Thử bỏ tham số `files` ở cả pha 1 và pha 2: **cả hai pha vẫn
+ * XANH**, chỉ pha này đỏ (`FileNotFoundError: 'mon.csv'`). Nghĩa là không có
+ * pha này thì nhánh đọc-từ-đĩa có thể bị gỡ ra mà CI không biết — và ngày
+ * module thực hành đưa vào một bài tập ĐỌC file thật, nó sẽ đỏ ở chỗ khác hẳn.
+ *
+ * Thêm nữa, hợp đồng dữ liệu chạy LẠI cả chương trình cho TỪNG ca và `_execute`
+ * gọi `_prepare_dir(files)` mỗi lần — tức mỗi ca là một thư mục MỚI phải được
+ * ghi lại file. Đó là thứ hai ca dưới đây đo, chứ không phải "file có trên đĩa".
+ *
+ * Chương trình dưới đây đọc file ở TẦM MODULE (nên nó chạy lại ở mỗi ca, trong
+ * thư mục của chính ca đó) và trả lại dòng đầu từng file. Hai ca, hai thứ tự
+ * khác nhau, để một lời giải "trả hằng" cũng không đạt được cả hai.
+ */
+const cuaDuLieu = [];
+let soBaiDuLieu = 0;
+for (const bai of goi.lessons) {
+  if (only && !only.has(bai.id)) continue;
+  for (const bt of bai.exercises) {
+    const ten = bt.dataFiles || [];
+    if (!ten.length || !chamDuoc.has(bt.id)) continue;
+    soBaiDuLieu += 1;
+    const file = fileDuLieu(ten);
+    const dauDong = Object.fromEntries(
+      file.map((f) => [f.name, f.content.replace(/\r\n/g, '\n').split('\n')[0]]));
+    const code = 'from pathlib import Path\n\n'
+      + '_dau = {t: Path(t).read_text(encoding="utf-8").splitlines()[0]\n'
+      + `        for t in ${JSON.stringify(ten)}}\n\n\n`
+      + 'def solve(data):\n    return [_dau[t] for t in data]\n';
+    const dao = [...ten].reverse();
+    const cases = [
+      { name: 'đọc được mọi file đã khai', input: ten, expected: ten.map((t) => dauDong[t]) },
+      { name: 'và đọc lại được ở lần chạy sau', input: dao, expected: dao.map((t) => dauDong[t]) },
+    ];
+    let res;
+    try {
+      res = JSON.parse(grade(code, JSON.stringify(cases), JSON.stringify(file),
+        '[]', 'null', 'null'));
+    } catch (e) {
+      cuaDuLieu.push({ ma: bai.id, vi: `bộ chấm nổ: ${String(e).slice(0, 160)}` });
+      continue;
+    }
+    if (res.error) {
+      cuaDuLieu.push({ ma: bai.id, vi: String(res.error).split('\n').slice(-2).join(' | ').slice(0, 200) });
+      continue;
+    }
+    for (const r of res.tests || []) {
+      if (!r.passed) {
+        cuaDuLieu.push({ ma: bai.id, vi: `${r.name}: ${(r.detail || '').slice(0, 160)}` });
+      }
+    }
+  }
+}
+// Không có bài nào thì pha 3 không chứng minh gì — và đó đúng là tình trạng
+// trước bản này, chỉ khác là hồi đó có một cổng cấm nói ra. Chỉ đòi khi chạy
+// CẢ BỘ: lọc theo mã bài là chuyện của lúc gỡ lỗi.
+if (!only && soBaiDuLieu === 0) {
+  cuaDuLieu.push({
+    ma: '(cả bộ)',
+    vi: 'không bài tập nào khai step_4.dataFiles — nhánh nạp file ở bộ chấm này '
+      + 'không được gọi lần nào, tức nó lại là mã dựng rồi không ai tới được',
+  });
+}
+console.log(`\npha 3 — cổng file dữ liệu: ${soBaiDuLieu} bài tập khai dataFiles `
+  + `· ${cuaDuLieu.length} lỗi`);
+if (cuaDuLieu.length) {
+  console.log('\n=== file dữ liệu KHÔNG tới được mã học viên ===');
+  for (const c of cuaDuLieu) console.log(`  ${c.ma} — ${c.vi}`);
+}
+
+const tongVanDe = hong.length + choPhepSai.length + cuaDuLieu.length;
 if (tongVanDe) {
   console.log(`\n✗ ${tongVanDe} vấn đề phải sửa.`);
   process.exit(1);

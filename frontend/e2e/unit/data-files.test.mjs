@@ -15,7 +15,13 @@
  *      vào tham số `files` của bộ chấm;
  *   4. `scripts/pe-da/check.py` chặn khai báo trỏ vào file không có;
  *   5. `scripts/pe-da/check-pyodide.mjs` đọc CHÍNH file đó từ đĩa khi chạy
- *      dưới Node (bộ chấm cấm đi mạng, nên fetch không dùng được ở đó).
+ *      dưới Node (bộ chấm cấm đi mạng, nên fetch không dùng được ở đó);
+ *   6. `scripts/pe-da/check-practice.mjs` cũng đọc từ đĩa — và nó mới là chỗ
+ *      file dữ liệu gặp BÀI TẬP ĐƯỢC CHẤM. Tới 29/10 chỗ này còn trống, nên
+ *      `build.py` và `check.py` cùng CẤM một bài vừa có `tests` vừa khai
+ *      `dataFiles`: cấm là đúng lúc đó, nhưng nó cũng có nghĩa là không bài
+ *      tập nào được chấm trên dữ liệu thật. Cổng cấm đã bỏ; thay nó là nhánh
+ *      đọc-từ-đĩa cộng pha 3 của chính bộ chấm đó.
  *
  * Ca cuối cùng là ca đáng giá nhất: nó đòi có ÍT NHẤT một bài THẬT dùng cơ
  * chế, và bài đó phải là bài học viên bấm Chạy được. Repo này đã bốn lần dựng
@@ -49,6 +55,12 @@ const RUNNER = readFileSync(
     'pyodide-runner.ts'), 'utf8');
 const USE_RUNNER = readFileSync(
   join(ROOT, 'frontend', 'src', 'components', 'python-studio', 'useCodeRunner.ts'), 'utf8');
+/** Hai bộ chấm dưới Node. CRLF bị bỏ ngay ở đây: file trong repo là CRLF, và
+ *  mọi phép so chuỗi dưới đây sẽ lệch vì đúng ký tự đó (bẫy đã ghi ở
+ *  `label-version.test.mjs`). */
+const doc = (...p) => readFileSync(join(ROOT, ...p), 'utf8').replace(/\r\n/g, '\n');
+const CHECK_PYODIDE = doc('scripts', 'pe-da', 'check-pyodide.mjs');
+const CHECK_PRACTICE = doc('scripts', 'pe-da', 'check-practice.mjs');
 
 /** Bài có `dataFiles`, đọc từ chính bản dựng sẽ vào DB. */
 function baiDungDuLieu() {
@@ -181,20 +193,79 @@ test('React chuyển `dataFiles` từ bài xuống worker', () => {
 
 // ───────────────────────── Bản dựng thật ─────────────────────────
 
-test('bản dựng: cơ chế CÓ NGƯỜI DÙNG, và họ bấm Chạy được', () => {
+/** Mọi mã Python mà HỌC VIÊN nhận được ở bài này: khối code của màn đọc, cộng
+ *  khung đề và lời giải của `step_4` (ô Chạy thử hoặc bài tập được chấm). */
+function maCuaBai(b) {
+  const bon = b.content_json.step_4 ?? {};
+  const khoi = (b.content_json.step_1?.read ?? [])
+    .flat().filter((k) => k.type === 'code').map((k) => k.code);
+  return [...khoi, bon.starterCode ?? '', bon.solutionCode ?? ''].join('\n');
+}
+
+test('bản dựng: cơ chế CÓ NGƯỜI DÙNG, và file được khai thì có mã đọc nó', () => {
   const dung = baiDungDuLieu();
   if (dung === null) return;  // chưa dựng — build.py là chỗ chặn, không phải đây
   assert.ok(dung.length >= 1,
     'không bài nào khai step_4.dataFiles — cơ chế nạp file không có đường tới người học');
   for (const b of dung) {
-    const bon = b.content_json.step_4;
-    // Bài có BÀI TẬP ĐƯỢC CHẤM thì step_4 là bài tập, và mã BÀI ĐỌC không còn
-    // được học viên chạy trong trình duyệt — khai file dữ liệu ở đó là chỉ bộ
-    // chấm dưới Node dùng tới. Có `starterCode` nghĩa là ô "Chạy thử" thật.
-    assert.ok(bon.starterCode && !bon.tests,
-      `${b.lesson_code}: khai dataFiles nhưng step_4 không phải ô Chạy thử`);
-    const doc = bon.dataFiles.every((t) => bon.starterCode.includes(`'${t}'`));
-    assert.ok(doc, `${b.lesson_code}: starterCode không đọc file đã khai`);
+    const ma = maCuaBai(b);
+    for (const ten of b.content_json.step_4.dataFiles) {
+      // Khai mà không mã nào đọc là bắt mọi học viên của bài tải thêm một file
+      // không ai dùng — và nó không hỏng gì cả, nên không có cách nào khác để
+      // biết. check.py chặn ở khâu dựng; đây là phía đối chứng.
+      assert.ok(ma.includes(`'${ten}'`) || ma.includes(`"${ten}"`),
+        `${b.lesson_code}: khai "${ten}" nhưng không mã nào của bài đọc nó`);
+    }
+  }
+});
+
+test('bản dựng: có bài vừa CÓ CA CHẤM vừa khai dataFiles', () => {
+  // Cổng cấm cũ ("bài có `tests` thì không được khai `dataFiles`") đã bỏ vì
+  // `check-practice.mjs` nay nạp được file. Nhưng gỡ một cổng mà không ai đi
+  // qua chỗ nó từng đứng thì nhánh mới của bộ chấm KHÔNG được gọi lần nào —
+  // đúng họ lỗi "dựng rồi mà không ai tới được" mà repo này đã dính bốn lần.
+  // Ca này là thứ đòi có người đi qua.
+  const dung = baiDungDuLieu();
+  if (dung === null) return;
+  const cham = dung.filter((b) => (b.content_json.step_4?.tests ?? []).length);
+  assert.ok(cham.length >= 1,
+    'không bài tập được chấm nào khai dataFiles — nhánh nạp file của '
+    + 'check-practice.mjs không có đường nào được gọi');
+});
+
+// ─────────────── Hai bộ chấm dưới Node đọc CÙNG một cách ───────────────
+
+test('`fileDuLieu` của hai bộ chấm GIỐNG NHAU từng ký tự', () => {
+  // Bản ở check-practice.mjs là bản CHÉP: không import được, vì
+  // check-pyodide.mjs dựng Pyodide và chấm cả 172 bài ngay ở tầm module. Hai
+  // bản lệch nhau (khác thư mục, khác regex, mất cache) là hai môi trường nói
+  // hai chuyện về cùng một file — đúng thứ phép "cấm đi mạng" ra đời để chặn.
+  const lay = (src, ten) => {
+    const i = src.indexOf(ten);
+    assert.ok(i > 0, `không tìm thấy ${ten}`);
+    return src.slice(i, src.indexOf('\n}\n', i) + 3);
+  };
+  assert.equal(lay(CHECK_PRACTICE, 'function fileDuLieu('),
+    lay(CHECK_PYODIDE, 'function fileDuLieu('));
+  for (const dong of ["const DU_LIEU = join(ROOT, 'frontend', 'public', 'static', 'da-dulieu');",
+    'const TEN_DU_LIEU = /^[a-z0-9_-]+\\.csv$/;',
+    'const daDoc = new Map();']) {
+    assert.ok(CHECK_PRACTICE.includes(dong), `check-practice.mjs thiếu: ${dong}`);
+    assert.ok(CHECK_PYODIDE.includes(dong), `check-pyodide.mjs thiếu: ${dong}`);
+  }
+});
+
+test('MỌI lời gọi bộ chấm trong check-practice.mjs đều truyền file dữ liệu', () => {
+  // Đây là ca canh đúng chỗ dễ hỏng IM LẶNG nhất. Hợp đồng dữ liệu chạy LẠI cả
+  // chương trình cho TỪNG ca, nên file phải có ở mọi lần chạy; nhưng hôm nay
+  // không bài tập nào ĐỌC file, nên bỏ tham số `files` ở pha 1 hay pha 2 vẫn
+  // cho cả hai pha XANH (đã thử: chỉ pha 3 đỏ). Chỗ duy nhất nói ra được điều
+  // đó trước khi có một bài tập thật đọc file là chính cây mã.
+  const goi = [...CHECK_PRACTICE.matchAll(/grade\(([\s\S]{0,240}?)\)\);/g)].map((m) => m[1]);
+  assert.equal(goi.length, 3, 'số lời gọi `grade(` đã đổi — xem lại ca này');
+  for (const args of goi) {
+    assert.match(args, /JSON\.stringify\(file(CuaBai)?\)/,
+      'một lời gọi `grade(` không truyền file dữ liệu làm tham số thứ ba');
   }
 });
 

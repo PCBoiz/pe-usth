@@ -84,7 +84,7 @@
         "PD13 · JSON và Excel: chọn đúng bảng cần đọc",
         "PD14 · Groupby: tổng hợp theo nhóm",
         "PD15 · Transform: giữ từng hàng và thêm số của nhóm",
-        "PD16 · Merge: nối đơn hàng với bảng khách",
+        "PD16 · Merge: nối đơn hàng với bảng món",
         "PD17 · Kiểm tra số dòng sau khi nối bảng",
         "PD18 · Concat: ghép các lô dữ liệu",
         "PD19 · Pivot và melt: đổi hình dạng bảng",

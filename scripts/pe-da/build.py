@@ -103,13 +103,19 @@ TEN_FILE_DU_LIEU = re.compile(r'^[a-z0-9_-]+\.csv$')
 # Ngày module thực hành (module 11) cần bộ dữ liệu này cho cả chục bài thì
 # chuyển khai báo sang gói nguồn, đừng nuôi bảng này thành danh bạ.
 #
-# Vì sao PD13 chứ không PD12: bài nào có BÀI TẬP ĐƯỢC CHẤM thì `step_4` là bài
-# tập đó, nên mã bài đọc KHÔNG còn được học viên chạy trong trình duyệt — khối
-# dữ liệu đặt ở đó chỉ chạy dưới Node (check-pyodide.mjs) và lại thành một thứ
-# "dựng rồi mà không ai tới được". PD13 là bài pandas duy nhất mà bài tập của
-# gói không chấm được (openpyxl thiếu wheel), nên `step_4` của nó vẫn là ô
-# "Chạy thử" nối các khối chạy được — tức khối dưới đây CÓ người bấm Chạy. Chủ
-# đề cũng khớp: "chọn đúng bảng cần đọc".
+# PD13 là bài đầu tiên, và nó được chọn vì `step_4` của nó vẫn là ô "Chạy thử":
+# bài nào có BÀI TẬP ĐƯỢC CHẤM thì `step_4` là bài tập đó, nên mã bài đọc không
+# còn được học viên bấm Chạy. PD13 là bài pandas duy nhất mà bài tập của gói
+# không chấm được (openpyxl thiếu wheel), nên khối dưới đây CÓ người bấm Chạy.
+# Chủ đề cũng khớp: "chọn đúng bảng cần đọc".
+#
+# PD16 là bài thứ hai, thêm 29/10, và nó CÓ bài tập được chấm — hôm qua đó là
+# điều bị cấm. Cổng cấm ấy ra đời vì `check-practice.mjs` chưa nạp được file;
+# nay nó nạp được, nên cái giá còn lại là cái giá thật của việc khai file ở một
+# bài có bài tập: học viên TẢI mon.csv (479 byte) rồi chỉ ĐỌC khối dữ liệu chứ
+# không chạy lại được nó. Đổi lại, file nằm sẵn trong thư mục chạy của bài tập,
+# nên đây cũng là chỗ đầu tiên chứng minh được hai thứ đi cùng nhau. Chủ đề
+# khớp: merge là lúc một bảng DANH MỤC có thật đáng giá hơn một bảng dựng tay.
 #
 # Khối được CHÈN VÀO CUỐI phần đọc, không chèn theo chỉ số: nguồn còn được viết
 # lại, và một khoá theo chỉ số khối sẽ trôi im lặng.
@@ -141,6 +147,34 @@ KHOI_DU_LIEU: dict[str, dict] = {
             "['mon', 'ten_mon', 'nhom', 'gia_niem_yet']\n"
             "{'Bánh': 28500, 'Cà phê': 34571, 'Trà': 40500, 'Đá xay': 49000}\n"
             "Quầy mặt phố"
+        ),
+    },
+    'PD16': {
+        'files': ['mon.csv'],
+        'paragraph':
+            'Bảng danh mục của quán có THẬT trong thư mục của bài này: '
+            '`mon.csv` giữ mã món, tên và giá niêm yết. Đây đúng là hình dạng '
+            'mà `merge` sinh ra để phục vụ — một bên là đơn hàng đổi từng '
+            'ngày, một bên là danh mục đứng yên, nối với nhau bằng mã món. Và '
+            'câu hỏi ngay trên vẫn là câu hỏi đầu tiên: mã trong bảng danh mục '
+            'có duy nhất không, vì nếu không thì phép nối nhân số hàng đơn '
+            'hàng lên.',
+        'code': (
+            "import pandas as pd\n"
+            "\n"
+            "mon = pd.read_csv('mon.csv')\n"
+            "don = pd.DataFrame({'mon': ['latte', 'bac-xiu', 'latte', 'tra-dao']})\n"
+            "ban = don.merge(mon[['mon', 'ten_mon', 'gia_niem_yet']], on='mon', how='left')\n"
+            "print(mon['mon'].is_unique)\n"
+            "print(ban['ten_mon'].tolist())\n"
+            "print(int(ban['gia_niem_yet'].sum()))\n"
+        ),
+        # Kết quả THẬT, do `node scripts/pe-da/check-pyodide.mjs PD16` đo trên
+        # chính Pyodide của trình duyệt. Đừng sửa bằng tay.
+        'expected': (
+            "True\n"
+            "['Latte', 'Bạc xỉu', 'Latte', 'Trà đào cam sả']\n"
+            "161000"
         ),
     },
 }
@@ -1160,16 +1194,14 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
 
     # FILE DỮ LIỆU: khai ở cấp bài, cạnh `packages`, vì cùng một ý nghĩa —
     # "mọi lần chạy Python của bài này có sẵn thứ này trong thư mục làm việc".
+    #
+    # Bài có BÀI TẬP ĐƯỢC CHẤM cũng khai được, từ 29/10. Trước đó khâu này
+    # `raise SystemExit` vì `check-practice.mjs` chưa có nhánh nạp file: một
+    # bài tập được chấm mà đọc file dữ liệu sẽ trượt hết ca ở CI bằng
+    # FileNotFoundError. Nay bộ chấm đó đọc thẳng file từ đĩa (cùng hàm
+    # `fileDuLieu` mà check-pyodide.mjs dùng) và có hẳn một pha canh việc file
+    # tới được mã học viên ở MỌI lần chạy, nên cổng cấm mất lý do tồn tại.
     if khai_du_lieu:
-        if noi_dung['step_4'].get('tests'):
-            # Chặn ở khâu dựng chứ không để nó hỏng im lặng: bộ chấm bài tập
-            # (`check-practice.mjs`) chưa có nhánh nạp file, nên một bài tập
-            # được chấm mà đọc file dữ liệu sẽ trượt hết ca ở CI bằng
-            # FileNotFoundError — hoặc tệ hơn, chấm đúng trong trình duyệt và
-            # đỏ ở CI. Thêm nhánh đó vào check-practice.mjs TRƯỚC khi bỏ dòng này.
-            raise SystemExit(
-                f'LỖI: {ma_bai} vừa có bài tập được chấm vừa khai file dữ liệu — '
-                'check-practice.mjs chưa nạp được file, xem KHOI_DU_LIEU.')
         noi_dung['step_4']['dataFiles'] = list(khai_du_lieu['files'])
 
     return {

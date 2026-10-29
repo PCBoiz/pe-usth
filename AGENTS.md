@@ -55,12 +55,12 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 219 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **410 ca** / 33 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **413 ca** / 33 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
-| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 557 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 376 phút; 131 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
-| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 146 bài, 409 đoạn code, **0 hỏng**, 14 cảnh báo, ~34 s |
-| pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 124 bài, **415 ca đạt**, 556 biến thể sai đều trượt, ~15 s (pha 1 ~10 s) |
+| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 558 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 378 phút; 131 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
+| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 146 bài, 410 đoạn code, **0 hỏng**, 14 cảnh báo, ~34 s |
+| pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 124 bài, **415 ca đạt**, 556 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 1 bài / 0 lỗi**, ~12 s |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 356 khối đủ điều kiện** (300 bỏ qua, phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
@@ -73,17 +73,17 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 410 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 413 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · consent-banner 15 · course-resume 8 ·
-data-files 15 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
+data-files 18 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
 ide-trace 38 · inline-code 3 · insert-gate-sync 2 · label-version 2 ·
 learning-events 48 · lesson-back 7 · lesson-load 7 · mcq-code 9 ·
 mcq-next-after-wrong 23 · practice-contract 14 · prewarm-gate 5 · read-diagram 12 ·
 read-trace 15 · read-try-it 20 · run-stale 15 · session-marker 5 ·
 studio-lesson 41 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 = 410.
-Mốc trước là 393; thêm data-files 15 (CƠ CHẾ NẠP FILE DỮ LIỆU — xem bẫy dưới) và
+worker-csp 7 = 413.
+Mốc trước là 393; thêm data-files 18 (CƠ CHẾ NẠP FILE DỮ LIỆU — xem bẫy dưới) và
 insert-gate-sync 2 (cổng INSERT của backend phải biết đúng mọi nguồn màn mà
 `buildScreens` dựng — xem bẫy "Luật 6 của cổng INSERT" dưới).
 Trước đó 378 → 393 là read-trace 15 (BẢNG TỪNG BƯỚC của màn đọc — xem bẫy cuối file).
@@ -1118,7 +1118,7 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   của ĐOẠN TRƯỚC trông như vừa đổi (SY13 hiện `credits = ndarray…` giữa hai dòng `print`
   của một đoạn không nhắc tới nó). Luật chữa: ứng viên phải CÒN trong locals ở bước cuối,
   và bảng của một đoạn chỉ hiện biến mà ĐOẠN ĐÓ nhắc tới.
-  **Coverage là 57 vết / 356 khối đủ điều kiện / 38 bài**, 299 bỏ qua — và hình dạng của
+  **Coverage là 56 vết / 356 khối đủ điều kiện**, 300 bỏ qua — và hình dạng của
   phần bỏ nói đúng một chuyện: **277 khối không ra được câu dự đoán nào đáng hỏi**, gần hết
   là bài pandas/numpy/matplotlib, vì ở đó mọi biến là đối tượng mờ (DataFrame, ndarray,
   Figure) và thứ duy nhất đọc được thì bài đã `print` ra sẵn. Nó khớp số đo đã có trong
@@ -1163,9 +1163,22 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **Bài mẫu là PD13, không phải PD12** — PD12 hợp chủ đề hơn nhưng có BÀI TẬP ĐƯỢC CHẤM, nên
   `step_4` của nó là bài tập và mã bài đọc không còn ai bấm Chạy; khối dữ liệu ở đó lại thành
   một thứ không có đường tới người học.
-  **`check-practice.mjs` CHƯA nạp được file dữ liệu** — việc đầu tiên phải làm cho module
-  thực hành. Hôm nay nó không phải lỗ hổng im lặng: build.py dừng hẳn nếu một bài vừa có
-  `tests` vừa khai `dataFiles`. Nhánh cần chép là `fileDuLieu()` trong `check-pyodide.mjs`.
+  **`check-practice.mjs` nay nạp được, cổng cấm đã gỡ ở BA chỗ** (`build.py`, luật 8 của
+  `check.py`, và một ca trong `data-files.test.mjs`). Cổng đó ra đời vì bộ chấm chưa làm
+  được, nên nó mất lý do tồn tại đúng lúc bộ chấm xong — nhưng **gỡ nó mà không đặt gì vào
+  chỗ nó đứng là mở cửa cho một bài tập không ai chấm**. Thay nó là PHA 3 ("cổng file dữ
+  liệu"): với mỗi bài tập khai `dataFiles`, chạy một chương trình đọc từng file ở TẦM MODULE
+  qua hai thứ tự khác nhau (để "trả hằng" không đạt cả hai); và pha 3 cũng ĐỎ khi chạy cả bộ
+  mà KHÔNG bài tập nào khai `dataFiles` — gỡ cổng rồi không ai đi qua chỗ nó từng đứng thì
+  nhánh mới lại là "dựng rồi không ai tới được".
+  **Phải truyền `files` ở CẢ BA lời gọi `grade()`**: `_execute` gọi `_prepare_dir(files)` ở
+  MỖI lần chạy lại, nên truyền một lần ở pha 1 là không đủ.
+  **GIỚI HẠN ĐÃ ĐO, và nó quyết định sức nặng của bằng chứng:** bỏ `files` khỏi cả ba lời gọi
+  thì pha 1 (415 ca) và pha 2 (556 biến thể) VẪN XANH, chỉ pha 3 đỏ với `FileNotFoundError`.
+  Vì chưa bài tập nào THẬT SỰ đọc file — PD16 chỉ có file nằm sẵn trong thư mục chạy, còn ca
+  chấm của nó đến từ `source/practice.json` và không đọc file. Ngày module thực hành có bài
+  tập đọc file thật thì pha 1 sẽ tự đỏ và pha 3 thành lớp thứ hai. Đừng đọc "pha 3 xanh" là
+  "cơ chế đã được chứng minh bằng một bài tập thật".
   **`check-pyodide.mjs` nay đọc BẢN DỰNG, không đọc `source/course.json`** — nếu không thì nó
   mù với mọi khối do build phát ra (dữ liệu, sơ đồ).
 
@@ -1219,6 +1232,13 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `sourcePages` vẫn trỏ về slide gốc — đó là lý lịch ĐÚNG, không phải chú thích lỗi thời; đã
   kiểm `topics` không được `build.py` hay `check.py` đọc một lần nào. Lý do ghi ở
   `scripts/pe-da/CAU-CHUYEN.md`.
+  **PD16 đã đổi từ bảng KHÁCH sang bảng MÓN.** Bài dạy `merge` bằng một bảng khách
+  (`customer_id`, `name`), mà lược đồ CỐ Ý không có bảng khách — dữ liệu khách là dữ liệu cá
+  nhân, cùng lý lẽ đã buộc bỏ cột thẻ khỏi bộ CC0 (xem `NOTICE.md`). Tiêu đề và cả ba ví dụ
+  hứa một bảng mà không bộ dữ liệu nào trong khoá có. Cấu trúc ba phép join giữ nguyên nên
+  bài vẫn dạy đúng left/inner/outer; `expected` ĐO LẠI bằng `check-pyodide.mjs`, không gõ
+  tay. Đổi tiêu đề thì `check.py` đỏ cho tới khi chạy `sync_curricula.py` — hai nguồn danh
+  sách bài, xem bẫy riêng.
   **Còn hai chỗ nói tiếng cũ:** ba ảnh `VZ28-*.png` mang nhãn `Temperature (arbitrary units)`
   TRONG PIXEL (ảnh xuất sẵn trong gói nguồn, `chep_anh()` chỉ chép — sửa phải xuất lại từ gói
   nguồn, mà gói đó nằm ngoài repo), và `source/practice.json` vẫn dùng `region`/`qty`/`E`/`W`.

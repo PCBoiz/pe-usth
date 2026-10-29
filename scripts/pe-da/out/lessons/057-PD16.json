@@ -2,14 +2,14 @@
  "lesson_code": "PD16",
  "sort_order": 57,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
- "title": "PD16 · Merge: nối đơn hàng với bảng khách",
- "subtitle": "Trung cấp · M3 · 11 phút",
- "estimated_minutes": 11,
+ "title": "PD16 · Merge: nối đơn hàng với bảng món",
+ "subtitle": "Trung cấp · M3 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
-  "title": "PD16 · Merge: nối đơn hàng với bảng khách",
-  "subtitle": "Trung cấp · M3 · 11 phút",
+  "title": "PD16 · Merge: nối đơn hàng với bảng món",
+  "subtitle": "Trung cấp · M3 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD16",
@@ -22,41 +22,52 @@
     [
      {
       "type": "paragraph",
-      "text": "Số của nhóm đã về từng hàng rồi, nhưng tên khách của quán nằm ở một bảng khác. Bảng đơn hàng chỉ có customer_id. Tên và khu vực nằm trong bảng khách. merge dùng mã chung để bổ sung thông tin khách vào mỗi đơn."
+      "text": "Số của nhóm đã về từng hàng rồi, nhưng tên món của quán nằm ở một bảng khác. Bảng đơn hàng chỉ có mã món. Tên món và nhóm nằm trong bảng món. merge dùng mã chung để bổ sung thông tin món vào mỗi đơn."
      },
      {
       "type": "code",
-      "code": "import pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2'], 'customer_id': [1, 2]})\ncustomers = pd.DataFrame({'customer_id': [1, 2], 'name': ['An', 'Binh']})\njoined = orders.merge(customers, on='customer_id', how='left')\nprint(joined[['order', 'name']].to_dict('records'))",
-      "expected": "[{'order': 'O1', 'name': 'An'}, {'order': 'O2', 'name': 'Binh'}]",
+      "code": "import pandas as pd\ndon = pd.DataFrame({'ma_don': ['DH-001', 'DH-002'], 'mon': ['latte', 'bac-xiu']})\nmon = pd.DataFrame({'mon': ['latte', 'bac-xiu'], 'ten_mon': ['Latte', 'Bac xiu']})\nban = don.merge(mon, on='mon', how='left')\nprint(ban[['ma_don', 'ten_mon']].to_dict('records'))",
+      "expected": "[{'ma_don': 'DH-001', 'ten_mon': 'Latte'}, {'ma_don': 'DH-002', 'ten_mon': 'Bac xiu'}]",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "left giữ các khóa từ bảng bên trái. Với bảng khách có mã duy nhất như ví dụ này, mỗi đơn nhận đúng một tên. Nếu khách không có trong danh mục, thông tin bổ sung bị thiếu."
+      "text": "left giữ các khóa từ bảng bên trái. Với bảng món có mã duy nhất như ví dụ này, mỗi đơn nhận đúng một tên. Nếu món không có trong thực đơn, thông tin bổ sung bị thiếu."
      },
      {
       "type": "code",
-      "code": "import pandas as pd\nleft = pd.DataFrame({'id': [1, 2], 'amount': [10, 20]})\nright = pd.DataFrame({'id': [2, 3], 'city': ['HN', 'DN']})\nprint(left.merge(right, on='id', how='inner')['id'].tolist())\nprint(left.merge(right, on='id', how='left')['city'].isna().tolist())\nprint(sorted(left.merge(right, on='id', how='outer')['id'].tolist()))",
-      "expected": "[2]\n[True, False]\n[1, 2, 3]",
+      "code": "import pandas as pd\nban = pd.DataFrame({'mon': ['latte', 'bac-xiu'], 'so_coc': [10, 20]})\nthuc_don = pd.DataFrame({'mon': ['bac-xiu', 'tra-dao'], 'nhom': ['Ca phe', 'Tra']})\nprint(ban.merge(thuc_don, on='mon', how='inner')['mon'].tolist())\nprint(ban.merge(thuc_don, on='mon', how='left')['nhom'].isna().tolist())\nprint(sorted(ban.merge(thuc_don, on='mon', how='outer')['mon'].tolist()))",
+      "expected": "['bac-xiu']\n[True, False]\n['bac-xiu', 'latte', 'tra-dao']",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "inner chỉ giữ khóa có ở cả hai phía; outer giữ hợp các khóa. Nếu hai bảng có cột trùng tên ngoài khóa, suffixes=(\"_order\", \"_customer\") giúp phân biệt nguồn cột. Khi khóa nằm ở index bảng phải, có thể dùng join."
+      "text": "inner chỉ giữ khóa có ở cả hai phía; outer giữ hợp các khóa. Nếu hai bảng có cột trùng tên ngoài khóa, suffixes=(\"_don\", \"_mon\") giúp phân biệt nguồn cột. Khi khóa nằm ở index bảng phải, có thể dùng join."
      },
      {
       "type": "code",
-      "code": "import pandas as pd\norders = pd.DataFrame({'customer_id': [2, 1], 'amount': [20, 10]})\ncustomers = pd.DataFrame({'city': ['HN', 'DN']}, index=[1, 2])\nprint(orders.join(customers, on='customer_id')['city'].tolist())",
-      "expected": "['DN', 'HN']",
+      "code": "import pandas as pd\ndon = pd.DataFrame({'quay': [2, 1], 'tong_tien': [20000, 10000]})\nquay = pd.DataFrame({'khu_vuc': ['Mat pho', 'Trong hem']}, index=[1, 2])\nprint(don.join(quay, on='quay')['khu_vuc'].tolist())",
+      "expected": "['Trong hem', 'Mat pho']",
       "tryIt": true
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "join với on=\"quay\" đối chiếu cột của bảng trái với index bảng phải. Dù dùng merge hay join, hãy kiểm tra độ duy nhất của khóa; bảng tra trùng mã có thể nhân số hàng giao dịch."
      },
      {
       "type": "paragraph",
-      "text": "join với on=\"customer_id\" đối chiếu cột của bảng trái với index bảng phải. Dù dùng merge hay join, hãy kiểm tra độ duy nhất của khóa; bảng danh mục trùng mã có thể nhân số hàng giao dịch."
+      "text": "Bảng danh mục của quán có THẬT trong thư mục của bài này: `mon.csv` giữ mã món, tên và giá niêm yết. Đây đúng là hình dạng mà `merge` sinh ra để phục vụ — một bên là đơn hàng đổi từng ngày, một bên là danh mục đứng yên, nối với nhau bằng mã món. Và câu hỏi ngay trên vẫn là câu hỏi đầu tiên: mã trong bảng danh mục có duy nhất không, vì nếu không thì phép nối nhân số hàng đơn hàng lên."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\n\nmon = pd.read_csv('mon.csv')\ndon = pd.DataFrame({'mon': ['latte', 'bac-xiu', 'latte', 'tra-dao']})\nban = don.merge(mon[['mon', 'ten_mon', 'gia_niem_yet']], on='mon', how='left')\nprint(mon['mon'].is_unique)\nprint(ban['ten_mon'].tolist())\nprint(int(ban['gia_niem_yet'].sum()))\n",
+      "expected": "True\n['Latte', 'Bạc xỉu', 'Latte', 'Trà đào cam sả']\n161000"
      }
     ]
    ],
@@ -237,11 +248,22 @@
    ],
    "packages": [
     "pandas"
+   ],
+   "dataFiles": [
+    "mon.csv"
    ]
   }
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_du_lieu": {
+  "files": [
+   "mon.csv"
+  ],
+  "blocks": [
+   3
+  ]
+ },
  "_so_mcq": 3,
  "_bai_tap": "cham",
  "_vet": {
