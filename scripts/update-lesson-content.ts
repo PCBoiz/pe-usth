@@ -27,9 +27,13 @@
  *  Luật chọn/so sánh nằm ở src/course-admin/lesson-content-update.ts (có test Jest).
  *
  * CHẠY (từ thư mục gốc repo, cần .env có DATABASE_URL trừ khi --offline):
- *   npx ts-node scripts/update-lesson-content.ts --codes=P01,P02,P03,G01,T05 --offline
- *   npx ts-node scripts/update-lesson-content.ts --codes=P01,P02,P03,G01,T05        # xem trước
- *   npx ts-node scripts/update-lesson-content.ts --codes=P01,P02,P03,G01,T05 --apply --backup=content-backup.json
+ *   npx ts-node scripts/update-lesson-content.ts --codes=P01,P02,P03 --offline
+ *   npx ts-node scripts/update-lesson-content.ts --codes=P01,P02,P03            # xem trước
+ *   npx ts-node scripts/update-lesson-content.ts --codes=P01,P02,P03 --apply --backup=bak.json
+ *
+ * Nạp CẢ KHOÁ thì dùng `--all` — câu lệnh giống nhau trên PowerShell và bash:
+ *   npx ts-node scripts/update-lesson-content.ts --all                          # xem trước
+ *   npx ts-node scripts/update-lesson-content.ts --all --apply --backup=bak.json
  */
 import 'dotenv/config';
 import { readFileSync, writeFileSync } from 'fs';
@@ -49,6 +53,11 @@ const ARGV = process.argv.slice(2);
 const APPLY = ARGV.includes('--apply');
 const OFFLINE = ARGV.includes('--offline');
 const BACKUP = ARGV.find((a) => a.startsWith('--backup='))?.slice('--backup='.length);
+// `--all`: lấy mã từ CHÍNH gói sắp nạp. Trước đó muốn nạp cả khoá phải dựng
+// chuỗi 172 mã bằng shell, nên câu lệnh bàn giao là một dòng bash — và nó nổ
+// trên PowerShell (đọc `CODES=$(…)` thành tên lệnh). Một đường nạp mà câu lệnh
+// gọi nó chỉ chạy được trên một shell thì nửa số người không nạp được.
+const ALL = ARGV.includes('--all');
 // Gói của khoá ĐANG CHẠY. Đổi từ pe-v4/out-advanced sang pe-da/out khi khoá
 // python_advanced thay ruột: để nguyên đường cũ thì script đọc 48 bài đã nghỉ
 // và từ chối mọi mã bài của bộ mới — tức mất hẳn đường nạp AN TOÀN, đường duy
@@ -71,17 +80,36 @@ async function main() {
     process.exitCode = 1;
     return;
   }
-  let codes: string[];
-  try {
-    codes = parseCodesArg(ARGV);
-  } catch (err) {
-    console.error((err as Error).message);
+  if (ALL && ARGV.some((a) => a.startsWith('--codes'))) {
+    console.error('--all và --codes loại trừ nhau: chọn một.');
     process.exitCode = 1;
     return;
   }
 
   // 1) Kiểm gói TRƯỚC khi chạm DB.
   const bundle: unknown = JSON.parse(readFileSync(BUNDLE, 'utf8'));
+
+  let codes: string[];
+  if (ALL) {
+    // Đọc thẳng từ gói: không có chỗ nào để gõ sai, và thứ tự là thứ tự gói.
+    const ds = (bundle as { lessons?: { lesson_code?: unknown }[] }).lessons;
+    if (!Array.isArray(ds) || !ds.length) {
+      console.error(`Gói ${BUNDLE} không có bài nào — --all không lấy được mã.`);
+      process.exitCode = 1;
+      return;
+    }
+    codes = ds.map((r) => String(r.lesson_code ?? '')).filter(Boolean);
+    console.log(`--all: ${codes.length} mã lấy từ gói.`);
+  } else {
+    try {
+      codes = parseCodesArg(ARGV);
+    } catch (err) {
+      console.error((err as Error).message);
+      console.error('Hoặc dùng --all để nạp mọi bài trong gói.');
+      process.exitCode = 1;
+      return;
+    }
+  }
   const { rows, errors } = selectLessons(bundle, codes);
   console.log(`Nguồn: ${BUNDLE}`);
   if (errors.length) {
