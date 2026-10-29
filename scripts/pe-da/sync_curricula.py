@@ -16,6 +16,8 @@ HERE = Path(__file__).resolve().parent
 TARGET = HERE.parent.parent / 'frontend' / 'src' / 'lib' / 'curricula.json'
 SOURCE = HERE / 'out' / 'curriculum-python-advanced.json'
 BUNDLE = HERE / 'out' / 'lessons.json'
+# Gói NGUỒN — dùng để biết bản dựng có đủ bài hay không. Xem `main()`.
+GOI_NGUON = HERE / 'source' / 'course.json'
 
 
 def main() -> int:
@@ -23,8 +25,18 @@ def main() -> int:
         print('LỖI: chưa dựng — chạy `py scripts/pe-da/build.py` trước.', file=sys.stderr)
         return 1
     bai = json.loads(BUNDLE.read_text(encoding='utf-8'))['lessons']
-    if len(bai) != 172:
-        print(f'LỖI: out/ chỉ có {len(bai)} bài (bản dựng thiếu) — dựng đủ 172 bài trước.',
+    # Số bài phải khớp GÓI NGUỒN, không khớp một con số ghi cứng ở đây.
+    #
+    # Dòng này từng là `if len(bai) != 172`, và nó chặn đúng việc thêm module
+    # 11: bản dựng ra 179 bài thì script từ chối với câu "bản dựng thiếu" —
+    # tức một con số cũ nói ngược sự thật, đúng cái bẫy mà AGENTS.md gọi là
+    # "một con số cũ trong bảng không phải chú thích lỗi thời vô hại". Luật vẫn
+    # có răng vì nó so với một NGUỒN KHÁC: build.py đọc `source/course.json`,
+    # và một bản dựng cũ (hoặc dựng dở) sẽ lệch với nó ngay.
+    can = len(json.loads(GOI_NGUON.read_text(encoding='utf-8'))['lessons'])
+    if len(bai) != can:
+        print(f'LỖI: out/ có {len(bai)} bài nhưng source/course.json có {can} '
+              f'— dựng lại bằng `py scripts/pe-da/build.py` trước.',
               file=sys.stderr)
         return 1
 

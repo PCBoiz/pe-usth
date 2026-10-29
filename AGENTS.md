@@ -51,39 +51,41 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | **33 bộ, 464 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
-| Backend lint | 219 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
+| Backend test | **33 bộ, 471 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
+| Backend lint | 223 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **413 ca** / 33 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **434 ca** / 34 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
-| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 558 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 378 phút; 131 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
-| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 146 bài, 410 đoạn code, **0 hỏng**, 14 cảnh báo, ~34 s |
-| pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 124 bài, **415 ca đạt**, 556 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 1 bài / 0 lỗi**, ~12 s |
+| Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **130 bài tập được chấm / 433 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
+| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 153 bài, 417 đoạn code, **0 hỏng**, 14 cảnh báo, ~30 s |
+| pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 130 bài, **433 ca đạt**, 585 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, ~15 s |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 356 khối đủ điều kiện** (300 bỏ qua, phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
-**pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 172
+**pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 179
 bài. `scripts/pe-v4/**`, 427 ca chấm và job CI của nó được GIỮ NGUYÊN, vì bộ chấm
 input/output đó là thứ cố vấn dự án gọi là tính năng lõi — xoá đi là mất đường quay đầu
 và mất bộ kiểm duy nhất chấm được code học viên. `frontend/public/static/js/studio-harness.py`
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 413 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 434 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · consent-banner 15 · course-resume 8 ·
 data-files 18 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
 ide-trace 38 · inline-code 3 · insert-gate-sync 2 · label-version 2 ·
 learning-events 48 · lesson-back 7 · lesson-load 7 · mcq-code 9 ·
 mcq-next-after-wrong 23 · practice-contract 14 · prewarm-gate 5 · read-diagram 12 ·
-read-trace 15 · read-try-it 20 · run-stale 15 · session-marker 5 ·
+read-trace 15 · read-try-it 20 · review-quiz 21 · run-stale 15 · session-marker 5 ·
 studio-lesson 41 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 = 413.
-Mốc trước là 393; thêm data-files 18 (CƠ CHẾ NẠP FILE DỮ LIỆU — xem bẫy dưới) và
+worker-csp 7 = 434.
+Mốc trước là 413; thêm review-quiz 21 — đề ôn tập chấm ở MÁY CHỦ nay có đường tới
+người học (xem bẫy cuối file).
+Trước đó 393 → 413 là data-files 18 (CƠ CHẾ NẠP FILE DỮ LIỆU — xem bẫy dưới) và
 insert-gate-sync 2 (cổng INSERT của backend phải biết đúng mọi nguồn màn mà
 `buildScreens` dựng — xem bẫy "Luật 6 của cổng INSERT" dưới).
 Trước đó 378 → 393 là read-trace 15 (BẢNG TỪNG BƯỚC của màn đọc — xem bẫy cuối file).
@@ -116,6 +118,14 @@ lấy số thật, sửa bảng TRONG CÙNG commit.
 Backend chạy riêng mới ra số đúng: chạy `npx jest --ci` song song với bộ test frontend thì
 15/15 bộ báo trượt với 0 ca chạy — tranh CPU, không phải lỗi thật (xem bẫy "Test
 `python-runner` trượt khi chạy CẢ BỘ" ở dưới).
+
+**Và có một cách thứ HAI để ra số sai, khác hẳn tranh CPU: FIXTURE DÙNG CHUNG.** Ba bộ
+backend đọc thẳng `scripts/pe-da/out/lessons.json` — `lesson-insert.spec.ts`,
+`lesson-content-update.spec.ts`, `quizzes.service.spec.ts` — và frontend thì
+`studio-lesson.test.mjs`. Chạy test trong lúc có ai đó `build.py` là đọc một file đang bị
+ghi dở: đo được **10/470 ca đỏ** ngày 30/10/2026, cả 10 ở đúng ba bộ đó, và chạy lại sau khi
+build xong thì xanh hết. Đọc gói THẬT là CỐ Ý (fixture bịa làm test nói dối — xem bẫy
+`quizzes.service.spec.ts` ở dưới), nên cái giá là: **dựng xong rồi mới đo**, đừng đo song song.
 
 Số lỗi lint backend phải đo bằng ĐÚNG lệnh CI dùng, KHÔNG bằng `npm run lint` (script đó mang
 `--fix` nên vừa sửa file vừa làm con số lệch). Đo khác lệnh là lý do mốc này từng bị ghi 551
@@ -1288,6 +1298,68 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **Và đường nạp nay in tiến độ TỪNG BÀI kèm mốc ms**, rồi khi hỏng thì nói "0 câu nào
   chạy ⇒ hỏng ở bước lấy kết nối" hay "có câu đã chạy ⇒ hỏng giữa chừng". Chính dòng
   `[122/172] SY19 ghi xong` là thứ chỉ thẳng ra bài 123.
+
+- **CẢ HỆ THỐNG QUIZ CHẤM Ở MÁY CHỦ từng không có đường tới người học — nay có MỘT.**
+  `src/quizzes/quizzes.controller.ts` có 11 route đang chạy và `grep` trên `frontend/src`
+  ra **0 lời gọi**. Ba file JS di sản Django (`edu-review-quiz.js`, `review_quiz.js`,
+  `edu-dashboard.js`) biết gọi chúng, nhưng KHÔNG page.tsx nào nạp chúng. Đây là lần thứ
+  TÁM cùng hình dạng lỗi, và đắt nhất: đó là **đường chấm DUY NHẤT client không giả mạo
+  được** (`submitQuiz` chấm theo SNAPSHOT trong DB, `stripAnswers` không gửi
+  `correct`/`explanation` ra ngoài, mỗi đề nộp được một lần) — và kho 516 câu đã được đổ
+  đầy ở một đợt trước mà không ai kiểm xem có cửa nào không.
+  **Đường đã nối: màn TỔNG KẾT, chỉ khi `completed === true`.** Không đặt ở trang khoá
+  học: `apiFetch` gặp 401 là TỰ TẠO tài khoản khách, nên một nút gọi API trên trang công
+  khai là mở đường cho bot. Và `buildQuestionPool` chỉ gom câu từ bài đã `completed`, nên
+  hỏi sớm hơn là đếm thiếu đúng bài họ vừa học xong. Ô nằm **TRƯỚC** nút "Hoàn thành":
+  đặt sau thì muốn tới phải cuộn qua đúng cái nút đưa mình ra khỏi bài.
+  **Route `GET courses/:id/quiz/status` là route MỚI, và nó không né được.** Yêu cầu "nói
+  rõ còn phải xong mấy BÀI" không đi qua được lỗi 400, vì `AllExceptionsFilter` chỉ giữ
+  `message` và BỎ mọi field kèm theo — nhồi số vào payload lỗi là hỏng im lặng.
+  **`MIN_POOL` đếm CÂU, người học đếm BÀI.** 5 câu ÷ 3 câu mỗi bài = 2 bài. Câu hiển thị
+  phải nói cả hai đơn vị, và số bài tính từ dữ liệu thật của chính người học.
+  **8/11 route vẫn CHƯA có đường tới**, và hai hệ quả phải biết: `GET quizzes/:id` không
+  được dùng ⇒ tải lại trang giữa chừng là MẤT đề (hàng `quizzes` kẹt ở `generated` vĩnh
+  viễn); và mỗi lần nộp ở đây tạo một `review_quiz_results`, nên nó SẼ chặn đề ôn hằng
+  ngày trong ngày đó nếu sau này có giao diện cho route ấy.
+  **Chưa ai đi đường này với DB THẬT** — agent chắn `window.fetch` để xem giao diện. Hợp
+  đồng với dữ liệu thật chỉ được chứng minh bằng test backend chạy trên bản dựng pe-da.
+
+- **MODULE 11 là module đầu tiên có bài tập THẬT SỰ ĐỌC FILE, và đó là bằng chứng thiếu.**
+  7 bài (TH01–TH07, ô 173–179) trên `coffee-sales-cc0.csv` — 2 623 hàng, CC0 1.0, dữ liệu
+  THẬT của một quán khác. Trước nó, bỏ `files` khỏi cả ba lời gọi `grade()` thì pha 1 và
+  pha 2 VẪN XANH; sau nó, **18 ca TRƯỢT** (6 bài × 3 ca, `FileNotFoundError`). Cơ chế
+  `step_4.dataFiles` từ nay có hai lớp canh chứ không chỉ pha 3 tự dựng.
+  **`don_vi` là một KHOÁ của ca chấm, không phải một câu dặn.** `NOTICE.md` ghi đơn vị
+  tiền của cột `money` KHÔNG XÁC ĐỊNH, và PD32 dạy "khi giao báo cáo, ghi đơn vị tiền" —
+  TH05 bắt lời giải trả hẳn `don_vi = "không xác định"`. Đó là cách duy nhất biến lời dặn
+  thành thứ máy chấm được. Đừng quy đổi sang VNĐ ở bất kỳ bài nào: quy đổi từ một đơn vị
+  không biết là bịa.
+  **TH03 chấm đúng chỗ dữ liệu thật có TIE** (Espresso 11h và 12h cùng 13 lượt), nên hợp
+  đồng trả DANH SÁCH giờ — một lời giải dùng `idxmax` trượt 2/3 ca.
+  **Mỗi bài ĐÚNG MỘT màn đọc**, và đó là quyết định kỹ thuật: thêm khối code thứ hai vào
+  `reading` là bắt chạy `gen_traces.py` (~20 phút, cần numpy/pandas/matplotlib trên máy,
+  không chạy được trên CI).
+  **`sync_curricula.py` có `if len(bai) != 172` GHI CỨNG** và từ chối với câu "bản dựng
+  thiếu" — nay so với số bài của `source/course.json`. Cùng họ với `ADVANCED_LESSON_MIN`
+  dưới đây: một hằng ghi cứng số bài hỏng theo chiều CHẶN HẾT.
+  **Ngưỡng đã ghi vào `build.py` và `SCHEMA.md`:** 9 mục là chỗ `KHOI_DU_LIEU` bắt đầu
+  thành danh bạ. Module dùng dữ liệu thật tiếp theo thì chuyển khai báo sang gói nguồn.
+
+- **Thêm một module làm ĐỎ 14 ca ở 6 file, và cả 14 đều là con số ghi cứng.**
+  Backend: `ADVANCED_LESSON_TOTAL = 172` trong `lesson-content-update.ts` — nó từng là 48
+  (pe-v4), và mỗi lần khoá đổi số bài mà quên sửa thì `selectLessons()` từ chối MỌI gói,
+  tức **mất hẳn đường nạp an toàn**. Lần thứ BA này Jest bắt được; hai lần trước thì
+  không. Nay là `ADVANCED_LESSON_MIN` — SÀN, CHỈ ĐƯỢC NÂNG: phép kiểm `sort_order === i+1`
+  ngay dưới đã đòi dãy liên tục từ 1, nên con số này chỉ còn bắt phần đuôi bị cắt.
+  `quizzes.service.spec.ts` thì so với `PE_DA.lessons.length` thay vì 172.
+  **Và `lesson-insert.spec.ts` mượn mã TH01/TH02 làm bài-mới-giả — module 11 lấy đúng hai
+  mã đó.** Luật "mã đã có trong DB" bắn đúng, cả bộ đỏ. Nay mã và ô suy từ gói (`MA_MOI`
+  tiền tố `ZZ`, `O_MOI` = max + 1). Một ca test mượn mã trông-như-chưa-ai-dùng là mìn hẹn
+  giờ.
+  Frontend: `catalog.ts` (172 → 179, "~39 giờ" → "~41 giờ" — ca test cho lệch tối đa 1
+  giờ nên giữ 39 là TRƯỢT), `catalog-duration`, `mcq-code` (516 → 537, 214 → 219),
+  `practice-contract` (124 → 130, 415 → 433), `studio-lesson` (172 → 179, và bảng đếm
+  khối `paragraph` 775 → 811 · `code` 501 → 508 · `table` 1 → 2).
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

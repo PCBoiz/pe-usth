@@ -1,0 +1,240 @@
+{
+ "lesson_code": "TH01",
+ "sort_order": 173,
+ "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+ "title": "TH01 · Nhận bảng bán hàng của một quán khác",
+ "subtitle": "Trung cấp · M11 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "TH01 · Nhận bảng bán hàng của một quán khác",
+  "subtitle": "Trung cấp · M11 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#TH01",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Ở bài trước bạn vẫn tính trên bảng do chính quán mình sinh ra. Bài này đổi chỗ đứng. Bạn nhận một bảng bán hàng của một quán cà phê khác, 2 623 dòng, tên cột tiếng Anh. Và bạn không gặp được người đã đo nó."
+     },
+     {
+      "type": "paragraph",
+      "text": "Câu hỏi đầu tiên là giấy phép. Bảng này phát hành theo CC0 1.0, tức tác giả đã bỏ mọi quyền. Bạn được dùng, sửa và phát hành lại mà không cần ghi công. Bản trong khoá học vẫn bỏ cột mã thẻ của bản gốc. Một mã thẻ xuất hiện 122 lần là hồ sơ hành vi của một người thật, mà bảng này đi tới trình duyệt người học."
+     },
+     {
+      "type": "paragraph",
+      "text": "Câu hỏi thứ hai là mỗi dòng nói về cái gì. Ở đây một dòng là một lượt mua một món. Cột `datetime` ghi tới phần nghìn giây, nên hai dòng cùng ngày vẫn là hai lượt mua khác nhau."
+     },
+     {
+      "type": "paragraph",
+      "text": "Câu hỏi thứ ba là đơn vị. Cột `money` chạy từ 18,12 đến 40,00 và không tài liệu nào nói đó là tiền gì. Bài PD32 đã dặn một câu dùng được ngay đây. Khi giao báo cáo, ghi đơn vị tiền. Bạn chưa ghi được, nên chỗ đơn vị mang chữ `không xác định`."
+     },
+     {
+      "type": "paragraph",
+      "text": "Đừng quy đổi sang đồng. Quy đổi từ một đơn vị chưa biết là bịa ra một con số mới rồi đưa cho người khác đọc."
+     },
+     {
+      "type": "table",
+      "headers": [
+       "Cột",
+       "Dạng",
+       "Biết gì về nó"
+      ],
+      "rows": [
+       [
+        "date",
+        "chữ `YYYY-MM-DD`",
+        "ngày mua, 294 ngày khác nhau"
+       ],
+       [
+        "datetime",
+        "chữ tới phần nghìn giây",
+        "mốc mua, dùng để tách giờ"
+       ],
+       [
+        "cash_type",
+        "chữ",
+        "chỉ hai giá trị: `card` và `cash`"
+       ],
+       [
+        "money",
+        "số thực",
+        "tiền một lượt mua, ĐƠN VỊ CHƯA BIẾT"
+       ],
+       [
+        "coffee_name",
+        "chữ",
+        "tên món, 8 món khác nhau"
+       ]
+      ]
+     },
+     {
+      "type": "paragraph",
+      "text": "File thật nằm sẵn trong thư mục của bài này, tên trơn, không cần đường dẫn. Ô dưới đếm đúng ba thứ vừa nói: bảng có mấy dòng mấy cột, tên năm cột là gì, và mỗi cột có bao nhiêu giá trị khác nhau. Dòng cuối in khoảng của cột tiền kèm chữ nói thẳng là chưa biết đơn vị."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\n\nban = pd.read_csv('coffee-sales-cc0.csv')\nprint(ban.shape)\nprint(list(ban.columns))\nprint(ban['coffee_name'].nunique(), ban['cash_type'].nunique(),\n      ban['date'].nunique())\nprint(ban['money'].min(), ban['money'].max(), 'đơn vị: chưa xác định')\n",
+      "expected": "(2623, 5)\n['date', 'datetime', 'cash_type', 'money', 'coffee_name']\n8 2 294\n18.12 40.0 đơn vị: chưa xác định"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "RD05 · Lấy mẫu có hoàn lại và mô phỏng dữ liệu, PD32 · Dự án nhỏ: báo cáo đơn hàng có thể đối chiếu"
+   }
+  },
+  "step_2": {
+   "mcq": [
+    {
+     "question": "Bảng bán hàng bạn vừa nhận phát hành theo CC0 1.0. Điều nào ĐÚNG?",
+     "options": [
+      {
+       "text": "Chỉ được dùng cho việc học, không được phát hành lại",
+       "detail": "Đó là một giấy phép khác; CC0 không giới hạn mục đích."
+      },
+      {
+       "text": "Phải xin phép tác giả trước mỗi lần dùng lại",
+       "detail": "CC0 bỏ hẳn quyền, nên không còn ai phải xin phép."
+      },
+      {
+       "text": "Được dùng, sửa và phát hành lại, không cần ghi công",
+       "detail": "Đúng. CC0 là lời tuyên bố bỏ mọi quyền của tác giả.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. CC0 là lời tuyên bố bỏ mọi quyền của tác giả."
+    },
+    {
+     "question": "Đoạn dưới in ra con số nào?\n\nprint(ban['coffee_name'].nunique())",
+     "options": [
+      {
+       "text": "8 — số món khác nhau trong bảng",
+       "detail": "Đúng. Phép đếm giá trị khác nhau chạy trên một cột.",
+       "correct": true
+      },
+      {
+       "text": "2623 — số dòng của bảng",
+       "detail": "Số dòng đọc bằng `len`, không bằng phép đếm giá trị khác nhau."
+      },
+      {
+       "text": "5 — số cột của bảng",
+       "detail": "Số cột đọc từ `ban.shape`, không từ một cột đơn lẻ."
+      }
+     ],
+     "explanation": "Đúng. Phép đếm giá trị khác nhau chạy trên một cột."
+    },
+    {
+     "question": "Cột `money` chạy từ 18,12 đến 40,00 và không tài liệu nào nói đơn vị. Báo cáo nên làm gì?",
+     "options": [
+      {
+       "text": "Bỏ hẳn cột tiền ra khỏi báo cáo",
+       "detail": "Cột tiền vẫn dùng được để so các nhóm với nhau."
+      },
+      {
+       "text": "Ghi rõ là đơn vị chưa xác định",
+       "detail": "Đúng. Đó là điều PD32 dặn: khi giao báo cáo, ghi đơn vị tiền.",
+       "correct": true
+      },
+      {
+       "text": "Quy đổi sang đồng theo tỉ giá hôm nay",
+       "detail": "Quy đổi từ một đơn vị chưa biết là bịa ra một con số mới."
+      }
+     ],
+     "explanation": "Đúng. Đó là điều PD32 dặn: khi giao báo cáo, ghi đơn vị tiền."
+    }
+   ],
+   "practice": [
+    {
+     "prompt": "Viết ra ba câu phải trả lời trước khi tính bất cứ thứ gì trên bảng của người khác.",
+     "answer": "Giấy phép cho dùng tới đâu; mỗi dòng là cái gì; mỗi con số mang đơn vị gì."
+    },
+    {
+     "prompt": "Bảng có 294 ngày khác nhau trong mười tháng. Điều đó nói gì về những ngày còn lại?",
+     "answer": "Có ngày không có lượt mua nào trong bảng. Nên đừng chia tổng cho số ngày của cả khoảng rồi gọi đó là trung bình mỗi ngày."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Đếm bảng theo một cột",
+    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên một cột của bảng. Trả về dict hai khoá: `so_hang` là số dòng của cả bảng, `so_gia_tri` là số giá trị khác nhau của cột đó. Cả hai là số nguyên."
+   },
+   "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    return {'so_hang': int(len(ban)),\n            'so_gia_tri': int(ban[data['cot']].nunique())}\n",
+   "tests": [
+    {
+     "name": "cột tên món",
+     "input": {
+      "cot": "coffee_name"
+     },
+     "expected": {
+      "so_hang": 2623,
+      "so_gia_tri": 8
+     }
+    },
+    {
+     "name": "cột kiểu thanh toán",
+     "input": {
+      "cot": "cash_type"
+     },
+     "expected": {
+      "so_hang": 2623,
+      "so_gia_tri": 2
+     }
+    },
+    {
+     "name": "cột ngày",
+     "input": {
+      "cot": "date"
+     },
+     "expected": {
+      "so_hang": 2623,
+      "so_gia_tri": 294
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Số dòng của bảng không đổi theo cột được hỏi."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Số giá trị khác nhau của một cột đọc bằng `nunique`."
+    }
+   ],
+   "packages": [
+    "pandas"
+   ],
+   "dataFiles": [
+    "coffee-sales-cc0.csv"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": [],
+ "_du_lieu": {
+  "files": [
+   "coffee-sales-cc0.csv"
+  ],
+  "blocks": [
+   0
+  ]
+ },
+ "_so_mcq": 3,
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
+}

@@ -45124,6 +45124,1418 @@
     "bo": 3,
     "loi": []
    }
+  },
+  {
+   "lesson_code": "TH01",
+   "sort_order": 173,
+   "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+   "title": "TH01 · Nhận bảng bán hàng của một quán khác",
+   "subtitle": "Trung cấp · M11 · 9 phút",
+   "estimated_minutes": 9,
+   "xp_reward": 8,
+   "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "TH01 · Nhận bảng bán hàng của một quán khác",
+    "subtitle": "Trung cấp · M11 · 9 phút",
+    "source": {
+     "kind": "python-da",
+     "filename": "course.json#TH01",
+     "parser": "pe-da/build",
+     "importedAt": "2026-10-24T00:00:00+00:00",
+     "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+    },
+    "step_1": {
+     "read": [
+      [
+       {
+        "type": "paragraph",
+        "text": "Ở bài trước bạn vẫn tính trên bảng do chính quán mình sinh ra. Bài này đổi chỗ đứng. Bạn nhận một bảng bán hàng của một quán cà phê khác, 2 623 dòng, tên cột tiếng Anh. Và bạn không gặp được người đã đo nó."
+       },
+       {
+        "type": "paragraph",
+        "text": "Câu hỏi đầu tiên là giấy phép. Bảng này phát hành theo CC0 1.0, tức tác giả đã bỏ mọi quyền. Bạn được dùng, sửa và phát hành lại mà không cần ghi công. Bản trong khoá học vẫn bỏ cột mã thẻ của bản gốc. Một mã thẻ xuất hiện 122 lần là hồ sơ hành vi của một người thật, mà bảng này đi tới trình duyệt người học."
+       },
+       {
+        "type": "paragraph",
+        "text": "Câu hỏi thứ hai là mỗi dòng nói về cái gì. Ở đây một dòng là một lượt mua một món. Cột `datetime` ghi tới phần nghìn giây, nên hai dòng cùng ngày vẫn là hai lượt mua khác nhau."
+       },
+       {
+        "type": "paragraph",
+        "text": "Câu hỏi thứ ba là đơn vị. Cột `money` chạy từ 18,12 đến 40,00 và không tài liệu nào nói đó là tiền gì. Bài PD32 đã dặn một câu dùng được ngay đây. Khi giao báo cáo, ghi đơn vị tiền. Bạn chưa ghi được, nên chỗ đơn vị mang chữ `không xác định`."
+       },
+       {
+        "type": "paragraph",
+        "text": "Đừng quy đổi sang đồng. Quy đổi từ một đơn vị chưa biết là bịa ra một con số mới rồi đưa cho người khác đọc."
+       },
+       {
+        "type": "table",
+        "headers": [
+         "Cột",
+         "Dạng",
+         "Biết gì về nó"
+        ],
+        "rows": [
+         [
+          "date",
+          "chữ `YYYY-MM-DD`",
+          "ngày mua, 294 ngày khác nhau"
+         ],
+         [
+          "datetime",
+          "chữ tới phần nghìn giây",
+          "mốc mua, dùng để tách giờ"
+         ],
+         [
+          "cash_type",
+          "chữ",
+          "chỉ hai giá trị: `card` và `cash`"
+         ],
+         [
+          "money",
+          "số thực",
+          "tiền một lượt mua, ĐƠN VỊ CHƯA BIẾT"
+         ],
+         [
+          "coffee_name",
+          "chữ",
+          "tên món, 8 món khác nhau"
+         ]
+        ]
+       },
+       {
+        "type": "paragraph",
+        "text": "File thật nằm sẵn trong thư mục của bài này, tên trơn, không cần đường dẫn. Ô dưới đếm đúng ba thứ vừa nói: bảng có mấy dòng mấy cột, tên năm cột là gì, và mỗi cột có bao nhiêu giá trị khác nhau. Dòng cuối in khoảng của cột tiền kèm chữ nói thẳng là chưa biết đơn vị."
+       },
+       {
+        "type": "code",
+        "code": "import pandas as pd\n\nban = pd.read_csv('coffee-sales-cc0.csv')\nprint(ban.shape)\nprint(list(ban.columns))\nprint(ban['coffee_name'].nunique(), ban['cash_type'].nunique(),\n      ban['date'].nunique())\nprint(ban['money'].min(), ban['money'].max(), 'đơn vị: chưa xác định')\n",
+        "expected": "(2623, 5)\n['date', 'datetime', 'cash_type', 'money', 'coffee_name']\n8 2 294\n18.12 40.0 đơn vị: chưa xác định"
+       }
+      ]
+     ],
+     "context": {
+      "level": "Trung cấp",
+      "prereq": "RD05 · Lấy mẫu có hoàn lại và mô phỏng dữ liệu, PD32 · Dự án nhỏ: báo cáo đơn hàng có thể đối chiếu"
+     }
+    },
+    "step_2": {
+     "mcq": [
+      {
+       "question": "Bảng bán hàng bạn vừa nhận phát hành theo CC0 1.0. Điều nào ĐÚNG?",
+       "options": [
+        {
+         "text": "Chỉ được dùng cho việc học, không được phát hành lại",
+         "detail": "Đó là một giấy phép khác; CC0 không giới hạn mục đích."
+        },
+        {
+         "text": "Phải xin phép tác giả trước mỗi lần dùng lại",
+         "detail": "CC0 bỏ hẳn quyền, nên không còn ai phải xin phép."
+        },
+        {
+         "text": "Được dùng, sửa và phát hành lại, không cần ghi công",
+         "detail": "Đúng. CC0 là lời tuyên bố bỏ mọi quyền của tác giả.",
+         "correct": true
+        }
+       ],
+       "explanation": "Đúng. CC0 là lời tuyên bố bỏ mọi quyền của tác giả."
+      },
+      {
+       "question": "Đoạn dưới in ra con số nào?\n\nprint(ban['coffee_name'].nunique())",
+       "options": [
+        {
+         "text": "8 — số món khác nhau trong bảng",
+         "detail": "Đúng. Phép đếm giá trị khác nhau chạy trên một cột.",
+         "correct": true
+        },
+        {
+         "text": "2623 — số dòng của bảng",
+         "detail": "Số dòng đọc bằng `len`, không bằng phép đếm giá trị khác nhau."
+        },
+        {
+         "text": "5 — số cột của bảng",
+         "detail": "Số cột đọc từ `ban.shape`, không từ một cột đơn lẻ."
+        }
+       ],
+       "explanation": "Đúng. Phép đếm giá trị khác nhau chạy trên một cột."
+      },
+      {
+       "question": "Cột `money` chạy từ 18,12 đến 40,00 và không tài liệu nào nói đơn vị. Báo cáo nên làm gì?",
+       "options": [
+        {
+         "text": "Bỏ hẳn cột tiền ra khỏi báo cáo",
+         "detail": "Cột tiền vẫn dùng được để so các nhóm với nhau."
+        },
+        {
+         "text": "Ghi rõ là đơn vị chưa xác định",
+         "detail": "Đúng. Đó là điều PD32 dặn: khi giao báo cáo, ghi đơn vị tiền.",
+         "correct": true
+        },
+        {
+         "text": "Quy đổi sang đồng theo tỉ giá hôm nay",
+         "detail": "Quy đổi từ một đơn vị chưa biết là bịa ra một con số mới."
+        }
+       ],
+       "explanation": "Đúng. Đó là điều PD32 dặn: khi giao báo cáo, ghi đơn vị tiền."
+      }
+     ],
+     "practice": [
+      {
+       "prompt": "Viết ra ba câu phải trả lời trước khi tính bất cứ thứ gì trên bảng của người khác.",
+       "answer": "Giấy phép cho dùng tới đâu; mỗi dòng là cái gì; mỗi con số mang đơn vị gì."
+      },
+      {
+       "prompt": "Bảng có 294 ngày khác nhau trong mười tháng. Điều đó nói gì về những ngày còn lại?",
+       "answer": "Có ngày không có lượt mua nào trong bảng. Nên đừng chia tổng cho số ngày của cả khoảng rồi gọi đó là trung bình mỗi ngày."
+      }
+     ]
+    },
+    "step_4": {
+     "task": {
+      "title": "Đếm bảng theo một cột",
+      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên một cột của bảng. Trả về dict hai khoá: `so_hang` là số dòng của cả bảng, `so_gia_tri` là số giá trị khác nhau của cột đó. Cả hai là số nguyên."
+     },
+     "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+     "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    return {'so_hang': int(len(ban)),\n            'so_gia_tri': int(ban[data['cot']].nunique())}\n",
+     "tests": [
+      {
+       "name": "cột tên món",
+       "input": {
+        "cot": "coffee_name"
+       },
+       "expected": {
+        "so_hang": 2623,
+        "so_gia_tri": 8
+       }
+      },
+      {
+       "name": "cột kiểu thanh toán",
+       "input": {
+        "cot": "cash_type"
+       },
+       "expected": {
+        "so_hang": 2623,
+        "so_gia_tri": 2
+       }
+      },
+      {
+       "name": "cột ngày",
+       "input": {
+        "cot": "date"
+       },
+       "expected": {
+        "so_hang": 2623,
+        "so_gia_tri": 294
+       }
+      }
+     ],
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "Số dòng của bảng không đổi theo cột được hỏi."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "Số giá trị khác nhau của một cột đọc bằng `nunique`."
+      }
+     ],
+     "packages": [
+      "pandas"
+     ],
+     "dataFiles": [
+      "coffee-sales-cc0.csv"
+     ]
+    }
+   },
+   "_mode": "pyodide",
+   "_blocked": [],
+   "_du_lieu": {
+    "files": [
+     "coffee-sales-cc0.csv"
+    ],
+    "blocks": [
+     0
+    ]
+   },
+   "_so_mcq": 3,
+   "_bai_tap": "cham",
+   "_vet": {
+    "can": 0,
+    "co": 0,
+    "bo": 0,
+    "loi": []
+   }
+  },
+  {
+   "lesson_code": "TH02",
+   "sort_order": 174,
+   "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+   "title": "TH02 · Doanh thu từng món, và hai bảng xếp hạng khác nhau",
+   "subtitle": "Trung cấp · M11 · 8 phút",
+   "estimated_minutes": 8,
+   "xp_reward": 8,
+   "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "TH02 · Doanh thu từng món, và hai bảng xếp hạng khác nhau",
+    "subtitle": "Trung cấp · M11 · 8 phút",
+    "source": {
+     "kind": "python-da",
+     "filename": "course.json#TH02",
+     "parser": "pe-da/build",
+     "importedAt": "2026-10-24T00:00:00+00:00",
+     "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+    },
+    "step_1": {
+     "read": [
+      [
+       {
+        "type": "paragraph",
+        "text": "Ở bài trước bạn đếm được bảng có 8 món. Câu hỏi kế tiếp của bất kỳ quán cà phê nào là món nào mang về nhiều tiền nhất."
+       },
+       {
+        "type": "paragraph",
+        "text": "Số lượt mua và doanh thu là hai bảng xếp hạng khác nhau, và ở bảng này chúng khác nhau thật. Món đứng đầu về số lượt không đứng đầu về tiền, vì mỗi lượt của hai món mang số tiền khác nhau."
+       },
+       {
+        "type": "paragraph",
+        "text": "Phép tính là gom theo tên món rồi cộng cột tiền. Mỗi nhóm cho một con số, và tổng của tám nhóm phải bằng tổng cả bảng."
+       },
+       {
+        "type": "paragraph",
+        "text": "Làm tròn tới hai chữ số thập phân khi trình bày. Và nhớ rằng con số đó vẫn chưa có đơn vị."
+       },
+       {
+        "type": "paragraph",
+        "text": "Ô dưới xếp hạng hai lần trên cùng một bảng. Lần đầu theo tiền, lần sau theo số lượt. Hai bảng xếp hạng đổi chỗ nhau ở hai hạng đầu, và dòng cuối là phép đối chiếu: tổng tám nhóm phải bằng tổng cả bảng."
+       },
+       {
+        "type": "code",
+        "code": "import pandas as pd\n\nban = pd.read_csv('coffee-sales-cc0.csv')\ntheo_mon = ban.groupby('coffee_name')['money'].sum().round(2)\nprint(theo_mon.sort_values(ascending=False).head(3).to_dict())\nprint(ban['coffee_name'].value_counts().head(3).to_dict())\nprint(round(float(theo_mon.sum()), 2))\n",
+        "expected": "{'Latte': 22001.66, 'Americano with Milk': 19004.54, 'Cappuccino': 13278.06}\n{'Americano with Milk': 621, 'Latte': 618, 'Cappuccino': 368}\n83646.1"
+       }
+      ]
+     ],
+     "context": {
+      "level": "Trung cấp",
+      "prereq": "TH01 · Nhận bảng bán hàng của một quán khác"
+     }
+    },
+    "step_2": {
+     "mcq": [
+      {
+       "question": "Món nhiều lượt mua nhất là `Americano with Milk` với 621 lượt, nhưng món doanh thu cao nhất là `Latte`. Vì sao?",
+       "options": [
+        {
+         "text": "Vì `Latte` được bán ở nhiều ngày hơn hẳn",
+         "detail": "Số ngày bán không vào công thức doanh thu của một món."
+        },
+        {
+         "text": "Vì số tiền mỗi lượt của hai món khác nhau",
+         "detail": "Đúng. Doanh thu là số lượt nhân số tiền mỗi lượt.",
+         "correct": true
+        },
+        {
+         "text": "Vì phép gom nhóm đếm sai một trong hai món",
+         "detail": "Tổng tám nhóm vẫn bằng tổng cả bảng, nên phép gom không mất dòng nào."
+        }
+       ],
+       "explanation": "Đúng. Doanh thu là số lượt nhân số tiền mỗi lượt."
+      },
+      {
+       "question": "Đoạn dưới in ra con số nào?\n\nprint(ban.groupby('coffee_name')['money'].sum().size)",
+       "options": [
+        {
+         "text": "5 — số cột của bảng",
+         "detail": "Số cột không đổi theo khoá gom."
+        },
+        {
+         "text": "2623 — số dòng của bảng",
+         "detail": "Phép gom thu 2 623 dòng về số nhóm, không giữ nguyên số dòng."
+        },
+        {
+         "text": "8 — số món khác nhau trong bảng",
+         "detail": "Đúng. Gom theo tên món cho một nhóm mỗi món.",
+         "correct": true
+        }
+       ],
+       "explanation": "Đúng. Gom theo tên món cho một nhóm mỗi món."
+      },
+      {
+       "question": "Tổng của tám nhóm phải bằng tổng cả bảng. Nếu nó lệch thì nguyên nhân nào hợp lý nhất?",
+       "options": [
+        {
+         "text": "Khoá gom có ô trống nên vài dòng bị bỏ ra",
+         "detail": "Đúng. Mặc định của phép gom là bỏ những dòng thiếu khoá.",
+         "correct": true
+        },
+        {
+         "text": "Bảng có quá nhiều dòng để cộng cho đúng",
+         "detail": "Số dòng không làm phép cộng mất dòng."
+        },
+        {
+         "text": "Phép cộng của thư viện làm tròn sai số tiền",
+         "detail": "Sai số nhị phân nhỏ hơn hẳn mức một dòng bị mất."
+        }
+       ],
+       "explanation": "Đúng. Mặc định của phép gom là bỏ những dòng thiếu khoá."
+      }
+     ],
+     "practice": [
+      {
+       "prompt": "Món nào đứng đầu về số lượt mà không đứng đầu về doanh thu?",
+       "answer": "`Americano with Milk` — 621 lượt, nhưng doanh thu 19 004,54 so với 22 001,66 của `Latte`."
+      },
+      {
+       "prompt": "Vì sao phải cộng lại tổng của tám nhóm sau khi gom?",
+       "answer": "Để biết phép gom không bỏ sót dòng nào. Tổng tám nhóm phải ra đúng 83 646,10 của cả bảng."
+      }
+     ]
+    },
+    "step_4": {
+     "task": {
+      "title": "Doanh thu của một món",
+      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon` mang tên một món CÓ TRONG bảng. Trả về tổng cột `money` của món đó, làm tròn hai chữ số thập phân."
+     },
+     "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+     "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    theo_mon = ban.groupby('coffee_name')['money'].sum()\n    return round(float(theo_mon[data['mon']]), 2)\n",
+     "tests": [
+      {
+       "name": "món doanh thu cao nhất",
+       "input": {
+        "mon": "Latte"
+       },
+       "expected": 22001.66
+      },
+      {
+       "name": "món cà phê đen",
+       "input": {
+        "mon": "Americano"
+       },
+       "expected": 8546.3
+      },
+      {
+       "name": "món ít lượt hơn",
+       "input": {
+        "mon": "Cocoa"
+       },
+       "expected": 4959.12
+      }
+     ],
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "Gom theo `coffee_name` rồi cộng cột `money`."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "Trả về một số thực, không phải một bảng con."
+      }
+     ],
+     "packages": [
+      "pandas"
+     ],
+     "dataFiles": [
+      "coffee-sales-cc0.csv"
+     ]
+    }
+   },
+   "_mode": "pyodide",
+   "_blocked": [],
+   "_du_lieu": {
+    "files": [
+     "coffee-sales-cc0.csv"
+    ],
+    "blocks": [
+     0
+    ]
+   },
+   "_so_mcq": 3,
+   "_bai_tap": "cham",
+   "_vet": {
+    "can": 0,
+    "co": 0,
+    "bo": 0,
+    "loi": []
+   }
+  },
+  {
+   "lesson_code": "TH03",
+   "sort_order": 175,
+   "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+   "title": "TH03 · Giờ cao điểm, và chuyện hai giờ bằng nhau",
+   "subtitle": "Trung cấp · M11 · 9 phút",
+   "estimated_minutes": 9,
+   "xp_reward": 8,
+   "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "TH03 · Giờ cao điểm, và chuyện hai giờ bằng nhau",
+    "subtitle": "Trung cấp · M11 · 9 phút",
+    "source": {
+     "kind": "python-da",
+     "filename": "course.json#TH03",
+     "parser": "pe-da/build",
+     "importedAt": "2026-10-24T00:00:00+00:00",
+     "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+    },
+    "step_1": {
+     "read": [
+      [
+       {
+        "type": "paragraph",
+        "text": "Bài trước xếp món theo tiền. Bài này hỏi về thời gian trong ngày. Giờ nào quán bán được nhiều lượt nhất."
+       },
+       {
+        "type": "paragraph",
+        "text": "Giờ nằm trong cột `datetime`, không nằm trong cột `date`. Phải đổi cột đó sang mốc thời gian rồi lấy phần giờ ra."
+       },
+       {
+        "type": "paragraph",
+        "text": "Và giờ cao điểm không chắc là một giờ. Với món `Espresso`, hai giờ khác nhau cùng đạt 13 lượt. Một hàm trả về đúng một con số sẽ phải chọn bừa một trong hai, nên bài này trả về cả danh sách giờ."
+       },
+       {
+        "type": "paragraph",
+        "text": "Chọn bừa cũng là một quyết định. Chỉ khác là nó không được ghi ở đâu, nên người đọc báo cáo không biết nó đã xảy ra."
+       },
+       {
+        "type": "paragraph",
+        "text": "Ô dưới tách giờ ra khỏi cột mốc thời gian rồi đếm theo giờ. Dòng thứ hai là món `Espresso`: hai giờ cùng đạt 13 lượt, nên đáp án là một danh sách chứ không phải một con số. Dòng thứ ba lấy một đỉnh duy nhất của cả bảng, và nó im lặng về chuyện có thể có đỉnh thứ hai."
+       },
+       {
+        "type": "code",
+        "code": "import pandas as pd\n\nban = pd.read_csv('coffee-sales-cc0.csv')\nban['gio'] = pd.to_datetime(ban['datetime']).dt.hour\nprint(ban['gio'].value_counts().sort_index().head(4).to_dict())\ndem = ban[ban['coffee_name'] == 'Espresso']['gio'].value_counts()\nprint(sorted(int(g) for g in dem[dem == dem.max()].index), int(dem.max()))\nprint(int(ban['gio'].value_counts().idxmax()),\n      int(ban['gio'].value_counts().max()))\n",
+        "expected": "{7: 65, 8: 174, 9: 169, 10: 261}\n[11, 12] 13\n10 261"
+       }
+      ]
+     ],
+     "context": {
+      "level": "Trung cấp",
+      "prereq": "TH02 · Doanh thu từng món, và hai bảng xếp hạng khác nhau"
+     }
+    },
+    "step_2": {
+     "mcq": [
+      {
+       "question": "Giờ của mỗi lượt mua lấy từ cột nào của bảng?",
+       "options": [
+        {
+         "text": "Cột `datetime`, vì nó ghi cả giờ",
+         "detail": "Đúng. `date` chỉ có ngày, `datetime` có cả giờ.",
+         "correct": true
+        },
+        {
+         "text": "Cột `date`, vì nó là cột thời gian",
+         "detail": "Cột `date` chỉ tới ngày, nên không tách được giờ."
+        },
+        {
+         "text": "Cột `cash_type`, sau khi đổi sang số",
+         "detail": "Cột đó nói cách trả tiền, không liên quan thời gian."
+        }
+       ],
+       "explanation": "Đúng. `date` chỉ có ngày, `datetime` có cả giờ."
+      },
+      {
+       "question": "Với món `Espresso`, hai giờ khác nhau cùng đạt 13 lượt. Một hàm trả về đúng một con số sẽ làm gì?",
+       "options": [
+        {
+         "text": "Báo lỗi vì không tính được đỉnh nào",
+         "detail": "Phép lấy một đỉnh không báo lỗi khi có nhiều đỉnh."
+        },
+        {
+         "text": "Trả về tổng của hai giờ bằng nhau đó",
+         "detail": "Nó trả về một giờ, không cộng hai giờ lại."
+        },
+        {
+         "text": "Chọn bừa một trong hai giờ, không nói ra",
+         "detail": "Đúng. Phép lấy một đỉnh trả về giờ gặp trước, và nó im lặng.",
+         "correct": true
+        }
+       ],
+       "explanation": "Đúng. Phép lấy một đỉnh trả về giờ gặp trước, và nó im lặng."
+      },
+      {
+       "question": "Đoạn dưới in ra con số nào?\n\nprint(pd.to_datetime(ban['datetime']).dt.hour.max())",
+       "options": [
+        {
+         "text": "2623 — số dòng của cả bảng",
+         "detail": "Phép lấy lớn nhất chạy trên giá trị giờ, không trên số dòng."
+        },
+        {
+         "text": "22 — giờ muộn nhất còn có lượt mua",
+         "detail": "Đúng. Bảng không có lượt mua nào sau 22 giờ.",
+         "correct": true
+        },
+        {
+         "text": "23 — giờ cuối cùng của một ngày",
+         "detail": "Bảng chỉ có giờ thật sự xuất hiện, không có mọi giờ của ngày."
+        }
+       ],
+       "explanation": "Đúng. Bảng không có lượt mua nào sau 22 giờ."
+      }
+     ],
+     "practice": [
+      {
+       "prompt": "Vì sao không lấy giờ từ cột `date`?",
+       "answer": "Cột `date` chỉ có ngày. Giờ nằm trong cột `datetime`."
+      },
+      {
+       "prompt": "Bài này trả về danh sách giờ thay vì một giờ. Vì sao?",
+       "answer": "Vì hai giờ có thể cùng đạt số lượt cao nhất, như `Espresso` ở 11 giờ và 12 giờ."
+      }
+     ]
+    },
+    "step_4": {
+     "task": {
+      "title": "Giờ cao điểm của một món",
+      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon`. Lấy giờ từ cột `datetime`, đếm số lượt mua của món đó theo giờ, rồi trả về dict hai khoá: `gio` là danh sách các giờ cùng đạt số lượt cao nhất, xếp tăng dần, và `so_luot` là con số cao nhất đó. Có món có hai giờ bằng nhau."
+     },
+     "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+     "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    gio = pd.to_datetime(ban['datetime']).dt.hour\n    dem = gio[ban['coffee_name'] == data['mon']].value_counts()\n    dinh = int(dem.max())\n    return {'gio': sorted(int(g) for g in dem[dem == dinh].index),\n            'so_luot': dinh}\n",
+     "tests": [
+      {
+       "name": "một đỉnh duy nhất",
+       "input": {
+        "mon": "Latte"
+       },
+       "expected": {
+        "gio": [
+         10
+        ],
+        "so_luot": 73
+       }
+      },
+      {
+       "name": "hai giờ bằng nhau",
+       "input": {
+        "mon": "Espresso"
+       },
+       "expected": {
+        "gio": [
+         11,
+         12
+        ],
+        "so_luot": 13
+       }
+      },
+      {
+       "name": "hai giờ không liền nhau",
+       "input": {
+        "mon": "Hot Chocolate"
+       },
+       "expected": {
+        "gio": [
+         19,
+         21
+        ],
+        "so_luot": 25
+       }
+      }
+     ],
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "Cột `date` không có giờ; phải đổi `datetime` sang mốc thời gian."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "Lấy mọi giờ đạt số lượt lớn nhất, không chỉ giờ gặp trước."
+      }
+     ],
+     "packages": [
+      "pandas"
+     ],
+     "dataFiles": [
+      "coffee-sales-cc0.csv"
+     ]
+    }
+   },
+   "_mode": "pyodide",
+   "_blocked": [],
+   "_du_lieu": {
+    "files": [
+     "coffee-sales-cc0.csv"
+    ],
+    "blocks": [
+     0
+    ]
+   },
+   "_so_mcq": 3,
+   "_bai_tap": "cham",
+   "_vet": {
+    "can": 0,
+    "co": 0,
+    "bo": 0,
+    "loi": []
+   }
+  },
+  {
+   "lesson_code": "TH04",
+   "sort_order": 176,
+   "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+   "title": "TH04 · Tiền mặt và thẻ: một tỉ lệ dựng trên năm lượt",
+   "subtitle": "Trung cấp · M11 · 9 phút",
+   "estimated_minutes": 9,
+   "xp_reward": 8,
+   "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "TH04 · Tiền mặt và thẻ: một tỉ lệ dựng trên năm lượt",
+    "subtitle": "Trung cấp · M11 · 9 phút",
+    "source": {
+     "kind": "python-da",
+     "filename": "course.json#TH04",
+     "parser": "pe-da/build",
+     "importedAt": "2026-10-24T00:00:00+00:00",
+     "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+    },
+    "step_1": {
+     "read": [
+      [
+       {
+        "type": "paragraph",
+        "text": "Bài trước đếm theo giờ. Bảng còn một cột chưa dùng. Cột `cash_type` nói mỗi lượt mua trả bằng thẻ hay tiền mặt."
+       },
+       {
+        "type": "paragraph",
+        "text": "Trên cả bảng, thẻ chiếm 2 534 lượt và tiền mặt 89 lượt. Một tỉ lệ dựng trên 89 lượt đã mỏng. Chia tiếp theo món thì có món chỉ còn năm lượt tiền mặt."
+       },
+       {
+        "type": "paragraph",
+        "text": "Phần trăm vẫn tính được, nhưng phải viết kèm mẫu số. Con số 5,2% của `Espresso` là 5 trên 97 lượt. Thêm một lượt nữa thì nó thành 6,1%, tức đổi gần một điểm."
+       },
+       {
+        "type": "paragraph",
+        "text": "Nên mỗi tỉ lệ trong báo cáo đi cùng số lượt dựng ra nó. Người đọc thấy mẫu số là họ tự biết tin tới đâu."
+       },
+       {
+        "type": "paragraph",
+        "text": "Ô dưới đếm theo kiểu thanh toán, rồi chia tiếp theo món. Dòng thứ hai cho thấy mẫu số thật của món `Espresso`: 5 lượt tiền mặt trên 97. Dòng thứ ba là tỉ lệ, và nó đứng một mình thì không ai biết nó dựng trên 5 lượt."
+       },
+       {
+        "type": "code",
+        "code": "import pandas as pd\n\nban = pd.read_csv('coffee-sales-cc0.csv')\nprint(ban['cash_type'].value_counts().to_dict())\nbang = ban.pivot_table(index='coffee_name', columns='cash_type',\n                       values='money', aggfunc='size', fill_value=0)\nprint(bang.loc['Espresso'].to_dict())\nprint(round(100 * bang.loc['Espresso', 'cash']\n            / bang.loc['Espresso'].sum(), 1))\n",
+        "expected": "{'card': 2534, 'cash': 89}\n{'card': 92, 'cash': 5}\n5.2"
+       }
+      ]
+     ],
+     "context": {
+      "level": "Trung cấp",
+      "prereq": "TH03 · Giờ cao điểm, và chuyện hai giờ bằng nhau"
+     }
+    },
+    "step_2": {
+     "mcq": [
+      {
+       "question": "Món `Espresso` có 5 lượt trả tiền mặt trên 97 lượt. Câu nào nói đúng về tỉ lệ 5,2%?",
+       "options": [
+        {
+         "text": "Nó đúng tới một chữ số thập phân",
+         "detail": "Chữ số thập phân nói về phép chia, không nói về độ vững của mẫu."
+        },
+        {
+         "text": "Nó dựng trên 5 lượt nên rất dễ đổi",
+         "detail": "Đúng. Thêm một lượt là 6,1%, tức đổi gần một điểm.",
+         "correct": true
+        },
+        {
+         "text": "Nó cho thấy tiền mặt đang tăng dần",
+         "detail": "Một tỉ lệ của cả kỳ không nói được chiều tăng hay giảm."
+        }
+       ],
+       "explanation": "Đúng. Thêm một lượt là 6,1%, tức đổi gần một điểm."
+      },
+      {
+       "question": "Báo cáo nên ghi thêm gì ngay cạnh mỗi tỉ lệ phần trăm?",
+       "options": [
+        {
+         "text": "Số lượt đã dựng ra tỉ lệ đó",
+         "detail": "Đúng. Người đọc thấy mẫu số là tự biết tin tới đâu.",
+         "correct": true
+        },
+        {
+         "text": "Tên người đã viết báo cáo đó",
+         "detail": "Tên người viết không nói gì về độ vững của con số."
+        },
+        {
+         "text": "Ngày bạn chạy lại báo cáo",
+         "detail": "Ngày chạy thuộc phần đầu báo cáo, không thay được mẫu số."
+        }
+       ],
+       "explanation": "Đúng. Người đọc thấy mẫu số là tự biết tin tới đâu."
+      },
+      {
+       "question": "Đoạn dưới in ra con số nào?\n\nprint((ban['cash_type'] == 'cash').sum())",
+       "options": [
+        {
+         "text": "2534 — số lượt trả bằng thẻ",
+         "detail": "Đó là số lượt còn lại, tức phần không khớp phép so."
+        },
+        {
+         "text": "2623 — tổng số lượt của bảng",
+         "detail": "Tổng số lượt là số dòng, không phải số dòng khớp phép so."
+        },
+        {
+         "text": "89 — số lượt trả bằng tiền mặt",
+         "detail": "Đúng. Phép so cho một cột đúng/sai, cộng nó là đếm số lượt khớp.",
+         "correct": true
+        }
+       ],
+       "explanation": "Đúng. Phép so cho một cột đúng/sai, cộng nó là đếm số lượt khớp."
+      }
+     ],
+     "practice": [
+      {
+       "prompt": "Tỉ lệ tiền mặt của `Espresso` là 5,2%. Thêm một lượt tiền mặt nữa thì tỉ lệ thành bao nhiêu?",
+       "answer": "6 trên 98 lượt, tức 6,1%. Một lượt làm con số đổi gần một điểm."
+      },
+      {
+       "prompt": "Vì sao không kết luận \"khách quán này không thích tiền mặt\"?",
+       "answer": "Bảng chỉ nói cách trả của 2 623 lượt mua ở một quán trong mười tháng. Nó không nói vì sao người ta trả như vậy."
+      }
+     ]
+    },
+    "step_4": {
+     "task": {
+      "title": "Tỉ lệ thanh toán kèm mẫu số",
+      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict hai khoá: `mon` là tên món, `kieu` là `card` hoặc `cash`. Trả về dict ba khoá: `so_luot` là số lượt của món đó trả theo kiểu đó, `tong` là tổng số lượt của món, và `ti_le` là phần trăm làm tròn một chữ số thập phân."
+     },
+     "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+     "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    cua_mon = ban[ban['coffee_name'] == data['mon']]\n    so_luot = int((cua_mon['cash_type'] == data['kieu']).sum())\n    tong = int(len(cua_mon))\n    return {'so_luot': so_luot, 'tong': tong,\n            'ti_le': round(100 * so_luot / tong, 1)}\n",
+     "tests": [
+      {
+       "name": "tiền mặt của món bán nhiều",
+       "input": {
+        "mon": "Latte",
+        "kieu": "cash"
+       },
+       "expected": {
+        "so_luot": 25,
+        "tong": 618,
+        "ti_le": 4.0
+       }
+      },
+      {
+       "name": "mẫu chỉ năm lượt",
+       "input": {
+        "mon": "Espresso",
+        "kieu": "cash"
+       },
+       "expected": {
+        "so_luot": 5,
+        "tong": 97,
+        "ti_le": 5.2
+       }
+      },
+      {
+       "name": "thẻ của một món khác",
+       "input": {
+        "mon": "Cocoa",
+        "kieu": "card"
+       },
+       "expected": {
+        "so_luot": 135,
+        "tong": 139,
+        "ti_le": 97.1
+       }
+      }
+     ],
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "Mẫu số là tổng số lượt của MÓN, không phải của cả bảng."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "Tỉ lệ phải đi cùng mẫu số, nên bài đòi trả về cả hai."
+      }
+     ],
+     "packages": [
+      "pandas"
+     ],
+     "dataFiles": [
+      "coffee-sales-cc0.csv"
+     ]
+    }
+   },
+   "_mode": "pyodide",
+   "_blocked": [],
+   "_du_lieu": {
+    "files": [
+     "coffee-sales-cc0.csv"
+    ],
+    "blocks": [
+     0
+    ]
+   },
+   "_so_mcq": 3,
+   "_bai_tap": "cham",
+   "_vet": {
+    "can": 0,
+    "co": 0,
+    "bo": 0,
+    "loi": []
+   }
+  },
+  {
+   "lesson_code": "TH05",
+   "sort_order": 177,
+   "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+   "title": "TH05 · Báo cáo theo tháng, kèm dòng ghi đơn vị",
+   "subtitle": "Nâng cao · M11 · 9 phút",
+   "estimated_minutes": 9,
+   "xp_reward": 8,
+   "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "TH05 · Báo cáo theo tháng, kèm dòng ghi đơn vị",
+    "subtitle": "Nâng cao · M11 · 9 phút",
+    "source": {
+     "kind": "python-da",
+     "filename": "course.json#TH05",
+     "parser": "pe-da/build",
+     "importedAt": "2026-10-24T00:00:00+00:00",
+     "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+    },
+    "step_1": {
+     "read": [
+      [
+       {
+        "type": "paragraph",
+        "text": "Ở bài PD32 bạn đã dựng một báo cáo đối chiếu được. Bài này làm lại đúng việc đó trên số liệu của một quán cà phê khác. Chỗ khác duy nhất là dòng ghi đơn vị."
+       },
+       {
+        "type": "paragraph",
+        "text": "Mốc thời gian của bảng chạy từ tháng 3 tới tháng 12 năm 2024. Gom theo tháng thì mỗi tháng cho hai con số. Số lượt mua, và tổng tiền của tháng đó."
+       },
+       {
+        "type": "paragraph",
+        "text": "Báo cáo phải nói ra điều mình chưa biết. Đơn vị tiền chưa xác định, nên mỗi dòng mang thêm chữ `không xác định` thay cho một ký hiệu tiền đoán ra."
+       },
+       {
+        "type": "paragraph",
+        "text": "Người nhận báo cáo sẽ hỏi đúng câu đó trước mọi câu khác. Trả lời sẵn thì họ tin phần còn lại."
+       },
+       {
+        "type": "paragraph",
+        "text": "Ô dưới dựng đúng bảng mà PD32 đã dạy, chỉ đổi nguồn số liệu. Dòng thứ hai đối chiếu: số lượt và tổng tiền của mười tháng phải bằng số lượt và tổng tiền của cả bảng. Dòng thứ ba là phần không ai được bỏ khi giao báo cáo."
+       },
+       {
+        "type": "code",
+        "code": "import pandas as pd\n\nban = pd.read_csv('coffee-sales-cc0.csv')\nban['thang'] = pd.to_datetime(ban['datetime']).dt.strftime('%Y-%m')\nbao_cao = ban.groupby('thang').agg(so_don=('money', 'size'),\n                                   tong_tien=('money', 'sum'))\nbao_cao['tong_tien'] = bao_cao['tong_tien'].round(2)\nprint(int(bao_cao.loc['2024-10', 'so_don']),\n      float(bao_cao.loc['2024-10', 'tong_tien']))\nprint(int(bao_cao['so_don'].sum()),\n      round(float(bao_cao['tong_tien'].sum()), 2))\nprint('đơn vị tiền: chưa xác định')\n",
+        "expected": "426 13891.16\n2623 83646.1\nđơn vị tiền: chưa xác định"
+       }
+      ]
+     ],
+     "context": {
+      "level": "Nâng cao",
+      "prereq": "TH04 · Tiền mặt và thẻ: một tỉ lệ dựng trên năm lượt, PD32 · Dự án nhỏ: báo cáo đơn hàng có thể đối chiếu"
+     }
+    },
+    "step_2": {
+     "mcq": [
+      {
+       "question": "Đơn vị tiền của cột `money` chưa biết. Báo cáo tháng nên ghi thế nào?",
+       "options": [
+        {
+         "text": "Ghi rõ là đơn vị chưa xác định",
+         "detail": "Đúng. Báo cáo phải nói ra điều mình chưa biết.",
+         "correct": true
+        },
+        {
+         "text": "Bỏ hẳn dòng đơn vị khỏi báo cáo",
+         "detail": "Bỏ dòng đó thì người đọc tự điền một đơn vị trong đầu."
+        },
+        {
+         "text": "Ghi một ký hiệu tiền quen mắt cho dễ đọc",
+         "detail": "Ký hiệu đoán ra làm người đọc tin vào một thứ chưa ai kiểm."
+        }
+       ],
+       "explanation": "Đúng. Báo cáo phải nói ra điều mình chưa biết."
+      },
+      {
+       "question": "Muốn gom theo tháng thì cột `datetime` phải đổi về dạng nào trước?",
+       "options": [
+        {
+         "text": "Số nguyên, rồi chia cho một trăm",
+         "detail": "Chia một mốc thời gian cho một trăm không cho tháng nào."
+        },
+        {
+         "text": "Không cần đổi, cột `date` đã là tháng",
+         "detail": "Cột `date` là ngày, nên gom theo nó cho 294 nhóm."
+        },
+        {
+         "text": "Mốc thời gian, rồi lấy phần năm và tháng",
+         "detail": "Đúng. Đổi sang mốc thời gian rồi mới có phần tháng để gom.",
+         "correct": true
+        }
+       ],
+       "explanation": "Đúng. Đổi sang mốc thời gian rồi mới có phần tháng để gom."
+      },
+      {
+       "question": "Đoạn dưới in ra con số nào?\n\nprint(ban.groupby('thang')['money'].sum().size)",
+       "options": [
+        {
+         "text": "12 — số tháng của một năm",
+         "detail": "Phép gom chỉ cho nhóm có mặt trong bảng."
+        },
+        {
+         "text": "10 — số tháng có lượt mua trong bảng",
+         "detail": "Đúng. Bảng chạy từ tháng 3 tới tháng 12 năm 2024.",
+         "correct": true
+        },
+        {
+         "text": "294 — số ngày có lượt mua",
+         "detail": "Đó là số nhóm khi gom theo ngày, không theo tháng."
+        }
+       ],
+       "explanation": "Đúng. Bảng chạy từ tháng 3 tới tháng 12 năm 2024."
+      }
+     ],
+     "practice": [
+      {
+       "prompt": "Báo cáo của bạn ghi gì ở chỗ đơn vị tiền?",
+       "answer": "Chữ `không xác định`, kèm một câu nói bạn đã đi hỏi người cấp số liệu."
+      },
+      {
+       "prompt": "Tháng 10 có 426 lượt và tổng 13 891,16. Vì sao không viết \"doanh thu tháng 10 là 13 891,16 đồng\"?",
+       "answer": "Vì đơn vị chưa biết. Thêm chữ \"đồng\" là bịa ra một con số mới rồi đưa cho người khác dùng."
+      }
+     ]
+    },
+    "step_4": {
+     "task": {
+      "title": "Một dòng báo cáo tháng",
+      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là một chuỗi dạng `YYYY-MM`. Trả về dict bốn khoá: `thang` là chính chuỗi đó, `so_don` là số lượt mua trong tháng, `tong_tien` là tổng cột `money` làm tròn hai chữ số thập phân, và `don_vi` là chuỗi `không xác định`. Khoá cuối là phần bài học của PD32: báo cáo phải nói ra đơn vị, kể cả khi đơn vị chưa biết."
+     },
+     "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+     "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    thang = pd.to_datetime(ban['datetime']).dt.strftime('%Y-%m')\n    cua_thang = ban[thang == data]\n    return {'thang': data,\n            'so_don': int(len(cua_thang)),\n            'tong_tien': round(float(cua_thang['money'].sum()), 2),\n            'don_vi': 'không xác định'}\n",
+     "tests": [
+      {
+       "name": "tháng đầu của bảng",
+       "input": "2024-03",
+       "expected": {
+        "thang": "2024-03",
+        "so_don": 206,
+        "tong_tien": 7050.2,
+        "don_vi": "không xác định"
+       }
+      },
+      {
+       "name": "tháng cao nhất",
+       "input": "2024-10",
+       "expected": {
+        "thang": "2024-10",
+        "so_don": 426,
+        "tong_tien": 13891.16,
+        "don_vi": "không xác định"
+       }
+      },
+      {
+       "name": "tháng cuối của bảng",
+       "input": "2024-12",
+       "expected": {
+        "thang": "2024-12",
+        "so_don": 189,
+        "tong_tien": 6053.04,
+        "don_vi": "không xác định"
+       }
+      }
+     ],
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "Tháng lấy từ `datetime`, không từ `date`."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "Bốn khoá, không thừa không thiếu, và `don_vi` là chuỗi cố định."
+      }
+     ],
+     "packages": [
+      "pandas"
+     ],
+     "dataFiles": [
+      "coffee-sales-cc0.csv"
+     ]
+    }
+   },
+   "_mode": "pyodide",
+   "_blocked": [],
+   "_du_lieu": {
+    "files": [
+     "coffee-sales-cc0.csv"
+    ],
+    "blocks": [
+     0
+    ]
+   },
+   "_so_mcq": 3,
+   "_bai_tap": "cham",
+   "_vet": {
+    "can": 0,
+    "co": 0,
+    "bo": 0,
+    "loi": []
+   }
+  },
+  {
+   "lesson_code": "TH06",
+   "sort_order": 178,
+   "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+   "title": "TH06 · Đối chiếu: tổng các nhóm phải bằng tổng cả bảng",
+   "subtitle": "Nâng cao · M11 · 9 phút",
+   "estimated_minutes": 9,
+   "xp_reward": 8,
+   "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "TH06 · Đối chiếu: tổng các nhóm phải bằng tổng cả bảng",
+    "subtitle": "Nâng cao · M11 · 9 phút",
+    "source": {
+     "kind": "python-da",
+     "filename": "course.json#TH06",
+     "parser": "pe-da/build",
+     "importedAt": "2026-10-24T00:00:00+00:00",
+     "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+    },
+    "step_1": {
+     "read": [
+      [
+       {
+        "type": "paragraph",
+        "text": "Bài trước gom theo tháng. Phép gom nào cũng cần một lượt đối chiếu. Cộng các nhóm lại phải ra đúng tổng cả bảng."
+       },
+       {
+        "type": "paragraph",
+        "text": "Lệch xảy ra khi khoá gom có ô trống. Hoặc khi một phép nối nhân số dòng lên. Hoặc khi bạn lọc mất vài dòng mà không nhận ra."
+       },
+       {
+        "type": "paragraph",
+        "text": "Bảng này không có ô trống nào, nên lệch phải bằng 0 ở mọi cột. Một phép kiểm chỉ đáng tin khi nó cho cùng câu trả lời trên cột nào cũng vậy."
+       },
+       {
+        "type": "paragraph",
+        "text": "Kèm theo tên nhóm lớn nhất thì báo cáo trả lời luôn câu kế tiếp của người đọc. Quán cà phê này bán chạy nhất món nào. Nhưng nhóm lớn nhất của cột ngày chỉ là một ngày trong 294 ngày, nên nó không nói được xu hướng."
+       },
+       {
+        "type": "paragraph",
+        "text": "Ô dưới chạy cùng một phép đối chiếu trên ba khoá gom khác nhau. Mỗi dòng in tên cột, số nhóm, lệch, và tên nhóm lớn nhất. Lệch lấy trị tuyệt đối, nếu không thì một trong ba dòng in ra `-0.0` — đúng một con số mà không ai muốn đọc trong báo cáo."
+       },
+       {
+        "type": "code",
+        "code": "import pandas as pd\n\nban = pd.read_csv('coffee-sales-cc0.csv')\ntong = float(ban['money'].sum())\nfor cot in ['coffee_name', 'cash_type', 'date']:\n    nhom = ban.groupby(cot)['money'].sum()\n    lech = round(abs(float(nhom.sum()) - tong), 6)\n    print(cot, int(nhom.size), lech, nhom.idxmax())\n",
+        "expected": "coffee_name 8 0.0 Latte\ncash_type 2 0.0 card\ndate 294 0.0 2024-10-11"
+       }
+      ]
+     ],
+     "context": {
+      "level": "Nâng cao",
+      "prereq": "TH05 · Báo cáo theo tháng, kèm dòng ghi đơn vị, PD30 · Một quy trình làm sạch có kiểm tra"
+     }
+    },
+    "step_2": {
+     "mcq": [
+      {
+       "question": "Phép đối chiếu của bài này so cái gì với cái gì?",
+       "options": [
+        {
+         "text": "Số nhóm với số dòng của cả bảng",
+         "detail": "Số nhóm nhỏ hơn số dòng ở mọi khoá gom, nên phép so đó vô nghĩa."
+        },
+        {
+         "text": "Tổng các nhóm với tổng của cả bảng",
+         "detail": "Đúng. Cộng các nhóm lại phải ra đúng tổng ban đầu.",
+         "correct": true
+        },
+        {
+         "text": "Tên các nhóm với tên các cột",
+         "detail": "Tên nhóm là giá trị trong một cột, không so được với tên cột."
+        }
+       ],
+       "explanation": "Đúng. Cộng các nhóm lại phải ra đúng tổng ban đầu."
+      },
+      {
+       "question": "Lệch khác 0 sau một phép gom thường đến từ đâu?",
+       "options": [
+        {
+         "text": "Khoá gom có ô trống nên dòng bị bỏ ra",
+         "detail": "Đúng. Dòng thiếu khoá không vào nhóm nào.",
+         "correct": true
+        },
+        {
+         "text": "Cột tiền được lưu dưới dạng số thực",
+         "detail": "Sai số nhị phân nhỏ hơn hẳn mức một dòng bị mất."
+        },
+        {
+         "text": "Bảng chưa được xếp lại theo thứ tự ngày",
+         "detail": "Thứ tự dòng không đổi tổng của phép cộng."
+        }
+       ],
+       "explanation": "Đúng. Dòng thiếu khoá không vào nhóm nào."
+      },
+      {
+       "question": "Vì sao chạy phép đối chiếu trên ba cột thay vì một cột?",
+       "options": [
+        {
+         "text": "Vì mỗi cột có một công thức cộng riêng",
+         "detail": "Phép cộng cột tiền giống nhau ở mọi khoá gom."
+        },
+        {
+         "text": "Vì báo cáo cần dài hơn và đầy đủ hơn",
+         "detail": "Độ dài báo cáo không phải lý do để thêm phép kiểm."
+        },
+        {
+         "text": "Một phép kiểm đáng tin khi mọi cột cho cùng kết quả",
+         "detail": "Đúng. Một cột đạt có thể chỉ là tình cờ của cột đó.",
+         "correct": true
+        }
+       ],
+       "explanation": "Đúng. Một cột đạt có thể chỉ là tình cờ của cột đó."
+      }
+     ],
+     "practice": [
+      {
+       "prompt": "Lệch của cả ba cột đều bằng 0. Phép kiểm đó có vô ích không?",
+       "answer": "Không. Nó là điều kiện cần, và ngày một phép nối nhân số dòng lên thì chính nó là chỗ đỏ đầu tiên."
+      },
+      {
+       "prompt": "Nhóm lớn nhất của cột `date` là ngày 2024-10-11. Báo cáo nên nói thêm gì về con số này?",
+       "answer": "Đó là một ngày trong 294 ngày. Một ngày cao nhất không nói lên xu hướng của mười tháng."
+      }
+     ]
+    },
+    "step_4": {
+     "task": {
+      "title": "Đối chiếu một phép gom",
+      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên cột dùng làm khoá gom. Gom cột `money` theo cột đó rồi trả về dict ba khoá: `so_nhom` là số nhóm, `nhom_lon_nhat` là tên nhóm có tổng tiền lớn nhất, và `lech` là khoảng cách tuyệt đối giữa tổng các nhóm và tổng cả bảng, làm tròn sáu chữ số thập phân."
+     },
+     "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+     "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    tong = float(ban['money'].sum())\n    nhom = ban.groupby(data['cot'])['money'].sum()\n    return {'so_nhom': int(nhom.size),\n            'nhom_lon_nhat': str(nhom.idxmax()),\n            'lech': round(abs(float(nhom.sum()) - tong), 6)}\n",
+     "tests": [
+      {
+       "name": "gom theo món",
+       "input": {
+        "cot": "coffee_name"
+       },
+       "expected": {
+        "so_nhom": 8,
+        "nhom_lon_nhat": "Latte",
+        "lech": 0.0
+       }
+      },
+      {
+       "name": "gom theo kiểu thanh toán",
+       "input": {
+        "cot": "cash_type"
+       },
+       "expected": {
+        "so_nhom": 2,
+        "nhom_lon_nhat": "card",
+        "lech": 0.0
+       }
+      },
+      {
+       "name": "gom theo ngày",
+       "input": {
+        "cot": "date"
+       },
+       "expected": {
+        "so_nhom": 294,
+        "nhom_lon_nhat": "2024-10-11",
+        "lech": 0.0
+       }
+      }
+     ],
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "Tên nhóm lớn nhất đọc bằng `idxmax`, không bằng `max`."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "Lệch là trị tuyệt đối, để `-0.0` không lọt ra kết quả."
+      }
+     ],
+     "packages": [
+      "pandas"
+     ],
+     "dataFiles": [
+      "coffee-sales-cc0.csv"
+     ]
+    }
+   },
+   "_mode": "pyodide",
+   "_blocked": [],
+   "_du_lieu": {
+    "files": [
+     "coffee-sales-cc0.csv"
+    ],
+    "blocks": [
+     0
+    ]
+   },
+   "_so_mcq": 3,
+   "_bai_tap": "cham",
+   "_vet": {
+    "can": 0,
+    "co": 0,
+    "bo": 0,
+    "loi": []
+   }
+  },
+  {
+   "lesson_code": "TH07",
+   "sort_order": 179,
+   "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+   "title": "TH07 · Dự án cuối khoá: một trang báo cáo về bảng này",
+   "subtitle": "Nâng cao · M11 · 10 phút",
+   "estimated_minutes": 10,
+   "xp_reward": 8,
+   "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "TH07 · Dự án cuối khoá: một trang báo cáo về bảng này",
+    "subtitle": "Nâng cao · M11 · 10 phút",
+    "source": {
+     "kind": "python-da",
+     "filename": "course.json#TH07",
+     "parser": "pe-da/build",
+     "importedAt": "2026-10-24T00:00:00+00:00",
+     "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+    },
+    "step_1": {
+     "read": [
+      [
+       {
+        "type": "paragraph",
+        "text": "Mười chặng trước đã cho bạn đủ công cụ, và ở bài trước bạn vừa đối chiếu xong một phép gom. Bài này không có ca chấm nào. Bạn tự chọn câu hỏi và tự bảo vệ câu trả lời."
+       },
+       {
+        "type": "paragraph",
+        "text": "Yêu cầu tối thiểu có bốn phần. Một dòng nói bảng ở đâu ra và mang giấy phép gì. Một bảng doanh thu theo tháng của quán cà phê đó. Một biểu đồ. Một đoạn ghi rõ những câu bảng này KHÔNG trả lời được."
+       },
+       {
+        "type": "paragraph",
+        "text": "Phần cuối khó nhất và cũng đáng giá nhất. Bảng không có mã khách, nên nó không đếm được một người quay lại bao nhiêu lần. Bảng không có giá niêm yết, nên nó không tách được giảm giá khỏi giá gốc. Và đơn vị tiền chưa biết, nên mọi câu so với chi phí đều chưa làm được."
+       },
+       {
+        "type": "paragraph",
+        "text": "Đặt đoạn giới hạn ngay cạnh kết luận, đừng đẩy xuống cuối trang."
+       },
+       {
+        "type": "paragraph",
+        "text": "Ô dưới là khung mở đầu của dự án, và nó là ô CHẠY THỬ: bài cuối không có ca chấm, nên bạn sửa được nó rồi chạy lại ngay tại đây. Nó gom theo tháng và vẽ một biểu đồ cột. Nhãn trục đã ghi đơn vị chưa xác định — giữ nguyên câu đó khi bạn đổi biểu đồ."
+       },
+       {
+        "type": "code",
+        "code": "import pandas as pd\nimport matplotlib.pyplot as plt\n\nban = pd.read_csv('coffee-sales-cc0.csv')\nban['thang'] = pd.to_datetime(ban['datetime']).dt.strftime('%Y-%m')\ntheo_thang = ban.groupby('thang')['money'].sum().round(2)\nprint(theo_thang.to_dict())\n\nfig, ax = plt.subplots(figsize=(7, 3))\ntheo_thang.plot(kind='bar', ax=ax)\nax.set_ylabel('Tổng tiền (đơn vị chưa xác định)')\nax.set_title('Doanh thu theo tháng — nguồn CC0 1.0')\nplt.show()\n",
+        "expected": "{'2024-03': 7050.2, '2024-04': 6720.56, '2024-05': 9063.42, '2024-06': 7758.76, '2024-07': 6915.94, '2024-08': 7613.84, '2024-09': 9988.64, '2024-10': 13891.16, '2024-11': 8590.54, '2024-12': 6053.04}"
+       }
+      ]
+     ],
+     "context": {
+      "level": "Nâng cao",
+      "prereq": "TH06 · Đối chiếu: tổng các nhóm phải bằng tổng cả bảng"
+     }
+    },
+    "step_2": {
+     "mcq": [
+      {
+       "question": "Dự án này không có ca chấm. Phần nào của nó khó nhất?",
+       "options": [
+        {
+         "text": "Gom bảng theo tháng rồi cộng tiền",
+         "detail": "Phép gom theo tháng bạn vừa làm xong ở bài trước."
+        },
+        {
+         "text": "Nói rõ những câu bảng KHÔNG trả lời được",
+         "detail": "Đúng. Phần đó đòi bạn đọc lại cột nào bảng có và cột nào không.",
+         "correct": true
+        },
+        {
+         "text": "Vẽ biểu đồ cho vừa mắt người đọc",
+         "detail": "Biểu đồ đã có API sẵn và bạn đã dựng ba mươi cái."
+        }
+       ],
+       "explanation": "Đúng. Phần đó đòi bạn đọc lại cột nào bảng có và cột nào không."
+      },
+      {
+       "question": "Bảng không có cột mã khách. Hệ quả là gì?",
+       "options": [
+        {
+         "text": "Không gom được doanh thu theo từng tháng",
+         "detail": "Gom theo tháng chỉ cần cột thời gian và cột tiền."
+        },
+        {
+         "text": "Không đọc được cột tiền của mỗi lượt mua",
+         "detail": "Cột tiền đọc được bình thường, nó không phụ thuộc cột khách."
+        },
+        {
+         "text": "Không đếm được một người quay lại bao nhiêu lần",
+         "detail": "Đúng. Không có gì nối hai lượt mua về cùng một người.",
+         "correct": true
+        }
+       ],
+       "explanation": "Đúng. Không có gì nối hai lượt mua về cùng một người."
+      },
+      {
+       "question": "Dòng đầu của báo cáo nên nói gì?",
+       "options": [
+        {
+         "text": "Bảng ở đâu ra và mang giấy phép gì",
+         "detail": "Đúng. Người đọc cần biết số liệu của ai trước khi tin con số.",
+         "correct": true
+        },
+        {
+         "text": "Tên công cụ bạn dùng để vẽ biểu đồ",
+         "detail": "Công cụ vẽ không nói gì về độ tin của số liệu."
+        },
+        {
+         "text": "Số dòng và số cột của bảng",
+         "detail": "Hai con số đó thuộc phần mô tả, không thay được phần nguồn."
+        }
+       ],
+       "explanation": "Đúng. Người đọc cần biết số liệu của ai trước khi tin con số."
+      }
+     ],
+     "practice": [
+      {
+       "prompt": "Liệt kê ba câu bảng này không trả lời được.",
+       "answer": "Một người quay lại bao nhiêu lần (không có mã khách); giá niêm yết và giảm giá (không có cột giá); mọi câu so với chi phí (đơn vị tiền chưa biết)."
+      },
+      {
+       "prompt": "Dự án của bạn kết thúc bằng phần nào?",
+       "answer": "Phần ghi giới hạn của dữ liệu, đặt ngay cạnh kết luận chứ không đẩy xuống phụ lục."
+      }
+     ]
+    },
+    "step_4": {
+     "task": {
+      "title": "Chạy thử",
+      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+     },
+     "starterCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\nban = pd.read_csv('coffee-sales-cc0.csv')\nban['thang'] = pd.to_datetime(ban['datetime']).dt.strftime('%Y-%m')\ntheo_thang = ban.groupby('thang')['money'].sum().round(2)\nprint(theo_thang.to_dict())\n\nfig, ax = plt.subplots(figsize=(7, 3))\ntheo_thang.plot(kind='bar', ax=ax)\nax.set_ylabel('Tổng tiền (đơn vị chưa xác định)')\nax.set_title('Doanh thu theo tháng — nguồn CC0 1.0')\nplt.show()\n",
+     "packages": [
+      "matplotlib",
+      "pandas"
+     ],
+     "dataFiles": [
+      "coffee-sales-cc0.csv"
+     ]
+    }
+   },
+   "_mode": "pyodide",
+   "_blocked": [],
+   "_du_lieu": {
+    "files": [
+     "coffee-sales-cc0.csv"
+    ],
+    "blocks": [
+     0
+    ]
+   },
+   "_so_mcq": 3,
+   "_bai_tap": "khong co",
+   "_vet": {
+    "can": 0,
+    "co": 0,
+    "bo": 0,
+    "loi": []
+   }
   }
  ]
 }

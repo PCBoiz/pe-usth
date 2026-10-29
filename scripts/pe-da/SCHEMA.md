@@ -5,6 +5,11 @@ Khoá `python_advanced` đổi ruột: 48 bài pe-v4 (luồng bốn bước có 
 nghiệm, không có scaffold, không có bộ ca kiểm thử — nó có lời giảng, code kèm
 kết quả in ra, và câu luyện tập kèm đáp án mẫu.
 
+Từ 29/10/2026 khoá có **179** bài: 172 bài của gói nội dung, cộng **module 11
+(TH01–TH07)** — module THỰC HÀNH viết trong repo này, trên bộ dữ liệu CC0 thật
+`coffee-sales-cc0.csv`. Bối cảnh của nó ở [CAU-CHUYEN.md](CAU-CHUYEN.md) §3 M11;
+nó là chỗ đầu tiên mà mã học viên ĐỌC file dữ liệu, xem `step_4.dataFiles` dưới.
+
 Nguyên tắc: **không bịa thêm gì vào nội dung**. Thiếu trắc nghiệm thì không tự
 sinh trắc nghiệm; thiếu ca chấm thì sandbox chạy tự do, không giả vờ chấm.
 
@@ -37,8 +42,8 @@ type ReadBlock =
 read?: ReadBlock[][];
 ```
 
-Số khối thật trong bản dựng 172 bài: `paragraph` 738 · `code` 499 · `figure` 80
-(26 bài) · `terminal` 17 (10 bài) · `table` 1 · `diagram` 1 (PY05).
+Số khối thật trong bản dựng 179 bài: `paragraph` 811 · `code` 508 · `figure` 80
+(27 bài) · `terminal` 17 (8 bài) · `table` 2 · `diagram` 1 (PY05).
 
 **Sáu loại, không phải ba.** Bản đặc tả đầu chỉ khai ba, build phát thêm
 `terminal` và `figure` sau đó mà không ai sửa lại chỗ này — renderer viết theo
@@ -145,7 +150,7 @@ tên thì chỉ bài nào khai mới tải, và tải một lần cho cả phiê
 | Node (`check-pyodide.mjs`, `check-practice.mjs`) | `readFileSync` | ba bộ chấm đã vá `fetch` để TỪ CHỐI mọi địa chỉ `http(s)` — xem AGENTS.md |
 
 Hàm `fileDuLieu()` ở hai bộ chấm Node là hai bản CHÉP, không phải một import:
-`check-pyodide.mjs` dựng Pyodide và chấm cả 172 bài ngay ở tầm module, nên một
+`check-pyodide.mjs` dựng Pyodide và chấm cả 179 bài ngay ở tầm module, nên một
 dòng `import` từ nó là chạy cả bộ chấm nội dung. Hai bản được ghim giống nhau
 từng ký tự bởi `frontend/e2e/unit/data-files.test.mjs`.
 
@@ -190,13 +195,19 @@ XANH (hôm nay không bài tập nào ĐỌC file) và chỉ pha 3 đỏ. Pha 3 
 chạy cả bộ mà KHÔNG bài tập nào khai `dataFiles`: gỡ một cổng rồi không ai đi
 qua chỗ nó từng đứng thì nhánh mới không được gọi lần nào.
 
-Hôm nay **hai** bài dùng, khai báo ở `KHOI_DU_LIEU` trong `build.py` (không phải
+Hôm nay **chín** bài dùng, khai báo ở `KHOI_DU_LIEU` trong `build.py` (không phải
 trường mới của `source/course.json` — cùng lý lẽ với `SO_DO_DOC`):
 
 | bài | file | `step_4` là gì | vì sao bài này |
 |---|---|---|---|
 | PD13 · JSON và Excel: chọn đúng bảng cần đọc | `mon.csv` + `quay.csv` | ô "Chạy thử" | bài pandas duy nhất mà bài tập của gói không chấm được (openpyxl thiếu wheel), nên khối dữ liệu CÓ người bấm Chạy |
-| PD16 · Merge: nối đơn hàng với bảng khách | `mon.csv` | bài tập được chấm (3 ca) | bài đầu tiên có CẢ HAI — thứ cổng cấm cũ không cho phép. Giá phải trả: học viên tải `mon.csv` (479 byte) rồi chỉ ĐỌC khối dữ liệu chứ không chạy lại được nó; đổi lại file nằm sẵn trong thư mục chạy của bài tập |
+| PD16 · Merge: nối đơn hàng với bảng danh mục | `mon.csv` | bài tập được chấm (3 ca) | bài đầu tiên có CẢ HAI — thứ cổng cấm cũ không cho phép. Giá phải trả: học viên tải `mon.csv` (479 byte) rồi chỉ ĐỌC khối dữ liệu chứ không chạy lại được nó; đổi lại file nằm sẵn trong thư mục chạy của bài tập |
+| TH01–TH06 · module 11 (thực hành) | `coffee-sales-cc0.csv` | bài tập được chấm (3 ca mỗi bài) | **sáu bài đầu tiên mà MÃ HỌC VIÊN thật sự ĐỌC file.** Trước chúng, pha 1 của `check-practice.mjs` không chứng minh được gì về cơ chế này: bỏ tham số `files` đi thì 415 ca vẫn xanh. Nay bỏ nó đi là **18 ca đỏ** |
+| TH07 · dự án cuối khoá | `coffee-sales-cc0.csv` | ô "Chạy thử" | bài mở, không chấm, nên khối dữ liệu lại là thứ học viên sửa rồi chạy lại |
+
+⚠️ **Chín mục là chỗ bảng `KHOI_DU_LIEU` bắt đầu thành danh bạ.** Thêm một module
+dùng dữ liệu thật nữa thì chuyển khai báo sang gói nguồn
+(`lessons[].dataFiles` + khối đọc trong `reading`), đừng thêm hàng vào đây.
 
 ## Không khai gì nữa
 

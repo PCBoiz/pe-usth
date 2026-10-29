@@ -1,0 +1,192 @@
+{
+ "lesson_code": "TH02",
+ "sort_order": 174,
+ "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+ "title": "TH02 · Doanh thu từng món, và hai bảng xếp hạng khác nhau",
+ "subtitle": "Trung cấp · M11 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "TH02 · Doanh thu từng món, và hai bảng xếp hạng khác nhau",
+  "subtitle": "Trung cấp · M11 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#TH02",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Ở bài trước bạn đếm được bảng có 8 món. Câu hỏi kế tiếp của bất kỳ quán cà phê nào là món nào mang về nhiều tiền nhất."
+     },
+     {
+      "type": "paragraph",
+      "text": "Số lượt mua và doanh thu là hai bảng xếp hạng khác nhau, và ở bảng này chúng khác nhau thật. Món đứng đầu về số lượt không đứng đầu về tiền, vì mỗi lượt của hai món mang số tiền khác nhau."
+     },
+     {
+      "type": "paragraph",
+      "text": "Phép tính là gom theo tên món rồi cộng cột tiền. Mỗi nhóm cho một con số, và tổng của tám nhóm phải bằng tổng cả bảng."
+     },
+     {
+      "type": "paragraph",
+      "text": "Làm tròn tới hai chữ số thập phân khi trình bày. Và nhớ rằng con số đó vẫn chưa có đơn vị."
+     },
+     {
+      "type": "paragraph",
+      "text": "Ô dưới xếp hạng hai lần trên cùng một bảng. Lần đầu theo tiền, lần sau theo số lượt. Hai bảng xếp hạng đổi chỗ nhau ở hai hạng đầu, và dòng cuối là phép đối chiếu: tổng tám nhóm phải bằng tổng cả bảng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\n\nban = pd.read_csv('coffee-sales-cc0.csv')\ntheo_mon = ban.groupby('coffee_name')['money'].sum().round(2)\nprint(theo_mon.sort_values(ascending=False).head(3).to_dict())\nprint(ban['coffee_name'].value_counts().head(3).to_dict())\nprint(round(float(theo_mon.sum()), 2))\n",
+      "expected": "{'Latte': 22001.66, 'Americano with Milk': 19004.54, 'Cappuccino': 13278.06}\n{'Americano with Milk': 621, 'Latte': 618, 'Cappuccino': 368}\n83646.1"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "TH01 · Nhận bảng bán hàng của một quán khác"
+   }
+  },
+  "step_2": {
+   "mcq": [
+    {
+     "question": "Món nhiều lượt mua nhất là `Americano with Milk` với 621 lượt, nhưng món doanh thu cao nhất là `Latte`. Vì sao?",
+     "options": [
+      {
+       "text": "Vì `Latte` được bán ở nhiều ngày hơn hẳn",
+       "detail": "Số ngày bán không vào công thức doanh thu của một món."
+      },
+      {
+       "text": "Vì số tiền mỗi lượt của hai món khác nhau",
+       "detail": "Đúng. Doanh thu là số lượt nhân số tiền mỗi lượt.",
+       "correct": true
+      },
+      {
+       "text": "Vì phép gom nhóm đếm sai một trong hai món",
+       "detail": "Tổng tám nhóm vẫn bằng tổng cả bảng, nên phép gom không mất dòng nào."
+      }
+     ],
+     "explanation": "Đúng. Doanh thu là số lượt nhân số tiền mỗi lượt."
+    },
+    {
+     "question": "Đoạn dưới in ra con số nào?\n\nprint(ban.groupby('coffee_name')['money'].sum().size)",
+     "options": [
+      {
+       "text": "5 — số cột của bảng",
+       "detail": "Số cột không đổi theo khoá gom."
+      },
+      {
+       "text": "2623 — số dòng của bảng",
+       "detail": "Phép gom thu 2 623 dòng về số nhóm, không giữ nguyên số dòng."
+      },
+      {
+       "text": "8 — số món khác nhau trong bảng",
+       "detail": "Đúng. Gom theo tên món cho một nhóm mỗi món.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Gom theo tên món cho một nhóm mỗi món."
+    },
+    {
+     "question": "Tổng của tám nhóm phải bằng tổng cả bảng. Nếu nó lệch thì nguyên nhân nào hợp lý nhất?",
+     "options": [
+      {
+       "text": "Khoá gom có ô trống nên vài dòng bị bỏ ra",
+       "detail": "Đúng. Mặc định của phép gom là bỏ những dòng thiếu khoá.",
+       "correct": true
+      },
+      {
+       "text": "Bảng có quá nhiều dòng để cộng cho đúng",
+       "detail": "Số dòng không làm phép cộng mất dòng."
+      },
+      {
+       "text": "Phép cộng của thư viện làm tròn sai số tiền",
+       "detail": "Sai số nhị phân nhỏ hơn hẳn mức một dòng bị mất."
+      }
+     ],
+     "explanation": "Đúng. Mặc định của phép gom là bỏ những dòng thiếu khoá."
+    }
+   ],
+   "practice": [
+    {
+     "prompt": "Món nào đứng đầu về số lượt mà không đứng đầu về doanh thu?",
+     "answer": "`Americano with Milk` — 621 lượt, nhưng doanh thu 19 004,54 so với 22 001,66 của `Latte`."
+    },
+    {
+     "prompt": "Vì sao phải cộng lại tổng của tám nhóm sau khi gom?",
+     "answer": "Để biết phép gom không bỏ sót dòng nào. Tổng tám nhóm phải ra đúng 83 646,10 của cả bảng."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Doanh thu của một món",
+    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon` mang tên một món CÓ TRONG bảng. Trả về tổng cột `money` của món đó, làm tròn hai chữ số thập phân."
+   },
+   "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    theo_mon = ban.groupby('coffee_name')['money'].sum()\n    return round(float(theo_mon[data['mon']]), 2)\n",
+   "tests": [
+    {
+     "name": "món doanh thu cao nhất",
+     "input": {
+      "mon": "Latte"
+     },
+     "expected": 22001.66
+    },
+    {
+     "name": "món cà phê đen",
+     "input": {
+      "mon": "Americano"
+     },
+     "expected": 8546.3
+    },
+    {
+     "name": "món ít lượt hơn",
+     "input": {
+      "mon": "Cocoa"
+     },
+     "expected": 4959.12
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Gom theo `coffee_name` rồi cộng cột `money`."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Trả về một số thực, không phải một bảng con."
+    }
+   ],
+   "packages": [
+    "pandas"
+   ],
+   "dataFiles": [
+    "coffee-sales-cc0.csv"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": [],
+ "_du_lieu": {
+  "files": [
+   "coffee-sales-cc0.csv"
+  ],
+  "blocks": [
+   0
+  ]
+ },
+ "_so_mcq": 3,
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
+}

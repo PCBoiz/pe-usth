@@ -41421,6 +41421,965 @@
           ]
         }
       ]
+    },
+    {
+      "id": "TH01",
+      "title": "Nhận bảng bán hàng của một quán khác",
+      "exercises": [
+        {
+          "id": "TH01-code",
+          "type": "code",
+          "title": "Đếm bảng theo một cột",
+          "prompt": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên một cột của bảng. Trả về dict hai khoá: `so_hang` là số dòng của cả bảng, `so_gia_tri` là số giá trị khác nhau của cột đó. Cả hai là số nguyên.",
+          "starter": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+          "referenceSolution": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    return {'so_hang': int(len(ban)),\n            'so_gia_tri': int(ban[data['cot']].nunique())}\n",
+          "tests": [
+            {
+              "name": "cột tên món",
+              "input": {
+                "cot": "coffee_name"
+              },
+              "expected": {
+                "so_hang": 2623,
+                "so_gia_tri": 8
+              }
+            },
+            {
+              "name": "cột kiểu thanh toán",
+              "input": {
+                "cot": "cash_type"
+              },
+              "expected": {
+                "so_hang": 2623,
+                "so_gia_tri": 2
+              }
+            },
+            {
+              "name": "cột ngày",
+              "input": {
+                "cot": "date"
+              },
+              "expected": {
+                "so_hang": 2623,
+                "so_gia_tri": 294
+              }
+            }
+          ],
+          "hints": [
+            "Số dòng của bảng không đổi theo cột được hỏi.",
+            "Số giá trị khác nhau của một cột đọc bằng `nunique`."
+          ],
+          "explanation": "Số giá trị khác nhau của một cột đọc bằng `nunique`.",
+          "transferNote": "Dữ liệu chấm khác ví dụ trong bài. Hãy viết hàm chạy đúng với mọi đầu vào của đề, đừng trả về một đáp án mẫu."
+        }
+      ],
+      "mcq": [
+        {
+          "id": "TH01-practice-1",
+          "type": "mcq",
+          "title": "Giấy phép nói gì",
+          "prompt": "Bảng bán hàng bạn vừa nhận phát hành theo CC0 1.0. Điều nào ĐÚNG?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Được dùng, sửa và phát hành lại, không cần ghi công",
+              "feedback": "Đúng. CC0 là lời tuyên bố bỏ mọi quyền của tác giả."
+            },
+            {
+              "id": "b",
+              "text": "Chỉ được dùng cho việc học, không được phát hành lại",
+              "feedback": "Đó là một giấy phép khác; CC0 không giới hạn mục đích."
+            },
+            {
+              "id": "c",
+              "text": "Phải xin phép tác giả trước mỗi lần dùng lại",
+              "feedback": "CC0 bỏ hẳn quyền, nên không còn ai phải xin phép."
+            }
+          ],
+          "correctOption": "a",
+          "hints": [
+            "Đúng. CC0 là lời tuyên bố bỏ mọi quyền của tác giả."
+          ],
+          "explanation": "Đúng. CC0 là lời tuyên bố bỏ mọi quyền của tác giả.",
+          "variants": [
+            {
+              "id": "TH01-practice-1-v2",
+              "type": "mcq",
+              "title": "Đoạn này đếm gì",
+              "prompt": "Đoạn dưới in ra con số nào?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "8 — số món khác nhau trong bảng",
+                  "feedback": "Đúng. Phép đếm giá trị khác nhau chạy trên một cột."
+                },
+                {
+                  "id": "b",
+                  "text": "2623 — số dòng của bảng",
+                  "feedback": "Số dòng đọc bằng `len`, không bằng phép đếm giá trị khác nhau."
+                },
+                {
+                  "id": "c",
+                  "text": "5 — số cột của bảng",
+                  "feedback": "Số cột đọc từ `ban.shape`, không từ một cột đơn lẻ."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Phép đếm giá trị khác nhau chạy trên một cột."
+              ],
+              "explanation": "Đúng. Phép đếm giá trị khác nhau chạy trên một cột.",
+              "code": "print(ban['coffee_name'].nunique())",
+              "focus": "Đoạn này đếm gì"
+            },
+            {
+              "id": "TH01-practice-1-v3",
+              "type": "mcq",
+              "title": "Đơn vị chưa biết thì ghi gì",
+              "prompt": "Cột `money` chạy từ 18,12 đến 40,00 và không tài liệu nào nói đơn vị. Báo cáo nên làm gì?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Ghi rõ là đơn vị chưa xác định",
+                  "feedback": "Đúng. Đó là điều PD32 dặn: khi giao báo cáo, ghi đơn vị tiền."
+                },
+                {
+                  "id": "b",
+                  "text": "Quy đổi sang đồng theo tỉ giá hôm nay",
+                  "feedback": "Quy đổi từ một đơn vị chưa biết là bịa ra một con số mới."
+                },
+                {
+                  "id": "c",
+                  "text": "Bỏ hẳn cột tiền ra khỏi báo cáo",
+                  "feedback": "Cột tiền vẫn dùng được để so các nhóm với nhau."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Đó là điều PD32 dặn: khi giao báo cáo, ghi đơn vị tiền."
+              ],
+              "explanation": "Đúng. Đó là điều PD32 dặn: khi giao báo cáo, ghi đơn vị tiền.",
+              "focus": "Đơn vị chưa biết thì ghi gì"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TH02",
+      "title": "Doanh thu từng món, và hai bảng xếp hạng khác nhau",
+      "exercises": [
+        {
+          "id": "TH02-code",
+          "type": "code",
+          "title": "Doanh thu của một món",
+          "prompt": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon` mang tên một món CÓ TRONG bảng. Trả về tổng cột `money` của món đó, làm tròn hai chữ số thập phân.",
+          "starter": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+          "referenceSolution": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    theo_mon = ban.groupby('coffee_name')['money'].sum()\n    return round(float(theo_mon[data['mon']]), 2)\n",
+          "tests": [
+            {
+              "name": "món doanh thu cao nhất",
+              "input": {
+                "mon": "Latte"
+              },
+              "expected": 22001.66
+            },
+            {
+              "name": "món cà phê đen",
+              "input": {
+                "mon": "Americano"
+              },
+              "expected": 8546.3
+            },
+            {
+              "name": "món ít lượt hơn",
+              "input": {
+                "mon": "Cocoa"
+              },
+              "expected": 4959.12
+            }
+          ],
+          "hints": [
+            "Gom theo `coffee_name` rồi cộng cột `money`.",
+            "Trả về một số thực, không phải một bảng con."
+          ],
+          "explanation": "Trả về một số thực, không phải một bảng con.",
+          "transferNote": "Dữ liệu chấm khác ví dụ trong bài. Hãy viết hàm chạy đúng với mọi đầu vào của đề, đừng trả về một đáp án mẫu."
+        }
+      ],
+      "mcq": [
+        {
+          "id": "TH02-practice-1",
+          "type": "mcq",
+          "title": "Hai bảng xếp hạng",
+          "prompt": "Món nhiều lượt mua nhất là `Americano with Milk` với 621 lượt, nhưng món doanh thu cao nhất là `Latte`. Vì sao?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Vì số tiền mỗi lượt của hai món khác nhau",
+              "feedback": "Đúng. Doanh thu là số lượt nhân số tiền mỗi lượt."
+            },
+            {
+              "id": "b",
+              "text": "Vì phép gom nhóm đếm sai một trong hai món",
+              "feedback": "Tổng tám nhóm vẫn bằng tổng cả bảng, nên phép gom không mất dòng nào."
+            },
+            {
+              "id": "c",
+              "text": "Vì `Latte` được bán ở nhiều ngày hơn hẳn",
+              "feedback": "Số ngày bán không vào công thức doanh thu của một món."
+            }
+          ],
+          "correctOption": "a",
+          "hints": [
+            "Đúng. Doanh thu là số lượt nhân số tiền mỗi lượt."
+          ],
+          "explanation": "Đúng. Doanh thu là số lượt nhân số tiền mỗi lượt.",
+          "variants": [
+            {
+              "id": "TH02-practice-1-v2",
+              "type": "mcq",
+              "title": "Kích thước của kết quả gom",
+              "prompt": "Đoạn dưới in ra con số nào?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "8 — số món khác nhau trong bảng",
+                  "feedback": "Đúng. Gom theo tên món cho một nhóm mỗi món."
+                },
+                {
+                  "id": "b",
+                  "text": "2623 — số dòng của bảng",
+                  "feedback": "Phép gom thu 2 623 dòng về số nhóm, không giữ nguyên số dòng."
+                },
+                {
+                  "id": "c",
+                  "text": "5 — số cột của bảng",
+                  "feedback": "Số cột không đổi theo khoá gom."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Gom theo tên món cho một nhóm mỗi món."
+              ],
+              "explanation": "Đúng. Gom theo tên món cho một nhóm mỗi món.",
+              "code": "print(ban.groupby('coffee_name')['money'].sum().size)",
+              "focus": "Kích thước của kết quả gom"
+            },
+            {
+              "id": "TH02-practice-1-v3",
+              "type": "mcq",
+              "title": "Khi tổng các nhóm bị lệch",
+              "prompt": "Tổng của tám nhóm phải bằng tổng cả bảng. Nếu nó lệch thì nguyên nhân nào hợp lý nhất?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Khoá gom có ô trống nên vài dòng bị bỏ ra",
+                  "feedback": "Đúng. Mặc định của phép gom là bỏ những dòng thiếu khoá."
+                },
+                {
+                  "id": "b",
+                  "text": "Phép cộng của thư viện làm tròn sai số tiền",
+                  "feedback": "Sai số nhị phân nhỏ hơn hẳn mức một dòng bị mất."
+                },
+                {
+                  "id": "c",
+                  "text": "Bảng có quá nhiều dòng để cộng cho đúng",
+                  "feedback": "Số dòng không làm phép cộng mất dòng."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Mặc định của phép gom là bỏ những dòng thiếu khoá."
+              ],
+              "explanation": "Đúng. Mặc định của phép gom là bỏ những dòng thiếu khoá.",
+              "focus": "Khi tổng các nhóm bị lệch"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TH03",
+      "title": "Giờ cao điểm, và chuyện hai giờ bằng nhau",
+      "exercises": [
+        {
+          "id": "TH03-code",
+          "type": "code",
+          "title": "Giờ cao điểm của một món",
+          "prompt": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon`. Lấy giờ từ cột `datetime`, đếm số lượt mua của món đó theo giờ, rồi trả về dict hai khoá: `gio` là danh sách các giờ cùng đạt số lượt cao nhất, xếp tăng dần, và `so_luot` là con số cao nhất đó. Có món có hai giờ bằng nhau.",
+          "starter": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+          "referenceSolution": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    gio = pd.to_datetime(ban['datetime']).dt.hour\n    dem = gio[ban['coffee_name'] == data['mon']].value_counts()\n    dinh = int(dem.max())\n    return {'gio': sorted(int(g) for g in dem[dem == dinh].index),\n            'so_luot': dinh}\n",
+          "tests": [
+            {
+              "name": "một đỉnh duy nhất",
+              "input": {
+                "mon": "Latte"
+              },
+              "expected": {
+                "gio": [
+                  10
+                ],
+                "so_luot": 73
+              }
+            },
+            {
+              "name": "hai giờ bằng nhau",
+              "input": {
+                "mon": "Espresso"
+              },
+              "expected": {
+                "gio": [
+                  11,
+                  12
+                ],
+                "so_luot": 13
+              }
+            },
+            {
+              "name": "hai giờ không liền nhau",
+              "input": {
+                "mon": "Hot Chocolate"
+              },
+              "expected": {
+                "gio": [
+                  19,
+                  21
+                ],
+                "so_luot": 25
+              }
+            }
+          ],
+          "hints": [
+            "Cột `date` không có giờ; phải đổi `datetime` sang mốc thời gian.",
+            "Lấy mọi giờ đạt số lượt lớn nhất, không chỉ giờ gặp trước."
+          ],
+          "explanation": "Lấy mọi giờ đạt số lượt lớn nhất, không chỉ giờ gặp trước.",
+          "transferNote": "Dữ liệu chấm khác ví dụ trong bài. Hãy viết hàm chạy đúng với mọi đầu vào của đề, đừng trả về một đáp án mẫu."
+        }
+      ],
+      "mcq": [
+        {
+          "id": "TH03-practice-1",
+          "type": "mcq",
+          "title": "Giờ lấy từ cột nào",
+          "prompt": "Giờ của mỗi lượt mua lấy từ cột nào của bảng?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Cột `datetime`, vì nó ghi cả giờ",
+              "feedback": "Đúng. `date` chỉ có ngày, `datetime` có cả giờ."
+            },
+            {
+              "id": "b",
+              "text": "Cột `date`, vì nó là cột thời gian",
+              "feedback": "Cột `date` chỉ tới ngày, nên không tách được giờ."
+            },
+            {
+              "id": "c",
+              "text": "Cột `cash_type`, sau khi đổi sang số",
+              "feedback": "Cột đó nói cách trả tiền, không liên quan thời gian."
+            }
+          ],
+          "correctOption": "a",
+          "hints": [
+            "Đúng. `date` chỉ có ngày, `datetime` có cả giờ."
+          ],
+          "explanation": "Đúng. `date` chỉ có ngày, `datetime` có cả giờ.",
+          "variants": [
+            {
+              "id": "TH03-practice-1-v2",
+              "type": "mcq",
+              "title": "Khi hai giờ bằng nhau",
+              "prompt": "Với món `Espresso`, hai giờ khác nhau cùng đạt 13 lượt. Một hàm trả về đúng một con số sẽ làm gì?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Chọn bừa một trong hai giờ, không nói ra",
+                  "feedback": "Đúng. Phép lấy một đỉnh trả về giờ gặp trước, và nó im lặng."
+                },
+                {
+                  "id": "b",
+                  "text": "Báo lỗi vì không tính được đỉnh nào",
+                  "feedback": "Phép lấy một đỉnh không báo lỗi khi có nhiều đỉnh."
+                },
+                {
+                  "id": "c",
+                  "text": "Trả về tổng của hai giờ bằng nhau đó",
+                  "feedback": "Nó trả về một giờ, không cộng hai giờ lại."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Phép lấy một đỉnh trả về giờ gặp trước, và nó im lặng."
+              ],
+              "explanation": "Đúng. Phép lấy một đỉnh trả về giờ gặp trước, và nó im lặng.",
+              "focus": "Khi hai giờ bằng nhau"
+            },
+            {
+              "id": "TH03-practice-1-v3",
+              "type": "mcq",
+              "title": "Giờ muộn nhất có lượt mua",
+              "prompt": "Đoạn dưới in ra con số nào?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "22 — giờ muộn nhất còn có lượt mua",
+                  "feedback": "Đúng. Bảng không có lượt mua nào sau 22 giờ."
+                },
+                {
+                  "id": "b",
+                  "text": "23 — giờ cuối cùng của một ngày",
+                  "feedback": "Bảng chỉ có giờ thật sự xuất hiện, không có mọi giờ của ngày."
+                },
+                {
+                  "id": "c",
+                  "text": "2623 — số dòng của cả bảng",
+                  "feedback": "Phép lấy lớn nhất chạy trên giá trị giờ, không trên số dòng."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Bảng không có lượt mua nào sau 22 giờ."
+              ],
+              "explanation": "Đúng. Bảng không có lượt mua nào sau 22 giờ.",
+              "code": "print(pd.to_datetime(ban['datetime']).dt.hour.max())",
+              "focus": "Giờ muộn nhất có lượt mua"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TH04",
+      "title": "Tiền mặt và thẻ: một tỉ lệ dựng trên năm lượt",
+      "exercises": [
+        {
+          "id": "TH04-code",
+          "type": "code",
+          "title": "Tỉ lệ thanh toán kèm mẫu số",
+          "prompt": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict hai khoá: `mon` là tên món, `kieu` là `card` hoặc `cash`. Trả về dict ba khoá: `so_luot` là số lượt của món đó trả theo kiểu đó, `tong` là tổng số lượt của món, và `ti_le` là phần trăm làm tròn một chữ số thập phân.",
+          "starter": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+          "referenceSolution": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    cua_mon = ban[ban['coffee_name'] == data['mon']]\n    so_luot = int((cua_mon['cash_type'] == data['kieu']).sum())\n    tong = int(len(cua_mon))\n    return {'so_luot': so_luot, 'tong': tong,\n            'ti_le': round(100 * so_luot / tong, 1)}\n",
+          "tests": [
+            {
+              "name": "tiền mặt của món bán nhiều",
+              "input": {
+                "mon": "Latte",
+                "kieu": "cash"
+              },
+              "expected": {
+                "so_luot": 25,
+                "tong": 618,
+                "ti_le": 4.0
+              }
+            },
+            {
+              "name": "mẫu chỉ năm lượt",
+              "input": {
+                "mon": "Espresso",
+                "kieu": "cash"
+              },
+              "expected": {
+                "so_luot": 5,
+                "tong": 97,
+                "ti_le": 5.2
+              }
+            },
+            {
+              "name": "thẻ của một món khác",
+              "input": {
+                "mon": "Cocoa",
+                "kieu": "card"
+              },
+              "expected": {
+                "so_luot": 135,
+                "tong": 139,
+                "ti_le": 97.1
+              }
+            }
+          ],
+          "hints": [
+            "Mẫu số là tổng số lượt của MÓN, không phải của cả bảng.",
+            "Tỉ lệ phải đi cùng mẫu số, nên bài đòi trả về cả hai."
+          ],
+          "explanation": "Tỉ lệ phải đi cùng mẫu số, nên bài đòi trả về cả hai.",
+          "transferNote": "Dữ liệu chấm khác ví dụ trong bài. Hãy viết hàm chạy đúng với mọi đầu vào của đề, đừng trả về một đáp án mẫu."
+        }
+      ],
+      "mcq": [
+        {
+          "id": "TH04-practice-1",
+          "type": "mcq",
+          "title": "Tỉ lệ dựng trên năm lượt",
+          "prompt": "Món `Espresso` có 5 lượt trả tiền mặt trên 97 lượt. Câu nào nói đúng về tỉ lệ 5,2%?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nó dựng trên 5 lượt nên rất dễ đổi",
+              "feedback": "Đúng. Thêm một lượt là 6,1%, tức đổi gần một điểm."
+            },
+            {
+              "id": "b",
+              "text": "Nó đúng tới một chữ số thập phân",
+              "feedback": "Chữ số thập phân nói về phép chia, không nói về độ vững của mẫu."
+            },
+            {
+              "id": "c",
+              "text": "Nó cho thấy tiền mặt đang tăng dần",
+              "feedback": "Một tỉ lệ của cả kỳ không nói được chiều tăng hay giảm."
+            }
+          ],
+          "correctOption": "a",
+          "hints": [
+            "Đúng. Thêm một lượt là 6,1%, tức đổi gần một điểm."
+          ],
+          "explanation": "Đúng. Thêm một lượt là 6,1%, tức đổi gần một điểm.",
+          "variants": [
+            {
+              "id": "TH04-practice-1-v2",
+              "type": "mcq",
+              "title": "Cạnh mỗi tỉ lệ ghi gì",
+              "prompt": "Báo cáo nên ghi thêm gì ngay cạnh mỗi tỉ lệ phần trăm?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Số lượt đã dựng ra tỉ lệ đó",
+                  "feedback": "Đúng. Người đọc thấy mẫu số là tự biết tin tới đâu."
+                },
+                {
+                  "id": "b",
+                  "text": "Ngày bạn chạy lại báo cáo",
+                  "feedback": "Ngày chạy thuộc phần đầu báo cáo, không thay được mẫu số."
+                },
+                {
+                  "id": "c",
+                  "text": "Tên người đã viết báo cáo đó",
+                  "feedback": "Tên người viết không nói gì về độ vững của con số."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Người đọc thấy mẫu số là tự biết tin tới đâu."
+              ],
+              "explanation": "Đúng. Người đọc thấy mẫu số là tự biết tin tới đâu.",
+              "focus": "Cạnh mỗi tỉ lệ ghi gì"
+            },
+            {
+              "id": "TH04-practice-1-v3",
+              "type": "mcq",
+              "title": "Đếm lượt trả tiền mặt",
+              "prompt": "Đoạn dưới in ra con số nào?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "89 — số lượt trả bằng tiền mặt",
+                  "feedback": "Đúng. Phép so cho một cột đúng/sai, cộng nó là đếm số lượt khớp."
+                },
+                {
+                  "id": "b",
+                  "text": "2534 — số lượt trả bằng thẻ",
+                  "feedback": "Đó là số lượt còn lại, tức phần không khớp phép so."
+                },
+                {
+                  "id": "c",
+                  "text": "2623 — tổng số lượt của bảng",
+                  "feedback": "Tổng số lượt là số dòng, không phải số dòng khớp phép so."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Phép so cho một cột đúng/sai, cộng nó là đếm số lượt khớp."
+              ],
+              "explanation": "Đúng. Phép so cho một cột đúng/sai, cộng nó là đếm số lượt khớp.",
+              "code": "print((ban['cash_type'] == 'cash').sum())",
+              "focus": "Đếm lượt trả tiền mặt"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TH05",
+      "title": "Báo cáo theo tháng, kèm dòng ghi đơn vị",
+      "exercises": [
+        {
+          "id": "TH05-code",
+          "type": "code",
+          "title": "Một dòng báo cáo tháng",
+          "prompt": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là một chuỗi dạng `YYYY-MM`. Trả về dict bốn khoá: `thang` là chính chuỗi đó, `so_don` là số lượt mua trong tháng, `tong_tien` là tổng cột `money` làm tròn hai chữ số thập phân, và `don_vi` là chuỗi `không xác định`. Khoá cuối là phần bài học của PD32: báo cáo phải nói ra đơn vị, kể cả khi đơn vị chưa biết.",
+          "starter": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+          "referenceSolution": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    thang = pd.to_datetime(ban['datetime']).dt.strftime('%Y-%m')\n    cua_thang = ban[thang == data]\n    return {'thang': data,\n            'so_don': int(len(cua_thang)),\n            'tong_tien': round(float(cua_thang['money'].sum()), 2),\n            'don_vi': 'không xác định'}\n",
+          "tests": [
+            {
+              "name": "tháng đầu của bảng",
+              "input": "2024-03",
+              "expected": {
+                "thang": "2024-03",
+                "so_don": 206,
+                "tong_tien": 7050.2,
+                "don_vi": "không xác định"
+              }
+            },
+            {
+              "name": "tháng cao nhất",
+              "input": "2024-10",
+              "expected": {
+                "thang": "2024-10",
+                "so_don": 426,
+                "tong_tien": 13891.16,
+                "don_vi": "không xác định"
+              }
+            },
+            {
+              "name": "tháng cuối của bảng",
+              "input": "2024-12",
+              "expected": {
+                "thang": "2024-12",
+                "so_don": 189,
+                "tong_tien": 6053.04,
+                "don_vi": "không xác định"
+              }
+            }
+          ],
+          "hints": [
+            "Tháng lấy từ `datetime`, không từ `date`.",
+            "Bốn khoá, không thừa không thiếu, và `don_vi` là chuỗi cố định."
+          ],
+          "explanation": "Bốn khoá, không thừa không thiếu, và `don_vi` là chuỗi cố định.",
+          "transferNote": "Dữ liệu chấm khác ví dụ trong bài. Hãy viết hàm chạy đúng với mọi đầu vào của đề, đừng trả về một đáp án mẫu."
+        }
+      ],
+      "mcq": [
+        {
+          "id": "TH05-practice-1",
+          "type": "mcq",
+          "title": "Dòng đơn vị của báo cáo",
+          "prompt": "Đơn vị tiền của cột `money` chưa biết. Báo cáo tháng nên ghi thế nào?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Ghi rõ là đơn vị chưa xác định",
+              "feedback": "Đúng. Báo cáo phải nói ra điều mình chưa biết."
+            },
+            {
+              "id": "b",
+              "text": "Ghi một ký hiệu tiền quen mắt cho dễ đọc",
+              "feedback": "Ký hiệu đoán ra làm người đọc tin vào một thứ chưa ai kiểm."
+            },
+            {
+              "id": "c",
+              "text": "Bỏ hẳn dòng đơn vị khỏi báo cáo",
+              "feedback": "Bỏ dòng đó thì người đọc tự điền một đơn vị trong đầu."
+            }
+          ],
+          "correctOption": "a",
+          "hints": [
+            "Đúng. Báo cáo phải nói ra điều mình chưa biết."
+          ],
+          "explanation": "Đúng. Báo cáo phải nói ra điều mình chưa biết.",
+          "variants": [
+            {
+              "id": "TH05-practice-1-v2",
+              "type": "mcq",
+              "title": "Gom theo tháng",
+              "prompt": "Muốn gom theo tháng thì cột `datetime` phải đổi về dạng nào trước?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Mốc thời gian, rồi lấy phần năm và tháng",
+                  "feedback": "Đúng. Đổi sang mốc thời gian rồi mới có phần tháng để gom."
+                },
+                {
+                  "id": "b",
+                  "text": "Số nguyên, rồi chia cho một trăm",
+                  "feedback": "Chia một mốc thời gian cho một trăm không cho tháng nào."
+                },
+                {
+                  "id": "c",
+                  "text": "Không cần đổi, cột `date` đã là tháng",
+                  "feedback": "Cột `date` là ngày, nên gom theo nó cho 294 nhóm."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Đổi sang mốc thời gian rồi mới có phần tháng để gom."
+              ],
+              "explanation": "Đúng. Đổi sang mốc thời gian rồi mới có phần tháng để gom.",
+              "focus": "Gom theo tháng"
+            },
+            {
+              "id": "TH05-practice-1-v3",
+              "type": "mcq",
+              "title": "Số tháng có số liệu",
+              "prompt": "Đoạn dưới in ra con số nào?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "10 — số tháng có lượt mua trong bảng",
+                  "feedback": "Đúng. Bảng chạy từ tháng 3 tới tháng 12 năm 2024."
+                },
+                {
+                  "id": "b",
+                  "text": "12 — số tháng của một năm",
+                  "feedback": "Phép gom chỉ cho nhóm có mặt trong bảng."
+                },
+                {
+                  "id": "c",
+                  "text": "294 — số ngày có lượt mua",
+                  "feedback": "Đó là số nhóm khi gom theo ngày, không theo tháng."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Bảng chạy từ tháng 3 tới tháng 12 năm 2024."
+              ],
+              "explanation": "Đúng. Bảng chạy từ tháng 3 tới tháng 12 năm 2024.",
+              "code": "print(ban.groupby('thang')['money'].sum().size)",
+              "focus": "Số tháng có số liệu"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TH06",
+      "title": "Đối chiếu: tổng các nhóm phải bằng tổng cả bảng",
+      "exercises": [
+        {
+          "id": "TH06-code",
+          "type": "code",
+          "title": "Đối chiếu một phép gom",
+          "prompt": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên cột dùng làm khoá gom. Gom cột `money` theo cột đó rồi trả về dict ba khoá: `so_nhom` là số nhóm, `nhom_lon_nhat` là tên nhóm có tổng tiền lớn nhất, và `lech` là khoảng cách tuyệt đối giữa tổng các nhóm và tổng cả bảng, làm tròn sáu chữ số thập phân.",
+          "starter": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+          "referenceSolution": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    tong = float(ban['money'].sum())\n    nhom = ban.groupby(data['cot'])['money'].sum()\n    return {'so_nhom': int(nhom.size),\n            'nhom_lon_nhat': str(nhom.idxmax()),\n            'lech': round(abs(float(nhom.sum()) - tong), 6)}\n",
+          "tests": [
+            {
+              "name": "gom theo món",
+              "input": {
+                "cot": "coffee_name"
+              },
+              "expected": {
+                "so_nhom": 8,
+                "nhom_lon_nhat": "Latte",
+                "lech": 0.0
+              }
+            },
+            {
+              "name": "gom theo kiểu thanh toán",
+              "input": {
+                "cot": "cash_type"
+              },
+              "expected": {
+                "so_nhom": 2,
+                "nhom_lon_nhat": "card",
+                "lech": 0.0
+              }
+            },
+            {
+              "name": "gom theo ngày",
+              "input": {
+                "cot": "date"
+              },
+              "expected": {
+                "so_nhom": 294,
+                "nhom_lon_nhat": "2024-10-11",
+                "lech": 0.0
+              }
+            }
+          ],
+          "hints": [
+            "Tên nhóm lớn nhất đọc bằng `idxmax`, không bằng `max`.",
+            "Lệch là trị tuyệt đối, để `-0.0` không lọt ra kết quả."
+          ],
+          "explanation": "Lệch là trị tuyệt đối, để `-0.0` không lọt ra kết quả.",
+          "transferNote": "Dữ liệu chấm khác ví dụ trong bài. Hãy viết hàm chạy đúng với mọi đầu vào của đề, đừng trả về một đáp án mẫu."
+        }
+      ],
+      "mcq": [
+        {
+          "id": "TH06-practice-1",
+          "type": "mcq",
+          "title": "Phép đối chiếu so cái gì",
+          "prompt": "Phép đối chiếu của bài này so cái gì với cái gì?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Tổng các nhóm với tổng của cả bảng",
+              "feedback": "Đúng. Cộng các nhóm lại phải ra đúng tổng ban đầu."
+            },
+            {
+              "id": "b",
+              "text": "Số nhóm với số dòng của cả bảng",
+              "feedback": "Số nhóm nhỏ hơn số dòng ở mọi khoá gom, nên phép so đó vô nghĩa."
+            },
+            {
+              "id": "c",
+              "text": "Tên các nhóm với tên các cột",
+              "feedback": "Tên nhóm là giá trị trong một cột, không so được với tên cột."
+            }
+          ],
+          "correctOption": "a",
+          "hints": [
+            "Đúng. Cộng các nhóm lại phải ra đúng tổng ban đầu."
+          ],
+          "explanation": "Đúng. Cộng các nhóm lại phải ra đúng tổng ban đầu.",
+          "variants": [
+            {
+              "id": "TH06-practice-1-v2",
+              "type": "mcq",
+              "title": "Lệch khác 0 đến từ đâu",
+              "prompt": "Lệch khác 0 sau một phép gom thường đến từ đâu?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Khoá gom có ô trống nên dòng bị bỏ ra",
+                  "feedback": "Đúng. Dòng thiếu khoá không vào nhóm nào."
+                },
+                {
+                  "id": "b",
+                  "text": "Cột tiền được lưu dưới dạng số thực",
+                  "feedback": "Sai số nhị phân nhỏ hơn hẳn mức một dòng bị mất."
+                },
+                {
+                  "id": "c",
+                  "text": "Bảng chưa được xếp lại theo thứ tự ngày",
+                  "feedback": "Thứ tự dòng không đổi tổng của phép cộng."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Dòng thiếu khoá không vào nhóm nào."
+              ],
+              "explanation": "Đúng. Dòng thiếu khoá không vào nhóm nào.",
+              "focus": "Lệch khác 0 đến từ đâu"
+            },
+            {
+              "id": "TH06-practice-1-v3",
+              "type": "mcq",
+              "title": "Vì sao chạy trên ba cột",
+              "prompt": "Vì sao chạy phép đối chiếu trên ba cột thay vì một cột?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Một phép kiểm đáng tin khi mọi cột cho cùng kết quả",
+                  "feedback": "Đúng. Một cột đạt có thể chỉ là tình cờ của cột đó."
+                },
+                {
+                  "id": "b",
+                  "text": "Vì báo cáo cần dài hơn và đầy đủ hơn",
+                  "feedback": "Độ dài báo cáo không phải lý do để thêm phép kiểm."
+                },
+                {
+                  "id": "c",
+                  "text": "Vì mỗi cột có một công thức cộng riêng",
+                  "feedback": "Phép cộng cột tiền giống nhau ở mọi khoá gom."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Một cột đạt có thể chỉ là tình cờ của cột đó."
+              ],
+              "explanation": "Đúng. Một cột đạt có thể chỉ là tình cờ của cột đó.",
+              "focus": "Vì sao chạy trên ba cột"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TH07",
+      "title": "Dự án cuối khoá: một trang báo cáo về bảng này",
+      "mcq": [
+        {
+          "id": "TH07-practice-1",
+          "type": "mcq",
+          "title": "Phần khó nhất của dự án",
+          "prompt": "Dự án này không có ca chấm. Phần nào của nó khó nhất?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Nói rõ những câu bảng KHÔNG trả lời được",
+              "feedback": "Đúng. Phần đó đòi bạn đọc lại cột nào bảng có và cột nào không."
+            },
+            {
+              "id": "b",
+              "text": "Vẽ biểu đồ cho vừa mắt người đọc",
+              "feedback": "Biểu đồ đã có API sẵn và bạn đã dựng ba mươi cái."
+            },
+            {
+              "id": "c",
+              "text": "Gom bảng theo tháng rồi cộng tiền",
+              "feedback": "Phép gom theo tháng bạn vừa làm xong ở bài trước."
+            }
+          ],
+          "correctOption": "a",
+          "hints": [
+            "Đúng. Phần đó đòi bạn đọc lại cột nào bảng có và cột nào không."
+          ],
+          "explanation": "Đúng. Phần đó đòi bạn đọc lại cột nào bảng có và cột nào không.",
+          "variants": [
+            {
+              "id": "TH07-practice-1-v2",
+              "type": "mcq",
+              "title": "Hệ quả của việc thiếu mã khách",
+              "prompt": "Bảng không có cột mã khách. Hệ quả là gì?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Không đếm được một người quay lại bao nhiêu lần",
+                  "feedback": "Đúng. Không có gì nối hai lượt mua về cùng một người."
+                },
+                {
+                  "id": "b",
+                  "text": "Không gom được doanh thu theo từng tháng",
+                  "feedback": "Gom theo tháng chỉ cần cột thời gian và cột tiền."
+                },
+                {
+                  "id": "c",
+                  "text": "Không đọc được cột tiền của mỗi lượt mua",
+                  "feedback": "Cột tiền đọc được bình thường, nó không phụ thuộc cột khách."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Không có gì nối hai lượt mua về cùng một người."
+              ],
+              "explanation": "Đúng. Không có gì nối hai lượt mua về cùng một người.",
+              "focus": "Hệ quả của việc thiếu mã khách"
+            },
+            {
+              "id": "TH07-practice-1-v3",
+              "type": "mcq",
+              "title": "Dòng đầu của báo cáo",
+              "prompt": "Dòng đầu của báo cáo nên nói gì?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Bảng ở đâu ra và mang giấy phép gì",
+                  "feedback": "Đúng. Người đọc cần biết số liệu của ai trước khi tin con số."
+                },
+                {
+                  "id": "b",
+                  "text": "Tên công cụ bạn dùng để vẽ biểu đồ",
+                  "feedback": "Công cụ vẽ không nói gì về độ tin của số liệu."
+                },
+                {
+                  "id": "c",
+                  "text": "Số dòng và số cột của bảng",
+                  "feedback": "Hai con số đó thuộc phần mô tả, không thay được phần nguồn."
+                }
+              ],
+              "correctOption": "a",
+              "hints": [
+                "Đúng. Người đọc cần biết số liệu của ai trước khi tin con số."
+              ],
+              "explanation": "Đúng. Người đọc cần biết số liệu của ai trước khi tin con số.",
+              "focus": "Dòng đầu của báo cáo"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

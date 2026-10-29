@@ -1,0 +1,207 @@
+{
+ "lesson_code": "TH04",
+ "sort_order": 176,
+ "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+ "title": "TH04 · Tiền mặt và thẻ: một tỉ lệ dựng trên năm lượt",
+ "subtitle": "Trung cấp · M11 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "TH04 · Tiền mặt và thẻ: một tỉ lệ dựng trên năm lượt",
+  "subtitle": "Trung cấp · M11 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#TH04",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bài trước đếm theo giờ. Bảng còn một cột chưa dùng. Cột `cash_type` nói mỗi lượt mua trả bằng thẻ hay tiền mặt."
+     },
+     {
+      "type": "paragraph",
+      "text": "Trên cả bảng, thẻ chiếm 2 534 lượt và tiền mặt 89 lượt. Một tỉ lệ dựng trên 89 lượt đã mỏng. Chia tiếp theo món thì có món chỉ còn năm lượt tiền mặt."
+     },
+     {
+      "type": "paragraph",
+      "text": "Phần trăm vẫn tính được, nhưng phải viết kèm mẫu số. Con số 5,2% của `Espresso` là 5 trên 97 lượt. Thêm một lượt nữa thì nó thành 6,1%, tức đổi gần một điểm."
+     },
+     {
+      "type": "paragraph",
+      "text": "Nên mỗi tỉ lệ trong báo cáo đi cùng số lượt dựng ra nó. Người đọc thấy mẫu số là họ tự biết tin tới đâu."
+     },
+     {
+      "type": "paragraph",
+      "text": "Ô dưới đếm theo kiểu thanh toán, rồi chia tiếp theo món. Dòng thứ hai cho thấy mẫu số thật của món `Espresso`: 5 lượt tiền mặt trên 97. Dòng thứ ba là tỉ lệ, và nó đứng một mình thì không ai biết nó dựng trên 5 lượt."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\n\nban = pd.read_csv('coffee-sales-cc0.csv')\nprint(ban['cash_type'].value_counts().to_dict())\nbang = ban.pivot_table(index='coffee_name', columns='cash_type',\n                       values='money', aggfunc='size', fill_value=0)\nprint(bang.loc['Espresso'].to_dict())\nprint(round(100 * bang.loc['Espresso', 'cash']\n            / bang.loc['Espresso'].sum(), 1))\n",
+      "expected": "{'card': 2534, 'cash': 89}\n{'card': 92, 'cash': 5}\n5.2"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "TH03 · Giờ cao điểm, và chuyện hai giờ bằng nhau"
+   }
+  },
+  "step_2": {
+   "mcq": [
+    {
+     "question": "Món `Espresso` có 5 lượt trả tiền mặt trên 97 lượt. Câu nào nói đúng về tỉ lệ 5,2%?",
+     "options": [
+      {
+       "text": "Nó đúng tới một chữ số thập phân",
+       "detail": "Chữ số thập phân nói về phép chia, không nói về độ vững của mẫu."
+      },
+      {
+       "text": "Nó dựng trên 5 lượt nên rất dễ đổi",
+       "detail": "Đúng. Thêm một lượt là 6,1%, tức đổi gần một điểm.",
+       "correct": true
+      },
+      {
+       "text": "Nó cho thấy tiền mặt đang tăng dần",
+       "detail": "Một tỉ lệ của cả kỳ không nói được chiều tăng hay giảm."
+      }
+     ],
+     "explanation": "Đúng. Thêm một lượt là 6,1%, tức đổi gần một điểm."
+    },
+    {
+     "question": "Báo cáo nên ghi thêm gì ngay cạnh mỗi tỉ lệ phần trăm?",
+     "options": [
+      {
+       "text": "Số lượt đã dựng ra tỉ lệ đó",
+       "detail": "Đúng. Người đọc thấy mẫu số là tự biết tin tới đâu.",
+       "correct": true
+      },
+      {
+       "text": "Tên người đã viết báo cáo đó",
+       "detail": "Tên người viết không nói gì về độ vững của con số."
+      },
+      {
+       "text": "Ngày bạn chạy lại báo cáo",
+       "detail": "Ngày chạy thuộc phần đầu báo cáo, không thay được mẫu số."
+      }
+     ],
+     "explanation": "Đúng. Người đọc thấy mẫu số là tự biết tin tới đâu."
+    },
+    {
+     "question": "Đoạn dưới in ra con số nào?\n\nprint((ban['cash_type'] == 'cash').sum())",
+     "options": [
+      {
+       "text": "2534 — số lượt trả bằng thẻ",
+       "detail": "Đó là số lượt còn lại, tức phần không khớp phép so."
+      },
+      {
+       "text": "2623 — tổng số lượt của bảng",
+       "detail": "Tổng số lượt là số dòng, không phải số dòng khớp phép so."
+      },
+      {
+       "text": "89 — số lượt trả bằng tiền mặt",
+       "detail": "Đúng. Phép so cho một cột đúng/sai, cộng nó là đếm số lượt khớp.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Phép so cho một cột đúng/sai, cộng nó là đếm số lượt khớp."
+    }
+   ],
+   "practice": [
+    {
+     "prompt": "Tỉ lệ tiền mặt của `Espresso` là 5,2%. Thêm một lượt tiền mặt nữa thì tỉ lệ thành bao nhiêu?",
+     "answer": "6 trên 98 lượt, tức 6,1%. Một lượt làm con số đổi gần một điểm."
+    },
+    {
+     "prompt": "Vì sao không kết luận \"khách quán này không thích tiền mặt\"?",
+     "answer": "Bảng chỉ nói cách trả của 2 623 lượt mua ở một quán trong mười tháng. Nó không nói vì sao người ta trả như vậy."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Tỉ lệ thanh toán kèm mẫu số",
+    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict hai khoá: `mon` là tên món, `kieu` là `card` hoặc `cash`. Trả về dict ba khoá: `so_luot` là số lượt của món đó trả theo kiểu đó, `tong` là tổng số lượt của món, và `ti_le` là phần trăm làm tròn một chữ số thập phân."
+   },
+   "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    cua_mon = ban[ban['coffee_name'] == data['mon']]\n    so_luot = int((cua_mon['cash_type'] == data['kieu']).sum())\n    tong = int(len(cua_mon))\n    return {'so_luot': so_luot, 'tong': tong,\n            'ti_le': round(100 * so_luot / tong, 1)}\n",
+   "tests": [
+    {
+     "name": "tiền mặt của món bán nhiều",
+     "input": {
+      "mon": "Latte",
+      "kieu": "cash"
+     },
+     "expected": {
+      "so_luot": 25,
+      "tong": 618,
+      "ti_le": 4.0
+     }
+    },
+    {
+     "name": "mẫu chỉ năm lượt",
+     "input": {
+      "mon": "Espresso",
+      "kieu": "cash"
+     },
+     "expected": {
+      "so_luot": 5,
+      "tong": 97,
+      "ti_le": 5.2
+     }
+    },
+    {
+     "name": "thẻ của một món khác",
+     "input": {
+      "mon": "Cocoa",
+      "kieu": "card"
+     },
+     "expected": {
+      "so_luot": 135,
+      "tong": 139,
+      "ti_le": 97.1
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Mẫu số là tổng số lượt của MÓN, không phải của cả bảng."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tỉ lệ phải đi cùng mẫu số, nên bài đòi trả về cả hai."
+    }
+   ],
+   "packages": [
+    "pandas"
+   ],
+   "dataFiles": [
+    "coffee-sales-cc0.csv"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": [],
+ "_du_lieu": {
+  "files": [
+   "coffee-sales-cc0.csv"
+  ],
+  "blocks": [
+   0
+  ]
+ },
+ "_so_mcq": 3,
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
+}

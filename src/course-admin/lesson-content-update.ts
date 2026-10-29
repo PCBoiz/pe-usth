@@ -16,12 +16,22 @@ import { validateStudioLesson } from './studio-lesson.schema';
 
 export const ADVANCED_COURSE_ID = 'python_advanced';
 /**
- * Khoá python_advanced nay là 172 bài pe-da (scripts/pe-da/out/lessons.json).
- * Con số 48 cũ là của bộ pe-v4 đã nghỉ: để nguyên thì selectLessons() từ chối
- * MỌI gói, tức mất hẳn đường nạp an toàn — đường duy nhất sửa nội dung bài mà
- * không xoá tiến độ người học.
+ * SÀN, không phải con số chính xác — và đó là bản sửa sau LẦN THỨ BA con số này
+ * đi lạc.
+ *
+ * Nó từng là 48 (bộ pe-v4), rồi 172 (bộ pe-da). Mỗi lần khoá đổi số bài mà
+ * quên sửa ở đây thì `selectLessons()` từ chối MỌI gói, tức **mất hẳn đường nạp
+ * an toàn** — đường duy nhất sửa nội dung bài mà không xoá tiến độ người học.
+ * Lần thứ ba (module 11, 172 → 179) bị bắt bởi Jest, nhưng hai lần trước thì
+ * không: một hằng ghi cứng hỏng theo chiều CHẶN HẾT, nên nó đắt hơn hẳn thứ nó
+ * canh.
+ *
+ * Thứ nó canh là "gói bị cắt ngắn". Phép kiểm `sort_order === i + 1` ngay dưới
+ * đã đòi dãy LIÊN TỤC từ 1, nên một gói thiếu bài ở giữa đã đỏ ở đó; con số này
+ * chỉ còn bắt phần đuôi bị cắt. Sàn làm đúng việc đó mà không hỏng khi khoá dài
+ * ra. CHỈ ĐƯỢC NÂNG, cùng luật với mốc trần lint trong CI.
  */
-export const ADVANCED_LESSON_TOTAL = 172;
+export const ADVANCED_LESSON_MIN = 172;
 
 /** Một hàng của gói, đúng hình dạng build_advanced.py ghi ra. */
 export interface BundleRow {
@@ -106,12 +116,12 @@ export function selectLessons(
   }
   if (bundle.partial) {
     errors.push(
-      `Gói là bản dựng THIẾU bài (--partial/--only) — dựng lại đủ ${ADVANCED_LESSON_TOTAL} bài.`,
+      `Gói là bản dựng THIẾU bài (--partial/--only) — dựng lại đủ bộ, ít nhất ${ADVANCED_LESSON_MIN} bài.`,
     );
   }
-  if (lessons.length !== ADVANCED_LESSON_TOTAL) {
+  if (lessons.length < ADVANCED_LESSON_MIN) {
     errors.push(
-      `Gói có ${lessons.length} bài, cần đúng ${ADVANCED_LESSON_TOTAL}.`,
+      `Gói chỉ có ${lessons.length} bài, cần ít nhất ${ADVANCED_LESSON_MIN} — bản dựng bị cắt?`,
     );
   }
   lessons.forEach((row, i) => {

@@ -1,0 +1,209 @@
+{
+ "lesson_code": "TH03",
+ "sort_order": 175,
+ "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+ "title": "TH03 · Giờ cao điểm, và chuyện hai giờ bằng nhau",
+ "subtitle": "Trung cấp · M11 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "TH03 · Giờ cao điểm, và chuyện hai giờ bằng nhau",
+  "subtitle": "Trung cấp · M11 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#TH03",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bài trước xếp món theo tiền. Bài này hỏi về thời gian trong ngày. Giờ nào quán bán được nhiều lượt nhất."
+     },
+     {
+      "type": "paragraph",
+      "text": "Giờ nằm trong cột `datetime`, không nằm trong cột `date`. Phải đổi cột đó sang mốc thời gian rồi lấy phần giờ ra."
+     },
+     {
+      "type": "paragraph",
+      "text": "Và giờ cao điểm không chắc là một giờ. Với món `Espresso`, hai giờ khác nhau cùng đạt 13 lượt. Một hàm trả về đúng một con số sẽ phải chọn bừa một trong hai, nên bài này trả về cả danh sách giờ."
+     },
+     {
+      "type": "paragraph",
+      "text": "Chọn bừa cũng là một quyết định. Chỉ khác là nó không được ghi ở đâu, nên người đọc báo cáo không biết nó đã xảy ra."
+     },
+     {
+      "type": "paragraph",
+      "text": "Ô dưới tách giờ ra khỏi cột mốc thời gian rồi đếm theo giờ. Dòng thứ hai là món `Espresso`: hai giờ cùng đạt 13 lượt, nên đáp án là một danh sách chứ không phải một con số. Dòng thứ ba lấy một đỉnh duy nhất của cả bảng, và nó im lặng về chuyện có thể có đỉnh thứ hai."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\n\nban = pd.read_csv('coffee-sales-cc0.csv')\nban['gio'] = pd.to_datetime(ban['datetime']).dt.hour\nprint(ban['gio'].value_counts().sort_index().head(4).to_dict())\ndem = ban[ban['coffee_name'] == 'Espresso']['gio'].value_counts()\nprint(sorted(int(g) for g in dem[dem == dem.max()].index), int(dem.max()))\nprint(int(ban['gio'].value_counts().idxmax()),\n      int(ban['gio'].value_counts().max()))\n",
+      "expected": "{7: 65, 8: 174, 9: 169, 10: 261}\n[11, 12] 13\n10 261"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "TH02 · Doanh thu từng món, và hai bảng xếp hạng khác nhau"
+   }
+  },
+  "step_2": {
+   "mcq": [
+    {
+     "question": "Giờ của mỗi lượt mua lấy từ cột nào của bảng?",
+     "options": [
+      {
+       "text": "Cột `datetime`, vì nó ghi cả giờ",
+       "detail": "Đúng. `date` chỉ có ngày, `datetime` có cả giờ.",
+       "correct": true
+      },
+      {
+       "text": "Cột `date`, vì nó là cột thời gian",
+       "detail": "Cột `date` chỉ tới ngày, nên không tách được giờ."
+      },
+      {
+       "text": "Cột `cash_type`, sau khi đổi sang số",
+       "detail": "Cột đó nói cách trả tiền, không liên quan thời gian."
+      }
+     ],
+     "explanation": "Đúng. `date` chỉ có ngày, `datetime` có cả giờ."
+    },
+    {
+     "question": "Với món `Espresso`, hai giờ khác nhau cùng đạt 13 lượt. Một hàm trả về đúng một con số sẽ làm gì?",
+     "options": [
+      {
+       "text": "Báo lỗi vì không tính được đỉnh nào",
+       "detail": "Phép lấy một đỉnh không báo lỗi khi có nhiều đỉnh."
+      },
+      {
+       "text": "Trả về tổng của hai giờ bằng nhau đó",
+       "detail": "Nó trả về một giờ, không cộng hai giờ lại."
+      },
+      {
+       "text": "Chọn bừa một trong hai giờ, không nói ra",
+       "detail": "Đúng. Phép lấy một đỉnh trả về giờ gặp trước, và nó im lặng.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Phép lấy một đỉnh trả về giờ gặp trước, và nó im lặng."
+    },
+    {
+     "question": "Đoạn dưới in ra con số nào?\n\nprint(pd.to_datetime(ban['datetime']).dt.hour.max())",
+     "options": [
+      {
+       "text": "2623 — số dòng của cả bảng",
+       "detail": "Phép lấy lớn nhất chạy trên giá trị giờ, không trên số dòng."
+      },
+      {
+       "text": "22 — giờ muộn nhất còn có lượt mua",
+       "detail": "Đúng. Bảng không có lượt mua nào sau 22 giờ.",
+       "correct": true
+      },
+      {
+       "text": "23 — giờ cuối cùng của một ngày",
+       "detail": "Bảng chỉ có giờ thật sự xuất hiện, không có mọi giờ của ngày."
+      }
+     ],
+     "explanation": "Đúng. Bảng không có lượt mua nào sau 22 giờ."
+    }
+   ],
+   "practice": [
+    {
+     "prompt": "Vì sao không lấy giờ từ cột `date`?",
+     "answer": "Cột `date` chỉ có ngày. Giờ nằm trong cột `datetime`."
+    },
+    {
+     "prompt": "Bài này trả về danh sách giờ thay vì một giờ. Vì sao?",
+     "answer": "Vì hai giờ có thể cùng đạt số lượt cao nhất, như `Espresso` ở 11 giờ và 12 giờ."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Giờ cao điểm của một món",
+    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon`. Lấy giờ từ cột `datetime`, đếm số lượt mua của món đó theo giờ, rồi trả về dict hai khoá: `gio` là danh sách các giờ cùng đạt số lượt cao nhất, xếp tăng dần, và `so_luot` là con số cao nhất đó. Có món có hai giờ bằng nhau."
+   },
+   "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    gio = pd.to_datetime(ban['datetime']).dt.hour\n    dem = gio[ban['coffee_name'] == data['mon']].value_counts()\n    dinh = int(dem.max())\n    return {'gio': sorted(int(g) for g in dem[dem == dinh].index),\n            'so_luot': dinh}\n",
+   "tests": [
+    {
+     "name": "một đỉnh duy nhất",
+     "input": {
+      "mon": "Latte"
+     },
+     "expected": {
+      "gio": [
+       10
+      ],
+      "so_luot": 73
+     }
+    },
+    {
+     "name": "hai giờ bằng nhau",
+     "input": {
+      "mon": "Espresso"
+     },
+     "expected": {
+      "gio": [
+       11,
+       12
+      ],
+      "so_luot": 13
+     }
+    },
+    {
+     "name": "hai giờ không liền nhau",
+     "input": {
+      "mon": "Hot Chocolate"
+     },
+     "expected": {
+      "gio": [
+       19,
+       21
+      ],
+      "so_luot": 25
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Cột `date` không có giờ; phải đổi `datetime` sang mốc thời gian."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Lấy mọi giờ đạt số lượt lớn nhất, không chỉ giờ gặp trước."
+    }
+   ],
+   "packages": [
+    "pandas"
+   ],
+   "dataFiles": [
+    "coffee-sales-cc0.csv"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": [],
+ "_du_lieu": {
+  "files": [
+   "coffee-sales-cc0.csv"
+  ],
+  "blocks": [
+   0
+  ]
+ },
+ "_so_mcq": 3,
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
+}

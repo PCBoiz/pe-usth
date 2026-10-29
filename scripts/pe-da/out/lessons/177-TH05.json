@@ -1,0 +1,201 @@
+{
+ "lesson_code": "TH05",
+ "sort_order": 177,
+ "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+ "title": "TH05 · Báo cáo theo tháng, kèm dòng ghi đơn vị",
+ "subtitle": "Nâng cao · M11 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "TH05 · Báo cáo theo tháng, kèm dòng ghi đơn vị",
+  "subtitle": "Nâng cao · M11 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#TH05",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Ở bài PD32 bạn đã dựng một báo cáo đối chiếu được. Bài này làm lại đúng việc đó trên số liệu của một quán cà phê khác. Chỗ khác duy nhất là dòng ghi đơn vị."
+     },
+     {
+      "type": "paragraph",
+      "text": "Mốc thời gian của bảng chạy từ tháng 3 tới tháng 12 năm 2024. Gom theo tháng thì mỗi tháng cho hai con số. Số lượt mua, và tổng tiền của tháng đó."
+     },
+     {
+      "type": "paragraph",
+      "text": "Báo cáo phải nói ra điều mình chưa biết. Đơn vị tiền chưa xác định, nên mỗi dòng mang thêm chữ `không xác định` thay cho một ký hiệu tiền đoán ra."
+     },
+     {
+      "type": "paragraph",
+      "text": "Người nhận báo cáo sẽ hỏi đúng câu đó trước mọi câu khác. Trả lời sẵn thì họ tin phần còn lại."
+     },
+     {
+      "type": "paragraph",
+      "text": "Ô dưới dựng đúng bảng mà PD32 đã dạy, chỉ đổi nguồn số liệu. Dòng thứ hai đối chiếu: số lượt và tổng tiền của mười tháng phải bằng số lượt và tổng tiền của cả bảng. Dòng thứ ba là phần không ai được bỏ khi giao báo cáo."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\n\nban = pd.read_csv('coffee-sales-cc0.csv')\nban['thang'] = pd.to_datetime(ban['datetime']).dt.strftime('%Y-%m')\nbao_cao = ban.groupby('thang').agg(so_don=('money', 'size'),\n                                   tong_tien=('money', 'sum'))\nbao_cao['tong_tien'] = bao_cao['tong_tien'].round(2)\nprint(int(bao_cao.loc['2024-10', 'so_don']),\n      float(bao_cao.loc['2024-10', 'tong_tien']))\nprint(int(bao_cao['so_don'].sum()),\n      round(float(bao_cao['tong_tien'].sum()), 2))\nprint('đơn vị tiền: chưa xác định')\n",
+      "expected": "426 13891.16\n2623 83646.1\nđơn vị tiền: chưa xác định"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "TH04 · Tiền mặt và thẻ: một tỉ lệ dựng trên năm lượt, PD32 · Dự án nhỏ: báo cáo đơn hàng có thể đối chiếu"
+   }
+  },
+  "step_2": {
+   "mcq": [
+    {
+     "question": "Đơn vị tiền của cột `money` chưa biết. Báo cáo tháng nên ghi thế nào?",
+     "options": [
+      {
+       "text": "Ghi rõ là đơn vị chưa xác định",
+       "detail": "Đúng. Báo cáo phải nói ra điều mình chưa biết.",
+       "correct": true
+      },
+      {
+       "text": "Bỏ hẳn dòng đơn vị khỏi báo cáo",
+       "detail": "Bỏ dòng đó thì người đọc tự điền một đơn vị trong đầu."
+      },
+      {
+       "text": "Ghi một ký hiệu tiền quen mắt cho dễ đọc",
+       "detail": "Ký hiệu đoán ra làm người đọc tin vào một thứ chưa ai kiểm."
+      }
+     ],
+     "explanation": "Đúng. Báo cáo phải nói ra điều mình chưa biết."
+    },
+    {
+     "question": "Muốn gom theo tháng thì cột `datetime` phải đổi về dạng nào trước?",
+     "options": [
+      {
+       "text": "Số nguyên, rồi chia cho một trăm",
+       "detail": "Chia một mốc thời gian cho một trăm không cho tháng nào."
+      },
+      {
+       "text": "Không cần đổi, cột `date` đã là tháng",
+       "detail": "Cột `date` là ngày, nên gom theo nó cho 294 nhóm."
+      },
+      {
+       "text": "Mốc thời gian, rồi lấy phần năm và tháng",
+       "detail": "Đúng. Đổi sang mốc thời gian rồi mới có phần tháng để gom.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Đổi sang mốc thời gian rồi mới có phần tháng để gom."
+    },
+    {
+     "question": "Đoạn dưới in ra con số nào?\n\nprint(ban.groupby('thang')['money'].sum().size)",
+     "options": [
+      {
+       "text": "12 — số tháng của một năm",
+       "detail": "Phép gom chỉ cho nhóm có mặt trong bảng."
+      },
+      {
+       "text": "10 — số tháng có lượt mua trong bảng",
+       "detail": "Đúng. Bảng chạy từ tháng 3 tới tháng 12 năm 2024.",
+       "correct": true
+      },
+      {
+       "text": "294 — số ngày có lượt mua",
+       "detail": "Đó là số nhóm khi gom theo ngày, không theo tháng."
+      }
+     ],
+     "explanation": "Đúng. Bảng chạy từ tháng 3 tới tháng 12 năm 2024."
+    }
+   ],
+   "practice": [
+    {
+     "prompt": "Báo cáo của bạn ghi gì ở chỗ đơn vị tiền?",
+     "answer": "Chữ `không xác định`, kèm một câu nói bạn đã đi hỏi người cấp số liệu."
+    },
+    {
+     "prompt": "Tháng 10 có 426 lượt và tổng 13 891,16. Vì sao không viết \"doanh thu tháng 10 là 13 891,16 đồng\"?",
+     "answer": "Vì đơn vị chưa biết. Thêm chữ \"đồng\" là bịa ra một con số mới rồi đưa cho người khác dùng."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Một dòng báo cáo tháng",
+    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là một chuỗi dạng `YYYY-MM`. Trả về dict bốn khoá: `thang` là chính chuỗi đó, `so_don` là số lượt mua trong tháng, `tong_tien` là tổng cột `money` làm tròn hai chữ số thập phân, và `don_vi` là chuỗi `không xác định`. Khoá cuối là phần bài học của PD32: báo cáo phải nói ra đơn vị, kể cả khi đơn vị chưa biết."
+   },
+   "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    thang = pd.to_datetime(ban['datetime']).dt.strftime('%Y-%m')\n    cua_thang = ban[thang == data]\n    return {'thang': data,\n            'so_don': int(len(cua_thang)),\n            'tong_tien': round(float(cua_thang['money'].sum()), 2),\n            'don_vi': 'không xác định'}\n",
+   "tests": [
+    {
+     "name": "tháng đầu của bảng",
+     "input": "2024-03",
+     "expected": {
+      "thang": "2024-03",
+      "so_don": 206,
+      "tong_tien": 7050.2,
+      "don_vi": "không xác định"
+     }
+    },
+    {
+     "name": "tháng cao nhất",
+     "input": "2024-10",
+     "expected": {
+      "thang": "2024-10",
+      "so_don": 426,
+      "tong_tien": 13891.16,
+      "don_vi": "không xác định"
+     }
+    },
+    {
+     "name": "tháng cuối của bảng",
+     "input": "2024-12",
+     "expected": {
+      "thang": "2024-12",
+      "so_don": 189,
+      "tong_tien": 6053.04,
+      "don_vi": "không xác định"
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tháng lấy từ `datetime`, không từ `date`."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Bốn khoá, không thừa không thiếu, và `don_vi` là chuỗi cố định."
+    }
+   ],
+   "packages": [
+    "pandas"
+   ],
+   "dataFiles": [
+    "coffee-sales-cc0.csv"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": [],
+ "_du_lieu": {
+  "files": [
+   "coffee-sales-cc0.csv"
+  ],
+  "blocks": [
+   0
+  ]
+ },
+ "_so_mcq": 3,
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
+}

@@ -1,6 +1,6 @@
 # Câu chuyện xuyên suốt — hành trình mở một quán cà phê
 
-Đặc tả BỐI CẢNH cho 172 bài của `python_advanced`. Viết cho **người soạn nội dung**.
+Đặc tả BỐI CẢNH cho 179 bài của `python_advanced` (172 bài gốc + module 11 thực hành). Viết cho **người soạn nội dung**.
 Văn phong (câu, thuật ngữ, chú giải) nằm ở [VAN-PHONG.md](VAN-PHONG.md); file này chỉ nói
 về **ví dụ của bài kể chuyện gì** và **bài này nối với bài trước ở đâu**.
 
@@ -102,7 +102,7 @@ Nói ra trước, vì đây là chỗ một đợt "viết lại cho có câu ch
 
 ---
 
-## 3. Mười chặng
+## 3. Mười một chặng
 
 Cột *dữ liệu mới* là thứ đáng chú ý nhất: nó là lý do module tồn tại trong câu chuyện. Một
 module không sinh ra dữ liệu mới nào thì nó chỉ là một chương sách.
@@ -270,13 +270,56 @@ tên và giá trị" là ví dụ sẵn của quán — xếp món theo doanh th
 dương tính giả đã biết ghi trong `boi-canh.json`: `order = np.argsort(sales)` ở RD03 làm từ
 khoá `order` khớp mà không có đơn hàng nào.
 
+### M11 · `thuc-hanh` — thực hành trên số liệu thật của một quán khác (TH01–TH07) ✅ **viết mới**
+
+| | |
+|---|---|
+| **Chặng** | Quán của bạn đã chạy một năm và đã có báo cáo. Giờ bạn đứng ở phía bên kia: người ta đưa cho bạn số liệu của **một quán khác**, và bạn phải làm việc trên nó mà không gặp được người đã đo. |
+| **Dữ liệu lần đầu** | `coffee-sales-cc0.csv` — 2 623 lượt mua THẬT, CC0 1.0 (`tablegpt/CoffeeSales` trên Hugging Face). Năm cột tiếng Anh: `date`, `datetime`, `cash_type`, `money`, `coffee_name`. Đây là bộ dữ liệu NGOÀI dự án đầu tiên và duy nhất của khoá — xem `frontend/public/static/da-dulieu/NOTICE.md`. |
+| **Nối với chặng trước** | TH01 nối với RD05 và PD32: chín chặng trước bạn tính trên bảng do chính `gen_dulieu.py` của quán sinh ra, nên mọi tên cột và mọi đơn vị đều đã biết trước. TH01 là lần đầu không có điều đó. |
+
+**Vì sao module này tồn tại, và nó KHÔNG phải một chương ôn tập.** Nó là chặng duy nhất mà
+dữ liệu KHÔNG do dự án tạo ra, nên nó là chặng duy nhất dạy được ba việc không dạy được ở
+đâu khác: đọc giấy phép trước khi đọc số, hỏi hạt dữ liệu (một dòng là cái gì), và nói ra
+đơn vị mình chưa biết.
+
+**Cột `money` KHÔNG CÓ ĐƠN VỊ XÁC ĐỊNH, và đó là chất liệu của module chứ không phải khiếm
+khuyết phải che.** Giá trị chạy 18,12–40,00; README của bộ gốc không nói đó là tiền gì, và
+vòng tra ngày 29/10/2026 không tìm ra câu trả lời. PD32 dạy nguyên văn *"khi giao báo cáo,
+ghi đơn vị tiền"* — nên TH05 bắt ca chấm trả về hẳn một khoá `don_vi` mang chữ
+`không xác định`. **Đừng quy đổi sang VNĐ ở bất kỳ bài nào**: quy đổi từ một đơn vị chưa
+biết là bịa ra một con số mới rồi đưa cho người khác dùng. Luật "đơn vị là VNĐ" của
+[LUOC-DO.md](LUOC-DO.md) nói về bộ dữ liệu TỰ SINH của quán, không về bộ này.
+
+| Bài | Quán cần gì | Nên gặp |
+|---|---|---|
+| TH01 | biết số liệu của người khác dùng được tới đâu | CC0, hạt dữ liệu, đơn vị chưa biết, `nunique` |
+| TH02 | món nào mang về nhiều tiền nhất | `groupby().sum()`, và chuyện xếp theo tiền khác xếp theo lượt |
+| TH03 | giờ nào bán được nhiều nhất | `to_datetime().dt.hour`, và chuyện hai đỉnh bằng nhau |
+| TH04 | khách trả thẻ hay tiền mặt | `pivot_table`, tỉ lệ PHẢI đi kèm mẫu số |
+| TH05 | một bản báo cáo tháng giao được cho người khác | `groupby().agg()`, và dòng ghi đơn vị của PD32 |
+| TH06 | chắc rằng báo cáo không mất dòng nào | tổng các nhóm = tổng cả bảng, `idxmax` |
+| TH07 | một trang báo cáo tự bảo vệ được | dự án mở, KHÔNG chấm; phần nặng nhất là đoạn ghi giới hạn |
+
+**Sáu bài đầu CÓ ca chấm đọc file THẬT, và đó là lý do kỹ thuật module này đáng làm ngay.**
+Trước nó, khoá 179 bài không có một bài tập nào ĐỌC file dữ liệu, nên pha 1 của
+`check-practice.mjs` chưa bao giờ chứng minh được cơ chế `step_4.dataFiles` chạy — đo được:
+bỏ tham số `files` khỏi pha 1 thì 415 ca VẪN XANH. Nay bỏ nó đi là **18 ca đỏ** (6 bài × 3
+ca). Mọi `expected` đo bằng `node scripts/pe-da/check-pyodide.mjs`, không gõ tay.
+
+**Mỗi bài có ĐÚNG MỘT màn đọc, và đó là một lựa chọn chứ không phải sự bỏ sót.** Luật chia
+màn của [SCHEMA.md](SCHEMA.md) là "một màn = một ý được một đoạn code chứng minh"; bài thực
+hành có đúng một ý và đúng một đoạn code (khối đọc file), nên nó ra một màn. Hệ quả đi kèm:
+khối đọc file nằm ngoài diện ghi vết, nên module 11 KHÔNG cần `traces.json` — thêm một khối
+code thứ hai vào `reading` là bắt chạy lại `gen_traces.py` cho cả khoá.
+
 ---
 
 ## 4. Những nhóm bài KHÔNG gắn tự nhiên được — nói thẳng
 
 Ép quán cà phê vào những bài dưới đây là **thêm một lớp trang trí mà người học phải bóc ra mới
 thấy cơ chế**. Chúng được miễn trừ tường minh trong `boi-canh.json` (`mienTru`), và miễn trừ đó
-**hẹp có chủ đích**: 14/172 bài = 8%.
+**hẹp có chủ đích**: 14/179 bài = 8% (module 11 không có bài nào được miễn).
 
 **Phép thử để quyết một bài có được miễn hay không: dữ liệu của bài CHỌN ĐƯỢC không?**
 
@@ -356,6 +399,7 @@ node scripts/pe-da/check-pyodide.mjs <mã bài>   # nếu có đổi `code`/`exp
 | M8 `gui` | ⬜ | 3 bài sinh viên · 9 không bối cảnh; GU12 nên thành màn hình nhận đơn |
 | M9 `supplements` | ⬜ | 4/8 bài được miễn; câu nối trỏ về bài dạy khái niệm, không về bài liền trước |
 | M10 `data-viz-review` | ⬜ | 5 chưa neo · 1 thời tiết |
+| M11 `thuc-hanh` | ✅ **xong** | 7/7 bài viết mới trên bộ CC0; L14 và L15 sạch; 6 bài có ca chấm đọc file thật |
 
 **Thứ tự nên làm, và nó không theo thứ tự module:** M3 trước (23 bài, mỗi bài một câu), rồi M4
 và M10 (cùng dùng bảng của M3), rồi M2, rồi M8, rồi M5 cuối — vì M5 là đổi nội dung chứ không

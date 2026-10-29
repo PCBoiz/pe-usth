@@ -4,7 +4,7 @@
       "requirements": [
         "Học bằng cách đọc lời giảng, đọc code kèm kết quả rồi tự chạy lại và sửa",
         "Không cần biết Python trước: bài PY01 bắt đầu từ một phép cộng",
-        "131 bài chạy được ngay trong trình duyệt; 41 bài cần Python 3.12 trên máy (Tkinter, tiến trình, đa luồng, seaborn, plotly)",
+        "138 bài chạy được ngay trong trình duyệt; 41 bài cần Python 3.12 trên máy (Tkinter, tiến trình, đa luồng, seaborn, plotly)",
         "Bài numpy/pandas/matplotlib tải thêm thư viện ở lần mở đầu tiên (vài MB)"
       ],
       "skills": [
@@ -14,7 +14,8 @@
         "Trực quan hoá: Matplotlib, seaborn, Plotly và dashboard",
         "OOP, module, lưu trữ dữ liệu và sqlite3",
         "Hệ điều hành: tiến trình, đa luồng, multiprocessing và shell",
-        "Tkinter: từ form nhỏ tới màn hình nhận đơn tại quầy"
+        "Tkinter: từ form nhỏ tới màn hình nhận đơn tại quầy",
+        "Thực hành: nhận một bộ số liệu của người khác, kiểm giấy phép và đơn vị, đối chiếu rồi giao báo cáo"
       ],
       "modules": [
         {
@@ -237,6 +238,18 @@
             "RD03 · Sắp xếp mà vẫn giữ đúng tên và giá trị",
             "RD04 · Nhân ma trận và ước lượng một đường thẳng",
             "RD05 · Lấy mẫu có hoàn lại và mô phỏng dữ liệu"
+          ]
+        },
+        {
+          "title": "M11 · Thực hành trên số liệu thật của một quán khác",
+          "lessons": [
+            "TH01 · Nhận bảng bán hàng của một quán khác",
+            "TH02 · Doanh thu từng món, và hai bảng xếp hạng khác nhau",
+            "TH03 · Giờ cao điểm, và chuyện hai giờ bằng nhau",
+            "TH04 · Tiền mặt và thẻ: một tỉ lệ dựng trên năm lượt",
+            "TH05 · Báo cáo theo tháng, kèm dòng ghi đơn vị",
+            "TH06 · Đối chiếu: tổng các nhóm phải bằng tổng cả bảng",
+            "TH07 · Dự án cuối khoá: một trang báo cáo về bảng này"
           ]
         }
       ]

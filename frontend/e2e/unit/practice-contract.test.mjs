@@ -235,7 +235,7 @@ test('harness khai contract_json và phân nhánh theo trường có mặt', () 
 
 // ─────────────────────────────────────────────────── số đo, để không tụt mốc
 
-test('bản dựng có 124 bài tập được chấm và 415 ca', () => {
+test('bản dựng có 130 bài tập được chấm và 433 ca', () => {
   // Con số này phải đo lại mỗi lần đổi nguồn hoặc đổi cổng lọc, không được
   // đoán — xem AGENTS.md, dòng "204 ca test tưởng có mà không có".
   //
@@ -245,8 +245,8 @@ test('bản dựng có 124 bài tập được chấm và 415 ca', () => {
   // đó nhận THÊM một ca mà lời giải tầm thường ấy trượt. Số bài vẫn 124: chỉ
   // thêm ca, không thêm bài.
   const ca = coBaiTap.reduce((s, b) => s + b.content_json.step_4.tests.length, 0);
-  assert.equal(coBaiTap.length, 124, 'số bài có bài tập được chấm');
-  assert.equal(ca, 415, 'tổng số ca chấm');
+  assert.equal(coBaiTap.length, 130, 'số bài có bài tập được chấm');
+  assert.equal(ca, 433, 'tổng số ca chấm');
 });
 
 test('mọi bài tập được chấm đều có lời giải mẫu KHÁC khung đề', () => {

@@ -92,7 +92,7 @@ export const COURSES: CatalogCourse[] = [
     // một cái tên; `e2e/unit/catalog-naming.test.mjs` canh chỗ này).
     label: 'Python cho Data Analyst',
     title: 'Python cho Data Analyst',
-    subtitle: '172 bài: từ phép cộng đầu tiên tới phân tích dữ liệu',
+    subtitle: '179 bài: từ phép cộng đầu tiên tới phân tích dữ liệu',
     description:
       'Học bằng cách đọc lời giảng, đọc code kèm kết quả thật rồi tự chạy lại và sửa. Python nền '
       + 'tảng, NumPy, pandas, trực quan hoá (Matplotlib, seaborn, Plotly), OOP và sqlite3, tiến '
@@ -119,8 +119,12 @@ export const COURSES: CatalogCourse[] = [
     // 1 836 -> 2 360 phút ngày 27/10: thêm 3 câu trắc nghiệm mỗi bài (516 câu),
     // tính 1 phút/câu. Thêm màn vào bài mà vẫn báo số phút cũ thì con số này
     // nói sai, và nó là con số người học dùng để quyết định có bắt đầu hay không.
-    duration: '~39 giờ',
-    lessons: lessonCount('python_advanced', 172),
+    //
+    // 2 378 -> 2 441 phút ngày 30/10: thêm module 11 (7 bài thực hành trên bộ
+    // dữ liệu CC0 thật). 40,7 giờ, nên chuỗi là "~41 giờ" — ca test cho lệch
+    // tối đa 1 giờ, giữ "~39" là TRƯỢT chứ không phải làm tròn rộng tay.
+    duration: '~41 giờ',
+    lessons: lessonCount('python_advanced', 179),
     rating: 4.8,
     image: '/static/images/python.webp',
     color: '#2563eb',

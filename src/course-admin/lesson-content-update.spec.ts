@@ -6,6 +6,7 @@ import {
   parseCodesArg,
   planContentUpdates,
   selectLessons,
+  ADVANCED_LESSON_MIN,
   type BundleRow,
   type DbLessonRow,
 } from './lesson-content-update';
@@ -63,12 +64,22 @@ describe('selectLessons — trên gói pe-da thật', () => {
     expect(errors.join('\n')).toMatch(/PY99/);
   });
 
-  it('từ chối gói không đủ 172 bài (bản dựng thiếu dồn sort_order)', () => {
+  it('từ chối gói bị CẮT NGẮN xuống dưới sàn', () => {
+    // SÀN, không phải con số chính xác. Hằng này từng là 48 rồi 172, và mỗi
+    // lần khoá dài ra mà quên sửa thì `selectLessons` từ chối MỌI gói — hỏng
+    // theo chiều CHẶN HẾT, đắt hơn hẳn thứ nó canh. Cắt bớt thì đỏ; thêm
+    // module thì không.
     const short = bundle();
-    short.lessons = short.lessons.slice(0, 171);
+    short.lessons = short.lessons.slice(0, ADVANCED_LESSON_MIN - 1);
     const { rows, errors } = selectLessons(short, CODES);
     expect(rows).toEqual([]);
-    expect(errors.join('\n')).toMatch(/171 bài, cần đúng 172/);
+    expect(errors.join('\n')).toMatch(/cần ít nhất/);
+  });
+
+  it('CHO QUA gói DÀI HƠN sàn — thêm module không được chặn đường nạp', () => {
+    const { rows, errors } = selectLessons(bundle(), CODES);
+    expect(errors).toEqual([]);
+    expect(rows.length).toBe(CODES.length);
   });
 
   it('từ chối gói có sort_order lệch dù vẫn đủ 172 bài', () => {

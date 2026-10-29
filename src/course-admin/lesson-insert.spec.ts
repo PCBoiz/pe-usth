@@ -42,36 +42,47 @@ function baiMoi(code: string, sortOrder: number): InsertRow {
   return { ...mau, lesson_code: code, sort_order: sortOrder };
 }
 
-/** DB đang có đúng 172 bài, ô 1..172 — trạng thái thật hôm nay. */
-const DB_172: ExistingLesson[] = REAL.lessons.map((r) => ({
+/**
+ * DB đang có đúng những bài của gói, ô 1..N — trạng thái thật hôm nay.
+ *
+ * Tên biến và các con số bên dưới CỐ Ý suy ra từ gói, không ghi cứng: bản đầu
+ * ghi "DB_172" và dùng mã TH01/TH02 làm bài mới, rồi module 11 lấy đúng hai mã
+ * đó cho bài thật — cả bộ đỏ vì luật "mã đã có trong DB" bắn đúng. Một ca test
+ * mượn mã trông-như-chưa-ai-dùng là một quả mìn hẹn giờ.
+ */
+const DB_THAT: ExistingLesson[] = REAL.lessons.map((r) => ({
   sortOrder: r.sort_order,
   lessonCode: r.lesson_code,
 }));
+/** Ô trống đầu tiên sau bài cuối cùng của gói. */
+const O_MOI = Math.max(...REAL.lessons.map((r) => r.sort_order)) + 1;
+/** Mã KHÔNG có trong gói — dùng tiền tố không thuộc bảng mã nào của giáo trình. */
+const MA_MOI = ['ZZ01', 'ZZ02', 'ZZ03'];
 
 describe('planLessonInserts', () => {
   it('cho tạo bài NỐI TIẾP sau ô lớn nhất', () => {
     const { plan, errors } = planLessonInserts(
-      [baiMoi('TH01', 173), baiMoi('TH02', 174)],
-      DB_172,
+      [baiMoi(MA_MOI[0], O_MOI + 0), baiMoi(MA_MOI[1], O_MOI + 1)],
+      DB_THAT,
     );
     expect(errors).toEqual([]);
-    expect(plan.map((p) => p.code)).toEqual(['TH01', 'TH02']);
-    expect(plan.map((p) => p.sortOrder)).toEqual([173, 174]);
+    expect(plan.map((p) => p.code)).toEqual([MA_MOI[0], MA_MOI[1]]);
+    expect(plan.map((p) => p.sortOrder)).toEqual([O_MOI, O_MOI + 1]);
   });
 
   it('xếp kế hoạch theo ô, dù gói đưa vào lộn xộn', () => {
     // INSERT đi tuần tự thì bản in ra đọc được, và nếu transaction hỏng giữa
     // chừng thì chỗ dừng là một mốc liền mạch chứ không phải một tập rời rạc.
     const { plan } = planLessonInserts(
-      [baiMoi('TH03', 175), baiMoi('TH01', 173), baiMoi('TH02', 174)],
-      DB_172,
+      [baiMoi(MA_MOI[2], O_MOI + 2), baiMoi(MA_MOI[0], O_MOI + 0), baiMoi(MA_MOI[1], O_MOI + 1)],
+      DB_THAT,
     );
-    expect(plan.map((p) => p.sortOrder)).toEqual([173, 174, 175]);
+    expect(plan.map((p) => p.sortOrder)).toEqual([O_MOI, O_MOI + 1, O_MOI + 2]);
   });
 
   // ── Luật 1: mã đã có ⇒ người gọi nhầm script ───────────────────────────────
   it('TỪ CHỐI mã bài đã có trong DB, và chỉ sang đường cập nhật', () => {
-    const { plan, errors } = planLessonInserts([baiMoi('PY01', 173)], DB_172);
+    const { plan, errors } = planLessonInserts([baiMoi('PY01', O_MOI)], DB_THAT);
     expect(plan).toEqual([]);
     expect(errors.join(' ')).toContain('update-lesson-content.ts');
   });
@@ -80,7 +91,7 @@ describe('planLessonInserts', () => {
   it('TỪ CHỐI ô sort_order đã có bài khác, dù mã bài là mã mới', () => {
     // Hai @@unique là hai ràng buộc riêng: một bài mang mã mới mà trùng ô vẫn
     // vỡ. Gộp hai luật này làm một là bỏ sót đúng ca này.
-    const { plan, errors } = planLessonInserts([baiMoi('TH01', 5)], DB_172);
+    const { plan, errors } = planLessonInserts([baiMoi(MA_MOI[0], 5)], DB_THAT);
     expect(plan).toEqual([]);
     expect(errors.join(' ')).toContain('đã có bài khác');
   });
@@ -91,8 +102,8 @@ describe('planLessonInserts', () => {
     // — mọi bài sau nó sẽ phải dịch chỗ, mà `sort_order` không UPDATE tuần tự
     // được (hai @@unique chặn mọi bước trung gian). Dịch chỗ là việc của một
     // script khác; đường này phải thật sự chỉ là INSERT.
-    const thieuO50 = DB_172.filter((r) => r.sortOrder !== 50);
-    const { plan, errors } = planLessonInserts([baiMoi('TH01', 50)], thieuO50);
+    const thieuO50 = DB_THAT.filter((r) => r.sortOrder !== 50);
+    const { plan, errors } = planLessonInserts([baiMoi(MA_MOI[0], 50)], thieuO50);
     expect(plan).toEqual([]);
     expect(errors.join(' ')).toContain('NỐI TIẾP');
   });
@@ -100,25 +111,25 @@ describe('planLessonInserts', () => {
   // ── Luật 4: trùng ngay trong gói ───────────────────────────────────────────
   it('bắt trùng mã và trùng ô NGAY TRONG gói', () => {
     const trungMa = planLessonInserts(
-      [baiMoi('TH01', 173), baiMoi('TH01', 174)],
-      DB_172,
+      [baiMoi(MA_MOI[0], O_MOI + 0), baiMoi(MA_MOI[0], O_MOI + 1)],
+      DB_THAT,
     );
     expect(trungMa.errors.join(' ')).toContain('Trùng mã');
 
     const trungO = planLessonInserts(
-      [baiMoi('TH01', 173), baiMoi('TH02', 173)],
-      DB_172,
+      [baiMoi(MA_MOI[0], O_MOI + 0), baiMoi(MA_MOI[1], O_MOI)],
+      DB_THAT,
     );
     expect(trungO.errors.join(' ')).toContain('Trùng ô');
   });
 
   // ── Luật 5: cửa duy nhất vào DB ────────────────────────────────────────────
   it('TỪ CHỐI nội dung không qua được validateStudioLesson', () => {
-    const hong = baiMoi('TH01', 173);
+    const hong = baiMoi(MA_MOI[0], O_MOI + 0);
     const noiDung = hong.content_json as Record<string, unknown>;
     // `step_4.tests` phải là mảng ca chấm; đưa vào một chuỗi thì schema đỏ.
     (noiDung.step_4 as Record<string, unknown>).tests = 'không phải mảng';
-    const { plan, errors } = planLessonInserts([hong], DB_172);
+    const { plan, errors } = planLessonInserts([hong], DB_THAT);
     expect(plan).toEqual([]);
     expect(errors.length).toBeGreaterThan(0);
   });
@@ -142,11 +153,11 @@ describe('planLessonInserts', () => {
    * hai — nó sẽ lệch), rồi ĐỔI ca này thành `expect(plan).toEqual([])`.
    */
   it('KHIẾM KHUYẾT: loại khối đọc lạ vẫn LỌT qua cửa vào DB', () => {
-    const hong = baiMoi('TH01', 173);
+    const hong = baiMoi(MA_MOI[0], O_MOI + 0);
     const step1 = (hong.content_json as Record<string, unknown>)
       .step_1 as Record<string, unknown>;
     (step1.read as unknown[][])[0] = [{ type: 'loai-khong-co-that' }];
-    const { plan, errors } = planLessonInserts([hong], DB_172);
+    const { plan, errors } = planLessonInserts([hong], DB_THAT);
     expect(errors).toEqual([]);
     expect(plan).toHaveLength(1);
   });
@@ -177,8 +188,8 @@ describe('planLessonInserts', () => {
 
     const baiNhap: InsertRow = {
       ...structuredClone(coCaCham),
-      lesson_code: 'TH01',
-      sort_order: 173,
+      lesson_code: MA_MOI[0],
+      sort_order: O_MOI,
     };
     const noiDung = baiNhap.content_json as Record<string, unknown>;
     const mcq = (noiDung.step_2 as Record<string, unknown>).mcq;
@@ -187,15 +198,15 @@ describe('planLessonInserts', () => {
     noiDung.step_1 = { memory: { title: 'Nhớ', items: ['f-string'] } };
     expect(Array.isArray(mcq) && mcq.length).toBeTruthy();
 
-    const { plan, errors } = planLessonInserts([baiNhap], DB_172);
+    const { plan, errors } = planLessonInserts([baiNhap], DB_THAT);
     expect(errors).toEqual([]);
     expect(plan).toHaveLength(1);
   });
 
   it('TỪ CHỐI bài không dựng ra màn nào', () => {
-    const rong = baiMoi('TH01', 173);
+    const rong = baiMoi(MA_MOI[0], O_MOI + 0);
     rong.content_json = { step_4: { task: 'còn mỗi đề bài' } };
-    const { plan, errors } = planLessonInserts([rong], DB_172);
+    const { plan, errors } = planLessonInserts([rong], DB_THAT);
     expect(plan).toEqual([]);
     expect(errors.join(' ')).toContain('dựng dở');
   });
@@ -243,7 +254,7 @@ describe('planLessonInserts', () => {
   });
 
   it('TỪ CHỐI gói rỗng', () => {
-    const { errors } = planLessonInserts([], DB_172);
+    const { errors } = planLessonInserts([], DB_THAT);
     expect(errors.join(' ')).toContain('Chưa chọn bài nào');
   });
 
@@ -252,7 +263,7 @@ describe('planLessonInserts', () => {
     // đang phục vụ người học. Gom hết là quyết định, không phải tiện tay.
     const { errors } = planLessonInserts(
       [baiMoi('PY01', 5), baiMoi('PY02', 6)],
-      DB_172,
+      DB_THAT,
     );
     expect(errors.length).toBeGreaterThanOrEqual(4);
   });

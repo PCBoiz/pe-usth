@@ -48,12 +48,12 @@ function durationCuaKhoa() {
 }
 
 test('mọi bài đều khai thời lượng — tổng không bị hụt một bài nào', () => {
-  assert.equal(phut.length, 172);
+  assert.equal(phut.length, 179);
   const thieu = phut.filter((m) => typeof m !== 'number' || !(m > 0));
   assert.deepEqual(thieu, [], 'có bài không khai estimated_minutes — tổng sẽ thấp hơn thật');
 });
 
-test('thời lượng quảng cáo khớp tổng thời lượng 172 bài', () => {
+test('thời lượng quảng cáo khớp tổng thời lượng 179 bài', () => {
   const tongGio = phut.reduce((s, m) => s + m, 0) / 60;
   const ghi = durationCuaKhoa();
   const so = Number(ghi.replace(/[^\d.,]/g, '').replace(',', '.'));
@@ -61,5 +61,5 @@ test('thời lượng quảng cáo khớp tổng thời lượng 172 bài', () =
   // Chuỗi là con số làm tròn ("~31 giờ" cho 30,6) nên cho lệch tối đa 1 giờ — đủ chặn
   // "~48 giờ" (lệch 19 giờ) mà không bắt bẻ chuyện làm tròn.
   assert.ok(Math.abs(so - tongGio) <= 1,
-    `catalog ghi "${ghi}" nhưng 172 bài cộng lại là ${tongGio.toFixed(1)} giờ`);
+    `catalog ghi "${ghi}" nhưng 179 bài cộng lại là ${tongGio.toFixed(1)} giờ`);
 });

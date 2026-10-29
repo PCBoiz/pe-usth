@@ -1,11 +1,11 @@
 /**
- * Đoạn code của câu trắc nghiệm — 214/516 câu đang phát đã MẤT nó.
+ * Đoạn code của câu trắc nghiệm — 219/537 câu đang phát đã MẤT nó.
  *
  * Lỗi thật, đo trên bản dựng 27/10 và đã sửa 28/10. 471/1032 câu của gói nguồn
  * mang một trường `code` RIÊNG, và đề bài của chúng không tự đứng được.
  * `cau_trac_nghiem()` bỏ trường đó, nên:
  *
- *   · **214/516 câu** đang phát mất đoạn code quyết định đáp án;
+ *   · **219/537 câu** đang phát mất đoạn code quyết định đáp án;
  *   · **90 câu ở 45 bài** thì đề bài CÒN TRỎ TỚI nó, nên không trả lời được —
  *     nguyên văn PY01, bài ĐẦU TIÊN của khoá: "Buổi sáng bán 10 cốc, chiều bán
  *     7 cốc. Kết quả ở lệnh print cuối có giá trị nào?" và không có lệnh print
@@ -97,7 +97,7 @@ const boQua = { skip: coDung ? false : 'chưa dựng — chạy `py scripts/pe-d
 
 const cauCua = (b) => (b.content_json?.step_2?.mcq ?? []);
 
-test('bản dựng: 214/516 câu mang đoạn code, và mọi đoạn tách lại được', boQua, () => {
+test('bản dựng: 219/537 câu mang đoạn code, và mọi đoạn tách lại được', boQua, () => {
   let tong = 0;
   let coCode = 0;
   for (const b of bai) {
@@ -110,8 +110,8 @@ test('bản dựng: 214/516 câu mang đoạn code, và mọi đoạn tách lạ
       assert.ok(!code.startsWith('\n'), `${b.lesson_code}: code còn dòng trống đầu`);
     }
   }
-  assert.equal(tong, 516);
-  assert.equal(coCode, 214);
+  assert.equal(tong, 537);
+  assert.equal(coCode, 219);
 });
 
 test('bản dựng: KHÔNG bài nào có hai câu trùng nguyên văn', boQua, () => {

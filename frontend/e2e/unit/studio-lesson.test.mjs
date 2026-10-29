@@ -811,7 +811,7 @@ const py02 = daBy('PY02'); // có khối terminal
 const daBlocks = DA.flatMap(([, l]) => (l.step_1?.read ?? []).flat());
 
 test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/PracticeItem', () => {
-  assert.equal(DA.length, 172);
+  assert.equal(DA.length, 179);
   for (const [code, l] of DA) {
     assert.equal(l.schema, 'studio-lesson/v2', code);
     // Bộ này KHÔNG có trắc nghiệm: lối vào quiz ôn tập vì vậy không bao giờ mở
@@ -905,12 +905,15 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
   // chấm vừa khai `dataFiles`, thứ mà cổng cấm cũ của build.py/check.py không
   // cho phép (gỡ được vì `check-practice.mjs` nay nạp file từ đĩa). Mọi loại
   // khối khác không nhúc nhích.
+  // 30/10/2026: +7 bài của module 11 (TH01-TH07, thực hành trên bộ CC0 thật).
+  // Mỗi bài một màn đọc: 4-5 đoạn + 1 khối code đọc file. table 1 -> 2 là bảng
+  // mô tả cột của bộ dữ liệu ở TH01.
   assert.deepEqual(count, {
-    paragraph: 775,
-    code: 501,
+    paragraph: 811,
+    code: 508,
     terminal: 17,
     figure: 80,
-    table: 1,
+    table: 2,
     diagram: 1,
   });
   // Câu luyện tập là câu MỞ kèm lời giải mẫu — không có phương án sai nào để

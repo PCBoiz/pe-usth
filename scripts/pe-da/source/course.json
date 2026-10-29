@@ -234,6 +234,19 @@
         "RD04",
         "RD05"
       ]
+    },
+    {
+      "id": "thuc-hanh",
+      "title": "Thực hành trên số liệu thật của một quán khác",
+      "ids": [
+        "TH01",
+        "TH02",
+        "TH03",
+        "TH04",
+        "TH05",
+        "TH06",
+        "TH07"
+      ]
     }
   ],
   "lessons": [
@@ -15932,6 +15945,441 @@
       "sourcePages": [],
       "provenance": "Bài biên soạn bổ sung sau kiểm toán học phần Python Data Analyst. Dữ liệu nhỏ dùng để giải thích và tự đối chiếu, không phải kết quả khảo sát thật.",
       "strand": "data-viz-review"
+    },
+    {
+      "id": "TH01",
+      "title": "Nhận bảng bán hàng của một quán khác",
+      "level": "Trung cấp",
+      "before": [
+        "RD05",
+        "PD32"
+      ],
+      "topics": [
+        "data intake",
+        "license CC0",
+        "row grain",
+        "currency unit unknown"
+      ],
+      "sourceInventoryIds": [],
+      "reading": [
+        {
+          "type": "paragraph",
+          "text": "Ở bài trước bạn vẫn tính trên bảng do chính quán mình sinh ra. Bài này đổi chỗ đứng. Bạn nhận một bảng bán hàng của một quán cà phê khác, 2 623 dòng, tên cột tiếng Anh. Và bạn không gặp được người đã đo nó."
+        },
+        {
+          "type": "paragraph",
+          "text": "Câu hỏi đầu tiên là giấy phép. Bảng này phát hành theo CC0 1.0, tức tác giả đã bỏ mọi quyền. Bạn được dùng, sửa và phát hành lại mà không cần ghi công. Bản trong khoá học vẫn bỏ cột mã thẻ của bản gốc. Một mã thẻ xuất hiện 122 lần là hồ sơ hành vi của một người thật, mà bảng này đi tới trình duyệt người học."
+        },
+        {
+          "type": "paragraph",
+          "text": "Câu hỏi thứ hai là mỗi dòng nói về cái gì. Ở đây một dòng là một lượt mua một món. Cột `datetime` ghi tới phần nghìn giây, nên hai dòng cùng ngày vẫn là hai lượt mua khác nhau."
+        },
+        {
+          "type": "paragraph",
+          "text": "Câu hỏi thứ ba là đơn vị. Cột `money` chạy từ 18,12 đến 40,00 và không tài liệu nào nói đó là tiền gì. Bài PD32 đã dặn một câu dùng được ngay đây. Khi giao báo cáo, ghi đơn vị tiền. Bạn chưa ghi được, nên chỗ đơn vị mang chữ `không xác định`."
+        },
+        {
+          "type": "paragraph",
+          "text": "Đừng quy đổi sang đồng. Quy đổi từ một đơn vị chưa biết là bịa ra một con số mới rồi đưa cho người khác đọc."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Cột",
+            "Dạng",
+            "Biết gì về nó"
+          ],
+          "rows": [
+            [
+              "date",
+              "chữ `YYYY-MM-DD`",
+              "ngày mua, 294 ngày khác nhau"
+            ],
+            [
+              "datetime",
+              "chữ tới phần nghìn giây",
+              "mốc mua, dùng để tách giờ"
+            ],
+            [
+              "cash_type",
+              "chữ",
+              "chỉ hai giá trị: `card` và `cash`"
+            ],
+            [
+              "money",
+              "số thực",
+              "tiền một lượt mua, ĐƠN VỊ CHƯA BIẾT"
+            ],
+            [
+              "coffee_name",
+              "chữ",
+              "tên món, 8 món khác nhau"
+            ]
+          ]
+        }
+      ],
+      "drills": [
+        {
+          "prompt": "Viết ra ba câu phải trả lời trước khi tính bất cứ thứ gì trên bảng của người khác.",
+          "answer": "Giấy phép cho dùng tới đâu; mỗi dòng là cái gì; mỗi con số mang đơn vị gì."
+        },
+        {
+          "prompt": "Bảng có 294 ngày khác nhau trong mười tháng. Điều đó nói gì về những ngày còn lại?",
+          "answer": "Có ngày không có lượt mua nào trong bảng. Nên đừng chia tổng cho số ngày của cả khoảng rồi gọi đó là trung bình mỗi ngày."
+        }
+      ],
+      "sources": [
+        {
+          "title": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0",
+          "url": "https://huggingface.co/datasets/tablegpt/CoffeeSales"
+        },
+        {
+          "title": "NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền",
+          "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+        }
+      ],
+      "sourcePages": [],
+      "provenance": "Bài thực hành biên soạn riêng cho module 11, KHÔNG có trong slide USTH. Số liệu là bộ CC0 1.0 tablegpt/CoffeeSales đã chép vào repo; mọi con số trong bài đo bằng pandas trên chính file đó, xem NOTICE.md cạnh file.",
+      "reviewExercises": [],
+      "strand": "thuc-hanh"
+    },
+    {
+      "id": "TH02",
+      "title": "Doanh thu từng món, và hai bảng xếp hạng khác nhau",
+      "level": "Trung cấp",
+      "before": [
+        "TH01"
+      ],
+      "topics": [
+        "groupby sum",
+        "count vs revenue",
+        "reconciliation"
+      ],
+      "sourceInventoryIds": [],
+      "reading": [
+        {
+          "type": "paragraph",
+          "text": "Ở bài trước bạn đếm được bảng có 8 món. Câu hỏi kế tiếp của bất kỳ quán cà phê nào là món nào mang về nhiều tiền nhất."
+        },
+        {
+          "type": "paragraph",
+          "text": "Số lượt mua và doanh thu là hai bảng xếp hạng khác nhau, và ở bảng này chúng khác nhau thật. Món đứng đầu về số lượt không đứng đầu về tiền, vì mỗi lượt của hai món mang số tiền khác nhau."
+        },
+        {
+          "type": "paragraph",
+          "text": "Phép tính là gom theo tên món rồi cộng cột tiền. Mỗi nhóm cho một con số, và tổng của tám nhóm phải bằng tổng cả bảng."
+        },
+        {
+          "type": "paragraph",
+          "text": "Làm tròn tới hai chữ số thập phân khi trình bày. Và nhớ rằng con số đó vẫn chưa có đơn vị."
+        }
+      ],
+      "drills": [
+        {
+          "prompt": "Món nào đứng đầu về số lượt mà không đứng đầu về doanh thu?",
+          "answer": "`Americano with Milk` — 621 lượt, nhưng doanh thu 19 004,54 so với 22 001,66 của `Latte`."
+        },
+        {
+          "prompt": "Vì sao phải cộng lại tổng của tám nhóm sau khi gom?",
+          "answer": "Để biết phép gom không bỏ sót dòng nào. Tổng tám nhóm phải ra đúng 83 646,10 của cả bảng."
+        }
+      ],
+      "sources": [
+        {
+          "title": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0",
+          "url": "https://huggingface.co/datasets/tablegpt/CoffeeSales"
+        },
+        {
+          "title": "NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền",
+          "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+        }
+      ],
+      "sourcePages": [],
+      "provenance": "Bài thực hành biên soạn riêng cho module 11, KHÔNG có trong slide USTH. Số liệu là bộ CC0 1.0 tablegpt/CoffeeSales đã chép vào repo; mọi con số trong bài đo bằng pandas trên chính file đó, xem NOTICE.md cạnh file.",
+      "reviewExercises": [],
+      "strand": "thuc-hanh"
+    },
+    {
+      "id": "TH03",
+      "title": "Giờ cao điểm, và chuyện hai giờ bằng nhau",
+      "level": "Trung cấp",
+      "before": [
+        "TH02"
+      ],
+      "topics": [
+        "datetime hour",
+        "value_counts",
+        "ties in argmax"
+      ],
+      "sourceInventoryIds": [],
+      "reading": [
+        {
+          "type": "paragraph",
+          "text": "Bài trước xếp món theo tiền. Bài này hỏi về thời gian trong ngày. Giờ nào quán bán được nhiều lượt nhất."
+        },
+        {
+          "type": "paragraph",
+          "text": "Giờ nằm trong cột `datetime`, không nằm trong cột `date`. Phải đổi cột đó sang mốc thời gian rồi lấy phần giờ ra."
+        },
+        {
+          "type": "paragraph",
+          "text": "Và giờ cao điểm không chắc là một giờ. Với món `Espresso`, hai giờ khác nhau cùng đạt 13 lượt. Một hàm trả về đúng một con số sẽ phải chọn bừa một trong hai, nên bài này trả về cả danh sách giờ."
+        },
+        {
+          "type": "paragraph",
+          "text": "Chọn bừa cũng là một quyết định. Chỉ khác là nó không được ghi ở đâu, nên người đọc báo cáo không biết nó đã xảy ra."
+        }
+      ],
+      "drills": [
+        {
+          "prompt": "Vì sao không lấy giờ từ cột `date`?",
+          "answer": "Cột `date` chỉ có ngày. Giờ nằm trong cột `datetime`."
+        },
+        {
+          "prompt": "Bài này trả về danh sách giờ thay vì một giờ. Vì sao?",
+          "answer": "Vì hai giờ có thể cùng đạt số lượt cao nhất, như `Espresso` ở 11 giờ và 12 giờ."
+        }
+      ],
+      "sources": [
+        {
+          "title": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0",
+          "url": "https://huggingface.co/datasets/tablegpt/CoffeeSales"
+        },
+        {
+          "title": "NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền",
+          "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+        }
+      ],
+      "sourcePages": [],
+      "provenance": "Bài thực hành biên soạn riêng cho module 11, KHÔNG có trong slide USTH. Số liệu là bộ CC0 1.0 tablegpt/CoffeeSales đã chép vào repo; mọi con số trong bài đo bằng pandas trên chính file đó, xem NOTICE.md cạnh file.",
+      "reviewExercises": [],
+      "strand": "thuc-hanh"
+    },
+    {
+      "id": "TH04",
+      "title": "Tiền mặt và thẻ: một tỉ lệ dựng trên năm lượt",
+      "level": "Trung cấp",
+      "before": [
+        "TH03"
+      ],
+      "topics": [
+        "pivot_table size",
+        "rate with denominator",
+        "small sample"
+      ],
+      "sourceInventoryIds": [],
+      "reading": [
+        {
+          "type": "paragraph",
+          "text": "Bài trước đếm theo giờ. Bảng còn một cột chưa dùng. Cột `cash_type` nói mỗi lượt mua trả bằng thẻ hay tiền mặt."
+        },
+        {
+          "type": "paragraph",
+          "text": "Trên cả bảng, thẻ chiếm 2 534 lượt và tiền mặt 89 lượt. Một tỉ lệ dựng trên 89 lượt đã mỏng. Chia tiếp theo món thì có món chỉ còn năm lượt tiền mặt."
+        },
+        {
+          "type": "paragraph",
+          "text": "Phần trăm vẫn tính được, nhưng phải viết kèm mẫu số. Con số 5,2% của `Espresso` là 5 trên 97 lượt. Thêm một lượt nữa thì nó thành 6,1%, tức đổi gần một điểm."
+        },
+        {
+          "type": "paragraph",
+          "text": "Nên mỗi tỉ lệ trong báo cáo đi cùng số lượt dựng ra nó. Người đọc thấy mẫu số là họ tự biết tin tới đâu."
+        }
+      ],
+      "drills": [
+        {
+          "prompt": "Tỉ lệ tiền mặt của `Espresso` là 5,2%. Thêm một lượt tiền mặt nữa thì tỉ lệ thành bao nhiêu?",
+          "answer": "6 trên 98 lượt, tức 6,1%. Một lượt làm con số đổi gần một điểm."
+        },
+        {
+          "prompt": "Vì sao không kết luận \"khách quán này không thích tiền mặt\"?",
+          "answer": "Bảng chỉ nói cách trả của 2 623 lượt mua ở một quán trong mười tháng. Nó không nói vì sao người ta trả như vậy."
+        }
+      ],
+      "sources": [
+        {
+          "title": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0",
+          "url": "https://huggingface.co/datasets/tablegpt/CoffeeSales"
+        },
+        {
+          "title": "NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền",
+          "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+        }
+      ],
+      "sourcePages": [],
+      "provenance": "Bài thực hành biên soạn riêng cho module 11, KHÔNG có trong slide USTH. Số liệu là bộ CC0 1.0 tablegpt/CoffeeSales đã chép vào repo; mọi con số trong bài đo bằng pandas trên chính file đó, xem NOTICE.md cạnh file.",
+      "reviewExercises": [],
+      "strand": "thuc-hanh"
+    },
+    {
+      "id": "TH05",
+      "title": "Báo cáo theo tháng, kèm dòng ghi đơn vị",
+      "level": "Nâng cao",
+      "before": [
+        "TH04",
+        "PD32"
+      ],
+      "topics": [
+        "monthly report",
+        "currency unit disclosure",
+        "handoff"
+      ],
+      "sourceInventoryIds": [],
+      "reading": [
+        {
+          "type": "paragraph",
+          "text": "Ở bài PD32 bạn đã dựng một báo cáo đối chiếu được. Bài này làm lại đúng việc đó trên số liệu của một quán cà phê khác. Chỗ khác duy nhất là dòng ghi đơn vị."
+        },
+        {
+          "type": "paragraph",
+          "text": "Mốc thời gian của bảng chạy từ tháng 3 tới tháng 12 năm 2024. Gom theo tháng thì mỗi tháng cho hai con số. Số lượt mua, và tổng tiền của tháng đó."
+        },
+        {
+          "type": "paragraph",
+          "text": "Báo cáo phải nói ra điều mình chưa biết. Đơn vị tiền chưa xác định, nên mỗi dòng mang thêm chữ `không xác định` thay cho một ký hiệu tiền đoán ra."
+        },
+        {
+          "type": "paragraph",
+          "text": "Người nhận báo cáo sẽ hỏi đúng câu đó trước mọi câu khác. Trả lời sẵn thì họ tin phần còn lại."
+        }
+      ],
+      "drills": [
+        {
+          "prompt": "Báo cáo của bạn ghi gì ở chỗ đơn vị tiền?",
+          "answer": "Chữ `không xác định`, kèm một câu nói bạn đã đi hỏi người cấp số liệu."
+        },
+        {
+          "prompt": "Tháng 10 có 426 lượt và tổng 13 891,16. Vì sao không viết \"doanh thu tháng 10 là 13 891,16 đồng\"?",
+          "answer": "Vì đơn vị chưa biết. Thêm chữ \"đồng\" là bịa ra một con số mới rồi đưa cho người khác dùng."
+        }
+      ],
+      "sources": [
+        {
+          "title": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0",
+          "url": "https://huggingface.co/datasets/tablegpt/CoffeeSales"
+        },
+        {
+          "title": "NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền",
+          "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+        }
+      ],
+      "sourcePages": [],
+      "provenance": "Bài thực hành biên soạn riêng cho module 11, KHÔNG có trong slide USTH. Số liệu là bộ CC0 1.0 tablegpt/CoffeeSales đã chép vào repo; mọi con số trong bài đo bằng pandas trên chính file đó, xem NOTICE.md cạnh file.",
+      "reviewExercises": [],
+      "strand": "thuc-hanh"
+    },
+    {
+      "id": "TH06",
+      "title": "Đối chiếu: tổng các nhóm phải bằng tổng cả bảng",
+      "level": "Nâng cao",
+      "before": [
+        "TH05",
+        "PD30"
+      ],
+      "topics": [
+        "reconciliation",
+        "groupby invariant",
+        "idxmax"
+      ],
+      "sourceInventoryIds": [],
+      "reading": [
+        {
+          "type": "paragraph",
+          "text": "Bài trước gom theo tháng. Phép gom nào cũng cần một lượt đối chiếu. Cộng các nhóm lại phải ra đúng tổng cả bảng."
+        },
+        {
+          "type": "paragraph",
+          "text": "Lệch xảy ra khi khoá gom có ô trống. Hoặc khi một phép nối nhân số dòng lên. Hoặc khi bạn lọc mất vài dòng mà không nhận ra."
+        },
+        {
+          "type": "paragraph",
+          "text": "Bảng này không có ô trống nào, nên lệch phải bằng 0 ở mọi cột. Một phép kiểm chỉ đáng tin khi nó cho cùng câu trả lời trên cột nào cũng vậy."
+        },
+        {
+          "type": "paragraph",
+          "text": "Kèm theo tên nhóm lớn nhất thì báo cáo trả lời luôn câu kế tiếp của người đọc. Quán cà phê này bán chạy nhất món nào. Nhưng nhóm lớn nhất của cột ngày chỉ là một ngày trong 294 ngày, nên nó không nói được xu hướng."
+        }
+      ],
+      "drills": [
+        {
+          "prompt": "Lệch của cả ba cột đều bằng 0. Phép kiểm đó có vô ích không?",
+          "answer": "Không. Nó là điều kiện cần, và ngày một phép nối nhân số dòng lên thì chính nó là chỗ đỏ đầu tiên."
+        },
+        {
+          "prompt": "Nhóm lớn nhất của cột `date` là ngày 2024-10-11. Báo cáo nên nói thêm gì về con số này?",
+          "answer": "Đó là một ngày trong 294 ngày. Một ngày cao nhất không nói lên xu hướng của mười tháng."
+        }
+      ],
+      "sources": [
+        {
+          "title": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0",
+          "url": "https://huggingface.co/datasets/tablegpt/CoffeeSales"
+        },
+        {
+          "title": "NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền",
+          "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+        }
+      ],
+      "sourcePages": [],
+      "provenance": "Bài thực hành biên soạn riêng cho module 11, KHÔNG có trong slide USTH. Số liệu là bộ CC0 1.0 tablegpt/CoffeeSales đã chép vào repo; mọi con số trong bài đo bằng pandas trên chính file đó, xem NOTICE.md cạnh file.",
+      "reviewExercises": [],
+      "strand": "thuc-hanh"
+    },
+    {
+      "id": "TH07",
+      "title": "Dự án cuối khoá: một trang báo cáo về bảng này",
+      "level": "Nâng cao",
+      "before": [
+        "TH06"
+      ],
+      "topics": [
+        "capstone",
+        "open project",
+        "stated limitations"
+      ],
+      "sourceInventoryIds": [],
+      "reading": [
+        {
+          "type": "paragraph",
+          "text": "Mười chặng trước đã cho bạn đủ công cụ, và ở bài trước bạn vừa đối chiếu xong một phép gom. Bài này không có ca chấm nào. Bạn tự chọn câu hỏi và tự bảo vệ câu trả lời."
+        },
+        {
+          "type": "paragraph",
+          "text": "Yêu cầu tối thiểu có bốn phần. Một dòng nói bảng ở đâu ra và mang giấy phép gì. Một bảng doanh thu theo tháng của quán cà phê đó. Một biểu đồ. Một đoạn ghi rõ những câu bảng này KHÔNG trả lời được."
+        },
+        {
+          "type": "paragraph",
+          "text": "Phần cuối khó nhất và cũng đáng giá nhất. Bảng không có mã khách, nên nó không đếm được một người quay lại bao nhiêu lần. Bảng không có giá niêm yết, nên nó không tách được giảm giá khỏi giá gốc. Và đơn vị tiền chưa biết, nên mọi câu so với chi phí đều chưa làm được."
+        },
+        {
+          "type": "paragraph",
+          "text": "Đặt đoạn giới hạn ngay cạnh kết luận, đừng đẩy xuống cuối trang."
+        }
+      ],
+      "drills": [
+        {
+          "prompt": "Liệt kê ba câu bảng này không trả lời được.",
+          "answer": "Một người quay lại bao nhiêu lần (không có mã khách); giá niêm yết và giảm giá (không có cột giá); mọi câu so với chi phí (đơn vị tiền chưa biết)."
+        },
+        {
+          "prompt": "Dự án của bạn kết thúc bằng phần nào?",
+          "answer": "Phần ghi giới hạn của dữ liệu, đặt ngay cạnh kết luận chứ không đẩy xuống phụ lục."
+        }
+      ],
+      "sources": [
+        {
+          "title": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0",
+          "url": "https://huggingface.co/datasets/tablegpt/CoffeeSales"
+        },
+        {
+          "title": "NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền",
+          "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+        }
+      ],
+      "sourcePages": [],
+      "provenance": "Bài thực hành biên soạn riêng cho module 11, KHÔNG có trong slide USTH. Số liệu là bộ CC0 1.0 tablegpt/CoffeeSales đã chép vào repo; mọi con số trong bài đo bằng pandas trên chính file đó, xem NOTICE.md cạnh file.",
+      "reviewExercises": [],
+      "strand": "thuc-hanh"
     }
   ],
   "unresolvedPrerequisites": []

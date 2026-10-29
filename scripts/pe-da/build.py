@@ -95,13 +95,17 @@ DU_LIEU_URL = '/static/da-dulieu/'
 # Khớp TEN_DU_LIEU của worker và DU_LIEU_HOP_LE của studio-lesson.schema.ts.
 TEN_FILE_DU_LIEU = re.compile(r'^[a-z0-9_-]+\.csv$')
 
-# Khối đọc file dữ liệu, PHÁT TỪ BUILD — hôm nay đúng MỘT bài.
+# Khối đọc file dữ liệu, PHÁT TỪ BUILD — hôm nay 9 bài (2 bài PD + cả module 11).
 #
 # Vì sao bảng nằm ở đây và không thành trường mới trong `source/course.json`:
 # cùng lý lẽ đã viết cho SO_DO_DOC bên dưới — gói nội dung còn được giao lại
-# nhiều lần, và đây là PHÉP THỬ cho cơ chế nạp file, không phải một đặc tả.
-# Ngày module thực hành (module 11) cần bộ dữ liệu này cho cả chục bài thì
-# chuyển khai báo sang gói nguồn, đừng nuôi bảng này thành danh bạ.
+# nhiều lần, và khai báo file là chuyện của NỀN TẢNG (file nào có trên đĩa, có
+# được phục vụ không), không phải của người soạn nội dung.
+#
+# ⚠️ NGƯỠNG ĐÃ NÓI RA: 9 mục là chỗ bảng này bắt đầu thành danh bạ. Module 11
+# (TH01–TH07) là module THỰC HÀNH, nên MỌI bài của nó đọc file thật — đó là lý
+# do nó tồn tại. Thêm một module như vậy nữa thì chuyển khai báo sang gói nguồn
+# (`lessons[].dataFiles` + khối đọc trong `reading`) chứ đừng thêm vào đây.
 #
 # PD13 là bài đầu tiên, và nó được chọn vì `step_4` của nó vẫn là ô "Chạy thử":
 # bài nào có BÀI TẬP ĐƯỢC CHẤM thì `step_4` là bài tập đó, nên mã bài đọc không
@@ -175,6 +179,200 @@ KHOI_DU_LIEU: dict[str, dict] = {
             "True\n"
             "['Latte', 'Bạc xỉu', 'Latte', 'Trà đào cam sả']\n"
             "161000"
+        ),
+    },
+    # ----------------------------------------------------------------------
+    # MODULE 11 — TH01…TH07, module THỰC HÀNH trên bộ CC0.
+    #
+    # Cả bảy bài khai `coffee-sales-cc0.csv`, và đó không phải sự tiện tay: bộ
+    # 172 bài trước đó KHÔNG có một bài tập nào ĐỌC file dữ liệu, nên pha 1 của
+    # `check-practice.mjs` chưa bao giờ chứng minh được cơ chế nạp file chạy —
+    # bỏ tham số `files` đi thì 415 ca vẫn xanh (đo được, xem SCHEMA.md). Sáu
+    # bài tập của module này đọc file THẬT và chấm bằng số tính ra từ chính nó,
+    # nên từ đây pha 1 đỏ khi cơ chế hỏng.
+    #
+    # Mỗi bài có ĐÚNG MỘT khối code, và nó là khối dữ liệu dưới đây. Hệ quả có
+    # chủ đích, không phải sự lười: khối dữ liệu nằm ngoài diện ghi vết (xem
+    # `bo_qua` của `vet_cua_bai`), nên module 11 không cần `traces.json` —
+    # `gen_traces.py` chạy bằng CPython trong một thư mục tạm KHÔNG có file dữ
+    # liệu nào, nên mọi vết của nó sẽ là FileNotFoundError.
+    #
+    # `expected` của cả bảy khối ĐO BẰNG `node scripts/pe-da/check-pyodide.mjs`
+    # trên chính Pyodide trong repo. Đừng sửa bằng tay.
+    'TH01': {
+        'files': ['coffee-sales-cc0.csv'],
+        'paragraph':
+            'File thật nằm sẵn trong thư mục của bài này, tên trơn, không cần '
+            'đường dẫn. Ô dưới đếm đúng ba thứ vừa nói: bảng có mấy dòng mấy '
+            'cột, tên năm cột là gì, và mỗi cột có bao nhiêu giá trị khác '
+            'nhau. Dòng cuối in khoảng của cột tiền kèm chữ nói thẳng là chưa '
+            'biết đơn vị.',
+        'code': (
+            "import pandas as pd\n"
+            "\n"
+            "ban = pd.read_csv('coffee-sales-cc0.csv')\n"
+            "print(ban.shape)\n"
+            "print(list(ban.columns))\n"
+            "print(ban['coffee_name'].nunique(), ban['cash_type'].nunique(),\n"
+            "      ban['date'].nunique())\n"
+            "print(ban['money'].min(), ban['money'].max(), 'đơn vị: chưa xác định')\n"
+        ),
+        'expected': (
+            "(2623, 5)\n"
+            "['date', 'datetime', 'cash_type', 'money', 'coffee_name']\n"
+            "8 2 294\n"
+            "18.12 40.0 đơn vị: chưa xác định"
+        ),
+    },
+    'TH02': {
+        'files': ['coffee-sales-cc0.csv'],
+        'paragraph':
+            'Ô dưới xếp hạng hai lần trên cùng một bảng. Lần đầu theo tiền, '
+            'lần sau theo số lượt. Hai bảng xếp hạng đổi chỗ nhau ở hai hạng '
+            'đầu, và dòng cuối là phép đối chiếu: tổng tám nhóm phải bằng tổng '
+            'cả bảng.',
+        'code': (
+            "import pandas as pd\n"
+            "\n"
+            "ban = pd.read_csv('coffee-sales-cc0.csv')\n"
+            "theo_mon = ban.groupby('coffee_name')['money'].sum().round(2)\n"
+            "print(theo_mon.sort_values(ascending=False).head(3).to_dict())\n"
+            "print(ban['coffee_name'].value_counts().head(3).to_dict())\n"
+            "print(round(float(theo_mon.sum()), 2))\n"
+        ),
+        'expected': (
+            "{'Latte': 22001.66, 'Americano with Milk': 19004.54, "
+            "'Cappuccino': 13278.06}\n"
+            "{'Americano with Milk': 621, 'Latte': 618, 'Cappuccino': 368}\n"
+            "83646.1"
+        ),
+    },
+    'TH03': {
+        'files': ['coffee-sales-cc0.csv'],
+        'paragraph':
+            'Ô dưới tách giờ ra khỏi cột mốc thời gian rồi đếm theo giờ. Dòng '
+            'thứ hai là món `Espresso`: hai giờ cùng đạt 13 lượt, nên đáp án '
+            'là một danh sách chứ không phải một con số. Dòng thứ ba lấy một '
+            'đỉnh duy nhất của cả bảng, và nó im lặng về chuyện có thể có đỉnh '
+            'thứ hai.',
+        'code': (
+            "import pandas as pd\n"
+            "\n"
+            "ban = pd.read_csv('coffee-sales-cc0.csv')\n"
+            "ban['gio'] = pd.to_datetime(ban['datetime']).dt.hour\n"
+            "print(ban['gio'].value_counts().sort_index().head(4).to_dict())\n"
+            "dem = ban[ban['coffee_name'] == 'Espresso']['gio'].value_counts()\n"
+            "print(sorted(int(g) for g in dem[dem == dem.max()].index), int(dem.max()))\n"
+            "print(int(ban['gio'].value_counts().idxmax()),\n"
+            "      int(ban['gio'].value_counts().max()))\n"
+        ),
+        'expected': (
+            "{7: 65, 8: 174, 9: 169, 10: 261}\n"
+            "[11, 12] 13\n"
+            "10 261"
+        ),
+    },
+    'TH04': {
+        'files': ['coffee-sales-cc0.csv'],
+        'paragraph':
+            'Ô dưới đếm theo kiểu thanh toán, rồi chia tiếp theo món. Dòng thứ '
+            'hai cho thấy mẫu số thật của món `Espresso`: 5 lượt tiền mặt trên '
+            '97. Dòng thứ ba là tỉ lệ, và nó đứng một mình thì không ai biết nó '
+            'dựng trên 5 lượt.',
+        'code': (
+            "import pandas as pd\n"
+            "\n"
+            "ban = pd.read_csv('coffee-sales-cc0.csv')\n"
+            "print(ban['cash_type'].value_counts().to_dict())\n"
+            "bang = ban.pivot_table(index='coffee_name', columns='cash_type',\n"
+            "                       values='money', aggfunc='size', fill_value=0)\n"
+            "print(bang.loc['Espresso'].to_dict())\n"
+            "print(round(100 * bang.loc['Espresso', 'cash']\n"
+            "            / bang.loc['Espresso'].sum(), 1))\n"
+        ),
+        'expected': (
+            "{'card': 2534, 'cash': 89}\n"
+            "{'card': 92, 'cash': 5}\n"
+            "5.2"
+        ),
+    },
+    'TH05': {
+        'files': ['coffee-sales-cc0.csv'],
+        'paragraph':
+            'Ô dưới dựng đúng bảng mà PD32 đã dạy, chỉ đổi nguồn số liệu. Dòng '
+            'thứ hai đối chiếu: số lượt và tổng tiền của mười tháng phải bằng '
+            'số lượt và tổng tiền của cả bảng. Dòng thứ ba là phần không ai '
+            'được bỏ khi giao báo cáo.',
+        'code': (
+            "import pandas as pd\n"
+            "\n"
+            "ban = pd.read_csv('coffee-sales-cc0.csv')\n"
+            "ban['thang'] = pd.to_datetime(ban['datetime']).dt.strftime('%Y-%m')\n"
+            "bao_cao = ban.groupby('thang').agg(so_don=('money', 'size'),\n"
+            "                                   tong_tien=('money', 'sum'))\n"
+            "bao_cao['tong_tien'] = bao_cao['tong_tien'].round(2)\n"
+            "print(int(bao_cao.loc['2024-10', 'so_don']),\n"
+            "      float(bao_cao.loc['2024-10', 'tong_tien']))\n"
+            "print(int(bao_cao['so_don'].sum()),\n"
+            "      round(float(bao_cao['tong_tien'].sum()), 2))\n"
+            "print('đơn vị tiền: chưa xác định')\n"
+        ),
+        'expected': (
+            "426 13891.16\n"
+            "2623 83646.1\n"
+            "đơn vị tiền: chưa xác định"
+        ),
+    },
+    'TH06': {
+        'files': ['coffee-sales-cc0.csv'],
+        'paragraph':
+            'Ô dưới chạy cùng một phép đối chiếu trên ba khoá gom khác nhau. '
+            'Mỗi dòng in tên cột, số nhóm, lệch, và tên nhóm lớn nhất. Lệch '
+            'lấy trị tuyệt đối, nếu không thì một trong ba dòng in ra `-0.0` — '
+            'đúng một con số mà không ai muốn đọc trong báo cáo.',
+        'code': (
+            "import pandas as pd\n"
+            "\n"
+            "ban = pd.read_csv('coffee-sales-cc0.csv')\n"
+            "tong = float(ban['money'].sum())\n"
+            "for cot in ['coffee_name', 'cash_type', 'date']:\n"
+            "    nhom = ban.groupby(cot)['money'].sum()\n"
+            "    lech = round(abs(float(nhom.sum()) - tong), 6)\n"
+            "    print(cot, int(nhom.size), lech, nhom.idxmax())\n"
+        ),
+        'expected': (
+            "coffee_name 8 0.0 Latte\n"
+            "cash_type 2 0.0 card\n"
+            "date 294 0.0 2024-10-11"
+        ),
+    },
+    'TH07': {
+        'files': ['coffee-sales-cc0.csv'],
+        'paragraph':
+            'Ô dưới là khung mở đầu của dự án, và nó là ô CHẠY THỬ: bài cuối '
+            'không có ca chấm, nên bạn sửa được nó rồi chạy lại ngay tại đây. '
+            'Nó gom theo tháng và vẽ một biểu đồ cột. Nhãn trục đã ghi đơn vị '
+            'chưa xác định — giữ nguyên câu đó khi bạn đổi biểu đồ.',
+        'code': (
+            "import pandas as pd\n"
+            "import matplotlib.pyplot as plt\n"
+            "\n"
+            "ban = pd.read_csv('coffee-sales-cc0.csv')\n"
+            "ban['thang'] = pd.to_datetime(ban['datetime']).dt.strftime('%Y-%m')\n"
+            "theo_thang = ban.groupby('thang')['money'].sum().round(2)\n"
+            "print(theo_thang.to_dict())\n"
+            "\n"
+            "fig, ax = plt.subplots(figsize=(7, 3))\n"
+            "theo_thang.plot(kind='bar', ax=ax)\n"
+            "ax.set_ylabel('Tổng tiền (đơn vị chưa xác định)')\n"
+            "ax.set_title('Doanh thu theo tháng — nguồn CC0 1.0')\n"
+            "plt.show()\n"
+        ),
+        'expected': (
+            "{'2024-03': 7050.2, '2024-04': 6720.56, '2024-05': 9063.42, "
+            "'2024-06': 7758.76, '2024-07': 6915.94, '2024-08': 7613.84, "
+            "'2024-09': 9988.64, '2024-10': 13891.16, '2024-11': 8590.54, "
+            "'2024-12': 6053.04}"
         ),
     },
 }
@@ -1482,6 +1680,11 @@ def main() -> int:
             'OOP, module, lưu trữ dữ liệu và sqlite3',
             'Hệ điều hành: tiến trình, đa luồng, multiprocessing và shell',
             'Tkinter: từ form nhỏ tới màn hình nhận đơn tại quầy',
+            # Module 11 — phải có một dòng ở đây, vì `skills` là thứ người học
+            # đọc TRƯỚC mọi bài (xem `kiem_tieu_de_mien` trong check.py: một
+            # chuỗi ghi cứng trong file này đã từng nói khác nội dung khoá).
+            'Thực hành: nhận một bộ số liệu của người khác, kiểm giấy phép và '
+            'đơn vị, đối chiếu rồi giao báo cáo',
         ],
         'modules': modules,
     }

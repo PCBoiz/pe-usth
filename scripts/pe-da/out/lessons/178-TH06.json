@@ -1,0 +1,204 @@
+{
+ "lesson_code": "TH06",
+ "sort_order": 178,
+ "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+ "title": "TH06 · Đối chiếu: tổng các nhóm phải bằng tổng cả bảng",
+ "subtitle": "Nâng cao · M11 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "TH06 · Đối chiếu: tổng các nhóm phải bằng tổng cả bảng",
+  "subtitle": "Nâng cao · M11 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#TH06",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bài trước gom theo tháng. Phép gom nào cũng cần một lượt đối chiếu. Cộng các nhóm lại phải ra đúng tổng cả bảng."
+     },
+     {
+      "type": "paragraph",
+      "text": "Lệch xảy ra khi khoá gom có ô trống. Hoặc khi một phép nối nhân số dòng lên. Hoặc khi bạn lọc mất vài dòng mà không nhận ra."
+     },
+     {
+      "type": "paragraph",
+      "text": "Bảng này không có ô trống nào, nên lệch phải bằng 0 ở mọi cột. Một phép kiểm chỉ đáng tin khi nó cho cùng câu trả lời trên cột nào cũng vậy."
+     },
+     {
+      "type": "paragraph",
+      "text": "Kèm theo tên nhóm lớn nhất thì báo cáo trả lời luôn câu kế tiếp của người đọc. Quán cà phê này bán chạy nhất món nào. Nhưng nhóm lớn nhất của cột ngày chỉ là một ngày trong 294 ngày, nên nó không nói được xu hướng."
+     },
+     {
+      "type": "paragraph",
+      "text": "Ô dưới chạy cùng một phép đối chiếu trên ba khoá gom khác nhau. Mỗi dòng in tên cột, số nhóm, lệch, và tên nhóm lớn nhất. Lệch lấy trị tuyệt đối, nếu không thì một trong ba dòng in ra `-0.0` — đúng một con số mà không ai muốn đọc trong báo cáo."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\n\nban = pd.read_csv('coffee-sales-cc0.csv')\ntong = float(ban['money'].sum())\nfor cot in ['coffee_name', 'cash_type', 'date']:\n    nhom = ban.groupby(cot)['money'].sum()\n    lech = round(abs(float(nhom.sum()) - tong), 6)\n    print(cot, int(nhom.size), lech, nhom.idxmax())\n",
+      "expected": "coffee_name 8 0.0 Latte\ncash_type 2 0.0 card\ndate 294 0.0 2024-10-11"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "TH05 · Báo cáo theo tháng, kèm dòng ghi đơn vị, PD30 · Một quy trình làm sạch có kiểm tra"
+   }
+  },
+  "step_2": {
+   "mcq": [
+    {
+     "question": "Phép đối chiếu của bài này so cái gì với cái gì?",
+     "options": [
+      {
+       "text": "Số nhóm với số dòng của cả bảng",
+       "detail": "Số nhóm nhỏ hơn số dòng ở mọi khoá gom, nên phép so đó vô nghĩa."
+      },
+      {
+       "text": "Tổng các nhóm với tổng của cả bảng",
+       "detail": "Đúng. Cộng các nhóm lại phải ra đúng tổng ban đầu.",
+       "correct": true
+      },
+      {
+       "text": "Tên các nhóm với tên các cột",
+       "detail": "Tên nhóm là giá trị trong một cột, không so được với tên cột."
+      }
+     ],
+     "explanation": "Đúng. Cộng các nhóm lại phải ra đúng tổng ban đầu."
+    },
+    {
+     "question": "Lệch khác 0 sau một phép gom thường đến từ đâu?",
+     "options": [
+      {
+       "text": "Khoá gom có ô trống nên dòng bị bỏ ra",
+       "detail": "Đúng. Dòng thiếu khoá không vào nhóm nào.",
+       "correct": true
+      },
+      {
+       "text": "Cột tiền được lưu dưới dạng số thực",
+       "detail": "Sai số nhị phân nhỏ hơn hẳn mức một dòng bị mất."
+      },
+      {
+       "text": "Bảng chưa được xếp lại theo thứ tự ngày",
+       "detail": "Thứ tự dòng không đổi tổng của phép cộng."
+      }
+     ],
+     "explanation": "Đúng. Dòng thiếu khoá không vào nhóm nào."
+    },
+    {
+     "question": "Vì sao chạy phép đối chiếu trên ba cột thay vì một cột?",
+     "options": [
+      {
+       "text": "Vì mỗi cột có một công thức cộng riêng",
+       "detail": "Phép cộng cột tiền giống nhau ở mọi khoá gom."
+      },
+      {
+       "text": "Vì báo cáo cần dài hơn và đầy đủ hơn",
+       "detail": "Độ dài báo cáo không phải lý do để thêm phép kiểm."
+      },
+      {
+       "text": "Một phép kiểm đáng tin khi mọi cột cho cùng kết quả",
+       "detail": "Đúng. Một cột đạt có thể chỉ là tình cờ của cột đó.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Một cột đạt có thể chỉ là tình cờ của cột đó."
+    }
+   ],
+   "practice": [
+    {
+     "prompt": "Lệch của cả ba cột đều bằng 0. Phép kiểm đó có vô ích không?",
+     "answer": "Không. Nó là điều kiện cần, và ngày một phép nối nhân số dòng lên thì chính nó là chỗ đỏ đầu tiên."
+    },
+    {
+     "prompt": "Nhóm lớn nhất của cột `date` là ngày 2024-10-11. Báo cáo nên nói thêm gì về con số này?",
+     "answer": "Đó là một ngày trong 294 ngày. Một ngày cao nhất không nói lên xu hướng của mười tháng."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Đối chiếu một phép gom",
+    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên cột dùng làm khoá gom. Gom cột `money` theo cột đó rồi trả về dict ba khoá: `so_nhom` là số nhóm, `nhom_lon_nhat` là tên nhóm có tổng tiền lớn nhất, và `lech` là khoảng cách tuyệt đối giữa tổng các nhóm và tổng cả bảng, làm tròn sáu chữ số thập phân."
+   },
+   "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    tong = float(ban['money'].sum())\n    nhom = ban.groupby(data['cot'])['money'].sum()\n    return {'so_nhom': int(nhom.size),\n            'nhom_lon_nhat': str(nhom.idxmax()),\n            'lech': round(abs(float(nhom.sum()) - tong), 6)}\n",
+   "tests": [
+    {
+     "name": "gom theo món",
+     "input": {
+      "cot": "coffee_name"
+     },
+     "expected": {
+      "so_nhom": 8,
+      "nhom_lon_nhat": "Latte",
+      "lech": 0.0
+     }
+    },
+    {
+     "name": "gom theo kiểu thanh toán",
+     "input": {
+      "cot": "cash_type"
+     },
+     "expected": {
+      "so_nhom": 2,
+      "nhom_lon_nhat": "card",
+      "lech": 0.0
+     }
+    },
+    {
+     "name": "gom theo ngày",
+     "input": {
+      "cot": "date"
+     },
+     "expected": {
+      "so_nhom": 294,
+      "nhom_lon_nhat": "2024-10-11",
+      "lech": 0.0
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tên nhóm lớn nhất đọc bằng `idxmax`, không bằng `max`."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Lệch là trị tuyệt đối, để `-0.0` không lọt ra kết quả."
+    }
+   ],
+   "packages": [
+    "pandas"
+   ],
+   "dataFiles": [
+    "coffee-sales-cc0.csv"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": [],
+ "_du_lieu": {
+  "files": [
+   "coffee-sales-cc0.csv"
+  ],
+  "blocks": [
+   0
+  ]
+ },
+ "_so_mcq": 3,
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
+}

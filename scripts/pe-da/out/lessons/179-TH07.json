@@ -1,0 +1,159 @@
+{
+ "lesson_code": "TH07",
+ "sort_order": 179,
+ "module": "M11 · Thực hành trên số liệu thật của một quán khác",
+ "title": "TH07 · Dự án cuối khoá: một trang báo cáo về bảng này",
+ "subtitle": "Nâng cao · M11 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "TH07 · Dự án cuối khoá: một trang báo cáo về bảng này",
+  "subtitle": "Nâng cao · M11 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#TH07",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "tablegpt/CoffeeSales (Hugging Face) — CC0 1.0; NOTICE.md của bộ dữ liệu — nguồn, giấy phép và đơn vị tiền"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Mười chặng trước đã cho bạn đủ công cụ, và ở bài trước bạn vừa đối chiếu xong một phép gom. Bài này không có ca chấm nào. Bạn tự chọn câu hỏi và tự bảo vệ câu trả lời."
+     },
+     {
+      "type": "paragraph",
+      "text": "Yêu cầu tối thiểu có bốn phần. Một dòng nói bảng ở đâu ra và mang giấy phép gì. Một bảng doanh thu theo tháng của quán cà phê đó. Một biểu đồ. Một đoạn ghi rõ những câu bảng này KHÔNG trả lời được."
+     },
+     {
+      "type": "paragraph",
+      "text": "Phần cuối khó nhất và cũng đáng giá nhất. Bảng không có mã khách, nên nó không đếm được một người quay lại bao nhiêu lần. Bảng không có giá niêm yết, nên nó không tách được giảm giá khỏi giá gốc. Và đơn vị tiền chưa biết, nên mọi câu so với chi phí đều chưa làm được."
+     },
+     {
+      "type": "paragraph",
+      "text": "Đặt đoạn giới hạn ngay cạnh kết luận, đừng đẩy xuống cuối trang."
+     },
+     {
+      "type": "paragraph",
+      "text": "Ô dưới là khung mở đầu của dự án, và nó là ô CHẠY THỬ: bài cuối không có ca chấm, nên bạn sửa được nó rồi chạy lại ngay tại đây. Nó gom theo tháng và vẽ một biểu đồ cột. Nhãn trục đã ghi đơn vị chưa xác định — giữ nguyên câu đó khi bạn đổi biểu đồ."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nimport matplotlib.pyplot as plt\n\nban = pd.read_csv('coffee-sales-cc0.csv')\nban['thang'] = pd.to_datetime(ban['datetime']).dt.strftime('%Y-%m')\ntheo_thang = ban.groupby('thang')['money'].sum().round(2)\nprint(theo_thang.to_dict())\n\nfig, ax = plt.subplots(figsize=(7, 3))\ntheo_thang.plot(kind='bar', ax=ax)\nax.set_ylabel('Tổng tiền (đơn vị chưa xác định)')\nax.set_title('Doanh thu theo tháng — nguồn CC0 1.0')\nplt.show()\n",
+      "expected": "{'2024-03': 7050.2, '2024-04': 6720.56, '2024-05': 9063.42, '2024-06': 7758.76, '2024-07': 6915.94, '2024-08': 7613.84, '2024-09': 9988.64, '2024-10': 13891.16, '2024-11': 8590.54, '2024-12': 6053.04}"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "TH06 · Đối chiếu: tổng các nhóm phải bằng tổng cả bảng"
+   }
+  },
+  "step_2": {
+   "mcq": [
+    {
+     "question": "Dự án này không có ca chấm. Phần nào của nó khó nhất?",
+     "options": [
+      {
+       "text": "Gom bảng theo tháng rồi cộng tiền",
+       "detail": "Phép gom theo tháng bạn vừa làm xong ở bài trước."
+      },
+      {
+       "text": "Nói rõ những câu bảng KHÔNG trả lời được",
+       "detail": "Đúng. Phần đó đòi bạn đọc lại cột nào bảng có và cột nào không.",
+       "correct": true
+      },
+      {
+       "text": "Vẽ biểu đồ cho vừa mắt người đọc",
+       "detail": "Biểu đồ đã có API sẵn và bạn đã dựng ba mươi cái."
+      }
+     ],
+     "explanation": "Đúng. Phần đó đòi bạn đọc lại cột nào bảng có và cột nào không."
+    },
+    {
+     "question": "Bảng không có cột mã khách. Hệ quả là gì?",
+     "options": [
+      {
+       "text": "Không gom được doanh thu theo từng tháng",
+       "detail": "Gom theo tháng chỉ cần cột thời gian và cột tiền."
+      },
+      {
+       "text": "Không đọc được cột tiền của mỗi lượt mua",
+       "detail": "Cột tiền đọc được bình thường, nó không phụ thuộc cột khách."
+      },
+      {
+       "text": "Không đếm được một người quay lại bao nhiêu lần",
+       "detail": "Đúng. Không có gì nối hai lượt mua về cùng một người.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Không có gì nối hai lượt mua về cùng một người."
+    },
+    {
+     "question": "Dòng đầu của báo cáo nên nói gì?",
+     "options": [
+      {
+       "text": "Bảng ở đâu ra và mang giấy phép gì",
+       "detail": "Đúng. Người đọc cần biết số liệu của ai trước khi tin con số.",
+       "correct": true
+      },
+      {
+       "text": "Tên công cụ bạn dùng để vẽ biểu đồ",
+       "detail": "Công cụ vẽ không nói gì về độ tin của số liệu."
+      },
+      {
+       "text": "Số dòng và số cột của bảng",
+       "detail": "Hai con số đó thuộc phần mô tả, không thay được phần nguồn."
+      }
+     ],
+     "explanation": "Đúng. Người đọc cần biết số liệu của ai trước khi tin con số."
+    }
+   ],
+   "practice": [
+    {
+     "prompt": "Liệt kê ba câu bảng này không trả lời được.",
+     "answer": "Một người quay lại bao nhiêu lần (không có mã khách); giá niêm yết và giảm giá (không có cột giá); mọi câu so với chi phí (đơn vị tiền chưa biết)."
+    },
+    {
+     "prompt": "Dự án của bạn kết thúc bằng phần nào?",
+     "answer": "Phần ghi giới hạn của dữ liệu, đặt ngay cạnh kết luận chứ không đẩy xuống phụ lục."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\nban = pd.read_csv('coffee-sales-cc0.csv')\nban['thang'] = pd.to_datetime(ban['datetime']).dt.strftime('%Y-%m')\ntheo_thang = ban.groupby('thang')['money'].sum().round(2)\nprint(theo_thang.to_dict())\n\nfig, ax = plt.subplots(figsize=(7, 3))\ntheo_thang.plot(kind='bar', ax=ax)\nax.set_ylabel('Tổng tiền (đơn vị chưa xác định)')\nax.set_title('Doanh thu theo tháng — nguồn CC0 1.0')\nplt.show()\n",
+   "packages": [
+    "matplotlib",
+    "pandas"
+   ],
+   "dataFiles": [
+    "coffee-sales-cc0.csv"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": [],
+ "_du_lieu": {
+  "files": [
+   "coffee-sales-cc0.csv"
+  ],
+  "blocks": [
+   0
+  ]
+ },
+ "_so_mcq": 3,
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
+}
