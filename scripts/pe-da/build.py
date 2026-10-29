@@ -1470,7 +1470,7 @@ def main() -> int:
             'Trực quan hoá: Matplotlib, seaborn, Plotly và dashboard',
             'OOP, module, lưu trữ dữ liệu và sqlite3',
             'Hệ điều hành: tiến trình, đa luồng, multiprocessing và shell',
-            'Tkinter: từ form nhỏ tới ứng dụng quản lý điểm',
+            'Tkinter: từ form nhỏ tới màn hình nhận đơn tại quầy',
         ],
         'modules': modules,
     }

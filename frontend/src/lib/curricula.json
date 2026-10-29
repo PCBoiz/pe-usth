@@ -14,7 +14,7 @@
         "Trực quan hoá: Matplotlib, seaborn, Plotly và dashboard",
         "OOP, module, lưu trữ dữ liệu và sqlite3",
         "Hệ điều hành: tiến trình, đa luồng, multiprocessing và shell",
-        "Tkinter: từ form nhỏ tới ứng dụng quản lý điểm"
+        "Tkinter: từ form nhỏ tới màn hình nhận đơn tại quầy"
       ],
       "modules": [
         {
@@ -200,7 +200,7 @@
           ]
         },
         {
-          "title": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+          "title": "M8 · Tkinter: từ form nhỏ đến màn hình nhận đơn",
           "lessons": [
             "GU01 · GUI, CLI và chọn toolkit",
             "GU02 · Cửa sổ chính và cửa sổ phụ",

@@ -181,6 +181,15 @@ async function main() {
     // canh TREO (kết nối chết giữa lúc ghi), không phải canh tốc độ — đặt sát
     // số đo thật là tự tạo ra lỗi ngẫu nhiên vào ngày DB chậm hơn thường.
     // `maxWait` là thời gian CHỜ LẤY kết nối từ pool, chuyện khác hẳn.
+    // Tiến độ phải in ra TỪNG BÀI, không phải một dòng "xong" ở cuối.
+    //
+    // Sự cố 29/10/2026: lần nạp 172 bài rollback, và thứ duy nhất nhìn thấy là
+    // một đối tượng Prisma. Không biết nó chết ở câu UPDATE thứ 1 hay thứ 171,
+    // nên không phân biệt được "không lấy nổi kết nối" với "chạy nửa chừng thì
+    // hết hạn" — hai nguyên nhân cần hai cách sửa khác hẳn. Một dòng mỗi bài là
+    // đủ để lần sau đọc ra ngay.
+    const batDau = Date.now();
+    let daGhi = 0;
     try {
       await prisma.$transaction(async (tx) => {
         for (const item of changed) {
@@ -194,9 +203,20 @@ async function main() {
           if (res.count !== 1) {
             throw new Error(`${item.code}: UPDATE trúng ${res.count} hàng, cần đúng 1 — huỷ toàn bộ.`);
           }
+          daGhi += 1;
+          console.log(`  [${daGhi}/${changed.length}] ${item.code} ghi xong (${Date.now() - batDau} ms)`);
         }
       }, { timeout: 120_000, maxWait: 20_000 });
     } catch (err) {
+      console.error(
+        `\n✗ Dừng sau ${daGhi}/${changed.length} câu UPDATE, ${Date.now() - batDau} ms.`,
+      );
+      if (daGhi === 0) {
+        console.error('  KHÔNG câu nào chạy ⇒ hỏng ở bước LẤY KẾT NỐI hoặc MỞ transaction,');
+        console.error('  không phải hết hạn giữa chừng. Nghi trước: maxWait 20 s với DB đang ngủ.');
+      } else {
+        console.error('  Có câu đã chạy ⇒ hỏng GIỮA CHỪNG: xem mốc ms ở dòng cuối còn in được.');
+      }
       // Transaction rollback là ĐÚNG thiết kế — DB không hỏng. Nhưng file sao
       // lưu ĐÃ ghi xong ở trên, nên dấu vết duy nhất người chạy nhìn thấy là
       // một file backup đầy đủ, và họ kết luận là đã nạp. Đã xảy ra 29/10/2026

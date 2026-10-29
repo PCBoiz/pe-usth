@@ -194,7 +194,7 @@
     },
     {
       "id": "gui",
-      "title": "Tkinter: từ form nhỏ đến quản lý điểm",
+      "title": "Tkinter: từ form nhỏ đến màn hình nhận đơn",
       "ids": [
         "GU01",
         "GU02",
@@ -12040,7 +12040,7 @@
       "provenance": "Khái niệm đối chiếu slide USTH; dữ liệu, ví dụ và bài tập được biên soạn mới cho người học Data Analyst.",
       "manualLab": {
         "required": true,
-        "environment": "Project quản lý điểm PW4",
+        "environment": "Project quản lý quán PW4",
         "proof": "Hai lần chạy process riêng, không nhập lại mà có đủ dữ liệu/GPA; thử archive hỏng giữ file cũ."
       },
       "strand": "python-systems"
@@ -13800,7 +13800,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bài trước đã chọn bộ công cụ; giờ dựng cửa sổ đầu tiên cho quầy. Ứng dụng quản lý điểm có một cửa sổ chính. Khi xem thông tin sinh viên, bạn có thể mở một cửa sổ phụ thuộc cửa sổ đó, thay vì tạo thêm một ứng dụng Tk độc lập."
+          "text": "Bài trước đã chọn bộ công cụ; giờ dựng cửa sổ đầu tiên cho quầy. Ứng dụng nhận đơn có một cửa sổ chính. Khi xem chi tiết một món, bạn có thể mở một cửa sổ phụ thuộc cửa sổ đó, thay vì tạo thêm một ứng dụng Tk độc lập."
         },
         {
           "type": "code",

@@ -42,7 +42,7 @@
       "ten": "Sinh viên, môn học, điểm",
       "vaiTro": "ngoai",
       "tuKhoa": [
-        "sinh viên", "học sinh", "điểm thi", "bảng điểm", "môn học", "học kỳ",
+        "quản lý điểm", "quản lý sinh viên", "sinh viên", "học sinh", "điểm thi", "bảng điểm", "môn học", "học kỳ",
         "tín chỉ", "lớp học", "student", "students", "grade", "grades",
         "mark", "marks", "student_id", "course_id"
       ],

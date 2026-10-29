@@ -1,7 +1,7 @@
 {
  "lesson_code": "GU02",
  "sort_order": 149,
- "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+ "module": "M8 · Tkinter: từ form nhỏ đến màn hình nhận đơn",
  "title": "GU02 · Cửa sổ chính và cửa sổ phụ",
  "subtitle": "Trung cấp · M8 · 14 phút",
  "estimated_minutes": 14,
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bài trước đã chọn bộ công cụ; giờ dựng cửa sổ đầu tiên cho quầy. Ứng dụng quản lý điểm có một cửa sổ chính. Khi xem thông tin sinh viên, bạn có thể mở một cửa sổ phụ thuộc cửa sổ đó, thay vì tạo thêm một ứng dụng Tk độc lập."
+      "text": "Bài trước đã chọn bộ công cụ; giờ dựng cửa sổ đầu tiên cho quầy. Ứng dụng nhận đơn có một cửa sổ chính. Khi xem chi tiết một món, bạn có thể mở một cửa sổ phụ thuộc cửa sổ đó, thay vì tạo thêm một ứng dụng Tk độc lập."
      },
      {
       "type": "code",

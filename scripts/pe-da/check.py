@@ -33,6 +33,7 @@ DU_LIEU = HERE.parent.parent / 'frontend' / 'public' / 'static' / 'da-dulieu'
 # chứng, import thì một lỗi trong khâu dựng xuất hiện ở cả hai phía phép so.
 TEN_FILE_DU_LIEU = re.compile(r'^[a-z0-9_-]+\.csv$')
 CURRICULA = HERE.parent.parent / 'frontend' / 'src' / 'lib' / 'curricula.json'
+BOI_CANH = HERE / 'boi-canh.json'
 
 # SÁU loại khối màn đọc dựng được — khớp ReadBlock trong
 # frontend/src/lib/studio-lesson.ts và mục "Hai khối mới" của SCHEMA.md. BỐN chỗ
@@ -76,6 +77,7 @@ def main() -> int:
     kiem_sandbox(bai)
     kiem_trac_nghiem(bai)
     kiem_curricula(bai)
+    kiem_tieu_de_mien()
 
     for m in CANH_BAO:
         print(f'cảnh báo: {m}')
@@ -1058,6 +1060,49 @@ def kiem_phuong_an(bai: list[dict]) -> None:
             loi(f'{lien_truoc}/{tong} câu ({ti_le:.1f}%) có nhiễu giống đáp án nhất '
                 'đứng LIỀN TRƯỚC đáp án — mức tình cờ là 33,3%, đây là một luật '
                 'sắp xếp người học đọc ra được')
+
+
+def kiem_tieu_de_mien() -> None:
+    """Tiêu đề module và danh sách `skills` cũng phải thuộc miền của khoá.
+
+    VÌ SAO LUẬT NÀY TỒN TẠI. Sau đợt đổi miền 32 bài, chủ dự án mở trang khoá
+    học và thấy "M8 · Tkinter: từ form nhỏ đến quản lý điểm" cùng bullet "ứng
+    dụng quản lý điểm", rồi kết luận là chưa có gì đổi. 32 bài ĐÃ đổi — nhưng
+    hai chuỗi hiện TO NHẤT trên trang thì chưa.
+
+    Không phép kiểm nào nhìn chúng: `check_vanphong.py --luat L14` quét THÂN
+    BÀI, mà tiêu đề module nằm ở `groups[].title` còn `skills` thì ghi cứng
+    trong build.py. Một luật quét thân bài không bảo vệ được tiêu đề, và tiêu
+    đề mới là thứ người học đọc trước.
+
+    Quét trên curricula.json (bản TRANG THẬT đọc), không trên nguồn: giữa nguồn
+    và trang có build.py và sync_curricula.py, nên kiểm nguồn thì một chuỗi ghi
+    cứng trong build.py không làm đỏ ở đâu cả — đúng cái đã xảy ra.
+    """
+    if not BOI_CANH.is_file():
+        canh_bao('chưa có scripts/pe-da/boi-canh.json để đối chiếu miền')
+        return
+    if not CURRICULA.is_file():
+        return
+    boi_canh = json.loads(BOI_CANH.read_text(encoding='utf-8'))
+    ngoai = [m for m in boi_canh['mien'] if m['vaiTro'] == 'ngoai']
+
+    data = json.loads(CURRICULA.read_text(encoding='utf-8'))
+    khoa = data.get('CURRICULA', {}).get('python_advanced') or {}
+
+    muc: list[tuple[str, str]] = []
+    for m in khoa.get('modules', []):
+        muc.append(('tiêu đề module', m.get('title', '')))
+    for sk in khoa.get('skills', []):
+        muc.append(('mục "Bạn sẽ học được"', sk))
+
+    for nhan, chu in muc:
+        thap = chu.lower()
+        for mien in ngoai:
+            trung = [t for t in mien['tuKhoa'] if t.lower() in thap]
+            if trung:
+                loi(f'{nhan} còn thuộc miền "{mien["id"]}" ({", ".join(trung)}): {chu!r} '
+                    f'— trang khoá học là thứ người học đọc TRƯỚC mọi bài.')
 
 
 def kiem_curricula(bai: list[dict]) -> None:
