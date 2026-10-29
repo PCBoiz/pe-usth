@@ -411,6 +411,69 @@ export class QuizzesService {
     return { ok: true, history: rows };
   }
 
+  /**
+   * "Mở được đề ôn của khoá này chưa" — HỎI TRƯỚC, không bấm rồi mới biết.
+   *
+   * Vì sao phải có route này chứ không để giao diện bấm `generate` rồi đọc lỗi:
+   * `buildQuestionPool()` ném `BadRequestException('Chưa đủ câu hỏi để tạo
+   * quiz, hãy hoàn thành thêm bài học')`, mà bộ lọc lỗi ở gateway chỉ giữ
+   * `message` — mọi con số kèm theo bị BỎ (xem all-exceptions.filter.ts: nó
+   * dựng `{ error: { status, message, detail } }` và `detail` chỉ có khi
+   * message là MẢNG). Nên không có đường nào để câu lỗi đó nói "còn thiếu mấy
+   * bài" mà không nhồi số vào giữa chuỗi tiếng Việt rồi bắt frontend bóc ra.
+   *
+   * `getTodayLessons()` đã làm đúng việc này cho phạm vi HÔM NAY và chú thích
+   * của nó nói rõ lý do ("để người dùng khỏi bấm nút rồi mới nhận lỗi"); phạm
+   * vi KHOÁ thì chưa có. Đây là chỗ thiếu đó.
+   *
+   * KHÔNG ném khi chưa đủ: một route trạng thái mà ném thì nó lại đúng là cái
+   * màn hình cụt nó ra đời để xoá. Chưa học bài nào cũng trả 200 kèm số 0.
+   *
+   * `lessons_counted` là số bài THỰC SỰ góp câu, không phải số bài đã hoàn
+   * thành — và đó là con số giao diện cần: chia `questions_available` cho nó
+   * mới ra số câu mỗi bài THẬT (3 với khoá 172 bài), tức mới nói được "còn
+   * thiếu mấy BÀI" thay vì "còn thiếu mấy CÂU". Hai con số này lệch nhau ở
+   * những bài chưa có trắc nghiệm, và chính chỗ lệch đó là chỗ một phép đoán
+   * "3 câu mỗi bài" ở frontend sẽ nói sai.
+   */
+  async getCourseQuizStatus(userId: number, courseId: string) {
+    const done = await this.prisma.lessonProgress.findMany({
+      where: { userId, courseId, status: 'completed' },
+      select: { lessonId: true },
+    });
+
+    if (done.length === 0) {
+      return {
+        ok: true,
+        lessons_completed: 0,
+        lessons_counted: 0,
+        questions_available: 0,
+        min_questions: MIN_POOL,
+        can_quiz: false,
+      };
+    }
+
+    const lessons = await this.prisma.lesson.findMany({
+      where: { id: { in: done.map((d) => d.lessonId) }, courseId },
+      select: { id: true, courseId: true, contentJson: true },
+    });
+
+    // ĐÚNG hàm mà `buildQuestionPool()` dùng, không phải một phép đếm thứ hai:
+    // route này chỉ có giá trị nếu nó trả lời được "lần bấm tới có thành công
+    // không". Đếm bằng cách khác là dựng ra hai sự thật, và chúng sẽ lệch.
+    const pool = this.collectQuestions(lessons);
+    const baiCoCau = new Set(pool.map((q) => q.lessonId));
+
+    return {
+      ok: true,
+      lessons_completed: done.length,
+      lessons_counted: baiCoCau.size,
+      questions_available: pool.length,
+      min_questions: MIN_POOL,
+      can_quiz: pool.length >= MIN_POOL,
+    };
+  }
+
   // ---------- Bài hậu kiểm CÓ TRỄ ----------
   /**
    * Trạng thái cổng hậu kiểm. Đây là chỗ SERVER nói "đã đến lúc", không phải

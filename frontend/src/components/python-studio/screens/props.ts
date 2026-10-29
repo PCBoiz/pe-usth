@@ -17,6 +17,12 @@ import type { ScreenVerdict } from './chrome';
 export type LessonScreenProps = {
   lesson: Lesson;
   scr: LessonScreen;
+  /**
+   * Mã khoá. Màn tổng kết cần nó để gọi `/api/courses/:id/quiz/*` — nội dung
+   * bài (`content_json`) không mang mã khoá, nên nó phải đi qua props như mọi
+   * thứ khác ở tầng này.
+   */
+  courseId: string;
   /** Toàn bộ danh sách màn — màn tổng kết cần để đếm. */
   screens: LessonScreen[];
   /** Tên bài, hiện mờ ở góc thẻ. */

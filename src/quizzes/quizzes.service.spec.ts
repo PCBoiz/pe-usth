@@ -851,7 +851,11 @@ describe('QuizzesService', () => {
       const coMcq = PE_DA.lessons.filter(
         (l) => (l.content_json.step_2?.mcq ?? []).length,
       );
-      expect(coMcq.length).toBe(172);
+      // MỌI bài phải có trắc nghiệm — so với tổng số bài của gói, KHÔNG ghi
+      // cứng. Con số 172 ở đây từng làm cả bộ đỏ khi thêm module 11, mà thứ
+      // ca này muốn nói là "không bài nào thiếu câu hỏi", không phải "khoá
+      // dài đúng bằng này".
+      expect(coMcq.length).toBe(PE_DA.lessons.length);
       for (const l of coMcq) {
         const mcq = l.content_json.step_2!.mcq as Array<{
           question?: string;
@@ -977,6 +981,127 @@ describe('QuizzesService', () => {
       const luu = prisma.quiz.create.mock.calls[0][0].data.questionsJson;
       expect(luu.length).toBeGreaterThanOrEqual(5);
       expect(new Set(luu.map((q) => q.lessonId)).size).toBe(2);
+    });
+  });
+
+  /**
+   * CỔNG "mở được đề ôn chưa" của MỘT KHOÁ.
+   *
+   * Vì sao route này phải tồn tại: `buildQuestionPool()` ném
+   * `BadRequestException('Chưa đủ câu hỏi để tạo quiz, hãy hoàn thành thêm bài
+   * học')`, mà `AllExceptionsFilter` chỉ giữ `message` — mọi con số kèm theo bị
+   * BỎ. Nên không có đường nào để giao diện biết TRƯỚC là có ôn được không, và
+   * cũng không có đường nào để nó nói "còn thiếu mấy BÀI" (ngưỡng đếm theo CÂU:
+   * 5 câu = 2 bài với khoá 172 bài — đúng chỗ dễ nói sai nhất).
+   */
+  describe('getCourseQuizStatus (cổng của đề ôn)', () => {
+    it('chưa học bài nào -> trả 200 kèm số 0, KHÔNG ném', async () => {
+      // Một route TRẠNG THÁI mà ném thì nó lại đúng là cái màn hình cụt nó ra
+      // đời để xoá: giao diện không phân biệt được "chưa đủ bài" với "API chết".
+      prisma.lessonProgress.findMany.mockResolvedValue([]);
+      const res = await service.getCourseQuizStatus(1, 'python_advanced');
+      expect(res).toEqual({
+        ok: true,
+        lessons_completed: 0,
+        lessons_counted: 0,
+        questions_available: 0,
+        min_questions: 5,
+        can_quiz: false,
+      });
+      // Không đi tiếp vòng DB thứ hai khi chưa có bài nào.
+      expect(prisma.lesson.findMany).not.toHaveBeenCalled();
+    });
+
+    it('MỘT bài pe-da -> 3 câu / 1 bài, chưa mở (đây là ca "5 câu = 2 bài")', async () => {
+      prisma.lessonProgress.findMany.mockResolvedValue([{ lessonId: 1 }]);
+      prisma.lesson.findMany.mockResolvedValue([
+        { id: 1, courseId: 'python_advanced', contentJson: peDa('PY01') },
+      ]);
+      const res = await service.getCourseQuizStatus(1, 'python_advanced');
+      expect(res).toMatchObject({
+        lessons_completed: 1,
+        lessons_counted: 1,
+        questions_available: 3,
+        min_questions: 5,
+        can_quiz: false,
+      });
+      // Và nó phải khớp với điều `generateQuiz` thật sự làm ở cùng pool đó —
+      // hai con số lệch nhau là cổng mời người học bấm một nút sẽ 400.
+      await expect(service.generateQuiz(1, 'python_advanced')).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    it('HAI bài pe-da -> 6 câu / 2 bài, can_quiz = true và đề ra được thật', async () => {
+      prisma.lessonProgress.findMany.mockResolvedValue([
+        { lessonId: 1 },
+        { lessonId: 2 },
+      ]);
+      prisma.lesson.findMany.mockResolvedValue([
+        { id: 1, courseId: 'python_advanced', contentJson: peDa('PY01') },
+        { id: 2, courseId: 'python_advanced', contentJson: peDa('PY02') },
+      ]);
+      const res = await service.getCourseQuizStatus(1, 'python_advanced');
+      expect(res).toMatchObject({
+        lessons_counted: 2,
+        questions_available: 6,
+        can_quiz: true,
+      });
+
+      prisma.quiz.create.mockResolvedValue({ id: 7 });
+      await expect(
+        service.generateQuiz(1, 'python_advanced'),
+      ).resolves.toMatchObject({ ok: true });
+    });
+
+    it('lessons_counted đếm bài THỰC SỰ góp câu, không phải bài đã xong', async () => {
+      // Hai con số này lệch nhau ở bài chưa có trắc nghiệm, và chính chỗ lệch
+      // đó là chỗ một phép đoán "3 câu mỗi bài" ở frontend sẽ nói sai số bài
+      // còn thiếu.
+      prisma.lessonProgress.findMany.mockResolvedValue([
+        { lessonId: 1 },
+        { lessonId: 2 },
+      ]);
+      prisma.lesson.findMany.mockResolvedValue([
+        { id: 1, courseId: 'python_advanced', contentJson: peDa('PY01') },
+        { id: 2, courseId: 'python_advanced', contentJson: { step_1: {} } },
+      ]);
+      const res = await service.getCourseQuizStatus(1, 'python_advanced');
+      expect(res).toMatchObject({
+        lessons_completed: 2,
+        lessons_counted: 1,
+        questions_available: 3,
+      });
+    });
+
+    it('chỉ hỏi bài ĐÃ HOÀN THÀNH, trong ĐÚNG khoá này', async () => {
+      // Mock Prisma không thực thi WHERE hộ, nên không đọc lại mệnh đề thì gỡ
+      // nó ra mọi ca vẫn XANH.
+      prisma.lessonProgress.findMany.mockResolvedValue([{ lessonId: 1 }]);
+      prisma.lesson.findMany.mockResolvedValue([
+        { id: 1, courseId: 'python_advanced', contentJson: peDa('PY01') },
+      ]);
+      await service.getCourseQuizStatus(42, 'python_advanced');
+      expect(
+        prisma.lessonProgress.findMany.mock.calls[0][0].where,
+      ).toMatchObject({
+        userId: 42,
+        courseId: 'python_advanced',
+        status: 'completed',
+      });
+    });
+
+    it('KHÔNG lộ một câu hỏi nào — route này chỉ trả SỐ', async () => {
+      prisma.lessonProgress.findMany.mockResolvedValue([{ lessonId: 1 }]);
+      prisma.lesson.findMany.mockResolvedValue([
+        { id: 1, courseId: 'python_advanced', contentJson: peDa('PY01') },
+      ]);
+      const res = await service.getCourseQuizStatus(1, 'python_advanced');
+      const chu = JSON.stringify(res);
+      expect(res).not.toHaveProperty('questions');
+      expect(chu).not.toContain('correct');
+      // Đề bài câu đầu của PY01 không được xuất hiện ở đâu trong response.
+      expect(chu).not.toContain(mcqTrongBai('PY01')[0].question);
     });
   });
 

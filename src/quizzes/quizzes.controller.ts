@@ -119,6 +119,15 @@ export class QuizzesController {
     return this.quizzes.getQuiz(userId, quizId);
   }
 
+  /**
+   * "Mở được đề ôn chưa" cho MỘT khoá — hỏi TRƯỚC khi hiện nút.
+   * Không trả câu hỏi nào, chỉ trả số. Xem `getCourseQuizStatus`.
+   */
+  @Get('courses/:id/quiz/status')
+  quizStatus(@CurrentUserId() userId: number, @Param('id') courseId: string) {
+    return this.quizzes.getCourseQuizStatus(userId, courseId);
+  }
+
   // ---------- Task 134 ----------
   @Get('courses/:id/quiz/history')
   history(@CurrentUserId() userId: number, @Param('id') courseId: string) {

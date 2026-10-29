@@ -571,6 +571,7 @@ export default function StudioLesson({
           lesson={lesson}
           scr={scr}
           screens={screens}
+          courseId={courseId}
           metaLabel={meta?.title}
           draft={d}
           update={update}

@@ -15,9 +15,28 @@ export interface RecapProps {
   stats: RecapStat[];
   facts: string[];
   onFinish: () => void;
+  /**
+   * Thêm một ô nữa vào màn tổng kết, dựng TRƯỚC nút "Hoàn thành ✓".
+   *
+   * Vị trí là một yêu cầu, không phải thẩm mỹ: hôm nay người dùng duy nhất của
+   * nó là ô đề ôn tập (`ReviewQuiz`), và đặt nó SAU nút kết thúc thì muốn tới
+   * được phải cuộn qua đúng cái nút đưa mình ra khỏi bài. Một đường đi phải
+   * đoán mới thấy thì trên thực tế nó không tồn tại — repo này đã vấp đúng hình
+   * dạng lỗi đó tám lần (thanh tiến độ bấm được mà không ai biết, tracer không
+   * bài nào tới, nút "Try it Yourself" không màn nào mount).
+   */
+  extra?: React.ReactNode;
 }
 
-export default function Recap({ xpLabel, title, description, stats, facts, onFinish }: RecapProps) {
+export default function Recap({
+  xpLabel,
+  title,
+  description,
+  stats,
+  facts,
+  onFinish,
+  extra,
+}: RecapProps) {
   return (
     <div style={{ textAlign: 'center' }}>
       <span
@@ -91,6 +110,7 @@ export default function Recap({ xpLabel, title, description, stats, facts, onFin
           ))}
         </ul>
       </div>
+      {extra}
       <button
         type="button"
         onClick={onFinish}

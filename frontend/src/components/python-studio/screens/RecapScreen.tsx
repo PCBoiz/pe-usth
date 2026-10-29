@@ -6,6 +6,7 @@
 import Recap from '@/components/lesson-chrome/exercises/Recap';
 import { EMPTY_SCORE, isGraded } from '@/lib/studio-lesson';
 
+import ReviewQuiz from '../ReviewQuiz';
 import { sandboxMode } from './chrome';
 import type { LessonScreenProps } from './props';
 
@@ -13,6 +14,7 @@ type Props = Pick<
   LessonScreenProps,
   | 'lesson'
   | 'screens'
+  | 'courseId'
   | 'draft'
   | 'completed'
   | 'xpGained'
@@ -24,6 +26,7 @@ type Props = Pick<
 export default function RecapScreen({
   lesson,
   screens,
+  courseId,
   draft,
   completed,
   xpGained,
@@ -39,6 +42,20 @@ export default function RecapScreen({
   const graded = screens.filter((x) => isGraded(x.kind));
   const done = graded.filter((x) => draft.done[x.key]).length;
   const firstTry = graded.filter((x) => score.firstTry[x.key] === true).length;
+
+  /**
+   * ĐƯỜNG TỚI HỆ THỐNG QUIZ CHẤM Ở MÁY CHỦ, và đây là chỗ duy nhất có nó.
+   *
+   * Chỉ dựng khi bài đã được GHI NHẬN HOÀN THÀNH, vì `buildQuestionPool` ở máy
+   * chủ chỉ gom câu từ bài `lesson_progress.status = 'completed'` — hỏi trước
+   * lúc đó là đếm thiếu đúng bài họ vừa học xong, nên ô sẽ nói "còn thiếu 1
+   * bài" ngay sau khi người ta học xong bài thứ hai.
+   *
+   * Dựng cho CẢ HAI nhánh dưới (khoá có mini-game và khoá bài đọc): nhánh
+   * `play` hôm nay không có khoá nào xuất bản, nhưng để sót nó là dựng lại đúng
+   * cái bẫy "có nút mà không màn nào mount" của `TryItButton`.
+   */
+  const deOn = completed ? <ReviewQuiz courseId={courseId} /> : undefined;
 
   if (play) {
     const xpText =
@@ -78,6 +95,7 @@ export default function RecapScreen({
           .filter((x): x is string => Boolean(x))
           .slice(0, 3)}
         onFinish={onFinish}
+        extra={deOn}
       />
     );
   }
@@ -167,6 +185,7 @@ export default function RecapScreen({
         .filter((x): x is string => Boolean(x))
         .slice(0, 4)}
       onFinish={onFinish}
+      extra={deOn}
     />
   );
 }
