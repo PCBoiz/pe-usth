@@ -45,3 +45,5 @@ NHAT-KY-SUA.md
 # nạp. Là ảnh chụp DB thật, 1,4 MB mỗi lần, và chỉ có nghĩa trên máy vừa nạp —
 # commit nhầm là đóng băng một bản nội dung cũ vào lịch sử.
 /backup-*.json
+/bak-*.json
+/*-backup.json
