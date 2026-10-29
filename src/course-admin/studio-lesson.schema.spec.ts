@@ -221,4 +221,55 @@ describe('validateStudioLesson — hai hợp đồng ca chấm', () => {
     const errors = validateStudioLesson(baiDoc([{ name: 'x', input: [1] }]));
     expect(errors.join(' | ')).toContain('thiếu kết quả mong đợi');
   });
+
+  // ── Ký tự Postgres jsonb KHÔNG lưu được ──────────────────────────────────
+  //
+  // SỰ CỐ 30/10/2026: nạp 172 bài, 122 câu UPDATE chạy xong, câu thứ 123 ném
+  // 22P05 "unsupported Unicode escape sequence" và transaction rollback — tức
+  // KHÔNG bài nào được ghi, vì transaction là một khối. Thủ phạm là một KHOÁ
+  // JSON của SY20 chứa U+0000, và lỗi in ra là một đối tượng Prisma không nói
+  // tên bài. Phép kiểm nằm ở cửa này vì đây là CỬA DUY NHẤT vào DB: cả đường
+  // cập nhật lẫn đường tạo mới đều đi qua nó.
+  const NUL = String.fromCharCode(0);
+
+  it('TỪ CHỐI U+0000 trong GIÁ TRỊ', () => {
+    const errors = validateStudioLesson(
+      baiDoc([{ name: 'x', input: [1], expected: `a${NUL}b` }]),
+    );
+    expect(errors.join(' | ')).toContain('U+0000');
+  });
+
+  it('TỪ CHỐI U+0000 trong KHOÁ của object', () => {
+    // Bản quét đầu của tôi chỉ duyệt GIÁ TRỊ chuỗi và báo "0 chỗ" trên đúng
+    // cái file đang làm hỏng lần nạp — khoá của dict cũng là chuỗi trong JSON
+    // và Postgres cũng từ chối ở đó. Đây đúng là hình dạng của SY20.
+    const errors = validateStudioLesson(
+      baiDoc([
+        { name: 'x', input: { [`students.csv${NUL}.exe`]: 1 }, expected: 1 },
+      ]),
+    );
+    expect(errors.join(' | ')).toContain('U+0000');
+  });
+
+  it('TỪ CHỐI surrogate lẻ', () => {
+    const errors = validateStudioLesson(
+      baiDoc([
+        { name: 'x', input: [1], expected: String.fromCharCode(0xd800) },
+      ]),
+    );
+    expect(errors.join(' | ')).toContain('surrogate lẻ');
+  });
+
+  it('CHO QUA cặp surrogate hợp lệ — đừng chặn nhầm emoji', () => {
+    const errors = validateStudioLesson(
+      baiDoc([
+        {
+          name: 'x',
+          input: [1],
+          expected: `ok ${String.fromCharCode(0xd83d, 0xde00)}`,
+        },
+      ]),
+    );
+    expect(errors.join(' | ')).not.toContain('surrogate');
+  });
 });

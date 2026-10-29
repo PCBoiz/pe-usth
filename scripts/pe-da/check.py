@@ -76,6 +76,7 @@ def main() -> int:
     kiem_du_lieu(bai)
     kiem_sandbox(bai)
     kiem_trac_nghiem(bai)
+    kiem_ky_tu_db(bai)
     kiem_curricula(bai)
     kiem_tieu_de_mien()
 
@@ -719,9 +720,21 @@ def kiem_bai_tap(ma: str, bon: dict, mode: str) -> None:
             du_lieu += 1
         else:
             loi(f'{ma}: ca chấm {i} không theo hợp đồng nào — thiếu cả call và input/expected')
-    # Trộn hai hợp đồng trong một bài thì `contract` chỉ đúng cho một nửa, mà
-    # nửa kia không báo gì — bộ chấm phân nhánh theo từng ca nên nó cứ chạy.
-    if bieu_thuc and du_lieu:
+    # Trộn hai hợp đồng chỉ HẠI KHI bài có khai `contract`: mode,
+    # inputVariable, resultVariable, returnType chỉ được áp cho ca DỮ LIỆU,
+    # nên ca biểu thức lặng lẽ bỏ qua chúng và không báo gì.
+    #
+    # Bài KHÔNG khai contract thì không có gì để bỏ qua, và trộn là hợp lệ —
+    # 81/124 bài tập đang ở diện đó. SY20 cần đúng điều này: ca "tên kèm byte
+    # null" là thứ DUY NHẤT làm lời giải tầm thường `return data` trượt ở bài
+    # round-trip này (đã đo trong chính Pyodide của repo: 12 tên khác đi qua
+    # zipfile NGUYÊN VẸN, cắt ở NUL là phép biến đổi duy nhất), mà byte NUL
+    # thì Postgres jsonb không lưu được — nạp 172 bài chết ở câu UPDATE thứ
+    # 123 và rollback cả khoá. Viết ca đó thành biểu thức thì NUL nằm trong
+    # MÃ NGUỒN Python chứ không trong dữ liệu.
+    #
+    # Luật rộng hơn lý do của nó đã chặn đúng cách duy nhất cứu được ca này.
+    if bieu_thuc and du_lieu and hd:
         loi(f'{ma}: trộn {bieu_thuc} ca biểu thức với {du_lieu} ca dữ liệu trong một bài')
     if du_lieu and len(bon['tests']) < 2:
         # Một ca duy nhất thì lời giải "return <hằng>" cũng đạt.
@@ -1103,6 +1116,46 @@ def kiem_tieu_de_mien() -> None:
             if trung:
                 loi(f'{nhan} còn thuộc miền "{mien["id"]}" ({", ".join(trung)}): {chu!r} '
                     f'— trang khoá học là thứ người học đọc TRƯỚC mọi bài.')
+
+
+def kiem_ky_tu_db(bai: list[dict]) -> None:
+    """Nội dung không được chứa ký tự Postgres `jsonb` từ chối.
+
+    SỰ CỐ 30/10/2026: nạp 172 bài, 122 câu UPDATE xong, câu thứ 123 ném
+    `22P05 unsupported Unicode escape sequence` và transaction rollback — tức
+    KHÔNG bài nào được ghi. Thủ phạm là một KHOÁ JSON của SY20 chứa U+0000
+    (`students.csv\x00.exe`, ca "tên kèm byte null bị zipfile cắt khi ghi").
+
+    Postgres `jsonb` không biểu diễn được U+0000 ở BẤT KỲ đâu, kể cả trong
+    khoá; surrogate lẻ cũng vậy. Không lớp nào trên đường đi biết điều đó, nên
+    một ký tự vô hình trong một ca chấm chặn được cả khoá học — và lỗi chỉ nổ
+    ra lúc đang ghi dở, dưới dạng một đối tượng Prisma không nói tên bài.
+
+    DUYỆT CẢ KHOÁ, không chỉ giá trị: bản quét đầu chỉ duyệt giá trị và báo
+    "0 chỗ" trên đúng file đang hỏng.
+    """
+    def duyet(x, duong: str, ra: list) -> None:
+        if isinstance(x, str):
+            for i, c in enumerate(x):
+                m = ord(c)
+                if m == 0:
+                    ra.append((duong, 'U+0000', x[max(0, i - 30):i + 30]))
+                elif 0xD800 <= m <= 0xDFFF:
+                    ra.append((duong, 'surrogate lẻ', x[max(0, i - 30):i + 30]))
+        elif isinstance(x, list):
+            for i, v in enumerate(x):
+                duyet(v, f'{duong}[{i}]', ra)
+        elif isinstance(x, dict):
+            for k, v in x.items():
+                duyet(k, f'{duong}.<khoá {k!r}>', ra)
+                duyet(v, f'{duong}.{k}', ra)
+
+    for b in bai:
+        ra: list = []
+        duyet(b.get('content_json'), b['lesson_code'], ra)
+        for duong, loai, quanh in ra:
+            loi(f'{duong}: {loai} — Postgres jsonb KHÔNG lưu được, nên bài này '
+                f'làm hỏng CẢ lần nạp (transaction là một khối). Quanh đó: {quanh!r}')
 
 
 def kiem_curricula(bai: list[dict]) -> None:

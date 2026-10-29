@@ -851,10 +851,24 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
   for (const [code, l] of coCa) {
     assert.ok(l.step_4.starterCode?.trim(), code);
     assert.ok(l.step_4.solutionCode?.trim(), code);
-    // Hợp đồng DỮ LIỆU: `input`/`expected`, không phải `call`/`expect` của
-    // pe-v4. Trộn hai dạng thì `contract` chỉ đúng một nửa số ca.
+    // Hợp đồng DỮ LIỆU (`input`/`expected`) là mặc định của khoá này; hợp
+    // đồng BIỂU THỨC (`call`/`expect`) của pe-v4 là NGOẠI LỆ phải nêu tên.
+    //
+    // SY20 là ngoại lệ duy nhất hôm nay, và nó bắt buộc: ca "tên kèm byte
+    // null" cần một byte NUL — thứ DUY NHẤT làm lời giải tầm thường
+    // `return data` trượt ở bài round-trip này (đã đo trong Pyodide: 12 tên
+    // khác đi qua zipfile nguyên vẹn) — mà Postgres jsonb KHÔNG lưu được NUL.
+    // Nạp 172 bài vì thế chết ở câu UPDATE thứ 123 và rollback cả khoá. Viết
+    // ca đó thành biểu thức thì NUL nằm trong MÃ NGUỒN Python, không trong
+    // dữ liệu. Nêu tên chứ không nới chung: bài thứ hai muốn trộn phải sửa
+    // dòng này và nói ra lý do ở đây.
+    const DUOC_TRON = new Set(['SY20']);
     for (const t of l.step_4.tests) {
-      assert.equal('call' in t, false, `${code}: ca dùng hợp đồng biểu thức`);
+      if ('call' in t) {
+        assert.ok(DUOC_TRON.has(code), `${code}: ca dùng hợp đồng biểu thức mà không nằm trong danh sách ngoại lệ`);
+        assert.ok(t.expect, `${code}: ca biểu thức thiếu expect`);
+        continue;
+      }
       assert.ok('input' in t && 'expected' in t, `${code}: ca thiếu input/expected`);
     }
   }

@@ -751,9 +751,20 @@ def bai_tap_cua(bai_tap: dict, mode: str = 'pyodide',
         },
         'starterCode': khung if khung.endswith('\n') else khung + '\n',
         'solutionCode': loi_giai,
-        'tests': [{'name': t['name'], 'input': t.get('input'),
-                   'expected': t.get('expected')}
-                  for t in bai_tap.get('tests') or []],
+        # Phân nhánh theo TRƯỜNG CÓ MẶT, y như studio-harness.py và
+        # check-practice.mjs: ca hợp đồng BIỂU THỨC phải đi qua NGUYÊN VẸN.
+        # Chuẩn hoá tất cả về {name,input,expected} là biến call/expect
+        # thành input=None — lời giải đúng ném lỗi, lời giải tầm thường trả
+        # None và khớp expected=None. Đảo ngược đúng/sai, gặp 30/10/2026 ở
+        # SY20: ca đó phải là biểu thức vì nó cần một byte NUL, mà Postgres
+        # jsonb không lưu được NUL trong dữ liệu.
+        'tests': [
+            ({'name': t['name'], 'call': t['call'], 'expect': t['expect']}
+             if 'call' in t else
+             {'name': t['name'], 'input': t.get('input'),
+              'expected': t.get('expected')})
+            for t in bai_tap.get('tests') or []
+        ],
     }
     if hop_dong:
         ra['contract'] = hop_dong

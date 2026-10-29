@@ -61,17 +61,39 @@ test('laCaDuLieu: ca có `call` là dạng biểu thức, ca có `input` là d�
   assert.equal(laCaDuLieu({ name: 'x', input: [], expected: null }), true);
 });
 
-test('mỗi bài dùng ĐÚNG MỘT hợp đồng, không bài nào trộn', () => {
-  // Trộn thì `contract` chỉ đúng cho một nửa số ca, mà nửa kia không báo gì:
-  // bộ chấm phân nhánh theo từng ca nên nó cứ chạy và cứ trả kết quả.
+test('bài CÓ contract thì không được trộn hai hợp đồng', () => {
+  // Trộn chỉ HẠI KHI bài khai `contract`: mode/inputVariable/resultVariable/
+  // returnType chỉ được áp cho ca DỮ LIỆU, nên ca biểu thức lặng lẽ bỏ qua
+  // chúng và không báo gì — bộ chấm phân nhánh theo từng ca nên nó cứ chạy.
+  //
+  // Bài KHÔNG khai contract thì không có gì để bỏ qua. Luật cũ cấm MỌI bài
+  // trộn, tức rộng hơn chính lý do của nó, và nó đã chặn đúng cách duy nhất
+  // cứu được ca "tên kèm byte null" của SY20: ca đó cần một byte NUL — thứ DUY
+  // NHẤT làm lời giải tầm thường `return data` trượt ở bài round-trip này — mà
+  // Postgres jsonb không lưu được NUL, nên nạp 172 bài chết ở câu UPDATE thứ
+  // 123 và rollback cả khoá. Viết nó thành biểu thức thì NUL nằm trong MÃ
+  // NGUỒN Python chứ không trong dữ liệu. Luật này khớp `kiem_bai_tap()` của
+  // scripts/pe-da/check.py — bốn chỗ cùng ghi giả định này, đừng để lệch.
+  let thuanMotHopDong = 0;
   for (const b of coBaiTap) {
     const t = b.content_json.step_4.tests;
     const duLieu = t.filter(laCaDuLieu).length;
-    assert.ok(
-      duLieu === 0 || duLieu === t.length,
-      `${b.lesson_code}: ${duLieu}/${t.length} ca dạng dữ liệu — bài trộn hai hợp đồng`,
-    );
+    const thuan = duLieu === 0 || duLieu === t.length;
+    if (thuan) thuanMotHopDong += 1;
+    if (b.content_json.step_4.contract) {
+      assert.ok(
+        thuan,
+        `${b.lesson_code}: ${duLieu}/${t.length} ca dạng dữ liệu — bài CÓ contract mà trộn hai hợp đồng`,
+      );
+    }
   }
+  // Trộn phải là NGOẠI LỆ. Nới luật mà không đặt trần là mở cửa cho "bài nào
+  // khó thì viết một ca biểu thức cho xong", và khi đó luật trên không còn nói
+  // được gì. Hôm nay đúng 1 bài (SY20).
+  assert.ok(
+    thuanMotHopDong >= coBaiTap.length - 2,
+    `${coBaiTap.length - thuanMotHopDong} bài trộn hợp đồng — quá nhiều, xem lại thay vì nới tiếp`,
+  );
 });
 
 test('bài script khai ĐỦ cả inputVariable và resultVariable', () => {

@@ -100,12 +100,66 @@ function nonEmptyString(value: unknown): boolean {
 }
 
 /**
+ * Ký tự mà Postgres `jsonb` KHÔNG biểu diễn được, ở BẤT KỲ đâu — kể cả trong
+ * KHOÁ của object.
+ *
+ * SỰ CỐ 30/10/2026. Nạp 172 bài: 122 câu UPDATE chạy xong, câu thứ 123 ném
+ * `22P05 unsupported Unicode escape sequence`, transaction rollback ⇒ KHÔNG
+ * bài nào được ghi. Thủ phạm là một khoá JSON của SY20 chứa U+0000
+ * (`students.csv\x00.exe`). Một ký tự vô hình trong một ca chấm chặn được cả
+ * khoá học, và lỗi in ra là một đối tượng Prisma không nói tên bài.
+ *
+ * Phép kiểm nằm ở ĐÂY vì đây là CỬA DUY NHẤT vào DB: cả đường cập nhật
+ * (`update-lesson-content.ts`) lẫn đường tạo mới (`planLessonInserts`) đều đi
+ * qua `validateStudioLesson`, nên một chỗ là đủ và không có chỗ thứ hai để
+ * trôi lệch. `scripts/pe-da/check.py` kiểm lại ở khâu dựng để người soạn thấy
+ * sớm hơn — hai lớp, cố ý.
+ *
+ * DUYỆT CẢ KHOÁ, không chỉ giá trị: bản quét đầu chỉ duyệt giá trị chuỗi và
+ * báo "0 chỗ" trên đúng file đang hỏng.
+ */
+function kiemKyTuDb(x: unknown, duong: string, errors: string[]): void {
+  if (typeof x === 'string') {
+    for (let i = 0; i < x.length; i++) {
+      const m = x.charCodeAt(i);
+      if (m === 0) {
+        errors.push(
+          `${duong || 'nội dung'}: chứa ký tự U+0000 — Postgres jsonb không lưu được, ` +
+            'nạp sẽ hỏng và huỷ CẢ lần nạp.',
+        );
+        return;
+      }
+      if (m >= 0xd800 && m <= 0xdfff) {
+        const doi = m <= 0xdbff ? x.charCodeAt(i + 1) : x.charCodeAt(i - 1);
+        const ghep =
+          m <= 0xdbff ? doi >= 0xdc00 && doi <= 0xdfff : doi >= 0xd800 && doi <= 0xdbff;
+        if (!ghep) {
+          errors.push(
+            `${duong || 'nội dung'}: chứa surrogate lẻ — Postgres jsonb không lưu được.`,
+          );
+          return;
+        }
+      }
+    }
+  } else if (Array.isArray(x)) {
+    x.forEach((v, i) => kiemKyTuDb(v, `${duong}[${i}]`, errors));
+  } else if (isObject(x)) {
+    for (const [k, v] of Object.entries(x)) {
+      kiemKyTuDb(k, `${duong}.<khoá>`, errors);
+      kiemKyTuDb(v, duong ? `${duong}.${k}` : k, errors);
+    }
+  }
+}
+
+/**
  * Kiểm tra một bản nháp trước khi cho lưu. Trả danh sách lỗi theo đường dẫn
  * field để admin biết sửa chỗ nào — KHÔNG ném exception, người gọi quyết định.
  */
 export function validateStudioLesson(value: unknown): string[] {
   const errors: string[] = [];
   if (!isObject(value)) return ['Nội dung phải là một object JSON.'];
+
+  kiemKyTuDb(value, '', errors);
 
   const lesson = value as StudioLesson;
 

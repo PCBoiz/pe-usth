@@ -30791,12 +30791,8 @@
             },
             {
               "name": "tên kèm byte null bị zipfile cắt khi ghi",
-              "input": {
-                "students.csv\u0000.exe": "id\nS1"
-              },
-              "expected": {
-                "students.csv": "id\nS1"
-              }
+              "call": "solve({'students.csv\\x00.exe': 'id\\nS1'})",
+              "expect": "{'students.csv': 'id\\nS1'}"
             }
           ],
           "hints": [

@@ -239,9 +239,14 @@ for (const bai of goi.lessons) {
     for (const k of ['mode', 'inputVariable', 'resultVariable', 'returnType']) {
       if (bt[k] !== undefined) hopDong[k] = bt[k];
     }
-    const cases = (bt.tests || []).map((t) => ({
-      name: t.name, input: t.input ?? null, expected: t.expected ?? null,
-    }));
+    // Phân nhánh theo TRƯỜNG CÓ MẶT, y như studio-harness.py: ca biểu thức
+    // (`call`/`expect`) phải đi qua NGUYÊN VẸN. Ép nó thành ca dữ liệu —
+    // `input: null` — là bắt chương trình chạy lại với `solve(None)`: lời giải
+    // ĐÚNG ném AttributeError còn `return data` trả None khớp `expected: null`
+    // và được cho ĐẠT. Đảo ngược đúng/sai, đã gặp 30/10/2026 ở SY20.
+    const cases = (bt.tests || []).map((t) => ('call' in t
+      ? { name: t.name, call: t.call, expect: t.expect }
+      : { name: t.name, input: t.input ?? null, expected: t.expected ?? null }));
 
     const t0 = Date.now();
     let res;
@@ -486,6 +491,11 @@ function traNguyen(bt) {
 }
 
 /** Giá trị RỖNG cùng kiểu với `v` — đúng thứ một lời giải "chưa làm gì" trả. */
+/** Ca hợp đồng BIỂU THỨC (`{name, call, expect}`) hay hợp đồng DỮ LIỆU? */
+function laBieuThuc(ca) {
+  return Boolean(ca) && 'call' in ca;
+}
+
 function rongCungKieu(v) {
   if (v === null || v === undefined) return null;
   if (Array.isArray(v)) return [];
@@ -535,9 +545,14 @@ for (const bai of goi.lessons) {
     for (const k of ['mode', 'inputVariable', 'resultVariable', 'returnType']) {
       if (bt[k] !== undefined) hopDong[k] = bt[k];
     }
-    const cases = (bt.tests || []).map((t) => ({
-      name: t.name, input: t.input ?? null, expected: t.expected ?? null,
-    }));
+    // Phân nhánh theo TRƯỜNG CÓ MẶT, y như studio-harness.py: ca biểu thức
+    // (`call`/`expect`) phải đi qua NGUYÊN VẸN. Ép nó thành ca dữ liệu —
+    // `input: null` — là bắt chương trình chạy lại với `solve(None)`: lời giải
+    // ĐÚNG ném AttributeError còn `return data` trả None khớp `expected: null`
+    // và được cho ĐẠT. Đảo ngược đúng/sai, đã gặp 30/10/2026 ở SY20.
+    const cases = (bt.tests || []).map((t) => ('call' in t
+      ? { name: t.name, call: t.call, expect: t.expect }
+      : { name: t.name, input: t.input ?? null, expected: t.expected ?? null }));
     // Pha 2 cũng phải có file dữ liệu, và đây là chỗ dễ bỏ quên nhất: mỗi ca
     // chạy LẠI cả chương trình trên một thư mục mới, nên một biến thể sai mà
     // thiếu file sẽ trượt vì FileNotFoundError — tức "lời giải sai bị đánh
@@ -550,6 +565,10 @@ for (const bai of goi.lessons) {
     // `null` thì `None` — và bài trộn nhiều kiểu thì thử cả mấy cái.
     const rong = [];
     for (const t of bt.tests || []) {
+      // Ca biểu thức không mang `expected` dạng JSON nên không suy ra được
+      // "giá trị rỗng cùng kiểu"; lấy bừa `null` là thêm một biến thể `None`
+      // mà luật tầm thường bên dưới không chấm nổi.
+      if ('call' in t) continue;
       const r = rongCungKieu(t.expected ?? null);
       if (!rong.some((x) => pyRepr(x) === pyRepr(r))) rong.push(r);
     }
@@ -581,7 +600,8 @@ for (const bai of goi.lessons) {
       const tong = ketQua.length || cases.length;
       if (luat === 'het') {
         // Ca mà khung trống đạt NHƯNG `expected` không phải null = lộ đáp án.
-        const lo = ketQua.filter((r, i) => r.passed && (cases[i]?.expected ?? null) !== null);
+        const lo = ketQua.filter((r, i) => r.passed
+          && (laBieuThuc(cases[i]) || (cases[i]?.expected ?? null) !== null));
         if (lo.length) {
           choPhepSai.push({
             ma: bai.id, id: bt.id, loai,
@@ -601,7 +621,7 @@ for (const bai of goi.lessons) {
         // Cùng luật với khung trống, chỉ khác "giá trị tầm thường" không phải
         // None mà là thứ biến thể này trả về cho ca đó.
         const lo = ketQua.filter((r, i) => r.passed
-          && !bangDuLieu(cases[i]?.expected ?? null, tri(i)));
+          && (laBieuThuc(cases[i]) || !bangDuLieu(cases[i]?.expected ?? null, tri(i))));
         if (lo.length) {
           choPhepSai.push({
             ma: bai.id, id: bt.id, loai,

@@ -51,7 +51,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | **33 bộ, 460 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
+| Backend test | **33 bộ, 464 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
 | Backend lint | 219 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
@@ -1243,6 +1243,52 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   TRONG PIXEL (ảnh xuất sẵn trong gói nguồn, `chep_anh()` chỉ chép — sửa phải xuất lại từ gói
   nguồn, mà gói đó nằm ngoài repo), và `source/practice.json` vẫn dùng `region`/`qty`/`E`/`W`.
 
+- **MỘT KÝ TỰ VÔ HÌNH CHẶN ĐƯỢC CẢ KHOÁ: Postgres `jsonb` không lưu được U+0000.**
+  Sự cố 30/10/2026: nạp 172 bài, **122 câu UPDATE chạy xong**, câu thứ 123 ném
+  `22P05 unsupported Unicode escape sequence` và transaction rollback ⇒ KHÔNG bài nào
+  được ghi. Thủ phạm là một **KHOÁ** JSON của SY20: `students.csv\x00.exe` trong ca chấm
+  "tên kèm byte null bị zipfile cắt khi ghi". Người chạy thử ba lần, mỗi lần nhận một
+  đối tượng Prisma không nói tên bài, và file sao lưu thì vẫn ghi ra đầy đủ nên nhìn vào
+  thư mục backup lại tưởng đã nạp.
+  **DUYỆT CẢ KHOÁ, KHÔNG CHỈ GIÁ TRỊ.** Bản quét đầu của tôi chỉ duyệt giá trị chuỗi và
+  báo "0 chỗ" trên đúng cái file đang hỏng — khoá của dict cũng là chuỗi trong JSON và
+  Postgres cũng từ chối ở đó. Surrogate lẻ cũng vậy; cặp surrogate hợp lệ (emoji) thì KHÔNG
+  được chặn nhầm.
+  **HAI LỚP, cố ý:** `kiem_ky_tu_db()` trong `check.py` bắt ở khâu dựng (người soạn thấy
+  sớm), và `validateStudioLesson` bắt ở **CỬA DUY NHẤT vào DB** — cả đường cập nhật lẫn
+  đường tạo mới đều qua nó, nên một chỗ là đủ và không có chỗ thứ hai để trôi lệch.
+  **Ca đó KHÔNG xoá được, và cũng không viết lại được bằng tên khác.** Đã đo trong chính
+  Pyodide của repo: `/abs/x.txt`, `a//b.txt`, `dir/../x.txt`, `C:\\x.txt`, dấu cách
+  thừa, tổ hợp Unicode, tên rỗng — **12 tên đều đi qua zipfile NGUYÊN VẸN**, vì dưới
+  Emscripten `os.sep == "/"` nên nhánh đổi dấu phân cách không chạy và `writestr` không
+  cắt dấu `/` đầu như `write`. Cắt ở NUL là phép biến đổi DUY NHẤT, tức thứ duy nhất làm
+  `return data` trượt ở một bài round-trip. Nên ca đó chuyển sang **hợp đồng BIỂU THỨC**:
+  NUL nằm trong MÃ NGUỒN Python (`\x00`, bốn ký tự thường) và `eval` dựng nó lúc chạy.
+  **BA chỗ cùng vứt `call`/`expect` đi, và mỗi chỗ làm hỏng theo kiểu riêng:**
+  · `build.py` chuẩn hoá mọi ca về `{name,input,expected}` ⇒ thay đổi ở nguồn KHÔNG BAO GIỜ
+    tới bản dựng (sửa nguồn xong chạy bộ chấm vẫn thấy y nguyên — mất khá lâu mới nhận ra);
+  · `check-practice.mjs` dựng lại ca thành `input: null` ⇒ chương trình chạy lại với
+    `solve(None)`: lời giải ĐÚNG ném AttributeError, còn `return data` trả None và khớp
+    `expected: null` nên ĐƯỢC CHO ĐẠT. Bộ chấm đảo ngược đúng/sai;
+  · `studio-harness.py` thì ĐÃ phân nhánh đúng theo trường có mặt từ đầu — khả năng có
+    sẵn, thiếu là đường đi tới nó. Đúng họ "dựng xong mà không có đường tới".
+  **Luật "cấm trộn hai hợp đồng" đã THU HẸP về đúng lý do của nó, ở BỐN chỗ.** Tác hại
+  thật là: `contract` (mode/inputVariable/resultVariable/returnType) chỉ áp cho ca DỮ
+  LIỆU, nên ca biểu thức lặng lẽ bỏ qua nó. Bài KHÔNG khai `contract` thì không có gì để
+  bỏ qua — **81/124 bài tập** ở diện đó. Luật cũ cấm MỌI bài trộn, tức rộng hơn chính lý
+  do của nó, và nó chặn đúng cách duy nhất cứu được ca này. Bốn chỗ: `kiem_bai_tap()`
+  (check.py), `studio-lesson.schema.ts` (luật này là THEO TỪNG CA — một ca có cả hai —
+  nên không đụng), `practice-contract.test.mjs`, `studio-lesson.test.mjs`. Hai bộ test
+  giữ TRẦN cho ngoại lệ (danh sách tên bài, và "không quá 2 bài trộn"): nới luật mà không
+  đặt trần là mở cửa cho "bài nào khó thì viết một ca biểu thức cho xong".
+  **Số không đổi sau cả đợt:** 415 ca chấm, 556 biến thể sai đều trượt — tấm chắn chống
+  lời giải tầm thường của SY20 còn nguyên (`return data` đạt 3/4, trượt đúng ca NUL).
+  Ablate: bỏ `kiemKyTuDb` khỏi schema → **3 ca đỏ**; bỏ `kiem_ky_tu_db` khỏi check.py →
+  1 lỗi (bắt đúng SY20, đúng đường dẫn tới khoá).
+  **Và đường nạp nay in tiến độ TỪNG BÀI kèm mốc ms**, rồi khi hỏng thì nói "0 câu nào
+  chạy ⇒ hỏng ở bước lấy kết nối" hay "có câu đã chạy ⇒ hỏng giữa chừng". Chính dòng
+  `[122/172] SY19 ghi xong` là thứ chỉ thẳng ra bài 123.
+
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
 Hai đường, chọn sai là xoá tiến độ của người đang học:
@@ -1262,6 +1308,9 @@ Hai đường, chọn sai là xoá tiến độ của người đang học:
   npx ts-node scripts/update-lesson-content.ts --codes=P01,P02,P03 --offline   # kiểm gói
   npx ts-node scripts/update-lesson-content.ts --codes=P01,P02,P03             # xem trước
   npx ts-node scripts/update-lesson-content.ts --codes=P01,P02,P03 --apply --backup=bak.json
+  # Nạp CẢ KHOÁ: dùng --all. Dựng chuỗi 172 mã bằng shell là câu lệnh chỉ chạy
+  # được trên bash, mà người nạp dùng PowerShell — đã hỏng hai lần vì chuyện đó.
+  npx ts-node scripts/update-lesson-content.ts --all --apply --backup=bak.json
   ```
 
   Luật chọn/so sánh nằm ở `src/course-admin/lesson-content-update.ts` (có test Jest).
