@@ -153,20 +153,34 @@ async function main() {
     // canh TREO (kết nối chết giữa lúc ghi), không phải canh tốc độ — đặt sát
     // số đo thật là tự tạo ra lỗi ngẫu nhiên vào ngày DB chậm hơn thường.
     // `maxWait` là thời gian CHỜ LẤY kết nối từ pool, chuyện khác hẳn.
-    await prisma.$transaction(async (tx) => {
-      for (const item of changed) {
-        // updateMany để lọc được cả lesson_code (update() chỉ nhận khoá unique). Kiểm
-        // count === 1: hàng bị đổi/xoá giữa lúc đọc và lúc ghi thì huỷ cả transaction.
-        const res = await tx.lesson.updateMany({
-          where: { courseId: ADVANCED_COURSE_ID, sortOrder: item.sortOrder, lessonCode: item.code },
-          // `as object`: InputJsonValue của Prisma không nhận unknown (cùng lý do với seed v4).
-          data: { contentJson: item.content as object },
-        });
-        if (res.count !== 1) {
-          throw new Error(`${item.code}: UPDATE trúng ${res.count} hàng, cần đúng 1 — huỷ toàn bộ.`);
+    try {
+      await prisma.$transaction(async (tx) => {
+        for (const item of changed) {
+          // updateMany để lọc được cả lesson_code (update() chỉ nhận khoá unique). Kiểm
+          // count === 1: hàng bị đổi/xoá giữa lúc đọc và lúc ghi thì huỷ cả transaction.
+          const res = await tx.lesson.updateMany({
+            where: { courseId: ADVANCED_COURSE_ID, sortOrder: item.sortOrder, lessonCode: item.code },
+            // `as object`: InputJsonValue của Prisma không nhận unknown (cùng lý do với seed v4).
+            data: { contentJson: item.content as object },
+          });
+          if (res.count !== 1) {
+            throw new Error(`${item.code}: UPDATE trúng ${res.count} hàng, cần đúng 1 — huỷ toàn bộ.`);
+          }
         }
-      }
-    }, { timeout: 120_000, maxWait: 20_000 });
+      }, { timeout: 120_000, maxWait: 20_000 });
+    } catch (err) {
+      // Transaction rollback là ĐÚNG thiết kế — DB không hỏng. Nhưng file sao
+      // lưu ĐÃ ghi xong ở trên, nên dấu vết duy nhất người chạy nhìn thấy là
+      // một file backup đầy đủ, và họ kết luận là đã nạp. Đã xảy ra 29/10/2026
+      // và chỉ phát hiện ra hôm sau bằng cách so file sao lưu với DB.
+      console.error('\n✗ KHÔNG NẠP ĐƯỢC — content_json trong DB KHÔNG ĐỔI một byte nào.');
+      console.error(`  File sao lưu ${BACKUP} ĐÃ ghi xong TRƯỚC bước ghi, nên sự tồn tại`);
+      console.error('  của nó KHÔNG chứng minh là đã nạp. Đừng đọc nó như một biên nhận.');
+      console.error('  Chạy lại lệnh này là AN TOÀN: không có gì được ghi.');
+      console.error('  Muốn biết DB đang giữ bản nào thì bỏ --apply ra, chạy khô sẽ in sha256 cũ → mới.');
+      console.error('\nLỗi gốc:');
+      throw err;
+    }
     console.log(`\n✓ Đã cập nhật content_json của ${changed.length} bài: `
       + `${changed.map((c) => c.code).join(', ')}.`);
   } finally {
