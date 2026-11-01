@@ -20,16 +20,21 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { apiFetch } from '@/lib/api';
 import {
+  apDungChon,
   cauCuaCong,
   daChonHet,
   docDe,
+  docDeDangLam,
+  docDeKhoiPhuc,
   docKetQua,
   docTrangThai,
+  ghiDeDangLam,
   goiDapAn,
   nhanDiem,
   soCauTrongDe,
   thongDiepLoi,
   viTriDung,
+  xoaDeDangLam,
   type DeOn,
   type KetQuaCham,
   type TrangThaiDeOn,
@@ -62,6 +67,15 @@ export default function ReviewQuiz({ courseId }: { courseId: string }) {
   const [ketQua, setKetQua] = useState<KetQuaCham | null>(null);
   const [dangGoi, setDangGoi] = useState(false);
   const [loi, setLoi] = useState('');
+  /**
+   * Lúc PHÁT đề đang mở, ms. Phải là STATE chứ không tính lại lúc ghi: hạn 7
+   * ngày bó TUỔI của đề, nên một đề khôi phục về phải giữ nguyên mốc cũ — lấy
+   * `Date.now()` ở mỗi lượt ghi là mỗi lần mở lại ô này lại gia hạn thêm 7
+   * ngày, tức hạn đó không bao giờ tới.
+   */
+  const [lucPhat, setLucPhat] = useState(0);
+  /** Điểm của đề ĐÃ NỘP, khôi phục từ `GET quizzes/:id` — xem `docDeKhoiPhuc`. */
+  const [daNop, setDaNop] = useState<{ diem: number; tong: number } | null>(null);
 
   const khoa = encodeURIComponent(courseId);
 
@@ -70,19 +84,62 @@ export default function ReviewQuiz({ courseId }: { courseId: string }) {
   // để người học bấm rồi nhận lỗi. `setState` nằm trong callback của promise,
   // KHÔNG trong thân effect — React 19 chặn setState đồng bộ trong thân
   // (`react-hooks/set-state-in-effect`), và luật đó đúng.
+  //
+  // VÀ nạp lại ĐỀ ĐANG LÀM nếu lần trước bỏ dở: `quiz_id` chỉ sống trong state
+  // React, nên trước bản này một lần F5 là mất đề — hàng `quizzes` kẹt ở
+  // `generated` vĩnh viễn và người học chỉ còn đường phát một đề khác. Luật
+  // (cất ở đâu, đã nộp thì sao, bỏ dở bao lâu thì thôi) nằm ở `review-quiz.ts`.
+  //
+  // SONG SONG, không nối đuôi: hai lượt này không phụ thuộc nhau, và repo này
+  // đã trả giá một lần cho ba lượt API tuần tự ở màn mở bài (3,7 giây).
   useEffect(() => {
     let song = true;
+    // Đọc đĩa ngay trong thân effect là được — đây không phải `setState`, thứ
+    // mà React 19 chặn (`react-hooks/set-state-in-effect`).
+    const luu = docDeDangLam(courseId);
     void (async () => {
-      const r = await goi(`/api/courses/${khoa}/quiz/status`);
+      const [rTt, rDe] = await Promise.all([
+        goi(`/api/courses/${khoa}/quiz/status`),
+        luu ? goi(`/api/quizzes/${luu.quizId}`) : Promise.resolve(null),
+      ]);
       if (!song) return;
-      if (!r.ok) setLoi(r.loi);
-      else setTrangThai(docTrangThai(r.body));
+      if (!rTt.ok) setLoi(rTt.loi);
+      else setTrangThai(docTrangThai(rTt.body));
+
+      if (luu && rDe) {
+        const kp = rDe.ok ? docDeKhoiPhuc(rDe.body) : null;
+        if (!kp) {
+          // 404 (đề của tài khoản khách CŨ — hết hạn refresh là `ensureGuest()`
+          // cấp tài khoản mới), hoặc body không đọc được. Xoá rồi hiện cổng
+          // thường: KHÔNG báo lỗi, vì người học không nhớ mình có đề mở dở nên
+          // một câu nói về nó chỉ gây hoang mang.
+          xoaDeDangLam(courseId);
+        } else if (kp.loai === 'daNop') {
+          // Đề này đã nộp xong (nộp lần hai là 409). Không dựng lại thành "đang
+          // làm" — xem quyết định 2 trong `review-quiz.ts`.
+          xoaDeDangLam(courseId);
+          setDaNop({ diem: kp.diem, tong: kp.tong });
+        } else {
+          setDe(kp.de);
+          setChon(apDungChon(kp.de, luu.chon));
+          setLucPhat(luu.luc);
+        }
+      }
       setDangDoc(false);
     })();
     return () => {
       song = false;
     };
-  }, [khoa]);
+  }, [courseId, khoa]);
+
+  // TỰ LƯU đề đang làm sau mỗi lần đổi phương án. Ghi trong effect (không phải
+  // trong hàm cập nhật state) để một chỗ duy nhất lo việc ghi: phát đề mới và
+  // bấm phương án đều đi qua đây, nên không có đường nào vào trạng thái "đang
+  // làm" mà quên ghi. Đã nộp thì dừng ghi — `nop()` đã xoá bản lưu.
+  useEffect(() => {
+    if (!de || ketQua) return;
+    ghiDeDangLam(courseId, { quizId: de.quizId, luc: lucPhat, chon });
+  }, [courseId, de, chon, ketQua, lucPhat]);
 
   const phatDe = useCallback(async () => {
     setDangGoi(true);
@@ -99,6 +156,9 @@ export default function ReviewQuiz({ courseId }: { courseId: string }) {
     setDe(d);
     setChon(d.cauHoi.map(() => null));
     setKetQua(null);
+    setDaNop(null);
+    // Mốc tuổi của đề. Effect tự lưu ở trên ghi nó xuống đĩa ngay sau render.
+    setLucPhat(Date.now());
   }, [khoa]);
 
   const nop = useCallback(async () => {
@@ -113,11 +173,16 @@ export default function ReviewQuiz({ courseId }: { courseId: string }) {
       body: JSON.stringify({ answers: goiDapAn(chon, de.cauHoi.length) }),
     });
     setDangGoi(false);
+    // XOÁ bản lưu dù nộp được hay không: nhánh !ok thường nhất ở đây là 409
+    // "đã được nộp" (bấm đúp, hoặc một tab khác nộp trước), và giữ lại một id
+    // đã nộp chỉ để mỗi lần mở màn tổng kết lại tốn một lượt `GET quizzes/:id`
+    // rồi rơi vào nhánh `daNop`. Đề nộp được thì cũng không còn gì để nhớ.
+    xoaDeDangLam(courseId);
     if (!r.ok) return setLoi(r.loi);
     const kq = docKetQua(r.body);
     if (!kq) return setLoi('Đã nộp nhưng không đọc được kết quả. Tải lại trang để xem lại.');
     setKetQua(kq);
-  }, [chon, de]);
+  }, [chon, courseId, de]);
 
   if (dangDoc) {
     return (
@@ -135,6 +200,17 @@ export default function ReviewQuiz({ courseId }: { courseId: string }) {
       <h3 className={c.tieuDe}>
         <span aria-hidden="true">📝</span> Đề ôn tập · chấm ở máy chủ
       </h3>
+
+      {/* ĐỀ TRƯỚC ĐÃ NỘP, khôi phục từ `GET quizzes/:id` sau một lần tải lại.
+          Chỉ có ĐIỂM, không dựng lại danh sách câu: response của đề đã nộp
+          không mang `questions`, và `detail` thì không mang `options` — dựng
+          một màn đề mà mọi phương án trống thì tệ hơn là nói đúng một nửa. */}
+      {!de && daNop && (
+        <p className={c.moTa}>
+          Đề ôn lần trước bạn đã nộp xong — {daNop.diem}/{daNop.tong} câu đúng. Mỗi đề chỉ
+          nộp được một lần, nên lần này là một đề mới.
+        </p>
+      )}
 
       {/* CHƯA có đề: hiện cổng (mở được / còn thiếu mấy BÀI). */}
       {!de && trangThai && <p className={c.moTa}>{cauCuaCong(trangThai)}</p>}

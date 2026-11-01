@@ -24,19 +24,26 @@ import { readdirSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 
 import {
+  apDungChon,
   cauCuaCong,
   daChonHet,
   DE_MAX,
   DE_MIN,
   docDe,
+  docDeDangLam,
+  docDeKhoiPhuc,
   docKetQua,
   docTrangThai,
+  ghiDeDangLam,
   goiDapAn,
+  HAN_GIU_DE_MS,
+  khoaLuuDe,
   nhanDiem,
   soBaiConThieu,
   soCauTrongDe,
   thongDiepLoi,
   viTriDung,
+  xoaDeDangLam,
 } from '../../src/lib/review-quiz.ts';
 
 const doc = (p) => readFileSync(new URL(p, import.meta.url), 'utf8');
@@ -338,4 +345,248 @@ test('trang công khai vẫn KHÔNG gọi API nào', () => {
     const s = doc(`../../${f}`);
     assert.doesNotMatch(s, /apiFetch|ReviewQuiz|quiz\/generate|quiz\/status/, f);
   }
+});
+
+// ------------------------------------------- ĐỀ ĐANG LÀM sống qua tải lại
+//
+// LỖI ĐANG CANH: `quiz_id` chỉ sống trong state React, nên một lần F5 giữa lúc
+// đang làm đề là MẤT ĐỀ — hàng `quizzes` kẹt ở `generated` vĩnh viễn (không ai
+// nộp được nó nữa) và người học chỉ còn đường phát một đề khác. `GET
+// quizzes/:id` đã có từ Task 133 và chưa ai gọi.
+
+/** Kho giả, đủ ba hàm mà `review-quiz.ts` khai. */
+function khoGia(ban = {}) {
+  const o = { ...ban };
+  return {
+    o,
+    getItem: (k) => (k in o ? o[k] : null),
+    setItem: (k, v) => {
+      o[k] = String(v);
+    },
+    removeItem: (k) => {
+      delete o[k];
+    },
+  };
+}
+
+const DE_MAU = {
+  ok: true,
+  quiz_id: 77,
+  status: 'generated',
+  questions: [
+    { index: 0, question: 'Câu A?', options: ['a', 'b', 'c'] },
+    { index: 1, question: 'Câu B?', options: ['x', 'y'] },
+  ],
+};
+
+test('khoá lưu gắn với KHOÁ HỌC, không với BÀI', () => {
+  // Bản nháp (`useLessonDraft`) gắn với bài: `pe-studio-lesson-v1:<user>:<khoá>:<bài>`.
+  // Đề ôn thì rút câu từ MỌI bài đã hoàn thành và ô đề ôn mount ở màn tổng kết
+  // của BẤT KỲ bài nào — cất vào nháp bài 12 thì màn tổng kết bài 13 lại phát
+  // một đề THỨ HAI, và một trong hai chắc chắn kẹt lại mãi.
+  assert.equal(khoaLuuDe('python_advanced'), khoaLuuDe('python_advanced'));
+  assert.notEqual(khoaLuuDe('python_advanced'), khoaLuuDe('python'));
+  assert.doesNotMatch(khoaLuuDe('python_advanced'), /lesson|bai|:\d+$/);
+  // …và id đề KHÔNG được chui vào bản nháp bài: đó là chỗ nó sẽ gắn với bài.
+  assert.doesNotMatch(doc('../../src/lib/studio-lesson.ts'), /quizId|quiz_id/);
+  assert.doesNotMatch(
+    doc('../../src/components/python-studio/useLessonDraft.ts'),
+    /quizId|quiz_id/,
+  );
+});
+
+test('ghi rồi đọc lại: giữ id, mốc phát đề và các phương án đã chọn', () => {
+  const kho = khoGia();
+  const luc = 1_700_000_000_000;
+  ghiDeDangLam('python_advanced', { quizId: 77, luc, chon: [2, null] }, kho);
+  // Nhớ id mà bỏ các phương án đã chọn thì người học vẫn phải làm lại cả đề.
+  assert.deepEqual(docDeDangLam('python_advanced', luc + 1000, kho), {
+    quizId: 77,
+    luc,
+    chon: [2, null],
+  });
+  // Và khoá học KHÁC thì không thấy gì — đề của khoá này không hiện ở khoá kia.
+  assert.equal(docDeDangLam('python', luc + 1000, kho), null);
+});
+
+test('bỏ dở quá 7 ngày → bỏ đề, và XOÁ bản lưu', () => {
+  const kho = khoGia();
+  const luc = 1_700_000_000_000;
+  ghiDeDangLam('python_advanced', { quizId: 77, luc, chon: [] }, kho);
+
+  // Trong hạn: còn nạp lại. "Bỏ dở ba ngày rồi quay lại" phải thấy đề cũ.
+  assert.ok(docDeDangLam('python_advanced', luc + 3 * 24 * 3600_000, kho));
+  // Quá hạn: bỏ. Pool lớn dần theo số bài hoàn thành, nên một đề phát lúc mới
+  // xong 2 bài mà quay lại sau một module nữa thì nó đang ôn một phần nhỏ của
+  // thứ người ta đã học — và đề mới thì luôn sẵn, một bấm.
+  assert.equal(docDeDangLam('python_advanced', luc + HAN_GIU_DE_MS + 1, kho), null);
+  // XOÁ chứ không chỉ bỏ qua: để lại thì mỗi lần mở màn tổng kết là một lượt
+  // `GET quizzes/:id` cho một đề không ai còn muốn làm.
+  assert.deepEqual(Object.keys(kho.o), []);
+});
+
+test('hạn giữ đề là 7 ngày', () => {
+  // Dài hơn mọi lần nghỉ ngắn, ngắn hơn một nhịp học hết một module.
+  assert.equal(HAN_GIU_DE_MS, 7 * 24 * 60 * 60 * 1000);
+});
+
+test('bản ghi không nói được TUỔI của nó thì không được giữ', () => {
+  // Thiếu `luc` mà đoán là "vừa phát" thì bản ghi đó sống mãi — và nó do một
+  // bản code khác (hoặc một tab khác, luật khác) ghi ra.
+  for (const xau of [
+    { quizId: 77 },
+    { quizId: 77, luc: 'hôm qua' },
+    { quizId: 0, luc: 1 },
+    { quizId: -3, luc: 1 },
+    { luc: 1 },
+    'không phải JSON',
+    '[]',
+  ]) {
+    const kho = khoGia({
+      [khoaLuuDe('python_advanced')]: typeof xau === 'string' ? xau : JSON.stringify(xau),
+    });
+    assert.equal(docDeDangLam('python_advanced', 2, kho), null, JSON.stringify(xau));
+  }
+  // Đồng hồ máy bị đặt lùi: không tính được tuổi thì không giữ.
+  const kho = khoGia();
+  ghiDeDangLam('python_advanced', { quizId: 77, luc: 5000, chon: [] }, kho);
+  assert.equal(docDeDangLam('python_advanced', 4000, kho), null);
+});
+
+test('kho bị chặn / không có kho: không ném, chỉ là không nhớ gì', () => {
+  const nem = {
+    getItem: () => {
+      throw new Error('SecurityError');
+    },
+    setItem: () => {
+      throw new Error('QuotaExceeded');
+    },
+    removeItem: () => {
+      throw new Error('SecurityError');
+    },
+  };
+  assert.equal(docDeDangLam('python_advanced', 1, nem), null);
+  assert.doesNotThrow(() => ghiDeDangLam('python_advanced', { quizId: 1, luc: 1, chon: [] }, nem));
+  assert.doesNotThrow(() => xoaDeDangLam('python_advanced', nem));
+  assert.equal(docDeDangLam('python_advanced', 1, null), null);
+  assert.doesNotThrow(() => ghiDeDangLam('python_advanced', { quizId: 1, luc: 1, chon: [] }, null));
+});
+
+test('đề CHƯA nộp nạp về đúng hình dạng mà `docDe` đọc được', () => {
+  // `getQuiz` khi chưa nộp trả `{ok, quiz_id, status, questions}` với
+  // `questions` đã `stripAnswers` — ĐÚNG khuôn mà `generate-review` trả.
+  const kp = docDeKhoiPhuc(DE_MAU);
+  assert.equal(kp?.loai, 'dangLam');
+  assert.deepEqual(kp.de, docDe(DE_MAU));
+  assert.equal(kp.de.quizId, 77);
+  assert.equal(kp.de.cauHoi.length, 2);
+  assert.doesNotMatch(JSON.stringify(kp), /correct|explanation/);
+});
+
+test('đề ĐÃ NỘP không bao giờ trở lại thành "đang làm"', () => {
+  // Nộp lần hai là 409 (`submitQuiz` compare-and-set generated -> submitted).
+  // Khôi phục một đề đã nộp thành "đang làm" là mời người học chọn lại đủ 10
+  // câu rồi nhận một câu lỗi — một việc nền tảng BIẾT TRƯỚC là không được.
+  const kp = docDeKhoiPhuc({
+    ok: true,
+    quiz_id: 77,
+    status: 'submitted',
+    score: 4,
+    total: 5,
+    detail: [],
+  });
+  assert.deepEqual(kp, { loai: 'daNop', diem: 4, tong: 5 });
+
+  // Và `status` phải được xét TRƯỚC `questions`: một response mang CẢ HAI (bản
+  // backend sau này, hoặc một đề nộp xong mà vẫn trả câu hỏi) vẫn là "đã nộp".
+  const caHai = docDeKhoiPhuc({ ...DE_MAU, status: 'submitted', score: 1, total: 2 });
+  assert.equal(caHai?.loai, 'daNop');
+
+  // Đã nộp mà không có điểm thì không dựng ra số 0 — hiện cổng thường.
+  assert.equal(docDeKhoiPhuc({ quiz_id: 77, status: 'submitted' }), null);
+  assert.equal(docDeKhoiPhuc(null), null);
+  assert.equal(docDeKhoiPhuc({ ok: true, quiz_id: 77, status: 'generated' }), null);
+});
+
+test('phương án đã lưu được KẸP theo số phương án của từng câu', () => {
+  const de = docDe(DE_MAU);
+  // Câu 2 chỉ có 2 phương án: chỉ số 5 phải thành null. Để nguyên thì radio
+  // không tô gì NHƯNG `daChonHet` vẫn đọc ra "đã chọn" — nút Nộp mở và
+  // `answers[1] = 5` được gửi đi rồi chấm là SAI, im lặng.
+  const chon = apDungChon(de, [2, 5]);
+  assert.deepEqual(chon, [2, null]);
+  assert.equal(daChonHet(chon, de.cauHoi.length), false);
+
+  // Độ dài luôn bằng SỐ CÂU của đề vừa nạp về, không bằng độ dài bản lưu.
+  assert.equal(apDungChon(de, [0]).length, 2);
+  assert.equal(apDungChon(de, [0, 1, 1, 1]).length, 2);
+  assert.deepEqual(apDungChon(de, ['1', null, 3]), [null, null]);
+  assert.deepEqual(apDungChon(de, 'hỏng'), [null, null]);
+  assert.deepEqual(apDungChon(de, [-1, 1]), [null, 1]);
+});
+
+test('ô đề ôn THỰC SỰ gọi `GET quizzes/:id` và xoá bản lưu sau khi nộp', () => {
+  // Mắt thứ TƯ của đường đi. Không có lời gọi này thì cả lớp lưu trên đây chỉ
+  // là một id nằm trên đĩa mà không ai nạp về — đúng hình dạng lỗi "dựng xong
+  // mà không có đường tới" mà ô này ra đời để chữa.
+  assert.match(NGUON_O, /`\/api\/quizzes\/\$\{luu\.quizId\}`/);
+  assert.match(NGUON_O, /docDeDangLam\(courseId\)/);
+  // Nạp lại SONG SONG với lượt hỏi trạng thái, không nối đuôi (repo này đã trả
+  // giá một lần cho ba lượt API tuần tự ở màn mở bài: 3,7 giây).
+  assert.match(NGUON_O, /Promise\.all\(\[/);
+  // Nộp xong (hoặc 409) thì bản lưu phải đi, kẻo mỗi lần mở màn tổng kết lại
+  // tốn một lượt GET rồi rơi vào nhánh "đã nộp".
+  const viTriNop = NGUON_O.indexOf('/submit`');
+  const viTriXoa = NGUON_O.indexOf('xoaDeDangLam(courseId);', viTriNop);
+  assert.ok(viTriNop > 0 && viTriXoa > viTriNop, 'nộp xong không xoá bản lưu');
+});
+
+test('CẢ VÒNG: phát đề → chọn → tải lại → đúng đề, đúng phương án → nộp xong thì hết', () => {
+  // Mỗi hàm ở trên đã có ca riêng; ca này canh chỗ chúng NỐI vào nhau, vì đó
+  // là chỗ lỗi cũ sống: từng mảnh đều đúng mà đường đi vẫn không có.
+  const kho = khoGia();
+  const luc = 1_700_000_000_000;
+
+  // 1. Phát đề (response của `POST .../quiz/generate-review`).
+  const de = docDe(DE_MAU);
+  ghiDeDangLam('python_advanced', { quizId: de.quizId, luc, chon: [null, null] }, kho);
+  // 2. Người học chọn câu 1 rồi F5 giữa lúc đang làm.
+  ghiDeDangLam('python_advanced', { quizId: de.quizId, luc, chon: [2, null] }, kho);
+
+  // 3. Mở lại màn tổng kết: đọc đĩa, gọi `GET quizzes/:id`, dựng lại.
+  const luu = docDeDangLam('python_advanced', luc + 60_000, kho);
+  assert.equal(luu.quizId, 77);
+  const kp = docDeKhoiPhuc({ ...DE_MAU, quiz_id: luu.quizId });
+  assert.equal(kp.loai, 'dangLam');
+  const chon = apDungChon(kp.de, luu.chon);
+  assert.deepEqual(chon, [2, null]);
+  // Chưa chọn hết thì nút Nộp vẫn khoá — trạng thái sau khi tải lại giống y
+  // trạng thái trước đó, không phải một đề mới trắng trơn.
+  assert.equal(daChonHet(chon, kp.de.cauHoi.length), false);
+
+  // 4. Chọn nốt rồi nộp.
+  chon[1] = 0;
+  assert.equal(daChonHet(chon, kp.de.cauHoi.length), true);
+  assert.deepEqual(goiDapAn(chon, kp.de.cauHoi.length), [2, 0]);
+  xoaDeDangLam('python_advanced', kho);
+
+  // 5. Tải lại lần nữa: KHÔNG còn gì để nạp, nên ô hiện cổng thường chứ không
+  //    mời làm lại một đề mà `submit` sẽ trả 409.
+  assert.equal(docDeDangLam('python_advanced', luc + 120_000, kho), null);
+  assert.deepEqual(Object.keys(kho.o), []);
+});
+
+test('đề khôi phục giữ NGUYÊN mốc tuổi, không tự gia hạn', () => {
+  // Nếu ô này ghi `luc: Date.now()` ở mỗi lượt lưu thì mỗi lần mở lại màn tổng
+  // kết là gia hạn thêm 7 ngày — hạn đó không bao giờ tới, và quyết định 3
+  // thành một chú thích không có hiệu lực. Lỗi IM LẶNG: bộ test về hàm thuần
+  // vẫn xanh vì hàm thuần nhận `luc` từ bên gọi.
+  assert.match(NGUON_O, /setLucPhat\(luu\.luc\)/);
+  assert.match(NGUON_O, /ghiDeDangLam\(courseId, \{ quizId: de\.quizId, luc: lucPhat, chon \}\)/);
+  // Mốc chỉ được đặt bằng `Date.now()` ở đúng MỘT chỗ: lúc phát đề mới. Đếm
+  // `setLucPhat(Date.now())` chứ không đếm `Date.now()` trần — chuỗi sau có cả
+  // trong chú thích, và một phép quét cây mã bị chú thích làm lệch thì nó canh
+  // sai chỗ (cùng họ bẫy CRLF của `label-version.test.mjs`).
+  assert.equal((NGUON_O.match(/setLucPhat\(/g) ?? []).length, 2);
+  assert.equal((NGUON_O.match(/setLucPhat\(Date\.now\(\)\)/g) ?? []).length, 1);
 });

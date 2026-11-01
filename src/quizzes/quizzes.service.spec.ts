@@ -322,6 +322,50 @@ describe('QuizzesService', () => {
 
       const res = await service.getQuiz(1, 9);
       expect(JSON.stringify(res)).not.toContain('correct');
+      // HÌNH DẠNG mà ô đề ôn nạp lại đọc (`docDeKhoiPhuc` ở frontend): phải có
+      // `status` và `questions` đã strip, đúng khuôn mà `generate-review` trả
+      // — nhờ đó `docDe` dùng lại được nguyên vẹn cho cả hai đường.
+      expect(res).toMatchObject({ ok: true, quiz_id: 9, status: 'generated' });
+      // Gán ra biến RỒI mới kiểm: `'questions' in res` KHÔNG thu hẹp được, vì
+      // `questions` là thuộc tính TUỲ CHỌN của một kiểu chứ không phải nhánh
+      // của union có cờ phân biệt. Một biến cục bộ thì thu hẹp được, và vẫn
+      // không cần `as` nào — `as` ở spec là chỗ làm test nói dối.
+      const cauHoi = res.questions;
+      if (!cauHoi) throw new Error('đề chưa nộp phải trả questions');
+      expect(cauHoi[0]).toEqual({
+        index: 0,
+        question: SNAPSHOT[0].question,
+        options: SNAPSHOT[0].options,
+      });
+    });
+
+    it('getQuiz khi ĐÃ nộp: trả status + điểm, KHÔNG trả câu hỏi', async () => {
+      prisma.quiz.findUnique.mockResolvedValue({
+        id: 9,
+        userId: 1,
+        status: 'submitted',
+        questionsJson: SNAPSHOT,
+      });
+      prisma.reviewQuizResult.findFirst.mockResolvedValue({
+        score: 1,
+        total: SNAPSHOT.length,
+        answersJson: [],
+      });
+
+      const res = await service.getQuiz(1, 9);
+      // NỬA MÁY CHỦ của luật "đã nộp khác đang làm". Tải lại trang giữa lúc làm
+      // đề thì ô đề ôn gọi đúng route này, và nó phải nói ra được rằng đề đã
+      // xong: nộp lần hai là 409 (compare-and-set `generated -> submitted`),
+      // nên khôi phục một đề đã nộp thành "đang làm" là mời người học chọn lại
+      // đủ 10 câu rồi nhận một câu lỗi.
+      expect(res).toMatchObject({
+        status: 'submitted',
+        score: 1,
+        total: SNAPSHOT.length,
+      });
+      // Và KHÔNG có `questions` — đó là lý do nhánh "đã nộp" ở frontend chỉ
+      // hiện ĐIỂM chứ không dựng lại danh sách phương án.
+      expect('questions' in res).toBe(false);
     });
   });
 

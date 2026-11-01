@@ -290,3 +290,200 @@ export function thongDiepLoi(body: unknown, status: number): string {
 export function nhanDiem(kq: KetQuaCham): string {
   return `${kq.diem}/${kq.tong} câu đúng`;
 }
+
+// --- ĐỀ ĐANG LÀM PHẢI SỐNG QUA LẦN TẢI LẠI -----------------------------------
+//
+// LỖI ĐANG SỬA. `quiz_id` chỉ sống trong state React, nên một lần F5 giữa lúc
+// đang làm đề là MẤT ĐỀ: hàng `quizzes` trong DB kẹt ở `generated` VĨNH VIỄN
+// (không ai nộp được nó nữa — `submitQuiz` đòi đúng id đó), và người học chỉ
+// còn đường bấm phát một đề khác. Route `GET quizzes/:id` đã tồn tại từ Task
+// 133 và trả đúng đề đã `stripAnswers`, nhưng `grep` trên `frontend/src` ra 0
+// lời gọi — lần thứ CHÍN của hình dạng lỗi "dựng xong mà không có đường tới".
+//
+// BA QUYẾT ĐỊNH, và lý do:
+//
+// 1. CẤT Ở `localStorage` THEO KHOÁ HỌC, không trong bản nháp bài.
+//    Bản nháp (`useLessonDraft`) có khoá `pe-studio-lesson-v1:<user>:<khoá>:<bài>`
+//    — gắn với BÀI. Còn đề ôn gắn với KHOÁ: nó rút câu từ MỌI bài đã hoàn
+//    thành (`buildQuestionPool`), và ô đề ôn được mount ở màn tổng kết của BẤT
+//    KỲ bài nào. Cất vào nháp bài 12 thì mở lại bài 12 mới thấy đề, mà người
+//    học vừa làm xong bài 13 thì màn tổng kết bài 13 lại phát một đề thứ hai —
+//    hai đề cùng mở, một trong hai chắc chắn kẹt lại mãi.
+//    Khoá KHÔNG mang `userId` (ô này không có nó trong tay, và thêm một lượt
+//    API chỉ để lấy thì đắt hơn thứ nó mua): phép chặn theo chủ sở hữu nằm ở
+//    MÁY CHỦ — `getQuiz` trả 404 cho quiz của người khác (không phải 403, để
+//    không tiết lộ quiz đó tồn tại). Nên một id còn sót lại của tài khoản khách
+//    cũ (hết hạn refresh ⇒ `ensureGuest()` cấp tài khoản MỚI) chỉ ra 404, và ô
+//    này xoá nó đi rồi hiện cổng thường.
+//
+// 2. "ĐÃ NỘP" KHÁC "ĐANG LÀM", và trạng thái đó đọc từ MÁY CHỦ.
+//    Nộp lần hai là 409 (`submitQuiz` dùng compare-and-set `generated ->
+//    submitted`). Nếu khôi phục một đề ĐÃ NỘP thành "đang làm" thì người học
+//    chọn lại đủ 10 câu, bấm Nộp, và nhận một câu lỗi — tức nền tảng mời họ
+//    làm một việc nó biết trước là không được. `docDeKhoiPhuc` vì vậy đọc
+//    `status` của response và KHÔNG BAO GIỜ trả nhánh `dangLam` cho một đề
+//    `submitted`, kể cả khi response có kèm `questions`.
+//
+// 3. BỎ DỞ QUÁ `HAN_GIU_DE_MS` THÌ BỎ, IM LẶNG.
+//    Không có hạn nào ở máy chủ, nên hạn phải quyết ở đây. Giữ quá dài là hại:
+//    pool lớn dần theo số bài hoàn thành, nên một đề phát lúc mới xong 2 bài
+//    (đúng `MIN_POOL = 5` câu) mà quay lại sau một module nữa thì nó đang ôn
+//    một phần nhỏ của thứ người ta đã học — và đề mới thì luôn sẵn, một bấm.
+//    Giữ quá ngắn thì mất đúng ca "bỏ dở hôm nay, mai mở lại". Chọn 7 ngày: dài
+//    hơn mọi lần nghỉ ngắn, ngắn hơn một nhịp học hết một module.
+//    Và khi quá hạn thì KHÔNG hiện lỗi gì — người học không nhớ mình có một đề
+//    mở dở, nên một câu nói về nó chỉ gây hoang mang. Hiện cổng thường.
+//
+// Hạn tính từ lúc PHÁT đề (`luc`), không từ lần bấm cuối: nó bó TUỔI của đề,
+// tức bó đúng cái đang cũ đi (pool), chứ không bó độ rảnh của người học.
+
+/** Tiền tố khoá `localStorage`. Đổi tên = mọi người mất đề đang làm. */
+export const TIEN_TO_LUU_DE = 'pe-review-quiz-v1';
+
+/** Khoá của một KHOÁ HỌC — xem quyết định 1 ở trên. */
+export function khoaLuuDe(courseId: string): string {
+  return `${TIEN_TO_LUU_DE}:${courseId}`;
+}
+
+/** Quá bấy nhiêu thì bỏ đề đang làm — xem quyết định 3 ở trên. */
+export const HAN_GIU_DE_MS = 7 * 24 * 60 * 60 * 1000;
+
+/**
+ * Đề đang làm, như nó nằm trên đĩa.
+ *
+ * `chon` đi kèm `quizId` vì lần tải lại phải không mất gì: nhớ id mà bỏ các
+ * phương án đã chọn thì người học vẫn phải làm lại cả đề, chỉ khác là lần này
+ * nộp được. Mảng ≤ 10 số nên ghi mỗi lần bấm là đủ rẻ — khác hẳn tự lưu CODE,
+ * nơi mỗi phím là tuần tự hoá lại cả bài (xem `IDE_AUTOSAVE_DEBOUNCE_MS`).
+ */
+export type DeDangLam = {
+  quizId: number;
+  /** Lúc PHÁT đề, ms. */
+  luc: number;
+  chon: Array<number | null>;
+};
+
+/** Chỉ ba hàm của Storage được dùng — khai hẹp để test tiêm được kho giả. */
+type KhoDonGian = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
+
+function khoCucBo(): KhoDonGian | null {
+  try {
+    // CHÍNH VIỆC ĐỌC `localStorage` cũng ném được (Chrome ném SecurityError khi
+    // người dùng chặn "site data"), nên try/catch bọc cả phép đọc thuộc tính.
+    return typeof localStorage === 'undefined' ? null : localStorage;
+  } catch {
+    return null;
+  }
+}
+
+/** Ghi đề đang làm. KHÔNG BAO GIỜ ném: mất bản lưu không được làm sập ô này. */
+export function ghiDeDangLam(
+  courseId: string,
+  ban: DeDangLam,
+  kho: KhoDonGian | null = khoCucBo(),
+): void {
+  try {
+    kho?.setItem(khoaLuuDe(courseId), JSON.stringify(ban));
+  } catch {
+    // Hết quota / kho bị chặn: im lặng. Không có gì người học làm được với
+    // thông báo này, và đề vẫn làm được trong phiên hiện tại.
+  }
+}
+
+/** Bỏ đề đang làm (đã nộp xong, hoặc máy chủ nói id đó không còn dùng được). */
+export function xoaDeDangLam(
+  courseId: string,
+  kho: KhoDonGian | null = khoCucBo(),
+): void {
+  try {
+    kho?.removeItem(khoaLuuDe(courseId));
+  } catch {
+    /* không có kho thì cũng không có gì để xoá */
+  }
+}
+
+/**
+ * Đọc đề đang làm. `null` = không có / không đọc được / QUÁ HẠN.
+ *
+ * Quá hạn thì XOÁ luôn, không chỉ bỏ qua: để lại thì mỗi lần mở màn tổng kết
+ * là một lượt `GET quizzes/:id` cho một đề không ai còn muốn làm.
+ */
+export function docDeDangLam(
+  courseId: string,
+  bayGio: number = Date.now(),
+  kho: KhoDonGian | null = khoCucBo(),
+): DeDangLam | null {
+  try {
+    const text = kho?.getItem(khoaLuuDe(courseId));
+    if (!text) return null;
+    const x = banGhi(JSON.parse(text) as unknown);
+    const quizId = soNguyen(x?.quizId);
+    const luc = soNguyen(x?.luc);
+    // Thiếu `luc` thì KHÔNG đoán là "vừa phát" — một bản ghi không nói được
+    // tuổi của nó là bản ghi do một bản code khác ghi, và nó sẽ sống mãi.
+    if (quizId === null || quizId <= 0 || luc === null) {
+      xoaDeDangLam(courseId, kho);
+      return null;
+    }
+    // `bayGio < luc`: đồng hồ máy bị đặt lùi (hoặc bản ghi từ tương lai) —
+    // không tính được tuổi thì không giữ.
+    if (bayGio - luc > HAN_GIU_DE_MS || bayGio < luc) {
+      xoaDeDangLam(courseId, kho);
+      return null;
+    }
+    const chon = Array.isArray(x?.chon) ? (x.chon as unknown[]) : [];
+    return { quizId, luc, chon: chon.map((v) => soNguyen(v)) };
+  } catch {
+    // JSON hỏng, kho bị chặn: coi như chưa từng lưu.
+    return null;
+  }
+}
+
+/** Đề khôi phục được từ `GET quizzes/:id` — hai nhánh, không bao giờ lẫn nhau. */
+export type DeKhoiPhuc =
+  | { loai: 'dangLam'; de: DeOn }
+  | { loai: 'daNop'; diem: number; tong: number };
+
+/**
+ * Đọc response của `GET quizzes/:id`.
+ *
+ * Hợp đồng THẬT của route đó (đã đọc `getQuiz`, không suy từ tên):
+ *  · chưa nộp → `{ok, quiz_id, status, questions}` với `questions` đã
+ *    `stripAnswers` — ĐÚNG hình dạng mà `generate-review` trả, nên `docDe`
+ *    dùng lại được nguyên vẹn;
+ *  · đã nộp → `{ok, quiz_id, status: 'submitted', score, total, detail}`,
+ *    KHÔNG có `questions`. Nên nhánh này không dựng lại được danh sách phương
+ *    án (chỉ `detail` mới có, và nó không mang `options`) — vì vậy nó chỉ trả
+ *    về ĐIỂM, và ô đề ôn hiện một dòng "đề trước đã nộp xong" cộng nút lấy đề
+ *    mới. Thà nói đúng một nửa còn hơn dựng một màn đề mà mọi phương án trống.
+ *
+ * `status === 'submitted'` được xét TRƯỚC `questions`: xem quyết định 2 ở trên.
+ */
+export function docDeKhoiPhuc(raw: unknown): DeKhoiPhuc | null {
+  const x = banGhi(raw);
+  if (!x) return null;
+  if (x.status === 'submitted') {
+    const diem = soNguyen(x.score);
+    const tong = soNguyen(x.total);
+    return diem === null || tong === null ? null : { loai: 'daNop', diem, tong };
+  }
+  const de = docDe(x);
+  return de ? { loai: 'dangLam', de } : null;
+}
+
+/**
+ * Các phương án đã chọn, ÁP vào đúng đề vừa nạp về.
+ *
+ * Phải kẹp theo SỐ PHƯƠNG ÁN của từng câu, không chỉ theo số câu: một bản ghi
+ * cũ mang chỉ số 5 cho một câu 3 phương án thì radio không tô gì (`chon[i] ===
+ * j` không khớp ai) NHƯNG `daChonHet` vẫn đọc ra "đã chọn" — nút Nộp mở, và
+ * `answers[i] = 5` được gửi đi rồi chấm là SAI. Im lặng, và theo chiều "sai
+ * nhưng vẫn ra điểm", đúng họ lỗi mà `goiDapAn` đã phải chữa một lần.
+ */
+export function apDungChon(de: DeOn, chon: unknown): Array<number | null> {
+  const nguon = Array.isArray(chon) ? (chon as unknown[]) : [];
+  return de.cauHoi.map((q, i) => {
+    const v = soNguyen(nguon[i]);
+    return v !== null && v >= 0 && v < q.options.length ? v : null;
+  });
+}
