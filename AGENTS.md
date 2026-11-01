@@ -1444,14 +1444,22 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `review-quiz.test.mjs` 21 → 33 ca.
   **8/11 route của `quizzes.controller.ts` vẫn CHƯA có đường tới.**
 
-- **130 bài có ca chấm, 0 bài nói ra `data` trông như thế nào — nay cả 130 đều nói.**
+- **130 bài có ca chấm, 0 bài có một VÍ DỤ ĐÃ CHẠY — nay cả 130 đều có.**
   `SandboxScreen.tsx` dựng `<dl className={c.io}>` từ `step_4.task.io` và **0/130 bài phát
   ra khoá đó**: renderer dựng sẵn, không ai đi qua. Lần thứ MƯỜI của hình dạng lỗi này.
-  Cái giá không phải thẩm mỹ: 87/130 bài giao đúng `def solve(data): pass`, và với PD01 thì
-  `data` là `{'values': …, 'labels': …, 'pick': …}` phải trả `{'selected': …, 'total': …,
-  'count': …}` — **SÁU tên khoá mà không câu văn nào nói ra hết**, nên người học đoán tên
-  khoá cho tới khi bộ chấm chịu. Nay `vi_du_io()` trong build.py sinh ô ví dụ từ **ca chấm
-  ĐẦU TIÊN**: 130/130 bài, 0 bài bị bỏ.
+  Nay `vi_du_io()` trong build.py sinh ô ví dụ từ **ca chấm ĐẦU TIÊN**: 130/130 bài, 0 bị bỏ.
+  **LÝ LẼ ĐẦU CỦA TÔI SAI, VÀ ĐÂY LÀ SỐ ĐÃ ĐO.** Tôi viết commit với câu "SÁU tên khoá mà
+  không câu văn nào nói ra hết" (lấy PD01 làm ví dụ) rồi mới đi đo: **80 bài có `input` dạng
+  dict, 77 bài ĐÃ nói đủ mọi tên khoá ngay trong `task.body`**. Chỉ 3 bài thiếu (PY12,
+  SY18, SY20) và ở cả ba thì "khoá" là TÊN FILE, tức dữ liệu chứ không phải lược đồ. Đề của
+  PD01 nói nguyên văn *"data gồm values, labels và pick … trả dictionary có selected
+  (số vé của nhãn pick), total (tổng vé), count (số ca)"* — đủ sáu tên.
+  **Vậy ô này mua được gì, nói cho đúng:** một VÍ DỤ ĐÃ CHẠY. Văn xuôi nói TÊN khoá nhưng
+  không nói KIỂU, không nói độ lồng, và không nói ra một cặp vào→ra cụ thể để đối chiếu —
+  `{'values': [7, 12, 5], …}` cho biết `values` là list số nguyên song song với `labels`,
+  còn `{'selected': 5, 'total': 24, 'count': 3}` cho biết `total` là TỔNG chứ không phải số
+  phần tử. Với 50 bài mà `input` KHÔNG phải dict (list/chuỗi/số) thì nó nói thẳng ra kiểu.
+  Đó là giá trị thật, nhỏ hơn câu tôi viết lúc đầu — đừng chép lại câu cũ.
   **`repr` CỦA PYTHON, KHÔNG `json.dumps`.** Hai thứ khác nhau ở đúng chỗ người học sẽ gõ
   lại: JSON viết `true/false/null` và bắt buộc nháy kép. Dán một giá trị JSON vào ô đề của
   bài Python là dạy sai cú pháp ngay trong đề bài. Và vì harness nạp ca chấm từ JSON rồi
@@ -1497,6 +1505,19 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   2 ca frontend đỏ + build exit 1.
   **CHƯA TỚI NGƯỜI HỌC cho tới khi nạp DB** — nội dung bài đọc từ DB, không từ `out/`.
   `--all --offline` đã sạch: 179 bài, 0 từ chối.
+
+- **BA bài có màn ĐỌC ở quán cà phê nhưng ĐỀ BÀI TẬP vẫn ở miền cũ — chưa sửa, đã đo.**
+  Nhìn thấy khi xem ô ví dụ mới trên production: PD01 mở đầu bằng *"Một quán cà phê ghi số
+  cốc bán được trong ba ngày"* rồi đề bài tập ngay dưới nói *"Một rạp ghi số vé theo ca"*.
+  Hai miền trong một bài, cách nhau vài màn. Đo trên bản dựng: đúng **3 bài** — PD01
+  (rạp/vé), NP13 và NP14 (nhiệt độ, trong khi màn đọc của chúng đã đổi sang lượng sữa).
+  **KHÔNG phải phát hiện mới về nguyên nhân:** mục bẫy ở trên đã ghi `source/practice.json`
+  vẫn dùng `region`/`qty`/`E`/`W` — bài TẬP đến từ gói practice, màn ĐỌC đến từ
+  `course.json`, và đợt đổi miền chỉ đi qua `course.json`. Đây là cùng một khe hở, lần này
+  đo được chính xác bao nhiêu bài lọt.
+  Chưa sửa vì nó là đổi NỘI DUNG ⇒ cần một lần nạp DB; để đi kèm lần nạp sau. Sửa thì phải
+  đổi cả `expected` nếu đổi con số — hoặc chỉ đổi DANH TỪ và giữ nguyên mọi con số, rẻ hơn
+  và không đụng ca chấm.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
