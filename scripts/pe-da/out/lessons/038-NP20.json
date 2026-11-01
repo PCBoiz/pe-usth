@@ -159,7 +159,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận parts là dãy số và expected là tổng dự kiến. Trả kết quả np.isclose của tổng parts với expected, dùng atol=0.000001 và rtol=0."
+    "body": "Viết solve(data) nhận parts là dãy số và expected là tổng dự kiến. Trả kết quả np.isclose của tổng parts với expected, dùng atol=0.000001 và rtol=0.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'parts': [0.1, 0.2], 'expected': 0.3}"
+     },
+     {
+      "label": "trả về",
+      "value": "True"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    total = np.array(data[\"parts\"]).sum()\n    return np.isclose(total, data[\"expected\"], atol=0.000001, rtol=0)\n",

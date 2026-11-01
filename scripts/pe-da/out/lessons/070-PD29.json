@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.amounts là list số tiền, data.threshold là ngưỡng. Dùng sqlite3 :memory:, ghi DataFrame vào bảng sales rồi dùng truy vấn có params để lấy amount > threshold theo thứ tự tăng. Trả list các số nhận được từ pandas, đóng kết nối khi xong."
+    "body": "data.amounts là list số tiền, data.threshold là ngưỡng. Dùng sqlite3 :memory:, ghi DataFrame vào bảng sales rồi dùng truy vấn có params để lấy amount > threshold theo thứ tự tăng. Trả list các số nhận được từ pandas, đóng kết nối khi xong.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'amounts': [9, 3, 20, 9], 'threshold': 8}"
+     },
+     {
+      "label": "trả về",
+      "value": "[9, 9, 20]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import sqlite3\nimport pandas as pd\n\ndef solve(data):\n     con = sqlite3.connect(':memory:')\n     try:\n         pd.DataFrame({'amount':data['amounts']}).to_sql('sales', con, index=False)\n         result = pd.read_sql_query('SELECT amount FROM sales WHERE amount > ? ORDER BY amount', con, params=(data['threshold'],))\n         return result['amount'].tolist()\n     finally:\n         con.close()\n",

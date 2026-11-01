@@ -155,7 +155,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Hệ thống cung cấp score trong khoảng 0–10. Gán label bằng \"high\" nếu score từ 8, \"ready\" nếu từ 5 đến dưới 8, còn lại \"retry\"."
+    "body": "Hệ thống cung cấp score trong khoảng 0–10. Gán label bằng \"high\" nếu score từ 8, \"ready\" nếu từ 5 đến dưới 8, còn lại \"retry\".",
+    "io": [
+     {
+      "label": "score =",
+      "value": "8"
+     },
+     {
+      "label": "label =",
+      "value": "'high'"
+     }
+    ]
    },
    "starterCode": "# Hệ thống cung cấp score trong khoảng 0–10.\n# Hệ thống cung cấp score; gán kết quả vào label.\n",
    "solutionCode": "if score >= 8:\n    label = \"high\"\nelif score >= 5:\n    label = \"ready\"\nelse:\n    label = \"retry\"\n",

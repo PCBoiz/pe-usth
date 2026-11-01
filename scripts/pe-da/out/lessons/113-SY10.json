@@ -627,7 +627,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Tạo Grade có set_value kiểm số int/float hữu hạn từ 0 đến 10, loại bool. solve(data) bắt đầu bằng data[\"initial\"], thử lần lượt các data[\"updates\"]. Bỏ qua ValueError nhưng giữ điểm cũ; trả list giá trị sau mỗi lần thử."
+    "body": "Tạo Grade có set_value kiểm số int/float hữu hạn từ 0 đến 10, loại bool. solve(data) bắt đầu bằng data[\"initial\"], thử lần lượt các data[\"updates\"]. Bỏ qua ValueError nhưng giữ điểm cũ; trả list giá trị sau mỗi lần thử.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'initial': 8, 'updates': [11, 7]}"
+     },
+     {
+      "label": "trả về",
+      "value": "[8, 7]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import math\nclass Grade:\n    def __init__(self, value): self.set_value(value)\n    def set_value(self, value):\n        if type(value) not in (int, float) or not math.isfinite(value) or not 0 <= value <= 10:\n            raise ValueError('score')\n        self._value = value\n    def get_value(self): return self._value\ndef solve(data):\n    grade = Grade(data['initial'])\n    result=[]\n    for value in data['updates']:\n        try: grade.set_value(value)\n        except ValueError: pass\n        result.append(grade.get_value())\n    return result\n",

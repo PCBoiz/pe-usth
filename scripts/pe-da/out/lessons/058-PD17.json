@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.orders là list mã id của đơn; data.catalog là list mã trong danh mục. Trả {valid:False,missing:[]} nếu danh mục trùng khóa; nếu hợp lệ, nối trái có validate và indicator rồi trả valid=True và list mã chưa khớp theo thứ tự đơn, giữ cả lần lặp."
+    "body": "data.orders là list mã id của đơn; data.catalog là list mã trong danh mục. Trả {valid:False,missing:[]} nếu danh mục trùng khóa; nếu hợp lệ, nối trái có validate và indicator rồi trả valid=True và list mã chưa khớp theo thứ tự đơn, giữ cả lần lặp.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'orders': [1, 4, 4, 2], 'catalog': [1, 2]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'valid': True, 'missing': [4, 4]}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame({'id':data['orders']})\n     catalog = pd.DataFrame({'id':data['catalog']})\n     try:\n         joined = orders.merge(catalog, on='id', how='left', validate='many_to_one', indicator=True)\n     except pd.errors.MergeError:\n         return {'valid':False, 'missing':[]}\n     return {'valid':True, 'missing':joined.loc[joined['_merge'] == 'left_only','id'].tolist()}\n",

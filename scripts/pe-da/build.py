@@ -897,6 +897,86 @@ def cau_trac_nghiem(mcq: dict, ma_bai: str = '', so_cau: int = SO_CAU_MCQ) -> li
     return ra
 
 
+# Trần độ dài MỖI giá trị trong ô ví dụ đầu vào/đầu ra của bài tập (xem
+# `vi_du_io`). Đo trên bản dựng 179 bài: giá trị dài nhất là 280 ký tự (PD32 —
+# ba đơn hàng lồng trong một bảng tra), nên trần 320 hôm nay KHÔNG loại bài nào.
+#
+# Vậy nó canh gì? Một fixture tương lai phình ra. `.io code` ở frontend có
+# `overflow-wrap: anywhere` nên giá trị dài chỉ NGẮT DÒNG, không tràn ngang —
+# tức một fixture 5 000 ký tự không làm vỡ layout, nó chỉ đẩy ô soạn mã xuống
+# dưới ba màn hình cuộn, và đó là kiểu hỏng không ai báo. Quá trần thì bài
+# KHÔNG có ô ví dụ (vẫn chấm được như cũ) và `check.py` nói ra bài nào.
+IO_MAX_KY_TU = 320
+
+
+def vi_du_io(bai_tap: dict, hop_dong: dict) -> tuple[list[dict] | None, str]:
+    """Ô "đầu vào → kết quả" của bài tập, dựng từ CA CHẤM ĐẦU TIÊN.
+
+    VÌ SAO CÓ. 130 bài có ca chấm, và 87 trong số đó giao đúng
+    `def solve(data): pass` — hình dạng của `data` chỉ nằm trong văn xuôi của
+    đề. Với PD01 thì `data` là `{'values': [...], 'labels': [...], 'pick': ...}`
+    và phải trả `{'selected':…, 'total':…, 'count':…}`: SÁU cái tên mà không câu
+    văn nào nói ra hết, nên người học đoán tên khoá cho tới khi bộ chấm chịu.
+    Renderer `<dl className={c.io}>` ở `SandboxScreen.tsx` đã dựng sẵn cho việc
+    này từ lâu và **0/130 bài phát ra `task.io`** — một chỗ nữa của họ lỗi
+    "dựng xong mà không có đường tới".
+
+    GIÁ PHẢI TRẢ, CÓ CHỦ ĐÍCH: ô này công bố luôn `expected` của ca 1, nên
+    `return <hằng của ca 1>` đạt đúng 1 ca. Đó KHÔNG phải một lỗ mới mở:
+    `traHang()` ở pha 2 của `check-practice.mjs` đã sinh đúng biến thể ấy và
+    đòi nó TRƯỢT mọi ca có `expected` khác — và đã đo, 0/130 bài có mọi ca cùng
+    một `expected`, nên hằng của ca 1 luôn trượt ít nhất 2 ca. Người học chưa
+    viết gì vẫn thấy 1 ca xanh, đúng như AGENTS.md đã ghi nhận cho khung trống.
+
+    `repr` CỦA PYTHON, KHÔNG `json.dumps`. Hai thứ khác nhau ở đúng chỗ người
+    học sẽ gõ lại: JSON viết `true/false/null` và bắt buộc nháy kép, Python viết
+    `True/False/None`. Dán một giá trị JSON vào ô mã Python là dạy sai cú pháp
+    ngay trong ô đề bài. Và vì harness nạp ca chấm từ JSON rồi truyền thẳng vào
+    namespace, `repr` của giá trị ĐÃ NẠP chính là thứ `print(data)` in ra —
+    không phải một bản mô tả gần đúng.
+
+    NHÃN LẤY TỪ HỢP ĐỒNG, không phải chữ chung chung: bài `mode: "script"` thì
+    người học phải ĐỌC đúng một biến và GÁN đúng một biến, nên nhãn là chính tên
+    hai biến đó (`raw =` / `total =`). Nhãn "Đầu vào"/"Kết quả" bắt họ tra lại
+    đề để biết tên — đúng việc ô này ra đời để khỏi phải làm.
+
+    Trả (None, LÝ DO) khi bỏ, và lý do là phần QUAN TRỌNG: `main()` đòi mọi bài
+    thiếu ô ví dụ phải có lý do nói ra được, nên "thiếu mà không nói được vì sao"
+    là lỗi dựng. Đã đo khi ablate hàm này: không có cổng đó thì build chỉ in một
+    dòng lưu ý rồi exit 0 và `check.py` im lặng hoàn toàn (luật của nó mở đầu
+    bằng "không có io thì bỏ qua") — tức một ô ví dụ biến mất khỏi cả 130 bài mà
+    chỉ bộ test frontend đỏ.
+
+    Ba lý do bỏ, đều HỢP LỆ: không có ca nào mang cả `input` lẫn `expected` (ca
+    hợp đồng BIỂU THỨC không có — xem SY20); một giá trị quá IO_MAX_KY_TU; hai
+    nhãn trùng nhau. Nhãn trùng thì PHẢI bỏ, không phải sửa cho khác: renderer
+    dùng `row.label` làm React key, nên hai nhãn giống nhau là một hàng biến mất
+    lặng lẽ.
+    """
+    ca = next((c for c in bai_tap.get('tests') or []
+               if 'input' in c and 'expected' in c), None)
+    if ca is None:
+        return None, 'ca chấm đầu không mang input/expected (hợp đồng biểu thức)'
+
+    if hop_dong.get('mode') == 'script':
+        nhan_vao = f"{hop_dong.get('inputVariable') or 'data'} ="
+        nhan_ra = f"{hop_dong.get('resultVariable') or 'result'} ="
+    else:
+        # Tham số của khung đề là `data` ở cả 118 bài còn lại (khung do gói
+        # nguồn phát, không phải build dựng), nên tên này đọc được từ mã người
+        # học đang nhìn.
+        nhan_vao, nhan_ra = 'data =', 'trả về'
+    if nhan_vao == nhan_ra:
+        return None, f'inputVariable và resultVariable trùng tên ({nhan_vao})'
+
+    vao, ra = repr(ca['input']), repr(ca['expected'])
+    if max(len(vao), len(ra)) > IO_MAX_KY_TU:
+        return None, (f'giá trị ví dụ dài {max(len(vao), len(ra))} ký tự, '
+                      f'quá trần {IO_MAX_KY_TU}')
+    return [{'label': nhan_vao, 'value': vao},
+            {'label': nhan_ra, 'value': ra}], ''
+
+
 def bai_tap_cua(bai_tap: dict, mode: str = 'pyodide',
                 ly_do_doc: str = '') -> tuple[dict | None, str]:
     """(step_4 cho bài tập được chấm, lý do nếu không chấm được).
@@ -942,10 +1022,15 @@ def bai_tap_cua(bai_tap: dict, mode: str = 'pyodide',
     # Chỉ giữ hợp đồng khi nó NÓI điều gì: bài `solve(data)` thuần thì mọi
     # trường đều mặc định, và một dict rỗng trong content_json chỉ làm người đọc
     # tưởng có luật riêng.
+    vi_du, ly_do_io = vi_du_io(bai_tap, hop_dong)
     ra: dict = {
         'task': {
             'title': bai_tap.get('title') or 'Thử thách độc lập',
             'body': bai_tap.get('prompt') or '',
+            # Chỉ phát khi dựng được: `io` rỗng thì renderer không dựng `<dl>`
+            # nào, nhưng một khoá rỗng trong content_json làm người đọc gói
+            # tưởng bài này cố ý không có ví dụ.
+            **({'io': vi_du} if vi_du else {}),
         },
         'starterCode': khung if khung.endswith('\n') else khung + '\n',
         'solutionCode': loi_giai,
@@ -966,6 +1051,11 @@ def bai_tap_cua(bai_tap: dict, mode: str = 'pyodide',
     }
     if hop_dong:
         ra['contract'] = hop_dong
+    if ly_do_io:
+        # Lý do bỏ ô ví dụ, để `main()` phân biệt "cố ý bỏ" với "hàm hỏng".
+        # KHÔNG vào content_json: nó là chuyện của khâu dựng, không phải nội
+        # dung bài — `_ly_do_io` bị bóc ra ngay sau khi main() đọc.
+        ra['_ly_do_io'] = ly_do_io
     goi_y = [g for g in bai_tap.get('hints') or [] if g]
     if goi_y:
         ra['hints'] = [{'title': f'Gợi ý {i + 1}', 'body': g}
@@ -1580,6 +1670,41 @@ def main() -> int:
               f'{so_do_phat} — có khoá không trúng khối code nào '
               f'(mã bài sai, hoặc chỉ số khối lệch).')
         return 1
+
+    # VÍ DỤ ĐẦU VÀO/ĐẦU RA: mọi bài có ca chấm phải phát được ô ví dụ, trừ bài
+    # mà `vi_du_io` cố ý bỏ (quá trần, hoặc ca 1 là hợp đồng BIỂU THỨC). Đếm
+    # lại ở đây vì ô này SỐNG hay CHẾT đều im lặng: `io` thiếu thì renderer
+    # `SandboxScreen` chỉ đơn giản không dựng `<dl>` nào, không log, không
+    # exception — đúng trạng thái mà 130/130 bài đã ở suốt từ đầu.
+    co_ca_cham = [b for b in bai_ra if b['content_json']['step_4'].get('tests')]
+    co_vi_du = [b for b in co_ca_cham
+                if (b['content_json']['step_4'].get('task') or {}).get('io')]
+    khong_ly_do = []
+    for b in co_ca_cham:
+        if b in co_vi_du:
+            continue
+        ly_do = b['content_json']['step_4'].get('_ly_do_io')
+        if ly_do:
+            print(f'  ô ví dụ bỏ qua: {b["lesson_code"]} — {ly_do}')
+        else:
+            khong_ly_do.append(b['lesson_code'])
+    if khong_ly_do:
+        print(f'LỖI: {len(khong_ly_do)} bài có ca chấm nhưng KHÔNG có ô ví dụ '
+              f'đầu vào/đầu ra và cũng không nói được vì sao: '
+              f'{sorted(khong_ly_do)} — `vi_du_io` đang hỏng.')
+        return 1
+    # Chỉ dấu của khâu dựng, không phải nội dung bài — bóc trước khi ghi.
+    for b in bai_ra:
+        b['content_json']['step_4'].pop('_ly_do_io', None)
+    for b in co_vi_du:
+        vd = b['content_json']['step_4']['task']['io']
+        nhan = [r['label'] for r in vd]
+        if len(set(nhan)) != len(nhan):
+            # Renderer dùng `row.label` làm React key, nên nhãn trùng là một
+            # hàng biến mất lặng lẽ. `vi_du_io` đã bỏ ca này, nên tới được đây
+            # nghĩa là ai đó đã sửa hàm mà bỏ phép kiểm đó.
+            print(f'LỖI: {b["lesson_code"]}: task.io có nhãn trùng {nhan}')
+            return 1
 
     # FILE DỮ LIỆU: mọi khai báo phải TRÚNG một file có thật trong thư mục được
     # phục vụ, và mọi bài khai trong KHOI_DU_LIEU phải phát ra được khai báo đó.

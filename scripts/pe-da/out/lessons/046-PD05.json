@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.rows chứa order, city, amount; data.city và data.minimum là yêu cầu mới. Trả list mã order có city đúng và amount >= minimum, giữ thứ tự gốc."
+    "body": "data.rows chứa order, city, amount; data.city và data.minimum là yêu cầu mới. Trả list mã order có city đúng và amount >= minimum, giữ thứ tự gốc.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [{'order': 'X', 'city': 'DN', 'amount': 60}, {'order': 'Y', 'city': 'HN', 'amount': 90}, {'order': 'Z', 'city': 'DN', 'amount': 100}], 'city': 'DN', 'minimum': 70}"
+     },
+     {
+      "label": "trả về",
+      "value": "['Z']"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['order','city','amount'])\n     mask = (df['city'] == data['city']) & (df['amount'] >= data['minimum'])\n     return df.loc[mask, 'order'].tolist()\n",

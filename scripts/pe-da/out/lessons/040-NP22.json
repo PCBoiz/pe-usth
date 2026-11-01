@@ -161,7 +161,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận seed và n không âm. Tạo hai bộ sinh riêng cùng seed, mỗi bộ sinh n số bằng integers(1,7,size=n). Trả dictionary count là số phần tử của dãy thứ nhất và same cho biết hai dãy có bằng nhau hay không."
+    "body": "Viết solve(data) nhận seed và n không âm. Tạo hai bộ sinh riêng cùng seed, mỗi bộ sinh n số bằng integers(1,7,size=n). Trả dictionary count là số phần tử của dãy thứ nhất và same cho biết hai dãy có bằng nhau hay không.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'seed': 11, 'n': 2}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'count': 2, 'same': True}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    first = np.random.default_rng(data[\"seed\"]).integers(1, 7, size=data[\"n\"])\n    second = np.random.default_rng(data[\"seed\"]).integers(1, 7, size=data[\"n\"])\n    return {\"count\": first.size, \"same\": np.array_equal(first, second)}\n",

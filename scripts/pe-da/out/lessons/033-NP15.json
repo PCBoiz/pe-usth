@@ -155,7 +155,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận dãy điểm. Bỏ điểm ngoài 0–10, cộng thưởng 1 cho điểm hợp lệ rồi giới hạn kết quả ở 10. Trả array điểm cuối, giữ thứ tự."
+    "body": "Viết solve(data) nhận dãy điểm. Bỏ điểm ngoài 0–10, cộng thưởng 1 cho điểm hợp lệ rồi giới hạn kết quả ở 10. Trả array điểm cuối, giữ thứ tự.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[-2, 4, 9.5, 12]"
+     },
+     {
+      "label": "trả về",
+      "value": "[5.0, 10.0]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    scores = np.array(data, dtype=float)\n    valid = scores[(scores >= 0) & (scores <= 10)]\n    return np.clip(valid + 1, 0, 10)\n",

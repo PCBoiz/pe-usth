@@ -212,7 +212,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data có values, labels, label và position. labels duy nhất, label có trong labels, position hợp lệ. Tạo Series; trả [giá trị theo label, giá trị theo position]."
+    "body": "data có values, labels, label và position. labels duy nhất, label có trong labels, position hợp lệ. Tạo Series; trả [giá trị theo label, giá trị theo position].",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [6, 4, 8], 'labels': [30, 10, 20], 'label': 10, 'position': 2}"
+     },
+     {
+      "label": "trả về",
+      "value": "[4, 8]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], index=data['labels'])\n     return [int(s.loc[data['label']]), int(s.iloc[data['position']])]\n",

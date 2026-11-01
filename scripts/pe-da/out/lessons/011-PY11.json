@@ -165,7 +165,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Hệ thống cung cấp coordinates là một cặp [x, y]. Tạo swapped là tuple (y, x). Bạn không cần sửa từng phần tử của cặp đầu vào."
+    "body": "Hệ thống cung cấp coordinates là một cặp [x, y]. Tạo swapped là tuple (y, x). Bạn không cần sửa từng phần tử của cặp đầu vào.",
+    "io": [
+     {
+      "label": "coordinates =",
+      "value": "[3, 8]"
+     },
+     {
+      "label": "swapped =",
+      "value": "[8, 3]"
+     }
+    ]
    },
    "starterCode": "# Hệ thống cung cấp coordinates là một cặp [x, y].\n# Hệ thống cung cấp coordinates; gán kết quả vào swapped.\n",
    "solutionCode": "x, y = coordinates\nswapped = (y, x)\n",

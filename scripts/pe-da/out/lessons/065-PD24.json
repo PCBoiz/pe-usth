@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.values là số; data.window là số hàng cửa sổ dương. Tính rolling mean khi đủ window giá trị rồi shift(1). Trả list cùng độ dài, ô chưa đủ dữ liệu là None. Giá trị tại hàng t không được dùng trong đặc trưng cho chính t."
+    "body": "data.values là số; data.window là số hàng cửa sổ dương. Tính rolling mean khi đủ window giá trị rồi shift(1). Trả list cùng độ dài, ô chưa đủ dữ liệu là None. Giá trị tại hàng t không được dùng trong đặc trưng cho chính t.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [4, 8, 12, 20], 'window': 2}"
+     },
+     {
+      "label": "trả về",
+      "value": "[None, None, 6.0, 10.0]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], dtype=float)\n     result = s.rolling(data['window'], min_periods=data['window']).mean().shift(1)\n     return [None if pd.isna(v) else float(v) for v in result]\n",

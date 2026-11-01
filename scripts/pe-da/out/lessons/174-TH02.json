@@ -126,7 +126,17 @@
   "step_4": {
    "task": {
     "title": "Doanh thu của một món",
-    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon` mang tên một món CÓ TRONG bảng. Trả về tổng cột `money` của món đó, làm tròn hai chữ số thập phân."
+    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon` mang tên một món CÓ TRONG bảng. Trả về tổng cột `money` của món đó, làm tròn hai chữ số thập phân.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'mon': 'Latte'}"
+     },
+     {
+      "label": "trả về",
+      "value": "22001.66"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
    "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    theo_mon = ban.groupby('coffee_name')['money'].sum()\n    return round(float(theo_mon[data['mon']]), 2)\n",

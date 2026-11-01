@@ -147,7 +147,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Viết solve(data) nhận chuỗi CSV có tiêu đề id,price và ít nhất một dòng số hợp lệ. Đọc riêng price bằng np.loadtxt, trả list giá theo thứ tự file. Với file chỉ có một dòng, kết quả vẫn phải là list một phần tử."
+    "body": "Viết solve(data) nhận chuỗi CSV có tiêu đề id,price và ít nhất một dòng số hợp lệ. Đọc riêng price bằng np.loadtxt, trả list giá theo thứ tự file. Với file chỉ có một dòng, kết quả vẫn phải là list một phần tử.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "'id,price\\n1,12.5\\n2,9.0\\n'"
+     },
+     {
+      "label": "trả về",
+      "value": "[12.5, 9.0]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import numpy as np\nfrom io import StringIO\ndef solve(data):\n    prices = np.loadtxt(StringIO(data), delimiter=',', skiprows=1, usecols=(1,), ndmin=1)\n    return prices.tolist()\n",

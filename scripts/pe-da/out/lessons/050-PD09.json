@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.names có chuỗi hoặc None; data.query là đoạn chữ thường cần tìm theo nghĩa đen. Chuẩn hóa strip/lower, thay ô thiếu bằng \"unknown\". Trả clean và matched là các tên đã chuẩn hóa chứa query; giữ thứ tự."
+    "body": "data.names có chuỗi hoặc None; data.query là đoạn chữ thường cần tìm theo nghĩa đen. Chuẩn hóa strip/lower, thay ô thiếu bằng \"unknown\". Trả clean và matched là các tên đã chuẩn hóa chứa query; giữ thứ tự.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'names': [' Latte ', 'LATTE', 'Mocha'], 'query': 'latte'}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'clean': ['latte', 'latte', 'mocha'], 'matched': ['latte', 'latte']}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     clean = pd.Series(data['names'], dtype='string').str.strip().str.lower().fillna('unknown')\n     mask = clean.str.contains(data['query'], regex=False, na=False)\n     return {'clean': clean.tolist(), 'matched': clean.loc[mask].tolist()}\n",

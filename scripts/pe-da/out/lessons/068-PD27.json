@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.rows có city, year, value; mỗi cặp city–year duy nhất. Đặt hai cột đó làm MultiIndex, sắp index rồi lấy data.city và data.year, trả value của cặp có thật đó."
+    "body": "data.rows có city, year, value; mỗi cặp city–year duy nhất. Đặt hai cột đó làm MultiIndex, sắp index rồi lấy data.city và data.year, trả value của cặp có thật đó.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [{'city': 'HN', 'year': 2025, 'value': 3}, {'city': 'HN', 'year': 2026, 'value': 7}], 'city': 'HN', 'year': 2026}"
+     },
+     {
+      "label": "trả về",
+      "value": "7.0"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     frame = pd.DataFrame(data['rows']).set_index(['city','year']).sort_index()\n     return float(frame.loc[(data['city'],data['year']),'value'])\n",

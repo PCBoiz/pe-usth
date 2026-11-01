@@ -324,7 +324,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.events là list {inside:bool,x:số hoặc None,y:số hoặc None}. Tạo Figure/Axes và callback như bài: chỉ khi inside=True, x và y đều có số thì cập nhật state.point thành [x,y]. Có thể dùng SimpleNamespace giả lập đối tượng event để kiểm callback; nối mpl_connect rồi ngắt sau các sự kiện. Trả point cuối hoặc None nếu chưa có sự kiện hợp lệ. Đây không chứng minh đã thao tác chuột thật. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.events là list {inside:bool,x:số hoặc None,y:số hoặc None}. Tạo Figure/Axes và callback như bài: chỉ khi inside=True, x và y đều có số thì cập nhật state.point thành [x,y]. Có thể dùng SimpleNamespace giả lập đối tượng event để kiểm callback; nối mpl_connect rồi ngắt sau các sự kiện. Trả point cuối hoặc None nếu chưa có sự kiện hợp lệ. Đây không chứng minh đã thao tác chuột thật. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'events': [{'inside': True, 'x': 2, 'y': 6}, {'inside': False, 'x': 9, 'y': 8}]}"
+     },
+     {
+      "label": "trả về",
+      "value": "[2.0, 6.0]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom types import SimpleNamespace\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     state = {'point':None}\n     def on_click(event):\n         if event.inaxes is ax and event.xdata is not None and event.ydata is not None:\n             state['point'] = [float(event.xdata),float(event.ydata)]\n     cid = fig.canvas.mpl_connect('button_press_event',on_click)\n     for e in data['events']:\n         on_click(SimpleNamespace(inaxes=ax if e['inside'] else None,xdata=e['x'],ydata=e['y']))\n     fig.canvas.mpl_disconnect(cid)\n     plt.close(fig)\n     return state['point']\n",

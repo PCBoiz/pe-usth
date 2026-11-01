@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.rows gồm group và value; mỗi nhóm có tổng dương. Trả list tỷ trọng value/tổng nhóm theo đúng thứ tự gốc. Không trả bảng đã gộp mất giao dịch."
+    "body": "data.rows gồm group và value; mỗi nhóm có tổng dương. Trả list tỷ trọng value/tổng nhóm theo đúng thứ tự gốc. Không trả bảng đã gộp mất giao dịch.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [{'group': 'X', 'value': 2}, {'group': 'Y', 'value': 9}, {'group': 'X', 'value': 6}]}"
+     },
+     {
+      "label": "trả về",
+      "value": "[0.25, 1.0, 0.75]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     totals = df.groupby('group')['value'].transform('sum')\n     return (df['value'] / totals).tolist()\n",

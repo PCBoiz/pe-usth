@@ -396,7 +396,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Một danh sách mã lỗi được ghi theo thứ tự xuất hiện. Viết solve(data) nhận list chuỗi, trả {\"counts\": tần suất từng mã, \"top\": mã xuất hiện nhiều nhất}. Khi hòa, lấy mã gặp trước; list rỗng cho top=None."
+    "body": "Một danh sách mã lỗi được ghi theo thứ tự xuất hiện. Viết solve(data) nhận list chuỗi, trả {\"counts\": tần suất từng mã, \"top\": mã xuất hiện nhiều nhất}. Khi hòa, lấy mã gặp trước; list rỗng cho top=None.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "['E2', 'E1', 'E2']"
+     },
+     {
+      "label": "trả về",
+      "value": "{'counts': {'E2': 2, 'E1': 1}, 'top': 'E2'}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "from collections import Counter\ndef solve(data):\n    counts = Counter(data)\n    return {'counts': dict(counts), 'top': counts.most_common(1)[0][0] if counts else None}\n",

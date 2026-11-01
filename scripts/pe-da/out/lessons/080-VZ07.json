@@ -158,7 +158,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.values có ít nhất ba số. Vẽ boxplot mặc định. Hàm boxplot trả dictionary parts: đường trung vị ở parts[\"medians\"][0], các điểm ngoài râu ở parts[\"fliers\"][0]. Dùng get_ydata() đọc chúng, trả {median:số, fliers:list}. Không xóa điểm ngoài râu khỏi dữ liệu. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.values có ít nhất ba số. Vẽ boxplot mặc định. Hàm boxplot trả dictionary parts: đường trung vị ở parts[\"medians\"][0], các điểm ngoài râu ở parts[\"fliers\"][0]. Dùng get_ydata() đọc chúng, trả {median:số, fliers:list}. Không xóa điểm ngoài râu khỏi dữ liệu. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [1, 2, 3, 4, 20]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'median': 3.0, 'fliers': [20]}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     parts = ax.boxplot(data['values'])\n     result = {'median':float(parts['medians'][0].get_ydata()[0]),'fliers':parts['fliers'][0].get_ydata().tolist()}\n     plt.close(fig)\n     return result\n",

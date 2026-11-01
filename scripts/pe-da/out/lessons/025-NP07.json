@@ -151,7 +151,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận bảng số không rỗng. Trả dictionary có shape, ndim và size của array được tạo từ bảng. Bạn có thể trả tuple ở shape; hệ thống sẽ hiển thị thành dãy."
+    "body": "Viết solve(data) nhận bảng số không rỗng. Trả dictionary có shape, ndim và size của array được tạo từ bảng. Bạn có thể trả tuple ở shape; hệ thống sẽ hiển thị thành dãy.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[[1, 2], [3, 4], [5, 6]]"
+     },
+     {
+      "label": "trả về",
+      "value": "{'shape': [3, 2], 'ndim': 2, 'size': 6}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    a = np.array(data)\n    return {\"shape\": a.shape, \"ndim\": a.ndim, \"size\": a.size}\n",

@@ -731,7 +731,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Hệ thống cung cấp raw là giá một cốc dưới dạng chuỗi, ví dụ \"7.5\". Gán tiền hai cốc vào total; đầu vào là chuỗi số hợp lệ, không âm."
+      "body": "Hệ thống cung cấp raw là giá một cốc dưới dạng chuỗi, ví dụ \"7.5\". Gán tiền hai cốc vào total; đầu vào là chuỗi số hợp lệ, không âm.",
+      "io": [
+       {
+        "label": "raw =",
+        "value": "'7.5'"
+       },
+       {
+        "label": "total =",
+        "value": "15.0"
+       }
+      ]
      },
      "starterCode": "# raw là giá một cốc dưới dạng chuỗi, ví dụ \"7.5\".\n# Gán tiền hai cốc vào total.\n",
      "solutionCode": "price = float(raw)\ntotal = price * 2\n",
@@ -984,7 +994,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Hệ thống cung cấp quantity là số sản phẩm trong một gói. Mỗi sản phẩm giá 12, phí giao mỗi gói là 3. Gán tổng tiền vào total, kể cả gói có quantity bằng 0 vẫn có phí giao."
+      "body": "Hệ thống cung cấp quantity là số sản phẩm trong một gói. Mỗi sản phẩm giá 12, phí giao mỗi gói là 3. Gán tổng tiền vào total, kể cả gói có quantity bằng 0 vẫn có phí giao.",
+      "io": [
+       {
+        "label": "quantity =",
+        "value": "4"
+       },
+       {
+        "label": "total =",
+        "value": "51"
+       }
+      ]
      },
      "starterCode": "# Hệ thống cung cấp quantity là số sản phẩm trong một gói.\n# Hệ thống cung cấp quantity; gán kết quả vào total.\n",
      "solutionCode": "total = quantity * 12 + 3\n",
@@ -1188,7 +1208,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Hệ thống cung cấp city là tên địa điểm. Tạo report gồm dòng đầu \"Bao cao \" nối city, dòng sau đúng ba dấu gạch ngang. Giữ nguyên dấu và chữ hoa của city."
+      "body": "Hệ thống cung cấp city là tên địa điểm. Tạo report gồm dòng đầu \"Bao cao \" nối city, dòng sau đúng ba dấu gạch ngang. Giữ nguyên dấu và chữ hoa của city.",
+      "io": [
+       {
+        "label": "city =",
+        "value": "'Hue'"
+       },
+       {
+        "label": "report =",
+        "value": "'Bao cao Hue\\n---'"
+       }
+      ]
      },
      "starterCode": "# Hệ thống cung cấp city là tên địa điểm.\n# Hệ thống cung cấp city; gán kết quả vào report.\n",
      "solutionCode": "report = \"Bao cao \" + city + \"\\n\" + \"-\" * 3\n",
@@ -1386,7 +1416,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Hệ thống cung cấp serial là chuỗi mã kiện hàng. Gán tối đa bốn ký tự cuối vào suffix. Với mã ngắn hơn bốn ký tự, giữ cả mã."
+      "body": "Hệ thống cung cấp serial là chuỗi mã kiện hàng. Gán tối đa bốn ký tự cuối vào suffix. Với mã ngắn hơn bốn ký tự, giữ cả mã.",
+      "io": [
+       {
+        "label": "serial =",
+        "value": "'BOX-2048'"
+       },
+       {
+        "label": "suffix =",
+        "value": "'2048'"
+       }
+      ]
      },
      "starterCode": "# Hệ thống cung cấp serial là chuỗi mã kiện hàng.\n# Hệ thống cung cấp serial; gán kết quả vào suffix.\n",
      "solutionCode": "suffix = serial[-4:]\n",
@@ -1603,7 +1643,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Hệ thống cung cấp raw là chuỗi giá hợp lệ, có thể có khoảng trắng hai đầu. Gán vào message giá đã đổi sang số và hiển thị đúng hai chữ số sau dấu thập phân."
+      "body": "Hệ thống cung cấp raw là chuỗi giá hợp lệ, có thể có khoảng trắng hai đầu. Gán vào message giá đã đổi sang số và hiển thị đúng hai chữ số sau dấu thập phân.",
+      "io": [
+       {
+        "label": "raw =",
+        "value": "' 7.5 '"
+       },
+       {
+        "label": "message =",
+        "value": "'7.50'"
+       }
+      ]
      },
      "starterCode": "# Hệ thống cung cấp raw là chuỗi giá hợp lệ, có thể có khoảng trắng hai đầu.\n# Hệ thống cung cấp raw; gán kết quả vào message.\n",
      "solutionCode": "price = float(raw.strip())\nmessage = f\"{price:.2f}\"\n",
@@ -1809,7 +1859,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Hệ thống cung cấp score trong khoảng 0–10. Gán label bằng \"high\" nếu score từ 8, \"ready\" nếu từ 5 đến dưới 8, còn lại \"retry\"."
+      "body": "Hệ thống cung cấp score trong khoảng 0–10. Gán label bằng \"high\" nếu score từ 8, \"ready\" nếu từ 5 đến dưới 8, còn lại \"retry\".",
+      "io": [
+       {
+        "label": "score =",
+        "value": "8"
+       },
+       {
+        "label": "label =",
+        "value": "'high'"
+       }
+      ]
      },
      "starterCode": "# Hệ thống cung cấp score trong khoảng 0–10.\n# Hệ thống cung cấp score; gán kết quả vào label.\n",
      "solutionCode": "if score >= 8:\n    label = \"high\"\nelif score >= 5:\n    label = \"ready\"\nelse:\n    label = \"retry\"\n",
@@ -2034,7 +2094,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Hệ thống cung cấp readings là list các số đo. Tạo ordered là bản sắp tăng; không sắp trực tiếp readings vì còn cần giữ thứ tự thu thập. Cuối cùng gán result = [readings, ordered] để đối chiếu bản gốc và bản đã xếp."
+      "body": "Hệ thống cung cấp readings là list các số đo. Tạo ordered là bản sắp tăng; không sắp trực tiếp readings vì còn cần giữ thứ tự thu thập. Cuối cùng gán result = [readings, ordered] để đối chiếu bản gốc và bản đã xếp.",
+      "io": [
+       {
+        "label": "readings =",
+        "value": "[3, 1, 2]"
+       },
+       {
+        "label": "result =",
+        "value": "[[3, 1, 2], [1, 2, 3]]"
+       }
+      ]
      },
      "starterCode": "# Hệ thống cung cấp readings là list các số đo.\n# Hệ thống cung cấp readings; gán kết quả vào result.\n",
      "solutionCode": "ordered = readings.copy()\nordered.sort()\nresult = [readings, ordered]\n",
@@ -2283,7 +2353,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Hệ thống cung cấp coordinates là một cặp [x, y]. Tạo swapped là tuple (y, x). Bạn không cần sửa từng phần tử của cặp đầu vào."
+      "body": "Hệ thống cung cấp coordinates là một cặp [x, y]. Tạo swapped là tuple (y, x). Bạn không cần sửa từng phần tử của cặp đầu vào.",
+      "io": [
+       {
+        "label": "coordinates =",
+        "value": "[3, 8]"
+       },
+       {
+        "label": "swapped =",
+        "value": "[8, 3]"
+       }
+      ]
      },
      "starterCode": "# Hệ thống cung cấp coordinates là một cặp [x, y].\n# Hệ thống cung cấp coordinates; gán kết quả vào swapped.\n",
      "solutionCode": "x, y = coordinates\nswapped = (y, x)\n",
@@ -2514,7 +2594,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Hệ thống cung cấp stock là dictionary tồn kho theo mã sản phẩm. Gán amount bằng số lượng của P02, hoặc None nếu chưa có mã P02. Số lượng 0 phải được giữ nguyên."
+      "body": "Hệ thống cung cấp stock là dictionary tồn kho theo mã sản phẩm. Gán amount bằng số lượng của P02, hoặc None nếu chưa có mã P02. Số lượng 0 phải được giữ nguyên.",
+      "io": [
+       {
+        "label": "stock =",
+        "value": "{'P01': 2, 'P02': 7}"
+       },
+       {
+        "label": "amount =",
+        "value": "7"
+       }
+      ]
      },
      "starterCode": "# Hệ thống cung cấp stock là dictionary tồn kho theo mã sản phẩm.\n# Hệ thống cung cấp stock; gán kết quả vào amount.\n",
      "solutionCode": "amount = stock.get(\"P02\", None)\n",
@@ -2737,7 +2827,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Hệ thống cung cấp codes là list mã phiếu, có thể bị lặp. Tạo unique_codes là list mã khác nhau đã xếp tăng theo tên."
+      "body": "Hệ thống cung cấp codes là list mã phiếu, có thể bị lặp. Tạo unique_codes là list mã khác nhau đã xếp tăng theo tên.",
+      "io": [
+       {
+        "label": "codes =",
+        "value": "['B', 'A', 'B']"
+       },
+       {
+        "label": "unique_codes =",
+        "value": "['A', 'B']"
+       }
+      ]
      },
      "starterCode": "# Hệ thống cung cấp codes là list mã phiếu, có thể bị lặp.\n# Hệ thống cung cấp codes; gán kết quả vào unique_codes.\n",
      "solutionCode": "unique_codes = sorted(set(codes))\n",
@@ -2969,7 +3069,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Hệ thống cung cấp weights là list khối lượng kiện hàng. Chỉ những kiện từ 3 kg trở lên được đưa vào chuyến lớn. Gán tổng khối lượng các kiện đó vào total; list rỗng có tổng 0."
+      "body": "Hệ thống cung cấp weights là list khối lượng kiện hàng. Chỉ những kiện từ 3 kg trở lên được đưa vào chuyến lớn. Gán tổng khối lượng các kiện đó vào total; list rỗng có tổng 0.",
+      "io": [
+       {
+        "label": "weights =",
+        "value": "[2, 3, 4]"
+       },
+       {
+        "label": "total =",
+        "value": "7"
+       }
+      ]
      },
      "starterCode": "# Hệ thống cung cấp weights là list khối lượng kiện hàng.\n# Hệ thống cung cấp weights; gán kết quả vào total.\n",
      "solutionCode": "total = 0\nfor weight in weights:\n    if weight >= 3:\n        total += weight\n",
@@ -3191,7 +3301,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Hệ thống cung cấp quantities là dãy số đọc theo thứ tự. Số 0 báo hết phiên; số âm là lần nhập hỏng cần bỏ. Gán tổng các số dương trước số 0 đầu tiên vào total."
+      "body": "Hệ thống cung cấp quantities là dãy số đọc theo thứ tự. Số 0 báo hết phiên; số âm là lần nhập hỏng cần bỏ. Gán tổng các số dương trước số 0 đầu tiên vào total.",
+      "io": [
+       {
+        "label": "quantities =",
+        "value": "[2, -1, 4, 0, 8]"
+       },
+       {
+        "label": "total =",
+        "value": "6"
+       }
+      ]
      },
      "starterCode": "# Hệ thống cung cấp quantities là dãy số đọc theo thứ tự.\n# Hệ thống cung cấp quantities; gán kết quả vào total.\n",
      "solutionCode": "total = 0\nfor value in quantities:\n    if value == 0:\n        break\n    if value < 0:\n        continue\n    total += value\n",
@@ -3415,7 +3535,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận list thời gian chờ. Trả trung bình nếu có số đo; trả None nếu list rỗng. Đừng chỉ print kết quả."
+      "body": "Viết solve(data) nhận list thời gian chờ. Trả trung bình nếu có số đo; trả None nếu list rỗng. Đừng chỉ print kết quả.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[4, 6, 8]"
+       },
+       {
+        "label": "trả về",
+        "value": "6.0"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "def solve(data):\n    if len(data) == 0:\n        return None\n    return sum(data) / len(data)\n",
@@ -3631,7 +3761,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận một số. Bên trong, định nghĩa hàm add_one trả data + 1, gán chính hàm đó cho callback rồi trả kết quả callback(). Đây là lần thử quy tắc truyền hàm trước khi dùng nút bấm."
+      "body": "Viết solve(data) nhận một số. Bên trong, định nghĩa hàm add_one trả data + 1, gán chính hàm đó cho callback rồi trả kết quả callback(). Đây là lần thử quy tắc truyền hàm trước khi dùng nút bấm.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "6"
+       },
+       {
+        "label": "trả về",
+        "value": "7"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "def solve(data):\n    def add_one():\n        return data + 1\n    callback = add_one\n    return callback()\n",
@@ -3837,7 +3977,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận list chuỗi số. Trả list cùng độ dài, đổi từng chuỗi hợp lệ bằng float và thay chuỗi không chuyển được bằng None. Đầu vào không chứa chuỗi NaN hoặc vô cực."
+      "body": "Viết solve(data) nhận list chuỗi số. Trả list cùng độ dài, đổi từng chuỗi hợp lệ bằng float và thay chuỗi không chuyển được bằng None. Đầu vào không chứa chuỗi NaN hoặc vô cực.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "['1', '', '3.5']"
+       },
+       {
+        "label": "trả về",
+        "value": "[1.0, None, 3.5]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "def solve(data):\n    values = []\n    for raw in data:\n        try:\n            values.append(float(raw))\n        except ValueError:\n            values.append(None)\n    return values\n",
@@ -4063,7 +4213,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận list số sách trả theo ngày. Trả một NumPy array chứa đúng các số theo thứ tự đó. Chưa cần cộng, sắp xếp hoặc đổi kiểu."
+      "body": "Viết solve(data) nhận list số sách trả theo ngày. Trả một NumPy array chứa đúng các số theo thứ tự đó. Chưa cần cộng, sắp xếp hoặc đổi kiểu.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[4, 2, 9]"
+       },
+       {
+        "label": "trả về",
+        "value": "[4, 2, 9]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data)\n",
@@ -4296,7 +4456,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận list giá không rỗng. Tạo array rồi trả giá cuối cùng. Đừng cố định một chỉ số dương vì các list có độ dài khác nhau."
+      "body": "Viết solve(data) nhận list giá không rỗng. Tạo array rồi trả giá cuối cùng. Đừng cố định một chỉ số dương vì các list có độ dài khác nhau.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[18, 27, 35]"
+       },
+       {
+        "label": "trả về",
+        "value": "35"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    prices = np.array(data)\n    return prices[-1]\n",
@@ -4517,7 +4687,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận list giá gồm số nguyên hoặc số thực. Tạo array với dtype=float rồi trả dictionary gồm values là array đó và dtype là str(array.dtype). Giữ nguyên các phần thập phân."
+      "body": "Viết solve(data) nhận list giá gồm số nguyên hoặc số thực. Tạo array với dtype=float rồi trả dictionary gồm values là array đó và dtype là str(array.dtype). Giữ nguyên các phần thập phân.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[3, 4.5]"
+       },
+       {
+        "label": "trả về",
+        "value": "{'values': [3.0, 4.5], 'dtype': 'float64'}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    values = np.array(data, dtype=float)\n    return {\"values\": values, \"dtype\": str(values.dtype)}\n",
@@ -4755,7 +4935,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận list độ dài tính bằng mét. Trả array độ dài tính bằng centimet, dùng 1 m = 100 cm. Dữ liệu gốc không cần thay đổi."
+      "body": "Viết solve(data) nhận list độ dài tính bằng mét. Trả array độ dài tính bằng centimet, dùng 1 m = 100 cm. Dữ liệu gốc không cần thay đổi.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[1, 2.5]"
+       },
+       {
+        "label": "trả về",
+        "value": "[100.0, 250.0]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    meters = np.array(data, dtype=float)\n    return meters * 100\n",
@@ -4987,7 +5177,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận số nguyên n không âm. Trả array các số ghế chẵn từ 2 đến 2*n. Với n=0, trả dãy rỗng."
+      "body": "Viết solve(data) nhận số nguyên n không âm. Trả array các số ghế chẵn từ 2 đến 2*n. Với n=0, trả dãy rỗng.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "3"
+       },
+       {
+        "label": "trả về",
+        "value": "[2, 4, 6]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    return np.arange(2, 2 * data + 1, 2)\n",
@@ -5211,7 +5411,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận list các hàng số liệu có cùng số cột. Trả array hai chiều giữ nguyên thứ tự hàng và cột. Mỗi hàng là một trạm đo."
+      "body": "Viết solve(data) nhận list các hàng số liệu có cùng số cột. Trả array hai chiều giữ nguyên thứ tự hàng và cột. Mỗi hàng là một trạm đo.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[[2, 4, 6], [1, 3, 5]]"
+       },
+       {
+        "label": "trả về",
+        "value": "[[2, 4, 6], [1, 3, 5]]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data)\n",
@@ -5461,7 +5671,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận bảng số không rỗng. Trả dictionary có shape, ndim và size của array được tạo từ bảng. Bạn có thể trả tuple ở shape; hệ thống sẽ hiển thị thành dãy."
+      "body": "Viết solve(data) nhận bảng số không rỗng. Trả dictionary có shape, ndim và size của array được tạo từ bảng. Bạn có thể trả tuple ở shape; hệ thống sẽ hiển thị thành dãy.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[[1, 2], [3, 4], [5, 6]]"
+       },
+       {
+        "label": "trả về",
+        "value": "{'shape': [3, 2], 'ndim': 2, 'size': 6}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    a = np.array(data)\n    return {\"shape\": a.shape, \"ndim\": a.ndim, \"size\": a.size}\n",
@@ -5712,7 +5932,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận dictionary có values là dãy số và columns là số cột. Các dãy đều chia vừa. Trả bảng xếp lần lượt theo hàng với đúng số cột được yêu cầu."
+      "body": "Viết solve(data) nhận dictionary có values là dãy số và columns là số cột. Các dãy đều chia vừa. Trả bảng xếp lần lượt theo hàng với đúng số cột được yêu cầu.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [1, 2, 3, 4, 5, 6], 'columns': 3}"
+       },
+       {
+        "label": "trả về",
+        "value": "[[1, 2, 3], [4, 5, 6]]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    values = np.array(data[\"values\"])\n    return values.reshape(-1, data[\"columns\"])\n",
@@ -5970,7 +6200,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận bảng số không rỗng. Mỗi hàng là một trạm, cột cuối là mốc đo mới nhất. Trả array số đo mới nhất của mọi trạm."
+      "body": "Viết solve(data) nhận bảng số không rỗng. Mỗi hàng là một trạm, cột cuối là mốc đo mới nhất. Trả array số đo mới nhất của mọi trạm.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[[2, 4, 6], [1, 3, 5]]"
+       },
+       {
+        "label": "trả về",
+        "value": "[6, 5]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    readings = np.array(data)\n    return readings[:, -1]\n",
@@ -6206,7 +6446,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận bảng số lượng kiện ở các khu kho. Trả tổng số kiện của mọi khu và mọi ca, không tách hàng hoặc cột."
+      "body": "Viết solve(data) nhận bảng số lượng kiện ở các khu kho. Trả tổng số kiện của mọi khu và mọi ca, không tách hàng hoặc cột.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[[2, 1], [0, 4]]"
+       },
+       {
+        "label": "trả về",
+        "value": "7"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data).sum()\n",
@@ -6447,7 +6697,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận bảng, mỗi hàng là một khu kho và mỗi cột là một ca. Trả tổng số kiện từng ca, giữ thứ tự cột."
+      "body": "Viết solve(data) nhận bảng, mỗi hàng là một khu kho và mỗi cột là một ca. Trả tổng số kiện từng ca, giữ thứ tự cột.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[[2, 4, 1], [3, 1, 5]]"
+       },
+       {
+        "label": "trả về",
+        "value": "[5, 5, 6]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data).sum(axis=0)\n",
@@ -6697,7 +6957,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận bảng số gói, mỗi hàng là một tuyến giao hàng, mỗi cột là một điểm dừng. Trả tổng số gói của từng tuyến."
+      "body": "Viết solve(data) nhận bảng số gói, mỗi hàng là một tuyến giao hàng, mỗi cột là một điểm dừng. Trả tổng số gói của từng tuyến.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[[2, 4, 1], [3, 1, 5]]"
+       },
+       {
+        "label": "trả về",
+        "value": "[7, 9]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data).sum(axis=1)\n",
@@ -6944,7 +7214,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận dãy nhiệt độ. Trả mask đánh dấu những số đo từ 30°C trở lên. Giữ đủ số vị trí và thứ tự đầu vào."
+      "body": "Viết solve(data) nhận dãy nhiệt độ. Trả mask đánh dấu những số đo từ 30°C trở lên. Giữ đủ số vị trí và thứ tự đầu vào.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[29, 30, 32]"
+       },
+       {
+        "label": "trả về",
+        "value": "[False, True, True]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data) >= 30\n",
@@ -7178,7 +7458,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận dãy nhiệt độ. Trả array các số từ 20 đến 35°C, nhận cả hai biên và giữ nguyên thứ tự."
+      "body": "Viết solve(data) nhận dãy nhiệt độ. Trả array các số từ 20 đến 35°C, nhận cả hai biên và giữ nguyên thứ tự.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[18, 20, 28, 35, 37]"
+       },
+       {
+        "label": "trả về",
+        "value": "[20, 28, 35]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    temps = np.array(data)\n    valid = (temps >= 20) & (temps <= 35)\n    return temps[valid]\n",
@@ -7419,7 +7709,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận dãy điểm. Bỏ điểm ngoài 0–10, cộng thưởng 1 cho điểm hợp lệ rồi giới hạn kết quả ở 10. Trả array điểm cuối, giữ thứ tự."
+      "body": "Viết solve(data) nhận dãy điểm. Bỏ điểm ngoài 0–10, cộng thưởng 1 cho điểm hợp lệ rồi giới hạn kết quả ở 10. Trả array điểm cuối, giữ thứ tự.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[-2, 4, 9.5, 12]"
+       },
+       {
+        "label": "trả về",
+        "value": "[5.0, 10.0]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    scores = np.array(data, dtype=float)\n    valid = scores[(scores >= 0) & (scores <= 10)]\n    return np.clip(valid + 1, 0, 10)\n",
@@ -7655,7 +7955,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận dictionary values là số đo và weights là số lần đại diện cho từng số đo. Trả trung bình có trọng số. Các dãy không rỗng, cùng độ dài; trọng số không âm và có tổng dương."
+      "body": "Viết solve(data) nhận dictionary values là số đo và weights là số lần đại diện cho từng số đo. Trả trung bình có trọng số. Các dãy không rỗng, cùng độ dài; trọng số không âm và có tổng dương.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [6, 9], 'weights': [1, 3]}"
+       },
+       {
+        "label": "trả về",
+        "value": "8.25"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    return np.average(data[\"values\"], weights=data[\"weights\"])\n",
@@ -7893,7 +8203,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận list số đo; JSON dùng None để chỉ ô chưa biết. Tạo array dtype=float, bỏ NaN khi tính trung bình. Nếu không có số đo nào đã biết, trả None thay vì coi trung bình bằng 0."
+      "body": "Viết solve(data) nhận list số đo; JSON dùng None để chỉ ô chưa biết. Tạo array dtype=float, bỏ NaN khi tính trung bình. Nếu không có số đo nào đã biết, trả None thay vì coi trung bình bằng 0.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[24, None, 30]"
+       },
+       {
+        "label": "trả về",
+        "value": "27.0"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    values = np.array(data, dtype=float)\n    known = values[~np.isnan(values)]\n    if len(known) == 0:\n        return None\n    return known.mean()\n",
@@ -8122,7 +8442,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận so_coc là bảng số lượng đơn hàng và price là dãy giá theo đúng thứ tự cột. Trả bảng tiền từng sản phẩm trong mỗi đơn, chưa cộng thành tổng đơn."
+      "body": "Viết solve(data) nhận so_coc là bảng số lượng đơn hàng và price là dãy giá theo đúng thứ tự cột. Trả bảng tiền từng sản phẩm trong mỗi đơn, chưa cộng thành tổng đơn.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'so_coc': [[2, 1], [0, 3]], 'price': [5, 8]}"
+       },
+       {
+        "label": "trả về",
+        "value": "[[10, 8], [0, 24]]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    so_coc = np.array(data[\"so_coc\"])\n    price = np.array(data[\"price\"])\n    return so_coc * price\n",
@@ -8400,7 +8730,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận bảng giá không rỗng. Tạo array original, lấy tối đa hai giá đầu thành trial riêng rồi nhân đôi trial tại chỗ. Trả dictionary original và trial để chứng minh bản gốc còn nguyên."
+      "body": "Viết solve(data) nhận bảng giá không rỗng. Tạo array original, lấy tối đa hai giá đầu thành trial riêng rồi nhân đôi trial tại chỗ. Trả dictionary original và trial để chứng minh bản gốc còn nguyên.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[8, 12, 20]"
+       },
+       {
+        "label": "trả về",
+        "value": "{'original': [8, 12, 20], 'trial': [16, 24]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    original = np.array(data)\n    trial = original[:2].copy()\n    trial *= 2\n    return {\"original\": original, \"trial\": trial}\n",
@@ -8648,7 +8988,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận parts là dãy số và expected là tổng dự kiến. Trả kết quả np.isclose của tổng parts với expected, dùng atol=0.000001 và rtol=0."
+      "body": "Viết solve(data) nhận parts là dãy số và expected là tổng dự kiến. Trả kết quả np.isclose của tổng parts với expected, dùng atol=0.000001 và rtol=0.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'parts': [0.1, 0.2], 'expected': 0.3}"
+       },
+       {
+        "label": "trả về",
+        "value": "True"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    total = np.array(data[\"parts\"]).sum()\n    return np.isclose(total, data[\"expected\"], atol=0.000001, rtol=0)\n",
@@ -8890,7 +9240,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận chuỗi CSV có một dòng tên cột, ít nhất hai dòng số và hai cột. Ô rỗng nghĩa là thiếu. Trả array số ô thiếu của từng cột, giữ thứ tự cột."
+      "body": "Viết solve(data) nhận chuỗi CSV có một dòng tên cột, ít nhất hai dòng số và hai cột. Ô rỗng nghĩa là thiếu. Trả array số ô thiếu của từng cột, giữ thứ tự cột.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "'pm,temp\\n1,2\\n,4'"
+       },
+       {
+        "label": "trả về",
+        "value": "[1, 0]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\nfrom io import StringIO\ndef solve(data):\n    table = np.genfromtxt(StringIO(data), delimiter=\",\", skip_header=1)\n    return np.isnan(table).sum(axis=0)\n",
@@ -9112,7 +9472,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận seed và n không âm. Tạo hai bộ sinh riêng cùng seed, mỗi bộ sinh n số bằng integers(1,7,size=n). Trả dictionary count là số phần tử của dãy thứ nhất và same cho biết hai dãy có bằng nhau hay không."
+      "body": "Viết solve(data) nhận seed và n không âm. Tạo hai bộ sinh riêng cùng seed, mỗi bộ sinh n số bằng integers(1,7,size=n). Trả dictionary count là số phần tử của dãy thứ nhất và same cho biết hai dãy có bằng nhau hay không.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'seed': 11, 'n': 2}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'count': 2, 'same': True}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    first = np.random.default_rng(data[\"seed\"]).integers(1, 7, size=data[\"n\"])\n    second = np.random.default_rng(data[\"seed\"]).integers(1, 7, size=data[\"n\"])\n    return {\"count\": first.size, \"same\": np.array_equal(first, second)}\n",
@@ -9345,7 +9715,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận bảng khoản chi; mỗi hàng là một nhóm, các cột là khoản chi không thiếu. Trả totals là tổng từng nhóm và labels bằng \"within\" nếu tổng không quá 10, còn lại \"over\"."
+      "body": "Viết solve(data) nhận bảng khoản chi; mỗi hàng là một nhóm, các cột là khoản chi không thiếu. Trả totals là tổng từng nhóm và labels bằng \"within\" nếu tổng không quá 10, còn lại \"over\".",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[[4, 7], [3, 2]]"
+       },
+       {
+        "label": "trả về",
+        "value": "{'totals': [11, 5], 'labels': ['over', 'within']}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    totals = np.array(data).sum(axis=1)\n    labels = np.where(totals <= 10, \"within\", \"over\")\n    return {\"totals\": totals, \"labels\": labels}\n",
@@ -9596,7 +9976,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Một rạp ghi số vé theo ca. data gồm values, labels và pick; nhãn là duy nhất và pick có trong labels. Tạo Series và trả dictionary có selected (số vé của nhãn pick), total (tổng vé), count (số ca)."
+      "body": "Một rạp ghi số vé theo ca. data gồm values, labels và pick; nhãn là duy nhất và pick có trong labels. Tạo Series và trả dictionary có selected (số vé của nhãn pick), total (tổng vé), count (số ca).",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [7, 12, 5], 'labels': ['AM', 'PM', 'Late'], 'pick': 'Late'}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'selected': 5, 'total': 24, 'count': 3}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], index=data['labels'])\n     return {'selected': int(s.loc[data['pick']]), 'total': int(s.sum()), 'count': len(s)}\n",
@@ -9846,7 +10236,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows là list các dictionary có item và units, có ít nhất một hàng. Tạo DataFrame, trả shape dưới dạng list hai số, first là dictionary hàng đầu và last là dictionary hàng cuối."
+      "body": "data.rows là list các dictionary có item và units, có ít nhất một hàng. Tạo DataFrame, trả shape dưới dạng list hai số, first là dictionary hàng đầu và last là dictionary hàng cuối.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'item': 'ink', 'units': 4}, {'item': 'paper', 'units': 10}, {'item': 'clip', 'units': 2}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'shape': [3, 2], 'first': {'item': 'ink', 'units': 4}, 'last': {'item': 'clip', 'units': 2}}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     frame = pd.DataFrame(data['rows'])\n     return {'shape': list(frame.shape), 'first': frame.head(1).to_dict('records')[0], 'last': frame.tail(1).to_dict('records')[0]}\n",
@@ -10179,7 +10579,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data có values, labels, label và position. labels duy nhất, label có trong labels, position hợp lệ. Tạo Series; trả [giá trị theo label, giá trị theo position]."
+      "body": "data có values, labels, label và position. labels duy nhất, label có trong labels, position hợp lệ. Tạo Series; trả [giá trị theo label, giá trị theo position].",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [6, 4, 8], 'labels': [30, 10, 20], 'label': 10, 'position': 2}"
+       },
+       {
+        "label": "trả về",
+        "value": "[4, 8]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], index=data['labels'])\n     return [int(s.loc[data['label']]), int(s.iloc[data['position']])]\n",
@@ -10419,7 +10829,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.revenue và data.cost là dictionary nhãn cửa hàng → số. Trừ hai Series theo nhãn. Trả dictionary lợi nhuận; nhãn chỉ có ở một bên phải có giá trị None, không tự điền 0."
+      "body": "data.revenue và data.cost là dictionary nhãn cửa hàng → số. Trừ hai Series theo nhãn. Trả dictionary lợi nhuận; nhãn chỉ có ở một bên phải có giá trị None, không tự điền 0.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'revenue': {'K': 90, 'L': 60}, 'cost': {'L': 10, 'K': 40}}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'K': 50.0, 'L': 50.0}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     revenue = pd.Series(data['revenue'], dtype=float)\n     cost = pd.Series(data['cost'], dtype=float)\n     profit = revenue - cost\n     return {key: None if pd.isna(value) else float(value) for key, value in profit.items()}\n",
@@ -10647,7 +11067,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows chứa order, city, amount; data.city và data.minimum là yêu cầu mới. Trả list mã order có city đúng và amount >= minimum, giữ thứ tự gốc."
+      "body": "data.rows chứa order, city, amount; data.city và data.minimum là yêu cầu mới. Trả list mã order có city đúng và amount >= minimum, giữ thứ tự gốc.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'order': 'X', 'city': 'DN', 'amount': 60}, {'order': 'Y', 'city': 'HN', 'amount': 90}, {'order': 'Z', 'city': 'DN', 'amount': 100}], 'city': 'DN', 'minimum': 70}"
+       },
+       {
+        "label": "trả về",
+        "value": "['Z']"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['order','city','amount'])\n     mask = (df['city'] == data['city']) & (df['amount'] >= data['minimum'])\n     return df.loc[mask, 'order'].tolist()\n",
@@ -10907,7 +11337,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows có so_coc, don_gia; data.cap là doanh thu áp dụng cố định cho mọi hàng so_coc>=3. Tạo tong_tien=so_coc*don_gia, sửa tong_tien ở đúng các hàng đó bằng loc. Trả list tong_tien theo thứ tự hàng."
+      "body": "data.rows có so_coc, don_gia; data.cap là doanh thu áp dụng cố định cho mọi hàng so_coc>=3. Tạo tong_tien=so_coc*don_gia, sửa tong_tien ở đúng các hàng đó bằng loc. Trả list tong_tien theo thứ tự hàng.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'so_coc': 1, 'don_gia': 12}, {'so_coc': 4, 'don_gia': 20}], 'cap': 60}"
+       },
+       {
+        "label": "trả về",
+        "value": "[12, 60]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['so_coc','don_gia'])\n     df['tong_tien'] = df['so_coc'] * df['don_gia']\n     df.loc[df['so_coc'] >= 3, 'tong_tien'] = data['cap']\n     return df['tong_tien'].tolist()\n",
@@ -11141,7 +11581,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.codes là list mã dạng chữ; data.so_coc chứa số nguyên viết bằng chữ, None hoặc chuỗi lỗi. Giữ codes bằng dtype string; chuyển so_coc qua to_numeric(errors=\"coerce\") rồi Int64. Trả codes, so_coc (ô thiếu thành None) và dtype của so_coc."
+      "body": "data.codes là list mã dạng chữ; data.so_coc chứa số nguyên viết bằng chữ, None hoặc chuỗi lỗi. Giữ codes bằng dtype string; chuyển so_coc qua to_numeric(errors=\"coerce\") rồi Int64. Trả codes, so_coc (ô thiếu thành None) và dtype của so_coc.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'codes': ['003', '010'], 'so_coc': ['4', 'bad']}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'codes': ['003', '010'], 'so_coc': [4, None], 'dtype': 'Int64'}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     codes = pd.Series(data['codes'], dtype='string')\n     so_coc = pd.to_numeric(pd.Series(data['so_coc']), errors='coerce').astype('Int64')\n     return {'codes': codes.tolist(), 'so_coc': [None if pd.isna(v) else int(v) for v in so_coc], 'dtype': str(so_coc.dtype)}\n",
@@ -11388,7 +11838,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.values chứa số hoặc None. Tạo Series kiểu Float64. Trả known là các số không thiếu, missing là số ô thiếu, mean là trung bình hoặc None nếu chưa có số nào."
+      "body": "data.values chứa số hoặc None. Tạo Series kiểu Float64. Trả known là các số không thiếu, missing là số ô thiếu, mean là trung bình hoặc None nếu chưa có số nào.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [6, None, 12]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'known': [6.0, 12.0], 'missing': 1, 'mean': 9.0}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], dtype='Float64')\n     value = s.mean()\n     return {'known': s.dropna().astype(float).tolist(), 'missing': int(s.isna().sum()), 'mean': None if pd.isna(value) else float(value)}\n",
@@ -11617,7 +12077,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.names có chuỗi hoặc None; data.query là đoạn chữ thường cần tìm theo nghĩa đen. Chuẩn hóa strip/lower, thay ô thiếu bằng \"unknown\". Trả clean và matched là các tên đã chuẩn hóa chứa query; giữ thứ tự."
+      "body": "data.names có chuỗi hoặc None; data.query là đoạn chữ thường cần tìm theo nghĩa đen. Chuẩn hóa strip/lower, thay ô thiếu bằng \"unknown\". Trả clean và matched là các tên đã chuẩn hóa chứa query; giữ thứ tự.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'names': [' Latte ', 'LATTE', 'Mocha'], 'query': 'latte'}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'clean': ['latte', 'latte', 'mocha'], 'matched': ['latte', 'latte']}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     clean = pd.Series(data['names'], dtype='string').str.strip().str.lower().fillna('unknown')\n     mask = clean.str.contains(data['query'], regex=False, na=False)\n     return {'clean': clean.tolist(), 'matched': clean.loc[mask].tolist()}\n",
@@ -11856,7 +12326,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Mỗi data.rows có order, version, amount. Mỗi order có các version khác nhau. Trả list bản ghi mới nhất của mỗi order, xếp order tăng dần; không cộng hai phiên bản thành hai giao dịch."
+      "body": "Mỗi data.rows có order, version, amount. Mỗi order có các version khác nhau. Trả list bản ghi mới nhất của mỗi order, xếp order tăng dần; không cộng hai phiên bản thành hai giao dịch.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'order': 'A', 'version': 2, 'amount': 17}, {'order': 'A', 'version': 1, 'amount': 10}, {'order': 'B', 'version': 1, 'amount': 5}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "[{'order': 'A', 'version': 2, 'amount': 17}, {'order': 'B', 'version': 1, 'amount': 5}]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['order','version','amount'])\n     return df.sort_values('version').drop_duplicates('order', keep='last').sort_values('order').to_dict('records')\n",
@@ -12134,7 +12614,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.values có số hoặc None, có ít nhất một số. Trả count, size, mean, median từ một Series. Dùng các đại lượng này để thấy số rất lớn có thể kéo mean khác median."
+      "body": "data.values có số hoặc None, có ít nhất một số. Trả count, size, mean, median từ một Series. Dùng các đại lượng này để thấy số rất lớn có thể kéo mean khác median.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [2, 4, 6, 40]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'count': 4, 'size': 4, 'mean': 13.0, 'median': 5.0}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], dtype=float)\n     return {'count': int(s.count()), 'size': int(s.size), 'mean': float(s.mean()), 'median': float(s.median())}\n",
@@ -12413,7 +12903,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.text là CSV cột id;amount, ký hiệu missing là thiếu. Đọc với sep=\";\", id kiểu string. Trả ids giữ số 0 đầu và amounts, đổi ô thiếu thành None. Không viết hàm tách chuỗi CSV bằng tay."
+      "body": "data.text là CSV cột id;amount, ký hiệu missing là thiếu. Đọc với sep=\";\", id kiểu string. Trả ids giữ số 0 đầu và amounts, đổi ô thiếu thành None. Không viết hàm tách chuỗi CSV bằng tay.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'text': 'id;amount\\n004;3.5\\n020;missing\\n'}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'ids': ['004', '020'], 'amounts': [3.5, None]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\nfrom io import StringIO\n\ndef solve(data):\n     df = pd.read_csv(StringIO(data['text']), sep=';', dtype={'id':'string'}, na_values=['missing'])\n     return {'ids': df['id'].tolist(), 'amounts': [None if pd.isna(v) else float(v) for v in df['amount']]}\n",
@@ -12840,7 +13340,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows có quay và so_coc. Quy ước quay thiếu được ghi là \"Unknown\". Trả dictionary quay→tổng so_coc, gồm cả nhóm Unknown; so_coc đều là số."
+      "body": "data.rows có quay và so_coc. Quy ước quay thiếu được ghi là \"Unknown\". Trả dictionary quay→tổng so_coc, gồm cả nhóm Unknown; so_coc đều là số.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'quay': 'Q1', 'so_coc': 3}, {'quay': 'Q2', 'so_coc': 7}, {'quay': 'Q1', 'so_coc': 4}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'Q1': 7, 'Q2': 7}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['quay','so_coc'])\n     df['quay'] = df['quay'].fillna('Unknown')\n     return df.groupby('quay')['so_coc'].sum().to_dict()\n",
@@ -13086,7 +13596,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows gồm group và value; mỗi nhóm có tổng dương. Trả list tỷ trọng value/tổng nhóm theo đúng thứ tự gốc. Không trả bảng đã gộp mất giao dịch."
+      "body": "data.rows gồm group và value; mỗi nhóm có tổng dương. Trả list tỷ trọng value/tổng nhóm theo đúng thứ tự gốc. Không trả bảng đã gộp mất giao dịch.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'group': 'X', 'value': 2}, {'group': 'Y', 'value': 9}, {'group': 'X', 'value': 6}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "[0.25, 1.0, 0.75]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     totals = df.groupby('group')['value'].transform('sum')\n     return (df['value'] / totals).tolist()\n",
@@ -13333,7 +13853,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.orders chứa product_id và so_coc; data.products chứa product_id và name, mã danh mục là duy nhất. Nối trái theo product_id, trả list tên theo thứ tự đơn; tên chưa khớp là \"Unknown\"."
+      "body": "data.orders chứa product_id và so_coc; data.products chứa product_id và name, mã danh mục là duy nhất. Nối trái theo product_id, trả list tên theo thứ tự đơn; tên chưa khớp là \"Unknown\".",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'orders': [{'product_id': 2, 'so_coc': 1}, {'product_id': 1, 'so_coc': 3}], 'products': [{'product_id': 1, 'name': 'Book'}, {'product_id': 2, 'name': 'Pen'}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "['Pen', 'Book']"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame(data['orders'], columns=['product_id','so_coc'])\n     products = pd.DataFrame(data['products'], columns=['product_id','name'])\n     joined = orders.merge(products, on='product_id', how='left', sort=False)\n     return joined['name'].fillna('Unknown').tolist()\n",
@@ -13597,7 +14127,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.orders là list mã id của đơn; data.catalog là list mã trong danh mục. Trả {valid:False,missing:[]} nếu danh mục trùng khóa; nếu hợp lệ, nối trái có validate và indicator rồi trả valid=True và list mã chưa khớp theo thứ tự đơn, giữ cả lần lặp."
+      "body": "data.orders là list mã id của đơn; data.catalog là list mã trong danh mục. Trả {valid:False,missing:[]} nếu danh mục trùng khóa; nếu hợp lệ, nối trái có validate và indicator rồi trả valid=True và list mã chưa khớp theo thứ tự đơn, giữ cả lần lặp.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'orders': [1, 4, 4, 2], 'catalog': [1, 2]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'valid': True, 'missing': [4, 4]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame({'id':data['orders']})\n     catalog = pd.DataFrame({'id':data['catalog']})\n     try:\n         joined = orders.merge(catalog, on='id', how='left', validate='many_to_one', indicator=True)\n     except pd.errors.MergeError:\n         return {'valid':False, 'missing':[]}\n     return {'valid':True, 'missing':joined.loc[joined['_merge'] == 'left_only','id'].tolist()}\n",
@@ -13832,7 +14372,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.batches là list các lô; mỗi lô là list số lượng. Có ít nhất một lô không rỗng. Tạo một DataFrame mỗi lô, concat một lần theo hàng với ignore_index=True. Trả values và index thành hai list; giữ mọi số kể cả số lặp."
+      "body": "data.batches là list các lô; mỗi lô là list số lượng. Có ít nhất một lô không rỗng. Tạo một DataFrame mỗi lô, concat một lần theo hàng với ignore_index=True. Trả values và index thành hai list; giữ mọi số kể cả số lặp.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'batches': [[2, 3], [7]]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'values': [2, 3, 7], 'index': [0, 1, 2]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     parts = [pd.DataFrame({'so_coc':part}) for part in data['batches']]\n     combined = pd.concat(parts, ignore_index=True)\n     return {'values':combined['so_coc'].tolist(), 'index':combined.index.tolist()}\n",
@@ -14082,7 +14632,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows có store, month, revenue, mỗi cặp store–month duy nhất. data.store và data.month xác định ô có trong dữ liệu. Pivot rồi trả giá trị của ô đó dưới dạng số."
+      "body": "data.rows có store, month, revenue, mỗi cặp store–month duy nhất. data.store và data.month xác định ô có trong dữ liệu. Pivot rồi trả giá trị của ô đó dưới dạng số.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'store': 'X', 'month': 'Mar', 'revenue': 6}, {'store': 'X', 'month': 'Apr', 'revenue': 11}], 'store': 'X', 'month': 'Apr'}"
+       },
+       {
+        "label": "trả về",
+        "value": "11.0"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     wide = df.pivot(index='store', columns='month', values='revenue')\n     return float(wide.loc[data['store'], data['month']])\n",
@@ -14336,7 +14896,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows là giao dịch store, month, amount. Tháng và cửa hàng được hỏi đều xuất hiện trong bảng; giao dịch của cặp đó có thể vắng và được quy ước là 0. Pivot_table với sum, fill_value=0 rồi trả tổng cho data.store và data.month."
+      "body": "data.rows là giao dịch store, month, amount. Tháng và cửa hàng được hỏi đều xuất hiện trong bảng; giao dịch của cặp đó có thể vắng và được quy ước là 0. Pivot_table với sum, fill_value=0 rồi trả tổng cho data.store và data.month.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'store': 'X', 'month': 'Mar', 'amount': 3}, {'store': 'X', 'month': 'Mar', 'amount': 9}], 'store': 'X', 'month': 'Mar'}"
+       },
+       {
+        "label": "trả về",
+        "value": "12.0"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     table = pd.DataFrame(data['rows']).pivot_table(index='store', columns='month', values='amount', aggfunc='sum', fill_value=0)\n     return float(table.loc[data['store'], data['month']])\n",
@@ -14595,7 +15165,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.ordered và data.delivered là hai list chuỗi %d/%m/%Y hoặc chuỗi sai. Chuyển với errors=\"coerce\", trừ ngày giao cho ngày đặt. Trả list số ngày trọn; cặp chứa ngày sai trả None. Không tự cộng thêm ngày đầu."
+      "body": "data.ordered và data.delivered là hai list chuỗi %d/%m/%Y hoặc chuỗi sai. Chuyển với errors=\"coerce\", trừ ngày giao cho ngày đặt. Trả list số ngày trọn; cặp chứa ngày sai trả None. Không tự cộng thêm ngày đầu.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'ordered': ['28/02/2026'], 'delivered': ['02/03/2026']}"
+       },
+       {
+        "label": "trả về",
+        "value": "[2]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     ordered = pd.to_datetime(pd.Series(data['ordered']), format='%d/%m/%Y', errors='coerce')\n     delivered = pd.to_datetime(pd.Series(data['delivered']), format='%d/%m/%Y', errors='coerce')\n     days = (delivered - ordered).dt.days\n     return [None if pd.isna(v) else int(v) for v in days]\n",
@@ -14819,7 +15399,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows có date dạng ISO và amount, ít nhất một hàng. Gom tổng theo mốc đầu tháng bằng resample(\"MS\").sum(). Trả dictionary nhãn YYYY-MM → tổng, kể cả tháng ở giữa không có giao dịch (tổng mặc định 0)."
+      "body": "data.rows có date dạng ISO và amount, ít nhất một hàng. Gom tổng theo mốc đầu tháng bằng resample(\"MS\").sum(). Trả dictionary nhãn YYYY-MM → tổng, kể cả tháng ở giữa không có giao dịch (tổng mặc định 0).",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'date': '2026-03-01', 'amount': 2}, {'date': '2026-03-20', 'amount': 7}, {'date': '2026-04-02', 'amount': 4}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'2026-03': 9.0, '2026-04': 4.0}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     df['date'] = pd.to_datetime(df['date'])\n     monthly = df.set_index('date')['amount'].resample('MS').sum()\n     return {date.strftime('%Y-%m'):float(value) for date,value in monthly.items()}\n",
@@ -15059,7 +15649,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.utc là list chuỗi thời điểm UTC có Z. Đọc với utc=True rồi chuyển Asia/Ho_Chi_Minh. Trả list chuỗi YYYY-MM-DD HH:MM theo giờ Việt Nam, giữ thứ tự sự kiện."
+      "body": "data.utc là list chuỗi thời điểm UTC có Z. Đọc với utc=True rồi chuyển Asia/Ho_Chi_Minh. Trả list chuỗi YYYY-MM-DD HH:MM theo giờ Việt Nam, giữ thứ tự sự kiện.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'utc': ['2026-05-01T23:30:00Z']}"
+       },
+       {
+        "label": "trả về",
+        "value": "['2026-05-02 06:30']"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     utc = pd.to_datetime(data['utc'], utc=True)\n     local = utc.tz_convert('Asia/Ho_Chi_Minh')\n     return local.strftime('%Y-%m-%d %H:%M').tolist()\n",
@@ -15274,7 +15874,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.values là số; data.window là số hàng cửa sổ dương. Tính rolling mean khi đủ window giá trị rồi shift(1). Trả list cùng độ dài, ô chưa đủ dữ liệu là None. Giá trị tại hàng t không được dùng trong đặc trưng cho chính t."
+      "body": "data.values là số; data.window là số hàng cửa sổ dương. Tính rolling mean khi đủ window giá trị rồi shift(1). Trả list cùng độ dài, ô chưa đủ dữ liệu là None. Giá trị tại hàng t không được dùng trong đặc trưng cho chính t.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [4, 8, 12, 20], 'window': 2}"
+       },
+       {
+        "label": "trả về",
+        "value": "[None, None, 6.0, 10.0]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], dtype=float)\n     result = s.rolling(data['window'], min_periods=data['window']).mean().shift(1)\n     return [None if pd.isna(v) else float(v) for v in result]\n",
@@ -15501,7 +16111,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows có so_coc, don_gia, giam_gia (0..1). Trả list tiền sau giảm giá so_coc*don_gia*(1-giam_gia), theo thứ tự. Dùng các cột trực tiếp, không phải apply cho phép nhân đơn giản này."
+      "body": "data.rows có so_coc, don_gia, giam_gia (0..1). Trả list tiền sau giảm giá so_coc*don_gia*(1-giam_gia), theo thứ tự. Dùng các cột trực tiếp, không phải apply cho phép nhân đơn giản này.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'so_coc': 2, 'don_gia': 15, 'giam_gia': 0.2}, {'so_coc': 3, 'don_gia': 8, 'giam_gia': 0}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "[24.0, 24.0]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     return (df['so_coc'] * df['don_gia'] * (1 - df['giam_gia'])).tolist()\n",
@@ -15731,7 +16351,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.values là các số. Chia theo bins=[0,10,20], labels=[\"low\",\"high\"], include_lowest=True. Trả list nhãn, giá trị ngoài 0..20 thành None."
+      "body": "data.values là các số. Chia theo bins=[0,10,20], labels=[\"low\",\"high\"], include_lowest=True. Trả list nhãn, giá trị ngoài 0..20 thành None.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [0, 10, 20]}"
+       },
+       {
+        "label": "trả về",
+        "value": "['low', 'low', 'high']"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     bands = pd.cut(pd.Series(data['values']), bins=[0,10,20], labels=['low','high'], include_lowest=True)\n     return [None if pd.isna(v) else str(v) for v in bands]\n",
@@ -15953,7 +16583,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows có city, year, value; mỗi cặp city–year duy nhất. Đặt hai cột đó làm MultiIndex, sắp index rồi lấy data.city và data.year, trả value của cặp có thật đó."
+      "body": "data.rows có city, year, value; mỗi cặp city–year duy nhất. Đặt hai cột đó làm MultiIndex, sắp index rồi lấy data.city và data.year, trả value của cặp có thật đó.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'city': 'HN', 'year': 2025, 'value': 3}, {'city': 'HN', 'year': 2026, 'value': 7}], 'city': 'HN', 'year': 2026}"
+       },
+       {
+        "label": "trả về",
+        "value": "7.0"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     frame = pd.DataFrame(data['rows']).set_index(['city','year']).sort_index()\n     return float(frame.loc[(data['city'],data['year']),'value'])\n",
@@ -16207,7 +16847,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.text là CSV một cột x với ít nhất một số, có thể có NA; data.chunksize >0. Đọc theo lô, cộng tổng và count giá trị không thiếu. Trả total, count và mean. Kết quả phải không phụ thuộc cách chia lô."
+      "body": "data.text là CSV một cột x với ít nhất một số, có thể có NA; data.chunksize >0. Đọc theo lô, cộng tổng và count giá trị không thiếu. Trả total, count và mean. Kết quả phải không phụ thuộc cách chia lô.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'text': 'x\\n0\\n0\\n9\\n', 'chunksize': 2}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'total': 9.0, 'count': 3, 'mean': 3.0}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\nfrom io import StringIO\n\ndef solve(data):\n     total, count = 0.0, 0\n     for chunk in pd.read_csv(StringIO(data['text']), chunksize=data['chunksize']):\n         total += chunk['x'].sum()\n         count += int(chunk['x'].count())\n     return {'total':float(total), 'count':count, 'mean':float(total/count)}\n",
@@ -16422,7 +17072,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.amounts là list số tiền, data.threshold là ngưỡng. Dùng sqlite3 :memory:, ghi DataFrame vào bảng sales rồi dùng truy vấn có params để lấy amount > threshold theo thứ tự tăng. Trả list các số nhận được từ pandas, đóng kết nối khi xong."
+      "body": "data.amounts là list số tiền, data.threshold là ngưỡng. Dùng sqlite3 :memory:, ghi DataFrame vào bảng sales rồi dùng truy vấn có params để lấy amount > threshold theo thứ tự tăng. Trả list các số nhận được từ pandas, đóng kết nối khi xong.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'amounts': [9, 3, 20, 9], 'threshold': 8}"
+       },
+       {
+        "label": "trả về",
+        "value": "[9, 9, 20]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import sqlite3\nimport pandas as pd\n\ndef solve(data):\n     con = sqlite3.connect(':memory:')\n     try:\n         pd.DataFrame({'amount':data['amounts']}).to_sql('sales', con, index=False)\n         result = pd.read_sql_query('SELECT amount FROM sales WHERE amount > ? ORDER BY amount', con, params=(data['threshold'],))\n         return result['amount'].tolist()\n     finally:\n         con.close()\n",
@@ -16658,7 +17318,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows chứa store và amount dạng chữ. Chuẩn hóa store bằng strip/upper và amount bằng to_numeric(coerce), không tự bỏ hàng lỗi. Trả records (ô amount thiếu là None), invalid là số amount thiếu. Không sửa data đầu vào."
+      "body": "data.rows chứa store và amount dạng chữ. Chuẩn hóa store bằng strip/upper và amount bằng to_numeric(coerce), không tự bỏ hàng lỗi. Trả records (ô amount thiếu là None), invalid là số amount thiếu. Không sửa data đầu vào.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'store': ' e ', 'amount': '7'}, {'store': 'w', 'amount': 'oops'}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'records': [{'store': 'E', 'amount': 7.0}, {'store': 'W', 'amount': None}], 'invalid': 1}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     frame = pd.DataFrame(data['rows']).copy()\n     frame['store'] = frame['store'].str.strip().str.upper()\n     frame['amount'] = pd.to_numeric(frame['amount'], errors='coerce')\n     records = [{'store':row['store'], 'amount':None if pd.isna(row['amount']) else float(row['amount'])} for _,row in frame.iterrows()]\n     return {'records':records, 'invalid':int(frame['amount'].isna().sum())}\n",
@@ -16966,7 +17636,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows là các đơn với channel và amount (đã biết, mỗi hàng là một đơn). Trả dictionary mỗi channel chứa count, mean, median. Cần có số quan sát bên cạnh các số tóm tắt, không suy ra nhân quả."
+      "body": "data.rows là các đơn với channel và amount (đã biết, mỗi hàng là một đơn). Trả dictionary mỗi channel chứa count, mean, median. Cần có số quan sát bên cạnh các số tóm tắt, không suy ra nhân quả.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'channel': 'app', 'amount': 4}, {'channel': 'app', 'amount': 8}, {'channel': 'store', 'amount': 20}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'app': {'count': 2, 'mean': 6.0, 'median': 6.0}, 'store': {'count': 1, 'mean': 20.0, 'median': 20.0}}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     return df.groupby('channel')['amount'].agg(['count','mean','median']).to_dict('index')\n",
@@ -17220,7 +17900,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.don có ma_don, quay, ngay ISO, tong_tien; các dòng có thể trùng toàn bộ. data.danh_muc_quay có quay, khu_vuc và mã duy nhất. Chuẩn hóa mã quay của cả don và danh_muc_quay bằng strip/upper, bỏ dòng giống hệt, nối trái với validate many_to_one, khu vực vắng là Unknown, tổng hợp theo YYYY-MM và khu_vuc. Trả {report:list bản ghi thang,khu_vuc,tong_tien đã sắp; total:tổng tong_tien của đơn sau bỏ trùng}. Dữ liệu không có hai phiên bản xung đột của cùng ma_don."
+      "body": "data.don có ma_don, quay, ngay ISO, tong_tien; các dòng có thể trùng toàn bộ. data.danh_muc_quay có quay, khu_vuc và mã duy nhất. Chuẩn hóa mã quay của cả don và danh_muc_quay bằng strip/upper, bỏ dòng giống hệt, nối trái với validate many_to_one, khu vực vắng là Unknown, tổng hợp theo YYYY-MM và khu_vuc. Trả {report:list bản ghi thang,khu_vuc,tong_tien đã sắp; total:tổng tong_tien của đơn sau bỏ trùng}. Dữ liệu không có hai phiên bản xung đột của cùng ma_don.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'don': [{'ma_don': '1', 'quay': ' q1 ', 'ngay': '2026-03-01', 'tong_tien': 5}, {'ma_don': '1', 'quay': ' q1 ', 'ngay': '2026-03-01', 'tong_tien': 5}, {'ma_don': '2', 'quay': 'QH', 'ngay': '2026-03-02', 'tong_tien': 8}], 'danh_muc_quay': [{'quay': ' q1 ', 'khu_vuc': 'Phía Nam'}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'report': [{'thang': '2026-03', 'khu_vuc': 'Phía Nam', 'tong_tien': 5}, {'thang': '2026-03', 'khu_vuc': 'Unknown', 'tong_tien': 8}], 'total': 13.0}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import pandas as pd\n\ndef solve(data):\n     don = pd.DataFrame(data['don']).copy()\n     don['quay'] = don['quay'].str.strip().str.upper()\n     don = don.drop_duplicates()\n     danh_muc_quay = pd.DataFrame(data['danh_muc_quay']).copy()\n     danh_muc_quay['quay'] = danh_muc_quay['quay'].str.strip().str.upper()\n     joined = don.merge(danh_muc_quay, on='quay', how='left', validate='many_to_one')\n     joined['khu_vuc'] = joined['khu_vuc'].fillna('Unknown')\n     joined['thang'] = pd.to_datetime(joined['ngay']).dt.to_period('M').astype(str)\n     report = joined.groupby(['thang','khu_vuc'], as_index=False)['tong_tien'].sum().sort_values(['thang','khu_vuc'])\n     return {'report':report.to_dict('records'), 'total':float(don['tong_tien'].sum())}\n",
@@ -17523,7 +18213,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Một thư viện báo số sách theo quầy. data.names và data.counts có cùng độ dài, ít nhất một nhóm. Tạo Figure/Axes và bar chart; đặt ylabel=\"Books\". Trả heights là list chiều cao đọc từ các bar và ylabel. get_height() đọc chiều cao cột, get_ylabel() đọc nhãn trục. Đóng Figure sau khi đọc. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "Một thư viện báo số sách theo quầy. data.names và data.counts có cùng độ dài, ít nhất một nhóm. Tạo Figure/Axes và bar chart; đặt ylabel=\"Books\". Trả heights là list chiều cao đọc từ các bar và ylabel. get_height() đọc chiều cao cột, get_ylabel() đọc nhãn trục. Đóng Figure sau khi đọc. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'names': ['History', 'Science'], 'counts': [7, 12]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'heights': [7.0, 12.0], 'ylabel': 'Books'}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     bars = ax.bar(data['names'], data['counts'])\n     ax.set_ylabel('Books')\n     result = {'heights':[float(bar.get_height()) for bar in bars], 'ylabel':ax.get_ylabel()}\n     plt.close(fig)\n     return result\n",
@@ -17774,7 +18474,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.left và data.right là hai dãy số, mỗi dãy ít nhất một phần tử. Tạo Figure với hai Axes cạnh nhau bằng add_subplot(121), add_subplot(122), vẽ một đường trên mỗi Axes. Trả axes là số Axes và lines là list số đường của trái/phải. fig.axes và ax.lines là các danh sách đối tượng để đối chiếu, không phải số quan sát. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve. Trả thêm leftY và rightY: list giá trị y đọc từ đường trong từng Axes (line.get_ydata())."
+      "body": "data.left và data.right là hai dãy số, mỗi dãy ít nhất một phần tử. Tạo Figure với hai Axes cạnh nhau bằng add_subplot(121), add_subplot(122), vẽ một đường trên mỗi Axes. Trả axes là số Axes và lines là list số đường của trái/phải. fig.axes và ax.lines là các danh sách đối tượng để đối chiếu, không phải số quan sát. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve. Trả thêm leftY và rightY: list giá trị y đọc từ đường trong từng Axes (line.get_ydata()).",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'left': [1, 4, 2], 'right': [5, 8]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'axes': 2, 'lines': [1, 1], 'leftY': [1, 4, 2], 'rightY': [5, 8]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig = plt.figure()\n     left = fig.add_subplot(121)\n     right = fig.add_subplot(122)\n     left.plot(data['left'])\n     right.plot(data['right'])\n     result = {'axes':len(fig.axes), 'lines':[len(left.lines),len(right.lines)],'leftY':list(left.lines[0].get_ydata()),'rightY':list(right.lines[0].get_ydata())}\n     plt.close(fig)\n     return result\n",
@@ -18098,7 +18808,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.days là số ngày khác nhau, data.sales là số hoặc None theo cùng vị trí. Sắp cặp theo ngày, dùng np.nan cho None, vẽ line chart. Trả x và y đọc từ line.get_xdata()/get_ydata(); trong kết quả JSON đổi NaN trở lại None. Giữ nguyên ngày chưa đo, không nối bằng cách xóa hàng. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.days là số ngày khác nhau, data.sales là số hoặc None theo cùng vị trí. Sắp cặp theo ngày, dùng np.nan cho None, vẽ line chart. Trả x và y đọc từ line.get_xdata()/get_ydata(); trong kết quả JSON đổi NaN trở lại None. Giữ nguyên ngày chưa đo, không nối bằng cách xóa hàng. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'days': [4, 1, 2], 'sales': [6, 9, 7]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'x': [1, 2, 4], 'y': [9.0, 7.0, 6.0]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     pairs = sorted(zip(data['days'],data['sales']))\n     x = [row[0] for row in pairs]\n     y = [np.nan if row[1] is None else row[1] for row in pairs]\n     fig, ax = plt.subplots()\n     line, = ax.plot(x,y,marker='o')\n     result = {'x':[int(v) for v in line.get_xdata()], 'y':[None if not np.isfinite(v) else float(v) for v in line.get_ydata()]}\n     plt.close(fig)\n     return result\n",
@@ -18484,7 +19204,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows là list [name,count], count không âm, ít nhất một nhóm và không có hai count bằng nhau. Sắp tăng theo count rồi barh. Trả names theo thứ tự đã vẽ và widths đọc bằng get_width() của từng bar. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.rows là list [name,count], count không âm, ít nhất một nhóm và không có hai count bằng nhau. Sắp tăng theo count rồi barh. Trả names theo thứ tự đã vẽ và widths đọc bằng get_width() của từng bar. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [['Poetry', 8], ['Travel', 3], ['Science', 12]]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'names': ['Travel', 'Poetry', 'Science'], 'widths': [3.0, 8.0, 12.0]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     ordered = sorted(data['rows'], key=lambda row:row[1])\n     names, values = zip(*ordered)\n     fig, ax = plt.subplots()\n     bars = ax.barh(names,values)\n     result = {'names':list(names),'widths':[float(b.get_width()) for b in bars]}\n     plt.close(fig)\n     return result\n",
@@ -18746,7 +19476,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.x, data.y, data.sizes cùng độ dài. Tạo scatter với s=data.sizes và alpha=0.5. Trả positions=get_offsets().tolist(), sizes=get_sizes().tolist() và alpha=get_alpha() của đối tượng scatter. Các getter chỉ dùng để đọc cấu hình và dữ liệu vừa vẽ. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.x, data.y, data.sizes cùng độ dài. Tạo scatter với s=data.sizes và alpha=0.5. Trả positions=get_offsets().tolist(), sizes=get_sizes().tolist() và alpha=get_alpha() của đối tượng scatter. Các getter chỉ dùng để đọc cấu hình và dữ liệu vừa vẽ. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'x': [1, 4], 'y': [6, 18], 'sizes': [25, 100]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'positions': [[1.0, 6.0], [4.0, 18.0]], 'sizes': [25, 100], 'alpha': 0.5}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     points = ax.scatter(data['x'],data['y'],s=data['sizes'],alpha=0.5)\n     result = {'positions':points.get_offsets().tolist(),'sizes':points.get_sizes().tolist(),'alpha':points.get_alpha()}\n     plt.close(fig)\n     return result\n",
@@ -19027,7 +19767,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.values có ít nhất một số nằm trong miền data.bins, các bins tăng dần. Dựng histogram density=True. Trả density là các chiều cao, area là tổng density*np.diff(edges). Đóng Figure. Với bins không đều, area vẫn bằng 1. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.values có ít nhất một số nằm trong miền data.bins, các bins tăng dần. Dựng histogram density=True. Trả density là các chiều cao, area là tổng density*np.diff(edges). Đóng Figure. Với bins không đều, area vẫn bằng 1. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [1, 1, 3, 5], 'bins': [0, 2, 6]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'density': [0.25, 0.125], 'area': 1.0}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     density, edges, bars = ax.hist(data['values'], bins=data['bins'], density=True)\n     result = {'density':density.tolist(),'area':float(np.sum(density*np.diff(edges)))}\n     plt.close(fig)\n     return result\n",
@@ -19288,7 +20038,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.values có ít nhất ba số. Vẽ boxplot mặc định. Hàm boxplot trả dictionary parts: đường trung vị ở parts[\"medians\"][0], các điểm ngoài râu ở parts[\"fliers\"][0]. Dùng get_ydata() đọc chúng, trả {median:số, fliers:list}. Không xóa điểm ngoài râu khỏi dữ liệu. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.values có ít nhất ba số. Vẽ boxplot mặc định. Hàm boxplot trả dictionary parts: đường trung vị ở parts[\"medians\"][0], các điểm ngoài râu ở parts[\"fliers\"][0]. Dùng get_ydata() đọc chúng, trả {median:số, fliers:list}. Không xóa điểm ngoài râu khỏi dữ liệu. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [1, 2, 3, 4, 20]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'median': 3.0, 'fliers': [20]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     parts = ax.boxplot(data['values'])\n     result = {'median':float(parts['medians'][0].get_ydata()[0]),'fliers':parts['fliers'][0].get_ydata().tolist()}\n     plt.close(fig)\n     return result\n",
@@ -19655,7 +20415,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.z là ma trận chữ nhật, data.maximum >0. Tạo imshow với vmin=0,vmax=maximum,interpolation=\"nearest\"; thêm colorbar nằm ngang. Trả shape từ image.get_array().shape, clim từ image.get_clim(), và orientation của colorbar. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.z là ma trận chữ nhật, data.maximum >0. Tạo imshow với vmin=0,vmax=maximum,interpolation=\"nearest\"; thêm colorbar nằm ngang. Trả shape từ image.get_array().shape, clim từ image.get_clim(), và orientation của colorbar. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'z': [[1, 2, 3], [4, 5, 6]], 'maximum': 10}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'shape': [2, 3], 'clim': [0.0, 10.0], 'orientation': 'horizontal'}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     image = ax.imshow(data['z'],vmin=0,vmax=data['maximum'],interpolation='nearest')\n     colorbar = fig.colorbar(image,ax=ax,orientation='horizontal')\n     result = {'shape':list(image.get_array().shape),'clim':list(image.get_clim()),'orientation':colorbar.orientation}\n     plt.close(fig)\n     return result\n",
@@ -19926,7 +20696,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.target là mục tiêu, data.unit là nhãn trục y cần ghi. Tạo Figure, vẽ axhline(target,label=\"Target\"), đặt ylabel=unit. Trả target đọc từ line.get_ydata()[0], label từ line.get_label(), và ylabel từ Axes. Không thêm mục tiêu vào dãy quan sát. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.target là mục tiêu, data.unit là nhãn trục y cần ghi. Tạo Figure, vẽ axhline(target,label=\"Target\"), đặt ylabel=unit. Trả target đọc từ line.get_ydata()[0], label từ line.get_label(), và ylabel từ Axes. Không thêm mục tiêu vào dãy quan sát. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'target': 15, 'unit': 'Books'}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'target': 15.0, 'label': 'Target', 'ylabel': 'Books'}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     line = ax.axhline(data['target'],label='Target')\n     ax.set_ylabel(data['unit'])\n     result = {'target':float(line.get_ydata()[0]),'label':line.get_label(),'ylabel':ax.get_ylabel()}\n     plt.close(fig)\n     return result\n",
@@ -20159,7 +20939,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.values là dãy số. Vẽ một đường rồi dùng plt.setp để marker=\"s\",linestyle=\"--\",linewidth=2,alpha=0.5,color=\"black\". Trả marker, linestyle và width đọc từ Line2D. Các getter lần lượt là get_marker(),get_linestyle(),get_linewidth(). Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve. Trả thêm values bằng list(line.get_ydata()), alpha bằng line.get_alpha() và color bằng line.get_color()."
+      "body": "data.values là dãy số. Vẽ một đường rồi dùng plt.setp để marker=\"s\",linestyle=\"--\",linewidth=2,alpha=0.5,color=\"black\". Trả marker, linestyle và width đọc từ Line2D. Các getter lần lượt là get_marker(),get_linestyle(),get_linewidth(). Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve. Trả thêm values bằng list(line.get_ydata()), alpha bằng line.get_alpha() và color bằng line.get_color().",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [3, 7, 5]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'marker': 's', 'linestyle': '--', 'width': 2.0, 'values': [3, 7, 5], 'alpha': 0.5, 'color': 'black'}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     lines = ax.plot(data['values'])\n     plt.setp(lines,marker='s',linestyle='--',linewidth=2,alpha=0.5,color='black')\n     line = lines[0]\n     result = {'marker':line.get_marker(),'linestyle':line.get_linestyle(),'width':float(line.get_linewidth()),'values':list(line.get_ydata()),'alpha':line.get_alpha(),'color':line.get_color()}\n     plt.close(fig)\n     return result\n",
@@ -20420,7 +21210,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.values đều dương. Vẽ một đường, đặt yscale=\"log\", ẩn spine top. Trả scale=get_yscale(), topVisible=get_visible() của viền trên, values đọc từ đường. Việc đổi thang không được log-transform dãy trước khi truyền plot. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.values đều dương. Vẽ một đường, đặt yscale=\"log\", ẩn spine top. Trả scale=get_yscale(), topVisible=get_visible() của viền trên, values đọc từ đường. Việc đổi thang không được log-transform dãy trước khi truyền plot. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [2, 20, 200]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'scale': 'log', 'topVisible': False, 'values': [2.0, 20.0, 200.0]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     line, = ax.plot(data['values'])\n     ax.set_yscale('log')\n     ax.spines['top'].set_visible(False)\n     result = {'scale':ax.get_yscale(),'topVisible':ax.spines['top'].get_visible(),'values':[float(v) for v in line.get_ydata()]}\n     plt.close(fig)\n     return result\n",
@@ -20767,7 +21567,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.a,data.b là hai dãy và data.maximum >0 là giới hạn chung. Tạo subplots(1,2,sharey=True), vẽ mỗi dãy vào một Axes, đặt ylim=(0,maximum) trên Axes trái. Trả axes=len(fig.axes) và limits là get_ylim của cả hai Axes; giới hạn phải giống nhau. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.a,data.b là hai dãy và data.maximum >0 là giới hạn chung. Tạo subplots(1,2,sharey=True), vẽ mỗi dãy vào một Axes, đặt ylim=(0,maximum) trên Axes trái. Trả axes=len(fig.axes) và limits là get_ylim của cả hai Axes; giới hạn phải giống nhau. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'a': [2, 8], 'b': [1, 3], 'maximum': 10}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'axes': 2, 'limits': [[0.0, 10.0], [0.0, 10.0]]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, axes = plt.subplots(1,2,sharey=True)\n     axes[0].plot(data['a'])\n     axes[1].plot(data['b'])\n     axes[0].set_ylim(0,data['maximum'])\n     result = {'axes':len(fig.axes),'limits':[list(ax.get_ylim()) for ax in axes]}\n     plt.close(fig)\n     return result\n",
@@ -21039,7 +21849,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.values có ít nhất hai số độc lập theo giả định bài. Tính mean và SE=std(ddof=1)/sqrt(n); tạo errorbar ở x=1, đặt title=\"Mean +/- 1 SE\". Trả mean, se, bounds=[mean-se,mean+se] và title từ Axes. Đây không phải CI 95%. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.values có ít nhất hai số độc lập theo giả định bài. Tính mean và SE=std(ddof=1)/sqrt(n); tạo errorbar ở x=1, đặt title=\"Mean +/- 1 SE\". Trả mean, se, bounds=[mean-se,mean+se] và title từ Axes. Đây không phải CI 95%. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [2, 4]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'mean': 3.0, 'se': 1.0, 'bounds': [2.0, 4.0], 'title': 'Mean +/- 1 SE'}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     values = np.asarray(data['values'],dtype=float)\n     mean = float(values.mean())\n     se = float(values.std(ddof=1)/np.sqrt(len(values)))\n     fig, ax = plt.subplots()\n     ax.errorbar([1],[mean],yerr=[se],fmt='o')\n     ax.set_title('Mean +/- 1 SE')\n     result = {'mean':mean,'se':se,'bounds':[mean-se,mean+se],'title':ax.get_title()}\n     plt.close(fig)\n     return result\n",
@@ -21287,7 +22107,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.width,data.height là số inch dương, data.dpi là số nguyên dương. Tạo Figure đúng figsize, vẽ một đường bất kỳ, xuất PNG vào BytesIO không dùng bbox_inches=\"tight\". Dùng PIL.Image.open đọc size, trả [width_px,height_px]. Đóng Figure. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.width,data.height là số inch dương, data.dpi là số nguyên dương. Tạo Figure đúng figsize, vẽ một đường bất kỳ, xuất PNG vào BytesIO không dùng bbox_inches=\"tight\". Dùng PIL.Image.open đọc size, trả [width_px,height_px]. Đóng Figure. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'width': 4, 'height': 2, 'dpi': 120}"
+       },
+       {
+        "label": "trả về",
+        "value": "[480, 240]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom io import BytesIO\nfrom PIL import Image\n\ndef solve(data):\n     fig, ax = plt.subplots(figsize=(data['width'],data['height']))\n     ax.plot([0,1],[0,1])\n     buffer = BytesIO()\n     fig.savefig(buffer,format='png',dpi=data['dpi'])\n     buffer.seek(0)\n     result = list(Image.open(buffer).size)\n     plt.close(fig)\n     return result\n",
@@ -21516,7 +22346,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows có category và revenue. groupby/sum theo category, sắp tên tăng, dùng Series.plot.bar(ax=ax). Trả names là các tên đã vẽ và heights từ ax.patches (mỗi patch là một bar), giữ đúng cặp tên–tổng. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.rows có category và revenue. groupby/sum theo category, sắp tên tăng, dùng Series.plot.bar(ax=ax). Trả names là các tên đã vẽ và heights từ ax.patches (mỗi patch là một bar), giữ đúng cặp tên–tổng. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'category': 'Book', 'revenue': 3}, {'category': 'Pen', 'revenue': 2}, {'category': 'Book', 'revenue': 7}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'names': ['Book', 'Pen'], 'heights': [10.0, 2.0]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\n\ndef solve(data):\n     totals = pd.DataFrame(data['rows']).groupby('category')['revenue'].sum().sort_index()\n     fig, ax = plt.subplots()\n     totals.plot.bar(ax=ax,rot=0)\n     result = {'names':totals.index.tolist(),'heights':[float(bar.get_height()) for bar in ax.patches]}\n     plt.close(fig)\n     return result\n",
@@ -23295,7 +24135,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.names,complaints,orders có cùng độ dài, orders đều dương. Dựng bar chart của complaints/orders*100, ylabel=\"Complaints (%)\", trục y bắt đầu 0. Trả rates từ các bar và baseline là cận dưới get_ylim(). Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.names,complaints,orders có cùng độ dài, orders đều dương. Dựng bar chart của complaints/orders*100, ylabel=\"Complaints (%)\", trục y bắt đầu 0. Trả rates từ các bar và baseline là cận dưới get_ylim(). Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'names': ['A', 'B'], 'complaints': [12, 6], 'orders': [600, 60]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'rates': [2.0, 10.0], 'baseline': 0.0}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     rates = np.asarray(data['complaints']) / np.asarray(data['orders']) * 100\n     fig, ax = plt.subplots()\n     bars = ax.bar(data['names'],rates)\n     ax.set_ylabel('Complaints (%)')\n     ax.set_ylim(bottom=0)\n     result = {'rates':[float(bar.get_height()) for bar in bars],'baseline':float(ax.get_ylim()[0])}\n     plt.close(fig)\n     return result\n",
@@ -23556,7 +24406,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.x,data.y cùng độ dài; data.frame là chỉ số hợp lệ. Tạo Line2D rỗng một lần, viết update(frame) dùng set_data hiện từ đầu tới frame (gồm frame), gọi update với frame đã cho. Trả shownY đọc từ line và lineCount=len(ax.lines). Không tạo line mới bên trong update. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.x,data.y cùng độ dài; data.frame là chỉ số hợp lệ. Tạo Line2D rỗng một lần, viết update(frame) dùng set_data hiện từ đầu tới frame (gồm frame), gọi update với frame đã cho. Trả shownY đọc từ line và lineCount=len(ax.lines). Không tạo line mới bên trong update. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'x': [1, 2, 3, 4], 'y': [3, 7, 5, 9], 'frame': 1}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'shownY': [3, 7], 'lineCount': 1}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     line, = ax.plot([],[])\n     def update(frame):\n         line.set_data(data['x'][:frame+1],data['y'][:frame+1])\n         return (line,)\n     update(data['frame'])\n     result = {'shownY':list(line.get_ydata()),'lineCount':len(ax.lines)}\n     plt.close(fig)\n     return result\n",
@@ -23812,7 +24672,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.rows chứa category,so_coc,price. Quy tắc mẫu: bỏ dòng so_coc<0 hoặc price<0; các hàng còn lại tính revenue=so_coc*price. Có ít nhất một hàng hợp lệ. Tổng hợp category, sắp tăng theo tên rồi vẽ cột. Trả totals là dictionary category→doanh thu, drawnTotal là tổng chiều cao các cột, rejected là số dòng bị loại. Không gọi số đó là lợi nhuận. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.rows chứa category,so_coc,price. Quy tắc mẫu: bỏ dòng so_coc<0 hoặc price<0; các hàng còn lại tính revenue=so_coc*price. Có ít nhất một hàng hợp lệ. Tổng hợp category, sắp tăng theo tên rồi vẽ cột. Trả totals là dictionary category→doanh thu, drawnTotal là tổng chiều cao các cột, rejected là số dòng bị loại. Không gọi số đó là lợi nhuận. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'rows': [{'category': 'Book', 'so_coc': 2, 'price': 12}, {'category': 'Pen', 'so_coc': 3, 'price': 4}, {'category': 'Book', 'so_coc': -1, 'price': 12}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'totals': {'Book': 24, 'Pen': 12}, 'drawnTotal': 36.0, 'rejected': 1}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame(data['rows'])\n     valid = orders.loc[(orders['so_coc'] >= 0) & (orders['price'] >= 0)].copy()\n     valid['revenue'] = valid['so_coc'] * valid['price']\n     totals = valid.groupby('category')['revenue'].sum().sort_index()\n     fig, ax = plt.subplots()\n     bars = ax.bar(totals.index,totals.values)\n     result = {'totals':totals.to_dict(),'drawnTotal':float(sum(b.get_height() for b in bars)),'rejected':len(orders)-len(valid)}\n     plt.close(fig)\n     return result\n",
@@ -24084,7 +24954,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.names và data.values là các phần của cùng tổng dương, giá trị không âm. Vẽ pie với labels và autopct=\"%.0f%%\". Trả names là chữ của labels và percentages là chữ phần trăm của kết quả ax.pie. Không tự đổi dữ liệu sang phần của hai tổng khác nhau. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.names và data.values là các phần của cùng tổng dương, giá trị không âm. Vẽ pie với labels và autopct=\"%.0f%%\". Trả names là chữ của labels và percentages là chữ phần trăm của kết quả ax.pie. Không tự đổi dữ liệu sang phần của hai tổng khác nhau. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'names': ['Book', 'Pen'], 'values': [3, 1]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'names': ['Book', 'Pen'], 'percentages': ['75%', '25%']}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     wedges, labels, percentages = ax.pie(data['values'],labels=data['names'],autopct='%.0f%%')\n     result = {'names':[t.get_text() for t in labels],'percentages':[t.get_text() for t in percentages]}\n     plt.close(fig)\n     return result\n",
@@ -24457,7 +25337,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.z là ma trận, xEdges và yEdges có đúng số biên cho shading=\"flat\". Vẽ pcolormesh với vmin=0,vmax=data.maximum rồi thêm colorbar label=\"Temperature\". Trả shape từ mesh.get_array().shape, clim từ get_clim(), colorbarLabel từ colorbar.ax.get_ylabel(). Không coi các ô là điểm x/y riêng lẻ. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.z là ma trận, xEdges và yEdges có đúng số biên cho shading=\"flat\". Vẽ pcolormesh với vmin=0,vmax=data.maximum rồi thêm colorbar label=\"Temperature\". Trả shape từ mesh.get_array().shape, clim từ get_clim(), colorbarLabel từ colorbar.ax.get_ylabel(). Không coi các ô là điểm x/y riêng lẻ. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'z': [[1, 2, 3], [4, 5, 6]], 'xEdges': [0, 1, 2, 4], 'yEdges': [0, 2, 3], 'maximum': 10}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'shape': [2, 3], 'clim': [0.0, 10.0], 'colorbarLabel': 'Temperature'}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     mesh = ax.pcolormesh(data['xEdges'],data['yEdges'],data['z'],shading='flat',vmin=0,vmax=data['maximum'])\n     colorbar = fig.colorbar(mesh,ax=ax,label='Temperature')\n     result = {'shape':list(mesh.get_array().shape),'clim':list(mesh.get_clim()),'colorbarLabel':colorbar.ax.get_ylabel()}\n     plt.close(fig)\n     return result\n",
@@ -24756,7 +25646,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.x,data.y là hai dãy vị trí lưới. Tạo X,Y bằng meshgrid, đặt U=-Y,V=X, vẽ quiver với angles=\"xy\",scale_units=\"xy\",scale=1 và aspect equal. Trả u,v đọc từ vectors.U/vectors.V (đã trải phẳng theo hàng), shape ban đầu của U. Không trả X,Y thay cho U,V. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.x,data.y là hai dãy vị trí lưới. Tạo X,Y bằng meshgrid, đặt U=-Y,V=X, vẽ quiver với angles=\"xy\",scale_units=\"xy\",scale=1 và aspect equal. Trả u,v đọc từ vectors.U/vectors.V (đã trải phẳng theo hàng), shape ban đầu của U. Không trả X,Y thay cho U,V. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'x': [0, 1], 'y': [0, 2]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'u': [0, 0, -2, -2], 'v': [0, 1, 0, 1], 'shape': [2, 2]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     X,Y = np.meshgrid(data['x'],data['y'])\n     U,V = -Y,X\n     fig, ax = plt.subplots()\n     vectors = ax.quiver(X,Y,U,V,angles='xy',scale_units='xy',scale=1)\n     ax.set_aspect('equal')\n     result = {'u':vectors.U.tolist(),'v':vectors.V.tolist(),'shape':list(U.shape)}\n     plt.close(fig)\n     return result\n",
@@ -25199,7 +26099,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "data.events là list {inside:bool,x:số hoặc None,y:số hoặc None}. Tạo Figure/Axes và callback như bài: chỉ khi inside=True, x và y đều có số thì cập nhật state.point thành [x,y]. Có thể dùng SimpleNamespace giả lập đối tượng event để kiểm callback; nối mpl_connect rồi ngắt sau các sự kiện. Trả point cuối hoặc None nếu chưa có sự kiện hợp lệ. Đây không chứng minh đã thao tác chuột thật. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+      "body": "data.events là list {inside:bool,x:số hoặc None,y:số hoặc None}. Tạo Figure/Axes và callback như bài: chỉ khi inside=True, x và y đều có số thì cập nhật state.point thành [x,y]. Có thể dùng SimpleNamespace giả lập đối tượng event để kiểm callback; nối mpl_connect rồi ngắt sau các sự kiện. Trả point cuối hoặc None nếu chưa có sự kiện hợp lệ. Đây không chứng minh đã thao tác chuột thật. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'events': [{'inside': True, 'x': 2, 'y': 6}, {'inside': False, 'x': 9, 'y': 8}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "[2.0, 6.0]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom types import SimpleNamespace\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     state = {'point':None}\n     def on_click(event):\n         if event.inaxes is ax and event.xdata is not None and event.ydata is not None:\n             state['point'] = [float(event.xdata),float(event.ydata)]\n     cid = fig.canvas.mpl_connect('button_press_event',on_click)\n     for e in data['events']:\n         on_click(SimpleNamespace(inaxes=ax if e['inside'] else None,xdata=e['x'],ydata=e['y']))\n     fig.canvas.mpl_disconnect(cid)\n     plt.close(fig)\n     return state['point']\n",
@@ -25487,7 +26397,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Viết solve(data) nhận {\"date\": chuỗi YYYY-MM-DD, \"days\": số nguyên}, trả chuỗi ngày hẹn YYYY-MM-DD. Chỉ dùng ngày hợp lệ; days có thể âm."
+      "body": "Viết solve(data) nhận {\"date\": chuỗi YYYY-MM-DD, \"days\": số nguyên}, trả chuỗi ngày hẹn YYYY-MM-DD. Chỉ dùng ngày hợp lệ; days có thể âm.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'date': '2026-12-31', 'days': 1}"
+       },
+       {
+        "label": "trả về",
+        "value": "'2027-01-01'"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "from datetime import datetime, timedelta\ndef solve(data):\n    start = datetime.strptime(data['date'], '%Y-%m-%d')\n    return (start + timedelta(days=data['days'])).strftime('%Y-%m-%d')\n",
@@ -25938,7 +26858,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Một danh sách mã lỗi được ghi theo thứ tự xuất hiện. Viết solve(data) nhận list chuỗi, trả {\"counts\": tần suất từng mã, \"top\": mã xuất hiện nhiều nhất}. Khi hòa, lấy mã gặp trước; list rỗng cho top=None."
+      "body": "Một danh sách mã lỗi được ghi theo thứ tự xuất hiện. Viết solve(data) nhận list chuỗi, trả {\"counts\": tần suất từng mã, \"top\": mã xuất hiện nhiều nhất}. Khi hòa, lấy mã gặp trước; list rỗng cho top=None.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "['E2', 'E1', 'E2']"
+       },
+       {
+        "label": "trả về",
+        "value": "{'counts': {'E2': 2, 'E1': 1}, 'top': 'E2'}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "from collections import Counter\ndef solve(data):\n    counts = Counter(data)\n    return {'counts': dict(counts), 'top': counts.most_common(1)[0][0] if counts else None}\n",
@@ -26188,7 +27118,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Ghi chú giao hàng chứa mã P và đúng bốn chữ số, đứng thành một từ riêng. Viết solve(data) nhận chuỗi, trả mã khớp đầu tiên hoặc None. Không nhận P12 hay P12345."
+      "body": "Ghi chú giao hàng chứa mã P và đúng bốn chữ số, đứng thành một từ riêng. Viết solve(data) nhận chuỗi, trả mã khớp đầu tiên hoặc None. Không nhận P12 hay P12345.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "'paid P2048 today'"
+       },
+       {
+        "label": "trả về",
+        "value": "'P2048'"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import re\ndef solve(data):\n    match = re.search(r'\\bP\\d{4}\\b', data)\n    return match.group(0) if match else None\n",
@@ -26938,7 +27878,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Viết class Course(cid, name) có method label() trả \"mã: tên\". Trong solve(data), tạo một Course từ mỗi dictionary đầu vào rồi trả list các label theo thứ tự. Không gọi input trong __init__."
+      "body": "Viết class Course(cid, name) có method label() trả \"mã: tên\". Trong solve(data), tạo một Course từ mỗi dictionary đầu vào rồi trả list các label theo thứ tự. Không gọi input trong __init__.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[{'id': 'ST', 'name': 'Statistics'}, {'id': 'DB', 'name': 'Database'}]"
+       },
+       {
+        "label": "trả về",
+        "value": "['ST: Statistics', 'DB: Database']"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "class Course:\n    def __init__(self, cid, name):\n        self.cid, self.name = cid, name\n    def label(self):\n        return self.cid + ': ' + self.name\ndef solve(data):\n    return [Course(row['id'], row['name']).label() for row in data]\n",
@@ -27715,7 +28665,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Tạo class Parcel(name, weight), __str__ trả name, __lt__ so weight. solve(data) tạo các Parcel rồi trả tên sau sorted tăng dần. Khi trọng lượng bằng nhau, giữ thứ tự đầu vào."
+      "body": "Tạo class Parcel(name, weight), __str__ trả name, __lt__ so weight. solve(data) tạo các Parcel rồi trả tên sau sorted tăng dần. Khi trọng lượng bằng nhau, giữ thứ tự đầu vào.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[{'name': 'Z', 'weight': 2}, {'name': 'A', 'weight': 1}]"
+       },
+       {
+        "label": "trả về",
+        "value": "['A', 'Z']"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "class Parcel:\n    def __init__(self, name, weight): self.name, self.weight = name, weight\n    def __str__(self): return self.name\n    def __lt__(self, other):\n        if not isinstance(other, Parcel): return NotImplemented\n        return self.weight < other.weight\ndef solve(data):\n    return [str(p) for p in sorted([Parcel(row['name'], row['weight']) for row in data])]\n",
@@ -27963,7 +28923,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Report.render() trả \"Report\". Tạo SummaryReport nhận title; render của lớp con thêm \": \" và title vào kết quả super(). solve(data) nhận list tiêu đề, trả list nội dung báo cáo."
+      "body": "Report.render() trả \"Report\". Tạo SummaryReport nhận title; render của lớp con thêm \": \" và title vào kết quả super(). solve(data) nhận list tiêu đề, trả list nội dung báo cáo.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "['stock', 'orders']"
+       },
+       {
+        "label": "trả về",
+        "value": "['Report: stock', 'Report: orders']"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "class Report:\n    def render(self): return 'Report'\nclass SummaryReport(Report):\n    def __init__(self, title): self.title = title\n    def render(self): return super().render() + ': ' + self.title\ndef solve(data): return [SummaryReport(title).render() for title in data]\n",
@@ -28179,7 +29149,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Tạo Report(content) trả content qua render và UpperMixin.render() đổi kết quả super thành chữ hoa. Tạo LoudReport(UpperMixin, Report). solve(data) nhận list chuỗi, trả các nội dung viết hoa qua LoudReport."
+      "body": "Tạo Report(content) trả content qua render và UpperMixin.render() đổi kết quả super thành chữ hoa. Tạo LoudReport(UpperMixin, Report). solve(data) nhận list chuỗi, trả các nội dung viết hoa qua LoudReport.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "['daily sales']"
+       },
+       {
+        "label": "trả về",
+        "value": "['DAILY SALES']"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "class Report:\n    def __init__(self, content): self.content = content\n    def render(self): return self.content\nclass UpperMixin:\n    def render(self): return super().render().upper()\nclass LoudReport(UpperMixin, Report): pass\ndef solve(data): return [LoudReport(s).render() for s in data]\n",
@@ -28584,7 +29564,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Tạo JoinExporter(separator) có export(rows) nối các chuỗi và ReportService(exporter) có build(rows). solve(data) nhận {\"separator\": chuỗi, \"rows\": list chuỗi}, trả nội dung qua service. Dùng composition, không kế thừa JoinExporter trong service."
+      "body": "Tạo JoinExporter(separator) có export(rows) nối các chuỗi và ReportService(exporter) có build(rows). solve(data) nhận {\"separator\": chuỗi, \"rows\": list chuỗi}, trả nội dung qua service. Dùng composition, không kế thừa JoinExporter trong service.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'separator': ';', 'rows': ['A', 'B']}"
+       },
+       {
+        "label": "trả về",
+        "value": "'A;B'"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "class JoinExporter:\n    def __init__(self, separator): self.separator = separator\n    def export(self, rows): return self.separator.join(rows)\nclass ReportService:\n    def __init__(self, exporter): self.exporter = exporter\n    def build(self, rows): return self.exporter.export(rows)\ndef solve(data): return ReportService(JoinExporter(data['separator'])).build(data['rows'])\n",
@@ -29282,7 +30272,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Tạo Grade có set_value kiểm số int/float hữu hạn từ 0 đến 10, loại bool. solve(data) bắt đầu bằng data[\"initial\"], thử lần lượt các data[\"updates\"]. Bỏ qua ValueError nhưng giữ điểm cũ; trả list giá trị sau mỗi lần thử."
+      "body": "Tạo Grade có set_value kiểm số int/float hữu hạn từ 0 đến 10, loại bool. solve(data) bắt đầu bằng data[\"initial\"], thử lần lượt các data[\"updates\"]. Bỏ qua ValueError nhưng giữ điểm cũ; trả list giá trị sau mỗi lần thử.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'initial': 8, 'updates': [11, 7]}"
+       },
+       {
+        "label": "trả về",
+        "value": "[8, 7]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import math\nclass Grade:\n    def __init__(self, value): self.set_value(value)\n    def set_value(self, value):\n        if type(value) not in (int, float) or not math.isfinite(value) or not 0 <= value <= 10:\n            raise ValueError('score')\n        self._value = value\n    def get_value(self): return self._value\ndef solve(data):\n    grade = Grade(data['initial'])\n    result=[]\n    for value in data['updates']:\n        try: grade.set_value(value)\n        except ValueError: pass\n        result.append(grade.get_value())\n    return result\n",
@@ -30001,7 +31001,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "solve(data) nhận {\"marks\": list điểm, \"credits\": list tín chỉ cùng độ dài}. Dữ liệu hợp lệ, tín chỉ dương. Trả GPA theo tín chỉ; nếu cả hai list rỗng, trả None. Không làm tròn điểm trước tính trong bài này."
+      "body": "solve(data) nhận {\"marks\": list điểm, \"credits\": list tín chỉ cùng độ dài}. Dữ liệu hợp lệ, tín chỉ dương. Trả GPA theo tín chỉ; nếu cả hai list rỗng, trả None. Không làm tròn điểm trước tính trong bài này.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'marks': [9, 5], 'credits': [1, 3]}"
+       },
+       {
+        "label": "trả về",
+        "value": "6.0"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    if not data['marks']: return None\n    marks = np.asarray(data['marks'], dtype=float)\n    credits = np.asarray(data['credits'], dtype=float)\n    return float((marks * credits).sum() / credits.sum())\n",
@@ -30542,7 +31552,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "solve(data) nhận list dòng không chứa newline. Trong TemporaryDirectory, tạo notes.txt bằng w ghi HEADER và newline, mở lại bằng a thêm từng dòng cùng newline; đọc lại bằng r và trả list dòng không có ký tự xuống dòng. Hãy thực hiện I/O file thật."
+      "body": "solve(data) nhận list dòng không chứa newline. Trong TemporaryDirectory, tạo notes.txt bằng w ghi HEADER và newline, mở lại bằng a thêm từng dòng cùng newline; đọc lại bằng r và trả list dòng không có ký tự xuống dòng. Hãy thực hiện I/O file thật.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "['tea', 'coffee']"
+       },
+       {
+        "label": "trả về",
+        "value": "['HEADER', 'tea', 'coffee']"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import tempfile\nfrom pathlib import Path\ndef solve(data):\n    with tempfile.TemporaryDirectory() as folder:\n        path = Path(folder) / 'notes.txt'\n        with path.open('w', encoding='utf-8') as f: f.write('HEADER\\n')\n        with path.open('a', encoding='utf-8') as f:\n            for line in data: f.write(line + '\\n')\n        with path.open('r', encoding='utf-8') as f: return f.read().splitlines()\n",
@@ -30799,7 +31819,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "solve(data) nhận văn bản gồm nhiều dòng đơn hàng. Dùng StringIO để đọc từng dòng; trả list dòng bắt đầu đúng \"PAID:\" và bỏ newline cuối dòng. Không giữ dòng UNPAID: hay khoảng trắng đầu dòng."
+      "body": "solve(data) nhận văn bản gồm nhiều dòng đơn hàng. Dùng StringIO để đọc từng dòng; trả list dòng bắt đầu đúng \"PAID:\" và bỏ newline cuối dòng. Không giữ dòng UNPAID: hay khoảng trắng đầu dòng.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "'PAID:12\\nUNPAID:13\\nPAID:14\\n'"
+       },
+       {
+        "label": "trả về",
+        "value": "['PAID:12', 'PAID:14']"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "from io import StringIO\ndef solve(data):\n    with StringIO(data) as f:\n        return [line.rstrip('\\r\\n') for line in f if line.startswith('PAID:')]\n",
@@ -31013,7 +32043,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Dùng tempfile.TemporaryFile(mode=\"w+t\", encoding=\"utf-8\") để ghi chuỗi data, flush, seek(0) rồi đọc. Sau khi rời with, trả {\"text\": nội dung đọc, \"closed\": trạng thái đóng của file}. Không tạo file cố định trong thư mục làm việc."
+      "body": "Dùng tempfile.TemporaryFile(mode=\"w+t\", encoding=\"utf-8\") để ghi chuỗi data, flush, seek(0) rồi đọc. Sau khi rời with, trả {\"text\": nội dung đọc, \"closed\": trạng thái đóng của file}. Không tạo file cố định trong thư mục làm việc.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "'ready'"
+       },
+       {
+        "label": "trả về",
+        "value": "{'text': 'ready', 'closed': True}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import tempfile\ndef solve(data):\n    with tempfile.TemporaryFile(mode='w+t', encoding='utf-8') as f:\n        f.write(data)\n        f.flush()\n        f.seek(0)\n        text = f.read()\n    return {'text': text, 'closed': f.closed}\n",
@@ -31236,7 +32276,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "solve(data) nhận dictionary đường dẫn tương đối → nội dung, chỉ gồm tên an toàn như reports/a.txt, không có .. hay đường dẫn tuyệt đối. Tạo các file này trong TemporaryDirectory, dùng os.walk tìm mọi .txt, trả đường dẫn tương đối chuẩn dấu / theo thứ tự chữ cái. Hãy thực sự tạo và duyệt cây."
+      "body": "solve(data) nhận dictionary đường dẫn tương đối → nội dung, chỉ gồm tên an toàn như reports/a.txt, không có .. hay đường dẫn tuyệt đối. Tạo các file này trong TemporaryDirectory, dùng os.walk tìm mọi .txt, trả đường dẫn tương đối chuẩn dấu / theo thứ tự chữ cái. Hãy thực sự tạo và duyệt cây.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'a.txt': 'A', 'reports/b.txt': 'B', 'reports/c.csv': 'C'}"
+       },
+       {
+        "label": "trả về",
+        "value": "['a.txt', 'reports/b.txt']"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import os, tempfile\nfrom pathlib import Path\ndef solve(data):\n    with tempfile.TemporaryDirectory() as folder:\n        base = Path(folder)\n        for name, text in data.items():\n            path = base / name\n            path.parent.mkdir(parents=True, exist_ok=True)\n            path.write_text(text, encoding='utf-8')\n        found = []\n        for root, dirs, files in os.walk(base):\n            for name in files:\n                if name.endswith('.txt'): found.append((Path(root) / name).relative_to(base).as_posix())\n        return sorted(found)\n",
@@ -31495,7 +32545,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "solve(data) nhận {\"codec\": \"zlib\" | \"gzip\" | \"bz2\" | \"lzma\", \"text\": chuỗi}. Chọn module tương ứng, encode UTF-8, compress rồi decompress; trả {\"restored\": văn bản khôi phục, \"same\": so sánh byte trước/sau}. Không chấm theo kích thước hay thời gian nén."
+      "body": "solve(data) nhận {\"codec\": \"zlib\" | \"gzip\" | \"bz2\" | \"lzma\", \"text\": chuỗi}. Chọn module tương ứng, encode UTF-8, compress rồi decompress; trả {\"restored\": văn bản khôi phục, \"same\": so sánh byte trước/sau}. Không chấm theo kích thước hay thời gian nén.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'codec': 'zlib', 'text': 'cà phê'}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'restored': 'cà phê', 'same': True}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import zlib, gzip, bz2, lzma\ndef solve(data):\n    codec = {'zlib':zlib, 'gzip':gzip, 'bz2':bz2, 'lzma':lzma}[data['codec']]\n    raw = data['text'].encode('utf-8')\n    restored = codec.decompress(codec.compress(raw))\n    return {'restored':restored.decode('utf-8'), 'same':restored == raw}\n",
@@ -31883,7 +32943,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "solve(data) nhận dictionary tên thành viên → chuỗi UTF-8. Tạo ZIP trong BytesIO bằng writestr, mở lại, đọc mọi thành viên; trả dictionary cùng tên và nội dung đã decode. Không giải nén archive ra thư mục."
+      "body": "solve(data) nhận dictionary tên thành viên → chuỗi UTF-8. Tạo ZIP trong BytesIO bằng writestr, mở lại, đọc mọi thành viên; trả dictionary cùng tên và nội dung đã decode. Không giải nén archive ra thư mục.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'students.csv': 'id,name\\nS2,Lan', 'courses.csv': 'id\\nC1'}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'students.csv': 'id,name\\nS2,Lan', 'courses.csv': 'id\\nC1'}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import io, zipfile\ndef solve(data):\n    stream = io.BytesIO()\n    with zipfile.ZipFile(stream, 'w', compression=zipfile.ZIP_DEFLATED) as archive:\n        for name, text in data.items(): archive.writestr(name, text.encode('utf-8'))\n    stream.seek(0)\n    with zipfile.ZipFile(stream, 'r') as archive:\n        return {name:archive.read(name).decode('utf-8') for name in archive.namelist()}\n",
@@ -32159,7 +33229,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "solve(data) nhận list số. Tạo tuple từ list này; round-trip qua JSON và qua pickle trong bộ nhớ. Trả {\"json_type\": tên kiểu nhận từ JSON, \"pickle_type\": tên kiểu nhận từ pickle, \"json_values\": list giá trị, \"pickle_values\": list giá trị}. Chỉ unpickle byte vừa tự tạo."
+      "body": "solve(data) nhận list số. Tạo tuple từ list này; round-trip qua JSON và qua pickle trong bộ nhớ. Trả {\"json_type\": tên kiểu nhận từ JSON, \"pickle_type\": tên kiểu nhận từ pickle, \"json_values\": list giá trị, \"pickle_values\": list giá trị}. Chỉ unpickle byte vừa tự tạo.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[2, 9]"
+       },
+       {
+        "label": "trả về",
+        "value": "{'json_type': 'list', 'pickle_type': 'tuple', 'json_values': [2, 9], 'pickle_values': [2, 9]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import json, pickle\ndef solve(data):\n    original = tuple(data)\n    from_json = json.loads(json.dumps(original))\n    from_pickle = pickle.loads(pickle.dumps(original))\n    return {'json_type':type(from_json).__name__, 'pickle_type':type(from_pickle).__name__, 'json_values':from_json, 'pickle_values':list(from_pickle)}\n",
@@ -32383,7 +33463,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "solve(data) nhận {\"values\": list số nguyên không rỗng}. Tạo DataFrame một cột units, ghi Stata .dta trong TemporaryDirectory với write_index=False, đọc lại bằng read_stata; trả {\"columns\": list tên cột, \"values\": các units}. Thực hiện round-trip định dạng thật."
+      "body": "solve(data) nhận {\"values\": list số nguyên không rỗng}. Tạo DataFrame một cột units, ghi Stata .dta trong TemporaryDirectory với write_index=False, đọc lại bằng read_stata; trả {\"columns\": list tên cột, \"values\": các units}. Thực hiện round-trip định dạng thật.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [3, 8, 0]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'columns': ['units'], 'values': [3, 8, 0]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import tempfile\nfrom pathlib import Path\nimport pandas as pd\ndef solve(data):\n    with tempfile.TemporaryDirectory() as folder:\n        path = Path(folder) / 'units.dta'\n        pd.DataFrame({'units':data['values']}).to_stata(path, write_index=False)\n        frame = pd.read_stata(path)\n        return {'columns':list(frame.columns), 'values':frame['units'].tolist()}\n",
@@ -37453,7 +38543,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "solve(data) nhận list số nguyên. Tạo list shared rỗng; một Thread chạy hàm worker thêm bình phương từng số vào chính shared, main join rồi trả shared. Không cần Lock vì chỉ một worker ghi và main chỉ đọc sau join. Không dùng ví dụ này để kết luận tăng tốc CPU."
+      "body": "solve(data) nhận list số nguyên. Tạo list shared rỗng; một Thread chạy hàm worker thêm bình phương từng số vào chính shared, main join rồi trả shared. Không cần Lock vì chỉ một worker ghi và main chỉ đọc sau join. Không dùng ví dụ này để kết luận tăng tốc CPU.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[2, 4, 6]"
+       },
+       {
+        "label": "trả về",
+        "value": "[4, 16, 36]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import threading\ndef solve(data):\n    shared = []\n    def worker():\n        for number in data: shared.append(number * number)\n    thread = threading.Thread(target=worker)\n    thread.start()\n    thread.join()\n    return shared\n",
@@ -37678,7 +38778,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "solve(data) nhận {\"values\": list số, \"factor\": số}. Tạo Thread(target=worker, args=(values,factor,result)); worker nhân từng số với factor rồi ghi vào result. Main start, join, trả result. Dùng một worker để thứ tự không phụ thuộc lịch chạy."
+      "body": "solve(data) nhận {\"values\": list số, \"factor\": số}. Tạo Thread(target=worker, args=(values,factor,result)); worker nhân từng số với factor rồi ghi vào result. Main start, join, trả result. Dùng một worker để thứ tự không phụ thuộc lịch chạy.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'values': [1, 4], 'factor': 3}"
+       },
+       {
+        "label": "trả về",
+        "value": "[3, 12]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import threading\ndef worker(values, factor, result):\n    for number in values: result.append(number * factor)\ndef solve(data):\n    result = []\n    thread = threading.Thread(target=worker, args=(data['values'], data['factor'], result))\n    thread.start()\n    thread.join()\n    return result\n",
@@ -37917,7 +39027,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Viết subclass TotalWorker nhận list số, khởi tạo lớp cha, đặt result=None rồi run gán sum(values). solve(data) tạo hai worker cho data[\"left\"] và data[\"right\"], start cả hai trước khi join, trả hai tổng theo thứ tự left/right."
+      "body": "Viết subclass TotalWorker nhận list số, khởi tạo lớp cha, đặt result=None rồi run gán sum(values). solve(data) tạo hai worker cho data[\"left\"] và data[\"right\"], start cả hai trước khi join, trả hai tổng theo thứ tự left/right.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'left': [1, 2], 'right': [5, 7]}"
+       },
+       {
+        "label": "trả về",
+        "value": "[3, 12]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import threading\nclass TotalWorker(threading.Thread):\n    def __init__(self, values):\n        super().__init__()\n        self.values = values\n        self.result = None\n    def run(self): self.result = sum(self.values)\ndef solve(data):\n    workers = [TotalWorker(data['left']), TotalWorker(data['right'])]\n    for worker in workers: worker.start()\n    for worker in workers: worker.join()\n    return [worker.result for worker in workers]\n",
@@ -38218,7 +39338,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "solve(data) nhận list số nguyên không âm, mỗi số là số lượt tăng của một worker. Tạo đúng một Lock và count chung; mỗi Thread tăng count từng lượt trong with lock. Start tất cả, join tất cả rồi trả count. Số lượt mỗi worker nhỏ để bài tập chạy nhanh."
+      "body": "solve(data) nhận list số nguyên không âm, mỗi số là số lượt tăng của một worker. Tạo đúng một Lock và count chung; mỗi Thread tăng count từng lượt trong with lock. Start tất cả, join tất cả rồi trả count. Số lượt mỗi worker nhỏ để bài tập chạy nhanh.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[15, 20, 7]"
+       },
+       {
+        "label": "trả về",
+        "value": "42"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import threading\ndef solve(data):\n    lock = threading.Lock()\n    shared = {'count':0}\n    def increment(times):\n        for _ in range(times):\n            with lock: shared['count'] += 1\n    workers = [threading.Thread(target=increment, args=(times,)) for times in data]\n    for thread in workers: thread.start()\n    for thread in workers: thread.join()\n    return shared['count']\n",
@@ -38431,7 +39561,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "solve(data) nhận list số. Một Thread đưa lần lượt bình phương vào queue.Queue, sau đó put None làm dấu kết thúc. Main đọc đến None, join rồi trả list kết quả. Với bài CLI này, main được phép chờ get; không áp dụng vòng chặn đó vào callback Tkinter."
+      "body": "solve(data) nhận list số. Một Thread đưa lần lượt bình phương vào queue.Queue, sau đó put None làm dấu kết thúc. Main đọc đến None, join rồi trả list kết quả. Với bài CLI này, main được phép chờ get; không áp dụng vòng chặn đó vào callback Tkinter.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[3, 7]"
+       },
+       {
+        "label": "trả về",
+        "value": "[9, 49]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import threading, queue\ndef solve(data):\n    messages = queue.Queue()\n    def work():\n        for value in data: messages.put(value * value)\n        messages.put(None)\n    thread = threading.Thread(target=work)\n    thread.start()\n    result = []\n    while True:\n        value = messages.get()\n        if value is None: break\n        result.append(value)\n    thread.join()\n    return result\n",
@@ -41912,7 +43052,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Viết solve(data) nhận chuỗi CSV có tiêu đề id,price và ít nhất một dòng số hợp lệ. Đọc riêng price bằng np.loadtxt, trả list giá theo thứ tự file. Với file chỉ có một dòng, kết quả vẫn phải là list một phần tử."
+      "body": "Viết solve(data) nhận chuỗi CSV có tiêu đề id,price và ít nhất một dòng số hợp lệ. Đọc riêng price bằng np.loadtxt, trả list giá theo thứ tự file. Với file chỉ có một dòng, kết quả vẫn phải là list một phần tử.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "'id,price\\n1,12.5\\n2,9.0\\n'"
+       },
+       {
+        "label": "trả về",
+        "value": "[12.5, 9.0]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import numpy as np\nfrom io import StringIO\ndef solve(data):\n    prices = np.loadtxt(StringIO(data), delimiter=',', skiprows=1, usecols=(1,), ndmin=1)\n    return prices.tolist()\n",
@@ -42109,7 +43259,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Viết solve(data) nhận CSV name,mark với ít nhất một dòng. Dùng genfromtxt, khai báo name là U20 và mark là float, ndmin=1. Trả list dictionary {\"name\": tên, \"mark\": điểm}; ô điểm trống trả None. Giữ tên và thứ tự."
+      "body": "Viết solve(data) nhận CSV name,mark với ít nhất một dòng. Dùng genfromtxt, khai báo name là U20 và mark là float, ndmin=1. Trả list dictionary {\"name\": tên, \"mark\": điểm}; ô điểm trống trả None. Giữ tên và thứ tự.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "'name,mark\\nLan,8.5\\nMinh,7\\n'"
+       },
+       {
+        "label": "trả về",
+        "value": "[{'name': 'Lan', 'mark': 8.5}, {'name': 'Minh', 'mark': 7.0}]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import numpy as np\nfrom io import StringIO\ndef solve(data):\n    table = np.genfromtxt(StringIO(data), delimiter=',', names=True, dtype=[('name','U20'),('mark',float)], encoding='utf-8', ndmin=1)\n    return [{'name':str(row['name']), 'mark':None if np.isnan(row['mark']) else float(row['mark'])} for row in table]\n",
@@ -43117,7 +44277,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Viết solve(data) nhận {\"marks\": list số, \"extra\": số}. Chụp snapshot của marks, tạo worker ghi snapshot vào snapshot.gz bằng gzip/pickle. Sau start, thêm extra vào dữ liệu hiện tại. join, nhận thông báo, đọc file thật và trả {\"saved\": điểm đã lưu, \"current\": điểm hiện tại, \"status\": \"done\"}. Worker gửi lỗi qua Queue; không giả lập file bằng dictionary."
+      "body": "Viết solve(data) nhận {\"marks\": list số, \"extra\": số}. Chụp snapshot của marks, tạo worker ghi snapshot vào snapshot.gz bằng gzip/pickle. Sau start, thêm extra vào dữ liệu hiện tại. join, nhận thông báo, đọc file thật và trả {\"saved\": điểm đã lưu, \"current\": điểm hiện tại, \"status\": \"done\"}. Worker gửi lỗi qua Queue; không giả lập file bằng dictionary.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'marks': [6, 8], 'extra': 10}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'saved': [6, 8], 'current': [6, 8, 10], 'status': 'done'}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import copy, gzip, pickle\nfrom pathlib import Path\nfrom threading import Thread\nfrom queue import Queue\ndef solve(data):\n    current = {'marks':list(data['marks'])}\n    snapshot = copy.deepcopy(current)\n    messages = Queue()\n    path = Path('snapshot.gz')\n    def worker():\n        try:\n            with gzip.open(path,'wb') as stream:\n                pickle.dump(snapshot,stream)\n        except Exception as error:\n            messages.put(('error',str(error)))\n        else:\n            messages.put(('done',None))\n    task = Thread(target=worker)\n    task.start()\n    current['marks'].append(data['extra'])\n    task.join()\n    status, error = messages.get(timeout=2)\n    if status!='done':\n        raise RuntimeError(error)\n    with gzip.open(path,'rb') as stream:\n        loaded = pickle.load(stream)\n    return {'saved':loaded['marks'],'current':current['marks'],'status':status}\n",
@@ -43501,7 +44671,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Viết solve(data) nhận mã nguồn dạng chuỗi. Chỉ compile mã ở chế độ exec, không thực thi. Nếu hợp lệ trả \"valid\"; nếu TabError trả \"TabError\"; nếu IndentationError khác trả \"IndentationError\"; SyntaxError khác trả \"SyntaxError\". Bắt TabError trước IndentationError vì nó là lớp con."
+      "body": "Viết solve(data) nhận mã nguồn dạng chuỗi. Chỉ compile mã ở chế độ exec, không thực thi. Nếu hợp lệ trả \"valid\"; nếu TabError trả \"TabError\"; nếu IndentationError khác trả \"IndentationError\"; SyntaxError khác trả \"SyntaxError\". Bắt TabError trước IndentationError vì nó là lớp con.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "'if True:\\n    print(1)\\n'"
+       },
+       {
+        "label": "trả về",
+        "value": "'valid'"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "def solve(data):\n    try:\n        compile(data,'submission.py','exec')\n    except TabError:\n        return 'TabError'\n    except IndentationError:\n        return 'IndentationError'\n    except SyntaxError:\n        return 'SyntaxError'\n    return 'valid'\n",
@@ -43703,7 +44883,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết rồi chạy Python",
-      "body": "Viết solve(data) nhận {\"nx\": số điểm x, \"ny\": số điểm y}, mỗi số ít nhất 2. Tạo mgrid x từ -1 đến 1 gồm nx điểm và y từ -2 đến 2 gồm ny điểm. Đặt U=-Y, V=X. Lưu U vào vector.npy rồi đọc lại bằng allow_pickle=False. Trả {\"shape\": shape của U dạng list, \"uFirst\": hàng đầu U, \"vLast\": hàng cuối V, \"roundtrip\": dữ liệu đọc có bằng U}."
+      "body": "Viết solve(data) nhận {\"nx\": số điểm x, \"ny\": số điểm y}, mỗi số ít nhất 2. Tạo mgrid x từ -1 đến 1 gồm nx điểm và y từ -2 đến 2 gồm ny điểm. Đặt U=-Y, V=X. Lưu U vào vector.npy rồi đọc lại bằng allow_pickle=False. Trả {\"shape\": shape của U dạng list, \"uFirst\": hàng đầu U, \"vLast\": hàng cuối V, \"roundtrip\": dữ liệu đọc có bằng U}.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'nx': 3, 'ny': 5}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'shape': [3, 5], 'uFirst': [2, 1, 0, -1, -2], 'vLast': [1, 1, 1, 1, 1], 'roundtrip': True}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    X,Y = np.mgrid[-1:1:complex(0,data['nx']), -2:2:complex(0,data['ny'])]\n    U,V = -Y,X\n    np.save('vector.npy',U)\n    loaded = np.load('vector.npy',allow_pickle=False)\n    return {'shape':list(U.shape),'uFirst':U[0].tolist(),'vLast':V[-1].tolist(),'roundtrip':bool(np.array_equal(loaded,U))}\n",
@@ -43969,7 +45159,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận day, revenue và labelPosition=[u,v]. Tạo Figure/Axes và annotation có mũi tên chỉ (day,revenue) theo dữ liệu; chữ ở labelPosition theo axes fraction. Trả target là note.xy, labelPosition là note.get_position(), targetCoordinates là note.xycoords và labelCoordinates là note.get_anncoords(), rồi đóng Figure. Hai thuộc tính cuối giúp kiểm hệ tọa độ thật của chú thích; không cần học thuộc tên getter. Bài kiểm cấu hình; hãy mở hình một lần trong môi trường có cửa sổ để tự xem."
+      "body": "Viết solve(data) nhận day, revenue và labelPosition=[u,v]. Tạo Figure/Axes và annotation có mũi tên chỉ (day,revenue) theo dữ liệu; chữ ở labelPosition theo axes fraction. Trả target là note.xy, labelPosition là note.get_position(), targetCoordinates là note.xycoords và labelCoordinates là note.get_anncoords(), rồi đóng Figure. Hai thuộc tính cuối giúp kiểm hệ tọa độ thật của chú thích; không cần học thuộc tên getter. Bài kiểm cấu hình; hãy mở hình một lần trong môi trường có cửa sổ để tự xem.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'day': 2, 'revenue': 9, 'labelPosition': [0.1, 0.9]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'target': [2, 9], 'labelPosition': [0.1, 0.9], 'targetCoordinates': 'data', 'labelCoordinates': 'axes fraction'}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import matplotlib.pyplot as plt\ndef solve(data):\n    fig, ax = plt.subplots()\n    note = ax.annotate(\"Observed\", xy=(data[\"day\"], data[\"revenue\"]), xycoords=\"data\",\n                       xytext=data[\"labelPosition\"], textcoords=\"axes fraction\",\n                       arrowprops={\"arrowstyle\": \"->\"})\n    result = {\"target\": note.xy, \"labelPosition\": note.get_position(),\n              \"targetCoordinates\": note.xycoords, \"labelCoordinates\": note.get_anncoords()}\n    plt.close(fig)\n    return result\n",
@@ -44218,7 +45418,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận first và second là hai lô bảng có cùng số cột. Ghép theo hàng rồi chuyển vị kết quả để mỗi cột cũ trở thành một hàng. Trả array đó."
+      "body": "Viết solve(data) nhận first và second là hai lô bảng có cùng số cột. Ghép theo hàng rồi chuyển vị kết quả để mỗi cột cũ trở thành một hàng. Trả array đó.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'first': [[1, 2, 3]], 'second': [[4, 5, 6]]}"
+       },
+       {
+        "label": "trả về",
+        "value": "[[1, 4], [2, 5], [3, 6]]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    first = np.array(data[\"first\"])\n    second = np.array(data[\"second\"])\n    combined = np.concatenate([first, second], axis=0)\n    return combined.T\n",
@@ -44485,7 +45695,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận names và amounts cùng độ dài. Trả names và amounts đã xếp tăng theo amounts; hai giá trị bằng nhau giữ thứ tự ban đầu. Không tách tên khỏi số tiền."
+      "body": "Viết solve(data) nhận names và amounts cùng độ dài. Trả names và amounts đã xếp tăng theo amounts; hai giá trị bằng nhau giữ thứ tự ban đầu. Không tách tên khỏi số tiền.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'names': ['A', 'B', 'C'], 'amounts': [30, 10, 20]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'names': ['B', 'C', 'A'], 'amounts': [10, 20, 30]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    names = np.array(data[\"names\"])\n    amounts = np.array(data[\"amounts\"])\n    order = np.argsort(amounts, kind=\"stable\")\n    return {\"names\": names[order], \"amounts\": amounts[order]}\n",
@@ -44753,7 +45973,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận ma trận A vuông không suy biến và dãy b cùng kích thước. Trả nghiệm của A @ x = b bằng np.linalg.solve. Các bài kiểm đều có nghiệm duy nhất."
+      "body": "Viết solve(data) nhận ma trận A vuông không suy biến và dãy b cùng kích thước. Trả nghiệm của A @ x = b bằng np.linalg.solve. Các bài kiểm đều có nghiệm duy nhất.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'A': [[1, 1], [2, 1]], 'b': [7, 11]}"
+       },
+       {
+        "label": "trả về",
+        "value": "[4.0, 3.0]"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    A = np.array(data[\"A\"], dtype=float)\n    b = np.array(data[\"b\"], dtype=float)\n    return np.linalg.solve(A, b)\n",
@@ -45001,7 +46231,17 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận bảng các mẫu bootstrap đã lấy, mỗi hàng là một mẫu thời gian giao hàng. Trả means là trung bình mỗi hàng và interval là hai phân vị 2.5%,97.5% của các trung bình. Các hàng đều có cùng số cột và không thiếu dữ liệu."
+      "body": "Viết solve(data) nhận bảng các mẫu bootstrap đã lấy, mỗi hàng là một mẫu thời gian giao hàng. Trả means là trung bình mỗi hàng và interval là hai phân vị 2.5%,97.5% của các trung bình. Các hàng đều có cùng số cột và không thiếu dữ liệu.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "[[10, 20], [20, 20], [10, 10]]"
+       },
+       {
+        "label": "trả về",
+        "value": "{'means': [15.0, 20.0, 10.0], 'interval': [10.25, 19.75]}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
      "solutionCode": "import numpy as np\ndef solve(data):\n    samples = np.array(data, dtype=float)\n    means = samples.mean(axis=1)\n    interval = np.quantile(means, [0.025, 0.975])\n    return {\"means\": means, \"interval\": interval}\n",
@@ -45292,7 +46532,17 @@
     "step_4": {
      "task": {
       "title": "Đếm bảng theo một cột",
-      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên một cột của bảng. Trả về dict hai khoá: `so_hang` là số dòng của cả bảng, `so_gia_tri` là số giá trị khác nhau của cột đó. Cả hai là số nguyên."
+      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên một cột của bảng. Trả về dict hai khoá: `so_hang` là số dòng của cả bảng, `so_gia_tri` là số giá trị khác nhau của cột đó. Cả hai là số nguyên.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'cot': 'coffee_name'}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'so_hang': 2623, 'so_gia_tri': 8}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
      "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    return {'so_hang': int(len(ban)),\n            'so_gia_tri': int(ban[data['cot']].nunique())}\n",
@@ -45493,7 +46743,17 @@
     "step_4": {
      "task": {
       "title": "Doanh thu của một món",
-      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon` mang tên một món CÓ TRONG bảng. Trả về tổng cột `money` của món đó, làm tròn hai chữ số thập phân."
+      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon` mang tên một món CÓ TRONG bảng. Trả về tổng cột `money` của món đó, làm tròn hai chữ số thập phân.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'mon': 'Latte'}"
+       },
+       {
+        "label": "trả về",
+        "value": "22001.66"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
      "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    theo_mon = ban.groupby('coffee_name')['money'].sum()\n    return round(float(theo_mon[data['mon']]), 2)\n",
@@ -45685,7 +46945,17 @@
     "step_4": {
      "task": {
       "title": "Giờ cao điểm của một món",
-      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon`. Lấy giờ từ cột `datetime`, đếm số lượt mua của món đó theo giờ, rồi trả về dict hai khoá: `gio` là danh sách các giờ cùng đạt số lượt cao nhất, xếp tăng dần, và `so_luot` là con số cao nhất đó. Có món có hai giờ bằng nhau."
+      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon`. Lấy giờ từ cột `datetime`, đếm số lượt mua của món đó theo giờ, rồi trả về dict hai khoá: `gio` là danh sách các giờ cùng đạt số lượt cao nhất, xếp tăng dần, và `so_luot` là con số cao nhất đó. Có món có hai giờ bằng nhau.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'mon': 'Latte'}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'gio': [10], 'so_luot': 73}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
      "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    gio = pd.to_datetime(ban['datetime']).dt.hour\n    dem = gio[ban['coffee_name'] == data['mon']].value_counts()\n    dinh = int(dem.max())\n    return {'gio': sorted(int(g) for g in dem[dem == dinh].index),\n            'so_luot': dinh}\n",
@@ -45894,7 +47164,17 @@
     "step_4": {
      "task": {
       "title": "Tỉ lệ thanh toán kèm mẫu số",
-      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict hai khoá: `mon` là tên món, `kieu` là `card` hoặc `cash`. Trả về dict ba khoá: `so_luot` là số lượt của món đó trả theo kiểu đó, `tong` là tổng số lượt của món, và `ti_le` là phần trăm làm tròn một chữ số thập phân."
+      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict hai khoá: `mon` là tên món, `kieu` là `card` hoặc `cash`. Trả về dict ba khoá: `so_luot` là số lượt của món đó trả theo kiểu đó, `tong` là tổng số lượt của món, và `ti_le` là phần trăm làm tròn một chữ số thập phân.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'mon': 'Latte', 'kieu': 'cash'}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'so_luot': 25, 'tong': 618, 'ti_le': 4.0}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
      "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    cua_mon = ban[ban['coffee_name'] == data['mon']]\n    so_luot = int((cua_mon['cash_type'] == data['kieu']).sum())\n    tong = int(len(cua_mon))\n    return {'so_luot': so_luot, 'tong': tong,\n            'ti_le': round(100 * so_luot / tong, 1)}\n",
@@ -46101,7 +47381,17 @@
     "step_4": {
      "task": {
       "title": "Một dòng báo cáo tháng",
-      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là một chuỗi dạng `YYYY-MM`. Trả về dict bốn khoá: `thang` là chính chuỗi đó, `so_don` là số lượt mua trong tháng, `tong_tien` là tổng cột `money` làm tròn hai chữ số thập phân, và `don_vi` là chuỗi `không xác định`. Khoá cuối là phần bài học của PD32: báo cáo phải nói ra đơn vị, kể cả khi đơn vị chưa biết."
+      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là một chuỗi dạng `YYYY-MM`. Trả về dict bốn khoá: `thang` là chính chuỗi đó, `so_don` là số lượt mua trong tháng, `tong_tien` là tổng cột `money` làm tròn hai chữ số thập phân, và `don_vi` là chuỗi `không xác định`. Khoá cuối là phần bài học của PD32: báo cáo phải nói ra đơn vị, kể cả khi đơn vị chưa biết.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "'2024-03'"
+       },
+       {
+        "label": "trả về",
+        "value": "{'thang': '2024-03', 'so_don': 206, 'tong_tien': 7050.2, 'don_vi': 'không xác định'}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
      "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    thang = pd.to_datetime(ban['datetime']).dt.strftime('%Y-%m')\n    cua_thang = ban[thang == data]\n    return {'thang': data,\n            'so_don': int(len(cua_thang)),\n            'tong_tien': round(float(cua_thang['money'].sum()), 2),\n            'don_vi': 'không xác định'}\n",
@@ -46302,7 +47592,17 @@
     "step_4": {
      "task": {
       "title": "Đối chiếu một phép gom",
-      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên cột dùng làm khoá gom. Gom cột `money` theo cột đó rồi trả về dict ba khoá: `so_nhom` là số nhóm, `nhom_lon_nhat` là tên nhóm có tổng tiền lớn nhất, và `lech` là khoảng cách tuyệt đối giữa tổng các nhóm và tổng cả bảng, làm tròn sáu chữ số thập phân."
+      "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên cột dùng làm khoá gom. Gom cột `money` theo cột đó rồi trả về dict ba khoá: `so_nhom` là số nhóm, `nhom_lon_nhat` là tên nhóm có tổng tiền lớn nhất, và `lech` là khoảng cách tuyệt đối giữa tổng các nhóm và tổng cả bảng, làm tròn sáu chữ số thập phân.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'cot': 'coffee_name'}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'so_nhom': 8, 'nhom_lon_nhat': 'Latte', 'lech': 0.0}"
+       }
+      ]
      },
      "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
      "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    tong = float(ban['money'].sum())\n    nhom = ban.groupby(data['cot'])['money'].sum()\n    return {'so_nhom': int(nhom.size),\n            'nhom_lon_nhat': str(nhom.idxmax()),\n            'lech': round(abs(float(nhom.sum()) - tong), 6)}\n",

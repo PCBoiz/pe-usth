@@ -157,7 +157,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận dictionary values là số đo và weights là số lần đại diện cho từng số đo. Trả trung bình có trọng số. Các dãy không rỗng, cùng độ dài; trọng số không âm và có tổng dương."
+    "body": "Viết solve(data) nhận dictionary values là số đo và weights là số lần đại diện cho từng số đo. Trả trung bình có trọng số. Các dãy không rỗng, cùng độ dài; trọng số không âm và có tổng dương.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [6, 9], 'weights': [1, 3]}"
+     },
+     {
+      "label": "trả về",
+      "value": "8.25"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    return np.average(data[\"values\"], weights=data[\"weights\"])\n",

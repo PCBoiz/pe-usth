@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.don có ma_don, quay, ngay ISO, tong_tien; các dòng có thể trùng toàn bộ. data.danh_muc_quay có quay, khu_vuc và mã duy nhất. Chuẩn hóa mã quay của cả don và danh_muc_quay bằng strip/upper, bỏ dòng giống hệt, nối trái với validate many_to_one, khu vực vắng là Unknown, tổng hợp theo YYYY-MM và khu_vuc. Trả {report:list bản ghi thang,khu_vuc,tong_tien đã sắp; total:tổng tong_tien của đơn sau bỏ trùng}. Dữ liệu không có hai phiên bản xung đột của cùng ma_don."
+    "body": "data.don có ma_don, quay, ngay ISO, tong_tien; các dòng có thể trùng toàn bộ. data.danh_muc_quay có quay, khu_vuc và mã duy nhất. Chuẩn hóa mã quay của cả don và danh_muc_quay bằng strip/upper, bỏ dòng giống hệt, nối trái với validate many_to_one, khu vực vắng là Unknown, tổng hợp theo YYYY-MM và khu_vuc. Trả {report:list bản ghi thang,khu_vuc,tong_tien đã sắp; total:tổng tong_tien của đơn sau bỏ trùng}. Dữ liệu không có hai phiên bản xung đột của cùng ma_don.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'don': [{'ma_don': '1', 'quay': ' q1 ', 'ngay': '2026-03-01', 'tong_tien': 5}, {'ma_don': '1', 'quay': ' q1 ', 'ngay': '2026-03-01', 'tong_tien': 5}, {'ma_don': '2', 'quay': 'QH', 'ngay': '2026-03-02', 'tong_tien': 8}], 'danh_muc_quay': [{'quay': ' q1 ', 'khu_vuc': 'Phía Nam'}]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'report': [{'thang': '2026-03', 'khu_vuc': 'Phía Nam', 'tong_tien': 5}, {'thang': '2026-03', 'khu_vuc': 'Unknown', 'tong_tien': 8}], 'total': 13.0}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     don = pd.DataFrame(data['don']).copy()\n     don['quay'] = don['quay'].str.strip().str.upper()\n     don = don.drop_duplicates()\n     danh_muc_quay = pd.DataFrame(data['danh_muc_quay']).copy()\n     danh_muc_quay['quay'] = danh_muc_quay['quay'].str.strip().str.upper()\n     joined = don.merge(danh_muc_quay, on='quay', how='left', validate='many_to_one')\n     joined['khu_vuc'] = joined['khu_vuc'].fillna('Unknown')\n     joined['thang'] = pd.to_datetime(joined['ngay']).dt.to_period('M').astype(str)\n     report = joined.groupby(['thang','khu_vuc'], as_index=False)['tong_tien'].sum().sort_values(['thang','khu_vuc'])\n     return {'report':report.to_dict('records'), 'total':float(don['tong_tien'].sum())}\n",

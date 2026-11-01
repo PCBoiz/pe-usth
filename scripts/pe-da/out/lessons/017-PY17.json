@@ -153,7 +153,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận một số. Bên trong, định nghĩa hàm add_one trả data + 1, gán chính hàm đó cho callback rồi trả kết quả callback(). Đây là lần thử quy tắc truyền hàm trước khi dùng nút bấm."
+    "body": "Viết solve(data) nhận một số. Bên trong, định nghĩa hàm add_one trả data + 1, gán chính hàm đó cho callback rồi trả kết quả callback(). Đây là lần thử quy tắc truyền hàm trước khi dùng nút bấm.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "6"
+     },
+     {
+      "label": "trả về",
+      "value": "7"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "def solve(data):\n    def add_one():\n        return data + 1\n    callback = add_one\n    return callback()\n",

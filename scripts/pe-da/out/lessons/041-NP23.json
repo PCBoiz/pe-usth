@@ -163,7 +163,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận bảng khoản chi; mỗi hàng là một nhóm, các cột là khoản chi không thiếu. Trả totals là tổng từng nhóm và labels bằng \"within\" nếu tổng không quá 10, còn lại \"over\"."
+    "body": "Viết solve(data) nhận bảng khoản chi; mỗi hàng là một nhóm, các cột là khoản chi không thiếu. Trả totals là tổng từng nhóm và labels bằng \"within\" nếu tổng không quá 10, còn lại \"over\".",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[[4, 7], [3, 2]]"
+     },
+     {
+      "label": "trả về",
+      "value": "{'totals': [11, 5], 'labels': ['over', 'within']}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    totals = np.array(data).sum(axis=1)\n    labels = np.where(totals <= 10, \"within\", \"over\")\n    return {\"totals\": totals, \"labels\": labels}\n",

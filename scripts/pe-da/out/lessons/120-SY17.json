@@ -155,7 +155,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Dùng tempfile.TemporaryFile(mode=\"w+t\", encoding=\"utf-8\") để ghi chuỗi data, flush, seek(0) rồi đọc. Sau khi rời with, trả {\"text\": nội dung đọc, \"closed\": trạng thái đóng của file}. Không tạo file cố định trong thư mục làm việc."
+    "body": "Dùng tempfile.TemporaryFile(mode=\"w+t\", encoding=\"utf-8\") để ghi chuỗi data, flush, seek(0) rồi đọc. Sau khi rời with, trả {\"text\": nội dung đọc, \"closed\": trạng thái đóng của file}. Không tạo file cố định trong thư mục làm việc.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "'ready'"
+     },
+     {
+      "label": "trả về",
+      "value": "{'text': 'ready', 'closed': True}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import tempfile\ndef solve(data):\n    with tempfile.TemporaryFile(mode='w+t', encoding='utf-8') as f:\n        f.write(data)\n        f.flush()\n        f.seek(0)\n        text = f.read()\n    return {'text': text, 'closed': f.closed}\n",

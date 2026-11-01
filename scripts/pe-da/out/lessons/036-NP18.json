@@ -159,7 +159,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận so_coc là bảng số lượng đơn hàng và price là dãy giá theo đúng thứ tự cột. Trả bảng tiền từng sản phẩm trong mỗi đơn, chưa cộng thành tổng đơn."
+    "body": "Viết solve(data) nhận so_coc là bảng số lượng đơn hàng và price là dãy giá theo đúng thứ tự cột. Trả bảng tiền từng sản phẩm trong mỗi đơn, chưa cộng thành tổng đơn.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'so_coc': [[2, 1], [0, 3]], 'price': [5, 8]}"
+     },
+     {
+      "label": "trả về",
+      "value": "[[10, 8], [0, 24]]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    so_coc = np.array(data[\"so_coc\"])\n    price = np.array(data[\"price\"])\n    return so_coc * price\n",

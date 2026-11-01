@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.values chứa số hoặc None. Tạo Series kiểu Float64. Trả known là các số không thiếu, missing là số ô thiếu, mean là trung bình hoặc None nếu chưa có số nào."
+    "body": "data.values chứa số hoặc None. Tạo Series kiểu Float64. Trả known là các số không thiếu, missing là số ô thiếu, mean là trung bình hoặc None nếu chưa có số nào.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [6, None, 12]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'known': [6.0, 12.0], 'missing': 1, 'mean': 9.0}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], dtype='Float64')\n     value = s.mean()\n     return {'known': s.dropna().astype(float).tolist(), 'missing': int(s.isna().sum()), 'mean': None if pd.isna(value) else float(value)}\n",

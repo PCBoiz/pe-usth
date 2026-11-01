@@ -168,7 +168,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "solve(data) nhận dictionary đường dẫn tương đối → nội dung, chỉ gồm tên an toàn như reports/a.txt, không có .. hay đường dẫn tuyệt đối. Tạo các file này trong TemporaryDirectory, dùng os.walk tìm mọi .txt, trả đường dẫn tương đối chuẩn dấu / theo thứ tự chữ cái. Hãy thực sự tạo và duyệt cây."
+    "body": "solve(data) nhận dictionary đường dẫn tương đối → nội dung, chỉ gồm tên an toàn như reports/a.txt, không có .. hay đường dẫn tuyệt đối. Tạo các file này trong TemporaryDirectory, dùng os.walk tìm mọi .txt, trả đường dẫn tương đối chuẩn dấu / theo thứ tự chữ cái. Hãy thực sự tạo và duyệt cây.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'a.txt': 'A', 'reports/b.txt': 'B', 'reports/c.csv': 'C'}"
+     },
+     {
+      "label": "trả về",
+      "value": "['a.txt', 'reports/b.txt']"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import os, tempfile\nfrom pathlib import Path\ndef solve(data):\n    with tempfile.TemporaryDirectory() as folder:\n        base = Path(folder)\n        for name, text in data.items():\n            path = base / name\n            path.parent.mkdir(parents=True, exist_ok=True)\n            path.write_text(text, encoding='utf-8')\n        found = []\n        for root, dirs, files in os.walk(base):\n            for name in files:\n                if name.endswith('.txt'): found.append((Path(root) / name).relative_to(base).as_posix())\n        return sorted(found)\n",

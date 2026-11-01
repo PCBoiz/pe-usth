@@ -109,7 +109,13 @@
 
 .io dd {
   margin: 0;
-  font-size: 12px;
+  /* 13px, KHÔNG 12px như `dt`. Khối này rỗng ở cả 130 bài cho tới 1/11/2026,
+     nên cỡ chữ của nó chưa bao giờ được xem cùng nội dung thật — và nội dung
+     thật là một dict lồng dài tới 280 ký tự (PD32) mà người học phải đọc đúng
+     từng tên khoá để viết được hàm. Đó là NỘI DUNG, không phải nhãn.
+     Nới đúng ô giá trị, giữ `dt` ở 12px: luật của AGENTS.md là nới chỗ có nội
+     dung chứ không nới tràn mọi cỡ nhỏ, kẻo mất thứ bậc. */
+  font-size: 13px;
   min-width: 0;
 }
 

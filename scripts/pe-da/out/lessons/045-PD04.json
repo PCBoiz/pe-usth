@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.revenue và data.cost là dictionary nhãn cửa hàng → số. Trừ hai Series theo nhãn. Trả dictionary lợi nhuận; nhãn chỉ có ở một bên phải có giá trị None, không tự điền 0."
+    "body": "data.revenue và data.cost là dictionary nhãn cửa hàng → số. Trừ hai Series theo nhãn. Trả dictionary lợi nhuận; nhãn chỉ có ở một bên phải có giá trị None, không tự điền 0.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'revenue': {'K': 90, 'L': 60}, 'cost': {'L': 10, 'K': 40}}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'K': 50.0, 'L': 50.0}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     revenue = pd.Series(data['revenue'], dtype=float)\n     cost = pd.Series(data['cost'], dtype=float)\n     profit = revenue - cost\n     return {key: None if pd.isna(value) else float(value) for key, value in profit.items()}\n",

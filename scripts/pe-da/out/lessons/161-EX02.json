@@ -139,7 +139,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Viết solve(data) nhận CSV name,mark với ít nhất một dòng. Dùng genfromtxt, khai báo name là U20 và mark là float, ndmin=1. Trả list dictionary {\"name\": tên, \"mark\": điểm}; ô điểm trống trả None. Giữ tên và thứ tự."
+    "body": "Viết solve(data) nhận CSV name,mark với ít nhất một dòng. Dùng genfromtxt, khai báo name là U20 và mark là float, ndmin=1. Trả list dictionary {\"name\": tên, \"mark\": điểm}; ô điểm trống trả None. Giữ tên và thứ tự.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "'name,mark\\nLan,8.5\\nMinh,7\\n'"
+     },
+     {
+      "label": "trả về",
+      "value": "[{'name': 'Lan', 'mark': 8.5}, {'name': 'Minh', 'mark': 7.0}]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import numpy as np\nfrom io import StringIO\ndef solve(data):\n    table = np.genfromtxt(StringIO(data), delimiter=',', names=True, dtype=[('name','U20'),('mark',float)], encoding='utf-8', ndmin=1)\n    return [{'name':str(row['name']), 'mark':None if np.isnan(row['mark']) else float(row['mark'])} for row in table]\n",

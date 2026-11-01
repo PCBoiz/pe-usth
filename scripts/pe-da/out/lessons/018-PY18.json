@@ -157,7 +157,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận list chuỗi số. Trả list cùng độ dài, đổi từng chuỗi hợp lệ bằng float và thay chuỗi không chuyển được bằng None. Đầu vào không chứa chuỗi NaN hoặc vô cực."
+    "body": "Viết solve(data) nhận list chuỗi số. Trả list cùng độ dài, đổi từng chuỗi hợp lệ bằng float và thay chuỗi không chuyển được bằng None. Đầu vào không chứa chuỗi NaN hoặc vô cực.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "['1', '', '3.5']"
+     },
+     {
+      "label": "trả về",
+      "value": "[1.0, None, 3.5]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "def solve(data):\n    values = []\n    for raw in data:\n        try:\n            values.append(float(raw))\n        except ValueError:\n            values.append(None)\n    return values\n",

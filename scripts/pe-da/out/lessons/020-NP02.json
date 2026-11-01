@@ -166,7 +166,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận list giá không rỗng. Tạo array rồi trả giá cuối cùng. Đừng cố định một chỉ số dương vì các list có độ dài khác nhau."
+    "body": "Viết solve(data) nhận list giá không rỗng. Tạo array rồi trả giá cuối cùng. Đừng cố định một chỉ số dương vì các list có độ dài khác nhau.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[18, 27, 35]"
+     },
+     {
+      "label": "trả về",
+      "value": "35"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    prices = np.array(data)\n    return prices[-1]\n",

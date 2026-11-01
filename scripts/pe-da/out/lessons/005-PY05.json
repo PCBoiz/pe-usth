@@ -197,7 +197,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Hệ thống cung cấp quantity là số sản phẩm trong một gói. Mỗi sản phẩm giá 12, phí giao mỗi gói là 3. Gán tổng tiền vào total, kể cả gói có quantity bằng 0 vẫn có phí giao."
+    "body": "Hệ thống cung cấp quantity là số sản phẩm trong một gói. Mỗi sản phẩm giá 12, phí giao mỗi gói là 3. Gán tổng tiền vào total, kể cả gói có quantity bằng 0 vẫn có phí giao.",
+    "io": [
+     {
+      "label": "quantity =",
+      "value": "4"
+     },
+     {
+      "label": "total =",
+      "value": "51"
+     }
+    ]
    },
    "starterCode": "# Hệ thống cung cấp quantity là số sản phẩm trong một gói.\n# Hệ thống cung cấp quantity; gán kết quả vào total.\n",
    "solutionCode": "total = quantity * 12 + 3\n",

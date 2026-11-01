@@ -51,11 +51,11 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | **33 bộ, 472 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
-| Backend lint | 223 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
+| Backend test | **33 bộ, 478 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
+| Backend lint | 222 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **463 ca** / 35 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **466 ca** / 35 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **130 bài tập được chấm / 433 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
@@ -73,7 +73,7 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 463 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 466 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · consent-banner 15 · course-resume 8 ·
 data-files 18 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
@@ -81,9 +81,10 @@ ide-trace 38 · inline-code 3 · insert-gate-sync 2 · label-version 2 ·
 learning-events 48 · lesson-back 7 · lesson-load 7 · mcq-code 9 ·
 mcq-next-after-wrong 23 · practice-contract 15 · prewarm-gate 5 · read-diagram 12 ·
 read-guess 16 · read-trace 15 · read-try-it 20 · review-quiz 33 · run-stale 15 ·
-session-marker 5 · studio-lesson 41 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 = 463.
-Mốc trước là 435; thêm read-guess 16 (CỔNG DỰ ĐOÁN ở màn đọc — 301 khối code in sẵn
+session-marker 5 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
+worker-csp 7 = 466.
+Mốc trước là 463; thêm studio-lesson 41 → 44 (Ô VÍ DỤ ĐẦU VÀO/ĐẦU RA).
+Trước đó 435 → 463; thêm read-guess 16 (CỔNG DỰ ĐOÁN ở màn đọc — 262 khối code in sẵn
 kết quả nay đòi gõ dự đoán trước khi mở) và review-quiz 21 → 33 (tải lại trang giữa đề
 không còn mất đề — `GET quizzes/:id` nay có người gọi, xem bẫy cuối file).
 Trước đó 434 → 435 là practice-contract 14 → 15 (CỔNG LUYỆN TẬP).
@@ -1442,6 +1443,60 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   nó bó TUỔI của đề (pool lớn dần theo số bài xong) chứ không bó độ rảnh của người học.
   `review-quiz.test.mjs` 21 → 33 ca.
   **8/11 route của `quizzes.controller.ts` vẫn CHƯA có đường tới.**
+
+- **130 bài có ca chấm, 0 bài nói ra `data` trông như thế nào — nay cả 130 đều nói.**
+  `SandboxScreen.tsx` dựng `<dl className={c.io}>` từ `step_4.task.io` và **0/130 bài phát
+  ra khoá đó**: renderer dựng sẵn, không ai đi qua. Lần thứ MƯỜI của hình dạng lỗi này.
+  Cái giá không phải thẩm mỹ: 87/130 bài giao đúng `def solve(data): pass`, và với PD01 thì
+  `data` là `{'values': …, 'labels': …, 'pick': …}` phải trả `{'selected': …, 'total': …,
+  'count': …}` — **SÁU tên khoá mà không câu văn nào nói ra hết**, nên người học đoán tên
+  khoá cho tới khi bộ chấm chịu. Nay `vi_du_io()` trong build.py sinh ô ví dụ từ **ca chấm
+  ĐẦU TIÊN**: 130/130 bài, 0 bài bị bỏ.
+  **`repr` CỦA PYTHON, KHÔNG `json.dumps`.** Hai thứ khác nhau ở đúng chỗ người học sẽ gõ
+  lại: JSON viết `true/false/null` và bắt buộc nháy kép. Dán một giá trị JSON vào ô đề của
+  bài Python là dạy sai cú pháp ngay trong đề bài. Và vì harness nạp ca chấm từ JSON rồi
+  truyền thẳng vào namespace, `repr` của giá trị ĐÃ NẠP chính là thứ `print(data)` in ra —
+  không phải một bản mô tả gần đúng. Có ca test quét cả 260 giá trị tìm ba từ khoá JSON.
+  **NHÃN LẤY TỪ HỢP ĐỒNG.** Bài `mode: "script"` (12 bài) thì người học phải ĐỌC một biến và
+  GÁN một biến, nên nhãn là chính tên hai biến đó (`raw =` / `total =`, đo được 6 tên khác
+  nhau). Nhãn "Đầu vào"/"Kết quả" bắt họ tra lại đề để biết gán vào đâu — đúng việc ô này ra
+  đời để khỏi phải làm. `kiem_vi_du_io` đối chiếu nhãn với `contract.inputVariable`.
+  **GIÁ PHẢI TRẢ, CÓ CHỦ ĐÍCH, VÀ NÓ ĐÃ ĐƯỢC CANH SẴN:** ô này công bố luôn `expected` của
+  ca 1, nên `return <hằng của ca 1>` đạt đúng 1 ca. Đó KHÔNG phải lỗ mới mở — `traHang()` ở
+  pha 2 của `check-practice.mjs` đã sinh đúng biến thể ấy từ trước và đòi nó TRƯỢT mọi ca có
+  `expected` khác. Đã đo: **0/130 bài có mọi ca cùng một `expected`** (89 bài 3 ca, 39 bài
+  4 ca, 2 bài 5 ca), nên hằng của ca 1 luôn trượt ít nhất 2 ca. Người học chưa viết gì vẫn
+  thấy 1 ca xanh, đúng như file này đã ghi nhận cho khung trống.
+  **Ô ví dụ là chữ sinh ra từ dữ liệu, nên nó TRÔI ĐƯỢC** — cùng họ với "sơ đồ đã trôi khỏi
+  bài" và `codeHash` của bảng từng bước. Hình dạng hỏng: nguồn đổi ca chấm 1 mà ô ví dụ giữ
+  giá trị cũ, và người học viết code theo một đầu vào bộ chấm không bao giờ truyền; không
+  exception nào ném, bảng ca chấm chỉ nói "Chưa đúng". `kiem_vi_du_io()` so `value` với
+  `repr` của CHÍNH ca chấm trong bản dựng.
+  **NHÃN PHẢI DUY NHẤT, và lý do là React:** renderer dùng `row.label` làm key, nên hai nhãn
+  giống nhau là một hàng biến mất lặng lẽ. Canh ở CẢ BA chỗ (build, check.py, schema).
+  **BA CHỖ, và ablate cho thấy vì sao phải cả ba.** Gỡ `vi_du_io` ra: build chỉ in một dòng
+  LƯU Ý rồi **exit 0**, `check.py` **im lặng hoàn toàn** (luật của nó mở đầu bằng "không có
+  io thì bỏ qua"), và chỉ bộ test frontend đỏ. Một cổng in lưu ý rồi đi tiếp không phải cổng,
+  nó là chú thích. Nên `vi_du_io` nay trả **(hàng, LÝ DO)** — đúng khuôn `bai_tap_cua` đã
+  dùng trong cùng file — và `main()` `return 1` khi một bài thiếu ô ví dụ mà KHÔNG nói được
+  vì sao. Hai bên của cổng đều đã đo: ablate hàm → build exit **1**; hạ `IO_MAX_KY_TU` xuống
+  20 → 100 bài bỏ kèm lý do, build exit **0**.
+  `_ly_do_io` là chỉ dấu của khâu dựng, KHÔNG phải nội dung bài — `main()` bóc nó ra trước
+  khi ghi, và có phép đếm xác nhận 0 lần sót trong `out/lessons.json`.
+  **Trần `IO_MAX_KY_TU = 320` hôm nay KHÔNG loại bài nào** (dài nhất là PD32, 280 ký tự —
+  ba đơn hàng lồng trong một bảng tra, và đó đúng là bài khó đoán nhất nên bỏ nó là bỏ sai
+  chỗ). Vậy nó canh gì: `.io code` có `overflow-wrap: anywhere` nên giá trị dài chỉ NGẮT
+  DÒNG, không tràn ngang — tức một fixture 5 000 ký tự không làm vỡ layout, nó chỉ đẩy ô
+  soạn mã xuống dưới ba màn cuộn, và đó là kiểu hỏng không ai báo.
+  **`.io dd` nới 12px → 13px, và đây KHÔNG phải "nới tràn mọi cỡ nhỏ".** Khối này rỗng ở cả
+  130 bài từ đầu, nên cỡ chữ của nó chưa bao giờ được xem cùng nội dung thật — mà nội dung
+  thật là một dict lồng 280 ký tự phải đọc đúng từng tên khoá. Đó là NỘI DUNG. `dt` giữ 12px
+  vì nó là nhãn, đúng luật đã ghi ở bẫy "chữ quá nhỏ".
+  **Ablate:** đổi một `value` → 1 lỗi check.py nói rõ đã trôi · nhãn trùng → 1 · hàng thiếu
+  `value` → 1 · còn 1 hàng → 1 · bỏ luật ở schema → **4 ca Jest đỏ** · gỡ `vi_du_io` →
+  2 ca frontend đỏ + build exit 1.
+  **CHƯA TỚI NGƯỜI HỌC cho tới khi nạp DB** — nội dung bài đọc từ DB, không từ `out/`.
+  `--all --offline` đã sạch: 179 bài, 0 từ chối.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

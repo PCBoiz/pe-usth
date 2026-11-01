@@ -161,7 +161,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Report.render() trả \"Report\". Tạo SummaryReport nhận title; render của lớp con thêm \": \" và title vào kết quả super(). solve(data) nhận list tiêu đề, trả list nội dung báo cáo."
+    "body": "Report.render() trả \"Report\". Tạo SummaryReport nhận title; render của lớp con thêm \": \" và title vào kết quả super(). solve(data) nhận list tiêu đề, trả list nội dung báo cáo.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "['stock', 'orders']"
+     },
+     {
+      "label": "trả về",
+      "value": "['Report: stock', 'Report: orders']"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "class Report:\n    def render(self): return 'Report'\nclass SummaryReport(Report):\n    def __init__(self, title): self.title = title\n    def render(self): return super().render() + ': ' + self.title\ndef solve(data): return [SummaryReport(title).render() for title in data]\n",

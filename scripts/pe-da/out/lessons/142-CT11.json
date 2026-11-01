@@ -144,7 +144,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Viết subclass TotalWorker nhận list số, khởi tạo lớp cha, đặt result=None rồi run gán sum(values). solve(data) tạo hai worker cho data[\"left\"] và data[\"right\"], start cả hai trước khi join, trả hai tổng theo thứ tự left/right."
+    "body": "Viết subclass TotalWorker nhận list số, khởi tạo lớp cha, đặt result=None rồi run gán sum(values). solve(data) tạo hai worker cho data[\"left\"] và data[\"right\"], start cả hai trước khi join, trả hai tổng theo thứ tự left/right.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'left': [1, 2], 'right': [5, 7]}"
+     },
+     {
+      "label": "trả về",
+      "value": "[3, 12]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import threading\nclass TotalWorker(threading.Thread):\n    def __init__(self, values):\n        super().__init__()\n        self.values = values\n        self.result = None\n    def run(self): self.result = sum(self.values)\ndef solve(data):\n    workers = [TotalWorker(data['left']), TotalWorker(data['right'])]\n    for worker in workers: worker.start()\n    for worker in workers: worker.join()\n    return [worker.result for worker in workers]\n",

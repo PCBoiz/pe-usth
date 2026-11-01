@@ -157,7 +157,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận dãy nhiệt độ. Trả mask đánh dấu những số đo từ 30°C trở lên. Giữ đủ số vị trí và thứ tự đầu vào."
+    "body": "Viết solve(data) nhận dãy nhiệt độ. Trả mask đánh dấu những số đo từ 30°C trở lên. Giữ đủ số vị trí và thứ tự đầu vào.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[29, 30, 32]"
+     },
+     {
+      "label": "trả về",
+      "value": "[False, True, True]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data) >= 30\n",

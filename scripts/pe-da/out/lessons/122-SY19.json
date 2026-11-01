@@ -187,7 +187,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "solve(data) nhận {\"codec\": \"zlib\" | \"gzip\" | \"bz2\" | \"lzma\", \"text\": chuỗi}. Chọn module tương ứng, encode UTF-8, compress rồi decompress; trả {\"restored\": văn bản khôi phục, \"same\": so sánh byte trước/sau}. Không chấm theo kích thước hay thời gian nén."
+    "body": "solve(data) nhận {\"codec\": \"zlib\" | \"gzip\" | \"bz2\" | \"lzma\", \"text\": chuỗi}. Chọn module tương ứng, encode UTF-8, compress rồi decompress; trả {\"restored\": văn bản khôi phục, \"same\": so sánh byte trước/sau}. Không chấm theo kích thước hay thời gian nén.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'codec': 'zlib', 'text': 'cà phê'}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'restored': 'cà phê', 'same': True}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import zlib, gzip, bz2, lzma\ndef solve(data):\n    codec = {'zlib':zlib, 'gzip':gzip, 'bz2':bz2, 'lzma':lzma}[data['codec']]\n    raw = data['text'].encode('utf-8')\n    restored = codec.decompress(codec.compress(raw))\n    return {'restored':restored.decode('utf-8'), 'same':restored == raw}\n",

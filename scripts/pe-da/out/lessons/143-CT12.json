@@ -212,7 +212,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "solve(data) nhận list số nguyên không âm, mỗi số là số lượt tăng của một worker. Tạo đúng một Lock và count chung; mỗi Thread tăng count từng lượt trong with lock. Start tất cả, join tất cả rồi trả count. Số lượt mỗi worker nhỏ để bài tập chạy nhanh."
+    "body": "solve(data) nhận list số nguyên không âm, mỗi số là số lượt tăng của một worker. Tạo đúng một Lock và count chung; mỗi Thread tăng count từng lượt trong with lock. Start tất cả, join tất cả rồi trả count. Số lượt mỗi worker nhỏ để bài tập chạy nhanh.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[15, 20, 7]"
+     },
+     {
+      "label": "trả về",
+      "value": "42"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import threading\ndef solve(data):\n    lock = threading.Lock()\n    shared = {'count':0}\n    def increment(times):\n        for _ in range(times):\n            with lock: shared['count'] += 1\n    workers = [threading.Thread(target=increment, args=(times,)) for times in data]\n    for thread in workers: thread.start()\n    for thread in workers: thread.join()\n    return shared['count']\n",

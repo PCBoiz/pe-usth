@@ -155,7 +155,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận dictionary có values là dãy số và columns là số cột. Các dãy đều chia vừa. Trả bảng xếp lần lượt theo hàng với đúng số cột được yêu cầu."
+    "body": "Viết solve(data) nhận dictionary có values là dãy số và columns là số cột. Các dãy đều chia vừa. Trả bảng xếp lần lượt theo hàng với đúng số cột được yêu cầu.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [1, 2, 3, 4, 5, 6], 'columns': 3}"
+     },
+     {
+      "label": "trả về",
+      "value": "[[1, 2, 3], [4, 5, 6]]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    values = np.array(data[\"values\"])\n    return values.reshape(-1, data[\"columns\"])\n",

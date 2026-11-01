@@ -340,7 +340,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Tạo JoinExporter(separator) có export(rows) nối các chuỗi và ReportService(exporter) có build(rows). solve(data) nhận {\"separator\": chuỗi, \"rows\": list chuỗi}, trả nội dung qua service. Dùng composition, không kế thừa JoinExporter trong service."
+    "body": "Tạo JoinExporter(separator) có export(rows) nối các chuỗi và ReportService(exporter) có build(rows). solve(data) nhận {\"separator\": chuỗi, \"rows\": list chuỗi}, trả nội dung qua service. Dùng composition, không kế thừa JoinExporter trong service.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'separator': ';', 'rows': ['A', 'B']}"
+     },
+     {
+      "label": "trả về",
+      "value": "'A;B'"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "class JoinExporter:\n    def __init__(self, separator): self.separator = separator\n    def export(self, rows): return self.separator.join(rows)\nclass ReportService:\n    def __init__(self, exporter): self.exporter = exporter\n    def build(self, rows): return self.exporter.export(rows)\ndef solve(data): return ReportService(JoinExporter(data['separator'])).build(data['rows'])\n",

@@ -147,7 +147,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Viết solve(data) nhận {\"date\": chuỗi YYYY-MM-DD, \"days\": số nguyên}, trả chuỗi ngày hẹn YYYY-MM-DD. Chỉ dùng ngày hợp lệ; days có thể âm."
+    "body": "Viết solve(data) nhận {\"date\": chuỗi YYYY-MM-DD, \"days\": số nguyên}, trả chuỗi ngày hẹn YYYY-MM-DD. Chỉ dùng ngày hợp lệ; days có thể âm.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'date': '2026-12-31', 'days': 1}"
+     },
+     {
+      "label": "trả về",
+      "value": "'2027-01-01'"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "from datetime import datetime, timedelta\ndef solve(data):\n    start = datetime.strptime(data['date'], '%Y-%m-%d')\n    return (start + timedelta(days=data['days'])).strftime('%Y-%m-%d')\n",

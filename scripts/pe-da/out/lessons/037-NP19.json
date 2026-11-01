@@ -159,7 +159,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận bảng giá không rỗng. Tạo array original, lấy tối đa hai giá đầu thành trial riêng rồi nhân đôi trial tại chỗ. Trả dictionary original và trial để chứng minh bản gốc còn nguyên."
+    "body": "Viết solve(data) nhận bảng giá không rỗng. Tạo array original, lấy tối đa hai giá đầu thành trial riêng rồi nhân đôi trial tại chỗ. Trả dictionary original và trial để chứng minh bản gốc còn nguyên.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[8, 12, 20]"
+     },
+     {
+      "label": "trả về",
+      "value": "{'original': [8, 12, 20], 'trial': [16, 24]}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    original = np.array(data)\n    trial = original[:2].copy()\n    trial *= 2\n    return {\"original\": original, \"trial\": trial}\n",

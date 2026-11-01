@@ -197,7 +197,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "solve(data) nhận văn bản gồm nhiều dòng đơn hàng. Dùng StringIO để đọc từng dòng; trả list dòng bắt đầu đúng \"PAID:\" và bỏ newline cuối dòng. Không giữ dòng UNPAID: hay khoảng trắng đầu dòng."
+    "body": "solve(data) nhận văn bản gồm nhiều dòng đơn hàng. Dùng StringIO để đọc từng dòng; trả list dòng bắt đầu đúng \"PAID:\" và bỏ newline cuối dòng. Không giữ dòng UNPAID: hay khoảng trắng đầu dòng.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "'PAID:12\\nUNPAID:13\\nPAID:14\\n'"
+     },
+     {
+      "label": "trả về",
+      "value": "['PAID:12', 'PAID:14']"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "from io import StringIO\ndef solve(data):\n    with StringIO(data) as f:\n        return [line.rstrip('\\r\\n') for line in f if line.startswith('PAID:')]\n",

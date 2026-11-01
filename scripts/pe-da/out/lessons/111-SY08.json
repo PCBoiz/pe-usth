@@ -147,7 +147,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Tạo Report(content) trả content qua render và UpperMixin.render() đổi kết quả super thành chữ hoa. Tạo LoudReport(UpperMixin, Report). solve(data) nhận list chuỗi, trả các nội dung viết hoa qua LoudReport."
+    "body": "Tạo Report(content) trả content qua render và UpperMixin.render() đổi kết quả super thành chữ hoa. Tạo LoudReport(UpperMixin, Report). solve(data) nhận list chuỗi, trả các nội dung viết hoa qua LoudReport.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "['daily sales']"
+     },
+     {
+      "label": "trả về",
+      "value": "['DAILY SALES']"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "class Report:\n    def __init__(self, content): self.content = content\n    def render(self): return self.content\nclass UpperMixin:\n    def render(self): return super().render().upper()\nclass LoudReport(UpperMixin, Report): pass\ndef solve(data): return [LoudReport(s).render() for s in data]\n",

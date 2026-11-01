@@ -126,7 +126,17 @@
   "step_4": {
    "task": {
     "title": "Đối chiếu một phép gom",
-    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên cột dùng làm khoá gom. Gom cột `money` theo cột đó rồi trả về dict ba khoá: `so_nhom` là số nhóm, `nhom_lon_nhat` là tên nhóm có tổng tiền lớn nhất, và `lech` là khoảng cách tuyệt đối giữa tổng các nhóm và tổng cả bảng, làm tròn sáu chữ số thập phân."
+    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên cột dùng làm khoá gom. Gom cột `money` theo cột đó rồi trả về dict ba khoá: `so_nhom` là số nhóm, `nhom_lon_nhat` là tên nhóm có tổng tiền lớn nhất, và `lech` là khoảng cách tuyệt đối giữa tổng các nhóm và tổng cả bảng, làm tròn sáu chữ số thập phân.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'cot': 'coffee_name'}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'so_nhom': 8, 'nhom_lon_nhat': 'Latte', 'lech': 0.0}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
    "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    tong = float(ban['money'].sum())\n    nhom = ban.groupby(data['cot'])['money'].sum()\n    return {'so_nhom': int(nhom.size),\n            'nhom_lon_nhat': str(nhom.idxmax()),\n            'lech': round(abs(float(nhom.sum()) - tong), 6)}\n",

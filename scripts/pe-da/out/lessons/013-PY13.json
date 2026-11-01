@@ -157,7 +157,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Hệ thống cung cấp codes là list mã phiếu, có thể bị lặp. Tạo unique_codes là list mã khác nhau đã xếp tăng theo tên."
+    "body": "Hệ thống cung cấp codes là list mã phiếu, có thể bị lặp. Tạo unique_codes là list mã khác nhau đã xếp tăng theo tên.",
+    "io": [
+     {
+      "label": "codes =",
+      "value": "['B', 'A', 'B']"
+     },
+     {
+      "label": "unique_codes =",
+      "value": "['A', 'B']"
+     }
+    ]
    },
    "starterCode": "# Hệ thống cung cấp codes là list mã phiếu, có thể bị lặp.\n# Hệ thống cung cấp codes; gán kết quả vào unique_codes.\n",
    "solutionCode": "unique_codes = sorted(set(codes))\n",

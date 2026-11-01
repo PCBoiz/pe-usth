@@ -154,7 +154,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.names và data.values là các phần của cùng tổng dương, giá trị không âm. Vẽ pie với labels và autopct=\"%.0f%%\". Trả names là chữ của labels và percentages là chữ phần trăm của kết quả ax.pie. Không tự đổi dữ liệu sang phần của hai tổng khác nhau. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.names và data.values là các phần của cùng tổng dương, giá trị không âm. Vẽ pie với labels và autopct=\"%.0f%%\". Trả names là chữ của labels và percentages là chữ phần trăm của kết quả ax.pie. Không tự đổi dữ liệu sang phần của hai tổng khác nhau. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'names': ['Book', 'Pen'], 'values': [3, 1]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'names': ['Book', 'Pen'], 'percentages': ['75%', '25%']}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     wedges, labels, percentages = ax.pie(data['values'],labels=data['names'],autopct='%.0f%%')\n     result = {'names':[t.get_text() for t in labels],'percentages':[t.get_text() for t in percentages]}\n     plt.close(fig)\n     return result\n",

@@ -147,7 +147,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Hệ thống cung cấp serial là chuỗi mã kiện hàng. Gán tối đa bốn ký tự cuối vào suffix. Với mã ngắn hơn bốn ký tự, giữ cả mã."
+    "body": "Hệ thống cung cấp serial là chuỗi mã kiện hàng. Gán tối đa bốn ký tự cuối vào suffix. Với mã ngắn hơn bốn ký tự, giữ cả mã.",
+    "io": [
+     {
+      "label": "serial =",
+      "value": "'BOX-2048'"
+     },
+     {
+      "label": "suffix =",
+      "value": "'2048'"
+     }
+    ]
    },
    "starterCode": "# Hệ thống cung cấp serial là chuỗi mã kiện hàng.\n# Hệ thống cung cấp serial; gán kết quả vào suffix.\n",
    "solutionCode": "suffix = serial[-4:]\n",

@@ -165,7 +165,17 @@
   "step_4": {
    "task": {
     "title": "Đếm bảng theo một cột",
-    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên một cột của bảng. Trả về dict hai khoá: `so_hang` là số dòng của cả bảng, `so_gia_tri` là số giá trị khác nhau của cột đó. Cả hai là số nguyên."
+    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `cot` mang tên một cột của bảng. Trả về dict hai khoá: `so_hang` là số dòng của cả bảng, `so_gia_tri` là số giá trị khác nhau của cột đó. Cả hai là số nguyên.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'cot': 'coffee_name'}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'so_hang': 2623, 'so_gia_tri': 8}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
    "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    return {'so_hang': int(len(ban)),\n            'so_gia_tri': int(ban[data['cot']].nunique())}\n",

@@ -206,7 +206,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.rows là các đơn với channel và amount (đã biết, mỗi hàng là một đơn). Trả dictionary mỗi channel chứa count, mean, median. Cần có số quan sát bên cạnh các số tóm tắt, không suy ra nhân quả."
+    "body": "data.rows là các đơn với channel và amount (đã biết, mỗi hàng là một đơn). Trả dictionary mỗi channel chứa count, mean, median. Cần có số quan sát bên cạnh các số tóm tắt, không suy ra nhân quả.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [{'channel': 'app', 'amount': 4}, {'channel': 'app', 'amount': 8}, {'channel': 'store', 'amount': 20}]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'app': {'count': 2, 'mean': 6.0, 'median': 6.0}, 'store': {'count': 1, 'mean': 20.0, 'median': 20.0}}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     return df.groupby('channel')['amount'].agg(['count','mean','median']).to_dict('index')\n",

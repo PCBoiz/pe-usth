@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.ordered và data.delivered là hai list chuỗi %d/%m/%Y hoặc chuỗi sai. Chuyển với errors=\"coerce\", trừ ngày giao cho ngày đặt. Trả list số ngày trọn; cặp chứa ngày sai trả None. Không tự cộng thêm ngày đầu."
+    "body": "data.ordered và data.delivered là hai list chuỗi %d/%m/%Y hoặc chuỗi sai. Chuyển với errors=\"coerce\", trừ ngày giao cho ngày đặt. Trả list số ngày trọn; cặp chứa ngày sai trả None. Không tự cộng thêm ngày đầu.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'ordered': ['28/02/2026'], 'delivered': ['02/03/2026']}"
+     },
+     {
+      "label": "trả về",
+      "value": "[2]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     ordered = pd.to_datetime(pd.Series(data['ordered']), format='%d/%m/%Y', errors='coerce')\n     delivered = pd.to_datetime(pd.Series(data['delivered']), format='%d/%m/%Y', errors='coerce')\n     days = (delivered - ordered).dt.days\n     return [None if pd.isna(v) else int(v) for v in days]\n",

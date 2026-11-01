@@ -143,7 +143,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận names và amounts cùng độ dài. Trả names và amounts đã xếp tăng theo amounts; hai giá trị bằng nhau giữ thứ tự ban đầu. Không tách tên khỏi số tiền."
+    "body": "Viết solve(data) nhận names và amounts cùng độ dài. Trả names và amounts đã xếp tăng theo amounts; hai giá trị bằng nhau giữ thứ tự ban đầu. Không tách tên khỏi số tiền.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'names': ['A', 'B', 'C'], 'amounts': [30, 10, 20]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'names': ['B', 'C', 'A'], 'amounts': [10, 20, 30]}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    names = np.array(data[\"names\"])\n    amounts = np.array(data[\"amounts\"])\n    order = np.argsort(amounts, kind=\"stable\")\n    return {\"names\": names[order], \"amounts\": amounts[order]}\n",

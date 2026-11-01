@@ -162,7 +162,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.values đều dương. Vẽ một đường, đặt yscale=\"log\", ẩn spine top. Trả scale=get_yscale(), topVisible=get_visible() của viền trên, values đọc từ đường. Việc đổi thang không được log-transform dãy trước khi truyền plot. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.values đều dương. Vẽ một đường, đặt yscale=\"log\", ẩn spine top. Trả scale=get_yscale(), topVisible=get_visible() của viền trên, values đọc từ đường. Việc đổi thang không được log-transform dãy trước khi truyền plot. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [2, 20, 200]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'scale': 'log', 'topVisible': False, 'values': [2.0, 20.0, 200.0]}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     line, = ax.plot(data['values'])\n     ax.set_yscale('log')\n     ax.spines['top'].set_visible(False)\n     result = {'scale':ax.get_yscale(),'topVisible':ax.spines['top'].get_visible(),'values':[float(v) for v in line.get_ydata()]}\n     plt.close(fig)\n     return result\n",

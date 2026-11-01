@@ -153,7 +153,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Hệ thống cung cấp city là tên địa điểm. Tạo report gồm dòng đầu \"Bao cao \" nối city, dòng sau đúng ba dấu gạch ngang. Giữ nguyên dấu và chữ hoa của city."
+    "body": "Hệ thống cung cấp city là tên địa điểm. Tạo report gồm dòng đầu \"Bao cao \" nối city, dòng sau đúng ba dấu gạch ngang. Giữ nguyên dấu và chữ hoa của city.",
+    "io": [
+     {
+      "label": "city =",
+      "value": "'Hue'"
+     },
+     {
+      "label": "report =",
+      "value": "'Bao cao Hue\\n---'"
+     }
+    ]
    },
    "starterCode": "# Hệ thống cung cấp city là tên địa điểm.\n# Hệ thống cung cấp city; gán kết quả vào report.\n",
    "solutionCode": "report = \"Bao cao \" + city + \"\\n\" + \"-\" * 3\n",

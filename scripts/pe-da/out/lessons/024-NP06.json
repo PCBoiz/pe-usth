@@ -155,7 +155,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận list các hàng số liệu có cùng số cột. Trả array hai chiều giữ nguyên thứ tự hàng và cột. Mỗi hàng là một trạm đo."
+    "body": "Viết solve(data) nhận list các hàng số liệu có cùng số cột. Trả array hai chiều giữ nguyên thứ tự hàng và cột. Mỗi hàng là một trạm đo.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[[2, 4, 6], [1, 3, 5]]"
+     },
+     {
+      "label": "trả về",
+      "value": "[[2, 4, 6], [1, 3, 5]]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data)\n",

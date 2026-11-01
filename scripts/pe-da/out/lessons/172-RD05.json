@@ -149,7 +149,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận bảng các mẫu bootstrap đã lấy, mỗi hàng là một mẫu thời gian giao hàng. Trả means là trung bình mỗi hàng và interval là hai phân vị 2.5%,97.5% của các trung bình. Các hàng đều có cùng số cột và không thiếu dữ liệu."
+    "body": "Viết solve(data) nhận bảng các mẫu bootstrap đã lấy, mỗi hàng là một mẫu thời gian giao hàng. Trả means là trung bình mỗi hàng và interval là hai phân vị 2.5%,97.5% của các trung bình. Các hàng đều có cùng số cột và không thiếu dữ liệu.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[[10, 20], [20, 20], [10, 10]]"
+     },
+     {
+      "label": "trả về",
+      "value": "{'means': [15.0, 20.0, 10.0], 'interval': [10.25, 19.75]}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    samples = np.array(data, dtype=float)\n    means = samples.mean(axis=1)\n    interval = np.quantile(means, [0.025, 0.975])\n    return {\"means\": means, \"interval\": interval}\n",

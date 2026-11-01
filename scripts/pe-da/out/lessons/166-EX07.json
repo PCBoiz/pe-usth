@@ -288,7 +288,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Viết solve(data) nhận mã nguồn dạng chuỗi. Chỉ compile mã ở chế độ exec, không thực thi. Nếu hợp lệ trả \"valid\"; nếu TabError trả \"TabError\"; nếu IndentationError khác trả \"IndentationError\"; SyntaxError khác trả \"SyntaxError\". Bắt TabError trước IndentationError vì nó là lớp con."
+    "body": "Viết solve(data) nhận mã nguồn dạng chuỗi. Chỉ compile mã ở chế độ exec, không thực thi. Nếu hợp lệ trả \"valid\"; nếu TabError trả \"TabError\"; nếu IndentationError khác trả \"IndentationError\"; SyntaxError khác trả \"SyntaxError\". Bắt TabError trước IndentationError vì nó là lớp con.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "'if True:\\n    print(1)\\n'"
+     },
+     {
+      "label": "trả về",
+      "value": "'valid'"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "def solve(data):\n    try:\n        compile(data,'submission.py','exec')\n    except TabError:\n        return 'TabError'\n    except IndentationError:\n        return 'IndentationError'\n    except SyntaxError:\n        return 'SyntaxError'\n    return 'valid'\n",

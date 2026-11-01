@@ -199,7 +199,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.days là số ngày khác nhau, data.sales là số hoặc None theo cùng vị trí. Sắp cặp theo ngày, dùng np.nan cho None, vẽ line chart. Trả x và y đọc từ line.get_xdata()/get_ydata(); trong kết quả JSON đổi NaN trở lại None. Giữ nguyên ngày chưa đo, không nối bằng cách xóa hàng. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.days là số ngày khác nhau, data.sales là số hoặc None theo cùng vị trí. Sắp cặp theo ngày, dùng np.nan cho None, vẽ line chart. Trả x và y đọc từ line.get_xdata()/get_ydata(); trong kết quả JSON đổi NaN trở lại None. Giữ nguyên ngày chưa đo, không nối bằng cách xóa hàng. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'days': [4, 1, 2], 'sales': [6, 9, 7]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'x': [1, 2, 4], 'y': [9.0, 7.0, 6.0]}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     pairs = sorted(zip(data['days'],data['sales']))\n     x = [row[0] for row in pairs]\n     y = [np.nan if row[1] is None else row[1] for row in pairs]\n     fig, ax = plt.subplots()\n     line, = ax.plot(x,y,marker='o')\n     result = {'x':[int(v) for v in line.get_xdata()], 'y':[None if not np.isfinite(v) else float(v) for v in line.get_ydata()]}\n     plt.close(fig)\n     return result\n",

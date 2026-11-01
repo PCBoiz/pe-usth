@@ -159,7 +159,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận dãy nhiệt độ. Trả array các số từ 20 đến 35°C, nhận cả hai biên và giữ nguyên thứ tự."
+    "body": "Viết solve(data) nhận dãy nhiệt độ. Trả array các số từ 20 đến 35°C, nhận cả hai biên và giữ nguyên thứ tự.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[18, 20, 28, 35, 37]"
+     },
+     {
+      "label": "trả về",
+      "value": "[20, 28, 35]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    temps = np.array(data)\n    valid = (temps >= 20) & (temps <= 35)\n    return temps[valid]\n",

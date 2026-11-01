@@ -286,7 +286,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "solve(data) nhận {\"marks\": list điểm, \"credits\": list tín chỉ cùng độ dài}. Dữ liệu hợp lệ, tín chỉ dương. Trả GPA theo tín chỉ; nếu cả hai list rỗng, trả None. Không làm tròn điểm trước tính trong bài này."
+    "body": "solve(data) nhận {\"marks\": list điểm, \"credits\": list tín chỉ cùng độ dài}. Dữ liệu hợp lệ, tín chỉ dương. Trả GPA theo tín chỉ; nếu cả hai list rỗng, trả None. Không làm tròn điểm trước tính trong bài này.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'marks': [9, 5], 'credits': [1, 3]}"
+     },
+     {
+      "label": "trả về",
+      "value": "6.0"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    if not data['marks']: return None\n    marks = np.asarray(data['marks'], dtype=float)\n    credits = np.asarray(data['credits'], dtype=float)\n    return float((marks * credits).sum() / credits.sum())\n",

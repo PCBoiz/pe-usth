@@ -157,6 +157,72 @@ describe('validateStudioLesson — lý thuyết + hình (step_1.theory / step_1.
   });
 });
 
+describe('validateStudioLesson — ô ví dụ đầu vào/đầu ra (step_4.task.io)', () => {
+  // Khối này rỗng ở cả 130 bài có ca chấm cho tới 1/11/2026 — renderer
+  // `<dl className={c.io}>` dựng sẵn từ lâu mà không bài nào phát ra `task.io`.
+  // Nay build.py sinh nó từ ca chấm ĐẦU TIÊN, và đây là cửa duy nhất vào DB,
+  // nên hình dạng phải được canh ở đây: renderer dùng `row.label` làm React
+  // key, nên nhãn thiếu hay nhãn trùng là một hàng mất lặng lẽ, không exception.
+  const voiIo = (io_: unknown) => ({
+    title: 'PD01 · Chọn theo nhãn',
+    step_1: { read: [[{ type: 'paragraph', text: 'x' }]] },
+    step_4: {
+      starterCode: 'def solve(data):\n    pass\n',
+      task: { title: 'Tự viết', body: 'Trả về dict.', io: io_ },
+      tests: [{ name: 'ca 1', input: { a: 1 }, expected: { b: 2 } }],
+    },
+  });
+
+  it('nhận ô ví dụ đủ hai hàng', () => {
+    expect(
+      validateStudioLesson(
+        voiIo([
+          { label: 'data =', value: "{'a': 1}" },
+          { label: 'trả về', value: "{'b': 2}" },
+        ]),
+      ),
+    ).toEqual([]);
+  });
+
+  it('TỪ CHỐI hàng thiếu nhãn — nhãn là React key của renderer', () => {
+    const errors = validateStudioLesson(
+      voiIo([{ value: "{'a': 1}" }, { label: 'trả về', value: "{'b': 2}" }]),
+    );
+    expect(errors.join(' ')).toContain('step_4.task.io[0].label');
+  });
+
+  it('TỪ CHỐI hai hàng cùng nhãn — hàng sau sẽ biến mất', () => {
+    const errors = validateStudioLesson(
+      voiIo([
+        { label: 'data =', value: "{'a': 1}" },
+        { label: 'data =', value: "{'b': 2}" },
+      ]),
+    );
+    expect(errors.join(' ')).toContain('trùng hàng trước');
+  });
+
+  it('TỪ CHỐI hàng thiếu giá trị ví dụ', () => {
+    const errors = validateStudioLesson(
+      voiIo([{ label: 'data =' }, { label: 'trả về', value: "{'b': 2}" }]),
+    );
+    expect(errors.join(' ')).toContain('step_4.task.io[0].value');
+  });
+
+  it('TỪ CHỐI khoá `io` rỗng — có khoá mà không có hàng nào', () => {
+    // Build chỉ phát `io` khi dựng được, nên một mảng rỗng tới được đây nghĩa
+    // là ai đó dựng `task` bằng tay (đường nhập PDF/MD) và để lại khoá trống.
+    expect(validateStudioLesson(voiIo([])).join(' ')).toContain(
+      'không có hàng nào',
+    );
+  });
+
+  it('bài KHÔNG có `io` vẫn hợp lệ — 14 bài không chấm được không có ô ví dụ', () => {
+    const bai = voiIo([]) as { step_4: { task: Record<string, unknown> } };
+    delete bai.step_4.task.io;
+    expect(validateStudioLesson(bai)).toEqual([]);
+  });
+});
+
 describe('validateStudioLesson — hai hợp đồng ca chấm', () => {
   // Bộ xác thực này là CỬA DUY NHẤT đưa nội dung vào DB
   // (scripts/update-lesson-content.ts gọi nó). Bản đầu chỉ biết hợp đồng

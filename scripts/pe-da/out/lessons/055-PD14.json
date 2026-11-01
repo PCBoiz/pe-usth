@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.rows có quay và so_coc. Quy ước quay thiếu được ghi là \"Unknown\". Trả dictionary quay→tổng so_coc, gồm cả nhóm Unknown; so_coc đều là số."
+    "body": "data.rows có quay và so_coc. Quy ước quay thiếu được ghi là \"Unknown\". Trả dictionary quay→tổng so_coc, gồm cả nhóm Unknown; so_coc đều là số.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [{'quay': 'Q1', 'so_coc': 3}, {'quay': 'Q2', 'so_coc': 7}, {'quay': 'Q1', 'so_coc': 4}]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'Q1': 7, 'Q2': 7}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['quay','so_coc'])\n     df['quay'] = df['quay'].fillna('Unknown')\n     return df.groupby('quay')['so_coc'].sum().to_dict()\n",

@@ -154,7 +154,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.width,data.height là số inch dương, data.dpi là số nguyên dương. Tạo Figure đúng figsize, vẽ một đường bất kỳ, xuất PNG vào BytesIO không dùng bbox_inches=\"tight\". Dùng PIL.Image.open đọc size, trả [width_px,height_px]. Đóng Figure. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.width,data.height là số inch dương, data.dpi là số nguyên dương. Tạo Figure đúng figsize, vẽ một đường bất kỳ, xuất PNG vào BytesIO không dùng bbox_inches=\"tight\". Dùng PIL.Image.open đọc size, trả [width_px,height_px]. Đóng Figure. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'width': 4, 'height': 2, 'dpi': 120}"
+     },
+     {
+      "label": "trả về",
+      "value": "[480, 240]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom io import BytesIO\nfrom PIL import Image\n\ndef solve(data):\n     fig, ax = plt.subplots(figsize=(data['width'],data['height']))\n     ax.plot([0,1],[0,1])\n     buffer = BytesIO()\n     fig.savefig(buffer,format='png',dpi=data['dpi'])\n     buffer.seek(0)\n     result = list(Image.open(buffer).size)\n     plt.close(fig)\n     return result\n",

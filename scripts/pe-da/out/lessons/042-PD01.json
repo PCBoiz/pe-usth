@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Một rạp ghi số vé theo ca. data gồm values, labels và pick; nhãn là duy nhất và pick có trong labels. Tạo Series và trả dictionary có selected (số vé của nhãn pick), total (tổng vé), count (số ca)."
+    "body": "Một rạp ghi số vé theo ca. data gồm values, labels và pick; nhãn là duy nhất và pick có trong labels. Tạo Series và trả dictionary có selected (số vé của nhãn pick), total (tổng vé), count (số ca).",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [7, 12, 5], 'labels': ['AM', 'PM', 'Late'], 'pick': 'Late'}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'selected': 5, 'total': 24, 'count': 3}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], index=data['labels'])\n     return {'selected': int(s.loc[data['pick']]), 'total': int(s.sum()), 'count': len(s)}\n",

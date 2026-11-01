@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.rows có so_coc, don_gia; data.cap là doanh thu áp dụng cố định cho mọi hàng so_coc>=3. Tạo tong_tien=so_coc*don_gia, sửa tong_tien ở đúng các hàng đó bằng loc. Trả list tong_tien theo thứ tự hàng."
+    "body": "data.rows có so_coc, don_gia; data.cap là doanh thu áp dụng cố định cho mọi hàng so_coc>=3. Tạo tong_tien=so_coc*don_gia, sửa tong_tien ở đúng các hàng đó bằng loc. Trả list tong_tien theo thứ tự hàng.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [{'so_coc': 1, 'don_gia': 12}, {'so_coc': 4, 'don_gia': 20}], 'cap': 60}"
+     },
+     {
+      "label": "trả về",
+      "value": "[12, 60]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['so_coc','don_gia'])\n     df['tong_tien'] = df['so_coc'] * df['don_gia']\n     df.loc[df['so_coc'] >= 3, 'tong_tien'] = data['cap']\n     return df['tong_tien'].tolist()\n",

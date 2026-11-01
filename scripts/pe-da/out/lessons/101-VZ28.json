@@ -269,7 +269,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.z là ma trận, xEdges và yEdges có đúng số biên cho shading=\"flat\". Vẽ pcolormesh với vmin=0,vmax=data.maximum rồi thêm colorbar label=\"Temperature\". Trả shape từ mesh.get_array().shape, clim từ get_clim(), colorbarLabel từ colorbar.ax.get_ylabel(). Không coi các ô là điểm x/y riêng lẻ. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.z là ma trận, xEdges và yEdges có đúng số biên cho shading=\"flat\". Vẽ pcolormesh với vmin=0,vmax=data.maximum rồi thêm colorbar label=\"Temperature\". Trả shape từ mesh.get_array().shape, clim từ get_clim(), colorbarLabel từ colorbar.ax.get_ylabel(). Không coi các ô là điểm x/y riêng lẻ. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'z': [[1, 2, 3], [4, 5, 6]], 'xEdges': [0, 1, 2, 4], 'yEdges': [0, 2, 3], 'maximum': 10}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'shape': [2, 3], 'clim': [0.0, 10.0], 'colorbarLabel': 'Temperature'}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     mesh = ax.pcolormesh(data['xEdges'],data['yEdges'],data['z'],shading='flat',vmin=0,vmax=data['maximum'])\n     colorbar = fig.colorbar(mesh,ax=ax,label='Temperature')\n     result = {'shape':list(mesh.get_array().shape),'clim':list(mesh.get_clim()),'colorbarLabel':colorbar.ax.get_ylabel()}\n     plt.close(fig)\n     return result\n",

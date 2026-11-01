@@ -182,7 +182,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Ghi chú giao hàng chứa mã P và đúng bốn chữ số, đứng thành một từ riêng. Viết solve(data) nhận chuỗi, trả mã khớp đầu tiên hoặc None. Không nhận P12 hay P12345."
+    "body": "Ghi chú giao hàng chứa mã P và đúng bốn chữ số, đứng thành một từ riêng. Viết solve(data) nhận chuỗi, trả mã khớp đầu tiên hoặc None. Không nhận P12 hay P12345.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "'paid P2048 today'"
+     },
+     {
+      "label": "trả về",
+      "value": "'P2048'"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import re\ndef solve(data):\n    match = re.search(r'\\bP\\d{4}\\b', data)\n    return match.group(0) if match else None\n",

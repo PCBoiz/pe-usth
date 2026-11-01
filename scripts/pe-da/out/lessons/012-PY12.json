@@ -161,7 +161,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Hệ thống cung cấp stock là dictionary tồn kho theo mã sản phẩm. Gán amount bằng số lượng của P02, hoặc None nếu chưa có mã P02. Số lượng 0 phải được giữ nguyên."
+    "body": "Hệ thống cung cấp stock là dictionary tồn kho theo mã sản phẩm. Gán amount bằng số lượng của P02, hoặc None nếu chưa có mã P02. Số lượng 0 phải được giữ nguyên.",
+    "io": [
+     {
+      "label": "stock =",
+      "value": "{'P01': 2, 'P02': 7}"
+     },
+     {
+      "label": "amount =",
+      "value": "7"
+     }
+    ]
    },
    "starterCode": "# Hệ thống cung cấp stock là dictionary tồn kho theo mã sản phẩm.\n# Hệ thống cung cấp stock; gán kết quả vào amount.\n",
    "solutionCode": "amount = stock.get(\"P02\", None)\n",

@@ -259,7 +259,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Viết solve(data) nhận {\"marks\": list số, \"extra\": số}. Chụp snapshot của marks, tạo worker ghi snapshot vào snapshot.gz bằng gzip/pickle. Sau start, thêm extra vào dữ liệu hiện tại. join, nhận thông báo, đọc file thật và trả {\"saved\": điểm đã lưu, \"current\": điểm hiện tại, \"status\": \"done\"}. Worker gửi lỗi qua Queue; không giả lập file bằng dictionary."
+    "body": "Viết solve(data) nhận {\"marks\": list số, \"extra\": số}. Chụp snapshot của marks, tạo worker ghi snapshot vào snapshot.gz bằng gzip/pickle. Sau start, thêm extra vào dữ liệu hiện tại. join, nhận thông báo, đọc file thật và trả {\"saved\": điểm đã lưu, \"current\": điểm hiện tại, \"status\": \"done\"}. Worker gửi lỗi qua Queue; không giả lập file bằng dictionary.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'marks': [6, 8], 'extra': 10}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'saved': [6, 8], 'current': [6, 8, 10], 'status': 'done'}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import copy, gzip, pickle\nfrom pathlib import Path\nfrom threading import Thread\nfrom queue import Queue\ndef solve(data):\n    current = {'marks':list(data['marks'])}\n    snapshot = copy.deepcopy(current)\n    messages = Queue()\n    path = Path('snapshot.gz')\n    def worker():\n        try:\n            with gzip.open(path,'wb') as stream:\n                pickle.dump(snapshot,stream)\n        except Exception as error:\n            messages.put(('error',str(error)))\n        else:\n            messages.put(('done',None))\n    task = Thread(target=worker)\n    task.start()\n    current['marks'].append(data['extra'])\n    task.join()\n    status, error = messages.get(timeout=2)\n    if status!='done':\n        raise RuntimeError(error)\n    with gzip.open(path,'rb') as stream:\n        loaded = pickle.load(stream)\n    return {'saved':loaded['marks'],'current':current['marks'],'status':status}\n",

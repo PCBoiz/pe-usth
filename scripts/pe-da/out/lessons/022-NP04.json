@@ -159,7 +159,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận list độ dài tính bằng mét. Trả array độ dài tính bằng centimet, dùng 1 m = 100 cm. Dữ liệu gốc không cần thay đổi."
+    "body": "Viết solve(data) nhận list độ dài tính bằng mét. Trả array độ dài tính bằng centimet, dùng 1 m = 100 cm. Dữ liệu gốc không cần thay đổi.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[1, 2.5]"
+     },
+     {
+      "label": "trả về",
+      "value": "[100.0, 250.0]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    meters = np.array(data, dtype=float)\n    return meters * 100\n",

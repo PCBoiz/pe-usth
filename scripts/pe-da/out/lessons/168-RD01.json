@@ -158,7 +158,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận day, revenue và labelPosition=[u,v]. Tạo Figure/Axes và annotation có mũi tên chỉ (day,revenue) theo dữ liệu; chữ ở labelPosition theo axes fraction. Trả target là note.xy, labelPosition là note.get_position(), targetCoordinates là note.xycoords và labelCoordinates là note.get_anncoords(), rồi đóng Figure. Hai thuộc tính cuối giúp kiểm hệ tọa độ thật của chú thích; không cần học thuộc tên getter. Bài kiểm cấu hình; hãy mở hình một lần trong môi trường có cửa sổ để tự xem."
+    "body": "Viết solve(data) nhận day, revenue và labelPosition=[u,v]. Tạo Figure/Axes và annotation có mũi tên chỉ (day,revenue) theo dữ liệu; chữ ở labelPosition theo axes fraction. Trả target là note.xy, labelPosition là note.get_position(), targetCoordinates là note.xycoords và labelCoordinates là note.get_anncoords(), rồi đóng Figure. Hai thuộc tính cuối giúp kiểm hệ tọa độ thật của chú thích; không cần học thuộc tên getter. Bài kiểm cấu hình; hãy mở hình một lần trong môi trường có cửa sổ để tự xem.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'day': 2, 'revenue': 9, 'labelPosition': [0.1, 0.9]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'target': [2, 9], 'labelPosition': [0.1, 0.9], 'targetCoordinates': 'data', 'labelCoordinates': 'axes fraction'}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\ndef solve(data):\n    fig, ax = plt.subplots()\n    note = ax.annotate(\"Observed\", xy=(data[\"day\"], data[\"revenue\"]), xycoords=\"data\",\n                       xytext=data[\"labelPosition\"], textcoords=\"axes fraction\",\n                       arrowprops={\"arrowstyle\": \"->\"})\n    result = {\"target\": note.xy, \"labelPosition\": note.get_position(),\n              \"targetCoordinates\": note.xycoords, \"labelCoordinates\": note.get_anncoords()}\n    plt.close(fig)\n    return result\n",

@@ -158,7 +158,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.x,data.y là hai dãy vị trí lưới. Tạo X,Y bằng meshgrid, đặt U=-Y,V=X, vẽ quiver với angles=\"xy\",scale_units=\"xy\",scale=1 và aspect equal. Trả u,v đọc từ vectors.U/vectors.V (đã trải phẳng theo hàng), shape ban đầu của U. Không trả X,Y thay cho U,V. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.x,data.y là hai dãy vị trí lưới. Tạo X,Y bằng meshgrid, đặt U=-Y,V=X, vẽ quiver với angles=\"xy\",scale_units=\"xy\",scale=1 và aspect equal. Trả u,v đọc từ vectors.U/vectors.V (đã trải phẳng theo hàng), shape ban đầu của U. Không trả X,Y thay cho U,V. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'x': [0, 1], 'y': [0, 2]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'u': [0, 0, -2, -2], 'v': [0, 1, 0, 1], 'shape': [2, 2]}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     X,Y = np.meshgrid(data['x'],data['y'])\n     U,V = -Y,X\n     fig, ax = plt.subplots()\n     vectors = ax.quiver(X,Y,U,V,angles='xy',scale_units='xy',scale=1)\n     ax.set_aspect('equal')\n     result = {'u':vectors.U.tolist(),'v':vectors.V.tolist(),'shape':list(U.shape)}\n     plt.close(fig)\n     return result\n",

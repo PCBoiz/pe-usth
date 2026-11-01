@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.rows chứa store và amount dạng chữ. Chuẩn hóa store bằng strip/upper và amount bằng to_numeric(coerce), không tự bỏ hàng lỗi. Trả records (ô amount thiếu là None), invalid là số amount thiếu. Không sửa data đầu vào."
+    "body": "data.rows chứa store và amount dạng chữ. Chuẩn hóa store bằng strip/upper và amount bằng to_numeric(coerce), không tự bỏ hàng lỗi. Trả records (ô amount thiếu là None), invalid là số amount thiếu. Không sửa data đầu vào.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [{'store': ' e ', 'amount': '7'}, {'store': 'w', 'amount': 'oops'}]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'records': [{'store': 'E', 'amount': 7.0}, {'store': 'W', 'amount': None}], 'invalid': 1}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     frame = pd.DataFrame(data['rows']).copy()\n     frame['store'] = frame['store'].str.strip().str.upper()\n     frame['amount'] = pd.to_numeric(frame['amount'], errors='coerce')\n     records = [{'store':row['store'], 'amount':None if pd.isna(row['amount']) else float(row['amount'])} for _,row in frame.iterrows()]\n     return {'records':records, 'invalid':int(frame['amount'].isna().sum())}\n",

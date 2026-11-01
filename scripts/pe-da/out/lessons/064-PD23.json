@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.utc là list chuỗi thời điểm UTC có Z. Đọc với utc=True rồi chuyển Asia/Ho_Chi_Minh. Trả list chuỗi YYYY-MM-DD HH:MM theo giờ Việt Nam, giữ thứ tự sự kiện."
+    "body": "data.utc là list chuỗi thời điểm UTC có Z. Đọc với utc=True rồi chuyển Asia/Ho_Chi_Minh. Trả list chuỗi YYYY-MM-DD HH:MM theo giờ Việt Nam, giữ thứ tự sự kiện.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'utc': ['2026-05-01T23:30:00Z']}"
+     },
+     {
+      "label": "trả về",
+      "value": "['2026-05-02 06:30']"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     utc = pd.to_datetime(data['utc'], utc=True)\n     local = utc.tz_convert('Asia/Ho_Chi_Minh')\n     return local.strftime('%Y-%m-%d %H:%M').tolist()\n",

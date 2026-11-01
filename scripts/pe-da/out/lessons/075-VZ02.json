@@ -152,7 +152,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.left và data.right là hai dãy số, mỗi dãy ít nhất một phần tử. Tạo Figure với hai Axes cạnh nhau bằng add_subplot(121), add_subplot(122), vẽ một đường trên mỗi Axes. Trả axes là số Axes và lines là list số đường của trái/phải. fig.axes và ax.lines là các danh sách đối tượng để đối chiếu, không phải số quan sát. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve. Trả thêm leftY và rightY: list giá trị y đọc từ đường trong từng Axes (line.get_ydata())."
+    "body": "data.left và data.right là hai dãy số, mỗi dãy ít nhất một phần tử. Tạo Figure với hai Axes cạnh nhau bằng add_subplot(121), add_subplot(122), vẽ một đường trên mỗi Axes. Trả axes là số Axes và lines là list số đường của trái/phải. fig.axes và ax.lines là các danh sách đối tượng để đối chiếu, không phải số quan sát. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve. Trả thêm leftY và rightY: list giá trị y đọc từ đường trong từng Axes (line.get_ydata()).",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'left': [1, 4, 2], 'right': [5, 8]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'axes': 2, 'lines': [1, 1], 'leftY': [1, 4, 2], 'rightY': [5, 8]}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig = plt.figure()\n     left = fig.add_subplot(121)\n     right = fig.add_subplot(122)\n     left.plot(data['left'])\n     right.plot(data['right'])\n     result = {'axes':len(fig.axes), 'lines':[len(left.lines),len(right.lines)],'leftY':list(left.lines[0].get_ydata()),'rightY':list(right.lines[0].get_ydata())}\n     plt.close(fig)\n     return result\n",

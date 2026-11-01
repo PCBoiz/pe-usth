@@ -159,7 +159,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.rows là list các dictionary có item và units, có ít nhất một hàng. Tạo DataFrame, trả shape dưới dạng list hai số, first là dictionary hàng đầu và last là dictionary hàng cuối."
+    "body": "data.rows là list các dictionary có item và units, có ít nhất một hàng. Tạo DataFrame, trả shape dưới dạng list hai số, first là dictionary hàng đầu và last là dictionary hàng cuối.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [{'item': 'ink', 'units': 4}, {'item': 'paper', 'units': 10}, {'item': 'clip', 'units': 2}]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'shape': [3, 2], 'first': {'item': 'ink', 'units': 4}, 'last': {'item': 'clip', 'units': 2}}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     frame = pd.DataFrame(data['rows'])\n     return {'shape': list(frame.shape), 'first': frame.head(1).to_dict('records')[0], 'last': frame.tail(1).to_dict('records')[0]}\n",

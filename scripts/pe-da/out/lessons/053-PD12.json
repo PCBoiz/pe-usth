@@ -198,7 +198,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.text là CSV cột id;amount, ký hiệu missing là thiếu. Đọc với sep=\";\", id kiểu string. Trả ids giữ số 0 đầu và amounts, đổi ô thiếu thành None. Không viết hàm tách chuỗi CSV bằng tay."
+    "body": "data.text là CSV cột id;amount, ký hiệu missing là thiếu. Đọc với sep=\";\", id kiểu string. Trả ids giữ số 0 đầu và amounts, đổi ô thiếu thành None. Không viết hàm tách chuỗi CSV bằng tay.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'text': 'id;amount\\n004;3.5\\n020;missing\\n'}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'ids': ['004', '020'], 'amounts': [3.5, None]}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\nfrom io import StringIO\n\ndef solve(data):\n     df = pd.read_csv(StringIO(data['text']), sep=';', dtype={'id':'string'}, na_values=['missing'])\n     return {'ids': df['id'].tolist(), 'amounts': [None if pd.isna(v) else float(v) for v in df['amount']]}\n",

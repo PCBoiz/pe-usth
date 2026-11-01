@@ -169,7 +169,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Hệ thống cung cấp readings là list các số đo. Tạo ordered là bản sắp tăng; không sắp trực tiếp readings vì còn cần giữ thứ tự thu thập. Cuối cùng gán result = [readings, ordered] để đối chiếu bản gốc và bản đã xếp."
+    "body": "Hệ thống cung cấp readings là list các số đo. Tạo ordered là bản sắp tăng; không sắp trực tiếp readings vì còn cần giữ thứ tự thu thập. Cuối cùng gán result = [readings, ordered] để đối chiếu bản gốc và bản đã xếp.",
+    "io": [
+     {
+      "label": "readings =",
+      "value": "[3, 1, 2]"
+     },
+     {
+      "label": "result =",
+      "value": "[[3, 1, 2], [1, 2, 3]]"
+     }
+    ]
    },
    "starterCode": "# Hệ thống cung cấp readings là list các số đo.\n# Hệ thống cung cấp readings; gán kết quả vào result.\n",
    "solutionCode": "ordered = readings.copy()\nordered.sort()\nresult = [readings, ordered]\n",

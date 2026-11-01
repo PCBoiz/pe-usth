@@ -157,7 +157,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận list số sách trả theo ngày. Trả một NumPy array chứa đúng các số theo thứ tự đó. Chưa cần cộng, sắp xếp hoặc đổi kiểu."
+    "body": "Viết solve(data) nhận list số sách trả theo ngày. Trả một NumPy array chứa đúng các số theo thứ tự đó. Chưa cần cộng, sắp xếp hoặc đổi kiểu.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[4, 2, 9]"
+     },
+     {
+      "label": "trả về",
+      "value": "[4, 2, 9]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data)\n",

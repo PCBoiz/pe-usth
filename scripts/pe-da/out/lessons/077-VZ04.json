@@ -274,7 +274,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.rows là list [name,count], count không âm, ít nhất một nhóm và không có hai count bằng nhau. Sắp tăng theo count rồi barh. Trả names theo thứ tự đã vẽ và widths đọc bằng get_width() của từng bar. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.rows là list [name,count], count không âm, ít nhất một nhóm và không có hai count bằng nhau. Sắp tăng theo count rồi barh. Trả names theo thứ tự đã vẽ và widths đọc bằng get_width() của từng bar. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [['Poetry', 8], ['Travel', 3], ['Science', 12]]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'names': ['Travel', 'Poetry', 'Science'], 'widths': [3.0, 8.0, 12.0]}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     ordered = sorted(data['rows'], key=lambda row:row[1])\n     names, values = zip(*ordered)\n     fig, ax = plt.subplots()\n     bars = ax.barh(names,values)\n     result = {'names':list(names),'widths':[float(b.get_width()) for b in bars]}\n     plt.close(fig)\n     return result\n",

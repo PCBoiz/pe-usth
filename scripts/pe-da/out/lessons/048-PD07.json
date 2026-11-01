@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.codes là list mã dạng chữ; data.so_coc chứa số nguyên viết bằng chữ, None hoặc chuỗi lỗi. Giữ codes bằng dtype string; chuyển so_coc qua to_numeric(errors=\"coerce\") rồi Int64. Trả codes, so_coc (ô thiếu thành None) và dtype của so_coc."
+    "body": "data.codes là list mã dạng chữ; data.so_coc chứa số nguyên viết bằng chữ, None hoặc chuỗi lỗi. Giữ codes bằng dtype string; chuyển so_coc qua to_numeric(errors=\"coerce\") rồi Int64. Trả codes, so_coc (ô thiếu thành None) và dtype của so_coc.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'codes': ['003', '010'], 'so_coc': ['4', 'bad']}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'codes': ['003', '010'], 'so_coc': [4, None], 'dtype': 'Int64'}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     codes = pd.Series(data['codes'], dtype='string')\n     so_coc = pd.to_numeric(pd.Series(data['so_coc']), errors='coerce').astype('Int64')\n     return {'codes': codes.tolist(), 'so_coc': [None if pd.isna(v) else int(v) for v in so_coc], 'dtype': str(so_coc.dtype)}\n",

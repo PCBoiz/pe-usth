@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.rows có store, month, revenue, mỗi cặp store–month duy nhất. data.store và data.month xác định ô có trong dữ liệu. Pivot rồi trả giá trị của ô đó dưới dạng số."
+    "body": "data.rows có store, month, revenue, mỗi cặp store–month duy nhất. data.store và data.month xác định ô có trong dữ liệu. Pivot rồi trả giá trị của ô đó dưới dạng số.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [{'store': 'X', 'month': 'Mar', 'revenue': 6}, {'store': 'X', 'month': 'Apr', 'revenue': 11}], 'store': 'X', 'month': 'Apr'}"
+     },
+     {
+      "label": "trả về",
+      "value": "11.0"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     wide = df.pivot(index='store', columns='month', values='revenue')\n     return float(wide.loc[data['store'], data['month']])\n",

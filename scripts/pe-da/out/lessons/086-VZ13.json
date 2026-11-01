@@ -154,7 +154,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.values có ít nhất hai số độc lập theo giả định bài. Tính mean và SE=std(ddof=1)/sqrt(n); tạo errorbar ở x=1, đặt title=\"Mean +/- 1 SE\". Trả mean, se, bounds=[mean-se,mean+se] và title từ Axes. Đây không phải CI 95%. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.values có ít nhất hai số độc lập theo giả định bài. Tính mean và SE=std(ddof=1)/sqrt(n); tạo errorbar ở x=1, đặt title=\"Mean +/- 1 SE\". Trả mean, se, bounds=[mean-se,mean+se] và title từ Axes. Đây không phải CI 95%. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [2, 4]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'mean': 3.0, 'se': 1.0, 'bounds': [2.0, 4.0], 'title': 'Mean +/- 1 SE'}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     values = np.asarray(data['values'],dtype=float)\n     mean = float(values.mean())\n     se = float(values.std(ddof=1)/np.sqrt(len(values)))\n     fig, ax = plt.subplots()\n     ax.errorbar([1],[mean],yerr=[se],fmt='o')\n     ax.set_title('Mean +/- 1 SE')\n     result = {'mean':mean,'se':se,'bounds':[mean-se,mean+se],'title':ax.get_title()}\n     plt.close(fig)\n     return result\n",

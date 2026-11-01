@@ -694,6 +694,8 @@ def kiem_bai_tap(ma: str, bon: dict, mode: str) -> None:
     elif giai.strip() == bon.get('starterCode', '').strip():
         loi(f'{ma}: lời giải mẫu TRÙNG khung đề — khung đề đang chứa đáp án')
 
+    kiem_vi_du_io(ma, bon)
+
     hd = bon.get('contract') or {}
     la = set(hd) - {'mode', 'inputVariable', 'resultVariable', 'returnType'}
     if la:
@@ -742,6 +744,58 @@ def kiem_bai_tap(ma: str, bon: dict, mode: str) -> None:
     if du_lieu and mode == 'local' and not bon.get('env'):
         loi(f'{ma}: code bài đọc phải chạy trên máy nhưng bài tập chấm tại đây, '
             'mà không có `env` nói rõ — học viên mất hướng dẫn chạy trên máy')
+
+
+def kiem_vi_du_io(ma: str, bon: dict) -> None:
+    """Ô ví dụ đầu vào/đầu ra (`step_4.task.io`) phải NÓI THẬT về ca chấm 1.
+
+    Nó là chữ build sinh ra từ dữ liệu, nên nó TRÔI ĐƯỢC khỏi thứ nó nói về —
+    cùng họ lỗi mà `kiem_so_do` phải sinh ra để chữa cho `diagram` và
+    `codeHash` cho bảng từng bước. Hình dạng hỏng cụ thể: nguồn đổi ca chấm 1
+    (đổi đầu vào, đổi kết quả) mà ô ví dụ giữ giá trị cũ, và học viên viết code
+    theo một đầu vào bộ chấm không bao giờ truyền. Không exception nào ném, bảng
+    ca chấm chỉ nói "Chưa đúng".
+
+    Nên phép kiểm so `value` với `repr` của CHÍNH ca chấm trong bản dựng. Dùng
+    `repr` của Python, không `json.dumps`: đó là phép tuần tự hoá mà `vi_du_io`
+    dùng, và lý do nằm ở docstring của nó.
+    """
+    vd = (bon.get('task') or {}).get('io')
+    if not vd:
+        return
+    if not isinstance(vd, list) or not all(
+            isinstance(r, dict) and isinstance(r.get('label'), str)
+            and isinstance(r.get('value'), str) and r['label'] and r['value']
+            for r in vd):
+        return loi(f'{ma}: task.io sai hình dạng — mỗi hàng cần label/value là chuỗi')
+    nhan = [r['label'] for r in vd]
+    if len(set(nhan)) != len(nhan):
+        # `row.label` là React key của renderer, nên nhãn trùng = mất một hàng.
+        loi(f'{ma}: task.io có nhãn trùng {nhan} — renderer dùng label làm key')
+    if len(vd) != 2:
+        return loi(f'{ma}: task.io có {len(vd)} hàng, phải đúng 2 (đầu vào + kết quả)')
+
+    ca = next((c for c in bon.get('tests') or []
+               if 'input' in c and 'expected' in c), None)
+    if ca is None:
+        return loi(f'{ma}: có task.io nhưng không ca chấm nào mang input/expected')
+    if vd[0]['value'] != repr(ca['input']):
+        loi(f'{ma}: task.io hàng 1 đã TRÔI khỏi ca chấm 1 — ô ví dụ ghi '
+            f'{vd[0]["value"][:60]!r}, ca chấm là {repr(ca["input"])[:60]!r}')
+    if vd[1]['value'] != repr(ca['expected']):
+        loi(f'{ma}: task.io hàng 2 đã TRÔI khỏi ca chấm 1 — ô ví dụ ghi '
+            f'{vd[1]["value"][:60]!r}, ca chấm là {repr(ca["expected"])[:60]!r}')
+
+    # Nhãn phải là tên biến THẬT của bài `mode: "script"`. Nhãn chung chung
+    # ("Đầu vào") bắt người học tra lại đề để biết gán vào biến nào — đúng việc
+    # ô này ra đời để khỏi phải làm.
+    hd = bon.get('contract') or {}
+    if hd.get('mode') == 'script':
+        for khoa, hang in (('inputVariable', 0), ('resultVariable', 1)):
+            ten = hd.get(khoa)
+            if ten and not vd[hang]['label'].startswith(ten):
+                loi(f'{ma}: task.io hàng {hang + 1} ghi nhãn {vd[hang]["label"]!r} '
+                    f'nhưng contract.{khoa} là {ten!r}')
 
 
 def kiem_trac_nghiem(bai: list[dict]) -> None:

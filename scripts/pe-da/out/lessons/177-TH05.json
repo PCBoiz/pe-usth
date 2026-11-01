@@ -126,7 +126,17 @@
   "step_4": {
    "task": {
     "title": "Một dòng báo cáo tháng",
-    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là một chuỗi dạng `YYYY-MM`. Trả về dict bốn khoá: `thang` là chính chuỗi đó, `so_don` là số lượt mua trong tháng, `tong_tien` là tổng cột `money` làm tròn hai chữ số thập phân, và `don_vi` là chuỗi `không xác định`. Khoá cuối là phần bài học của PD32: báo cáo phải nói ra đơn vị, kể cả khi đơn vị chưa biết."
+    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là một chuỗi dạng `YYYY-MM`. Trả về dict bốn khoá: `thang` là chính chuỗi đó, `so_don` là số lượt mua trong tháng, `tong_tien` là tổng cột `money` làm tròn hai chữ số thập phân, và `don_vi` là chuỗi `không xác định`. Khoá cuối là phần bài học của PD32: báo cáo phải nói ra đơn vị, kể cả khi đơn vị chưa biết.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "'2024-03'"
+     },
+     {
+      "label": "trả về",
+      "value": "{'thang': '2024-03', 'so_don': 206, 'tong_tien': 7050.2, 'don_vi': 'không xác định'}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
    "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    thang = pd.to_datetime(ban['datetime']).dt.strftime('%Y-%m')\n    cua_thang = ban[thang == data]\n    return {'thang': data,\n            'so_don': int(len(cua_thang)),\n            'tong_tien': round(float(cua_thang['money'].sum()), 2),\n            'don_vi': 'không xác định'}\n",

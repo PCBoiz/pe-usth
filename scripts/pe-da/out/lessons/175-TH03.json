@@ -126,7 +126,17 @@
   "step_4": {
    "task": {
     "title": "Giờ cao điểm của một món",
-    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon`. Lấy giờ từ cột `datetime`, đếm số lượt mua của món đó theo giờ, rồi trả về dict hai khoá: `gio` là danh sách các giờ cùng đạt số lượt cao nhất, xếp tăng dần, và `so_luot` là con số cao nhất đó. Có món có hai giờ bằng nhau."
+    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict có khoá `mon`. Lấy giờ từ cột `datetime`, đếm số lượt mua của món đó theo giờ, rồi trả về dict hai khoá: `gio` là danh sách các giờ cùng đạt số lượt cao nhất, xếp tăng dần, và `so_luot` là con số cao nhất đó. Có món có hai giờ bằng nhau.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'mon': 'Latte'}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'gio': [10], 'so_luot': 73}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
    "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    gio = pd.to_datetime(ban['datetime']).dt.hour\n    dem = gio[ban['coffee_name'] == data['mon']].value_counts()\n    dinh = int(dem.max())\n    return {'gio': sorted(int(g) for g in dem[dem == dinh].index),\n            'so_luot': dinh}\n",

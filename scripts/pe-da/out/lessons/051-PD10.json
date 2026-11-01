@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Mỗi data.rows có order, version, amount. Mỗi order có các version khác nhau. Trả list bản ghi mới nhất của mỗi order, xếp order tăng dần; không cộng hai phiên bản thành hai giao dịch."
+    "body": "Mỗi data.rows có order, version, amount. Mỗi order có các version khác nhau. Trả list bản ghi mới nhất của mỗi order, xếp order tăng dần; không cộng hai phiên bản thành hai giao dịch.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [{'order': 'A', 'version': 2, 'amount': 17}, {'order': 'A', 'version': 1, 'amount': 10}, {'order': 'B', 'version': 1, 'amount': 5}]}"
+     },
+     {
+      "label": "trả về",
+      "value": "[{'order': 'A', 'version': 2, 'amount': 17}, {'order': 'B', 'version': 1, 'amount': 5}]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['order','version','amount'])\n     return df.sort_values('version').drop_duplicates('order', keep='last').sort_values('order').to_dict('records')\n",

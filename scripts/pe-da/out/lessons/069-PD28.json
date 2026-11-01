@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.text là CSV một cột x với ít nhất một số, có thể có NA; data.chunksize >0. Đọc theo lô, cộng tổng và count giá trị không thiếu. Trả total, count và mean. Kết quả phải không phụ thuộc cách chia lô."
+    "body": "data.text là CSV một cột x với ít nhất một số, có thể có NA; data.chunksize >0. Đọc theo lô, cộng tổng và count giá trị không thiếu. Trả total, count và mean. Kết quả phải không phụ thuộc cách chia lô.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'text': 'x\\n0\\n0\\n9\\n', 'chunksize': 2}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'total': 9.0, 'count': 3, 'mean': 3.0}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\nfrom io import StringIO\n\ndef solve(data):\n     total, count = 0.0, 0\n     for chunk in pd.read_csv(StringIO(data['text']), chunksize=data['chunksize']):\n         total += chunk['x'].sum()\n         count += int(chunk['x'].count())\n     return {'total':float(total), 'count':count, 'mean':float(total/count)}\n",

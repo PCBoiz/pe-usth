@@ -148,7 +148,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.rows chứa category,so_coc,price. Quy tắc mẫu: bỏ dòng so_coc<0 hoặc price<0; các hàng còn lại tính revenue=so_coc*price. Có ít nhất một hàng hợp lệ. Tổng hợp category, sắp tăng theo tên rồi vẽ cột. Trả totals là dictionary category→doanh thu, drawnTotal là tổng chiều cao các cột, rejected là số dòng bị loại. Không gọi số đó là lợi nhuận. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.rows chứa category,so_coc,price. Quy tắc mẫu: bỏ dòng so_coc<0 hoặc price<0; các hàng còn lại tính revenue=so_coc*price. Có ít nhất một hàng hợp lệ. Tổng hợp category, sắp tăng theo tên rồi vẽ cột. Trả totals là dictionary category→doanh thu, drawnTotal là tổng chiều cao các cột, rejected là số dòng bị loại. Không gọi số đó là lợi nhuận. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [{'category': 'Book', 'so_coc': 2, 'price': 12}, {'category': 'Pen', 'so_coc': 3, 'price': 4}, {'category': 'Book', 'so_coc': -1, 'price': 12}]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'totals': {'Book': 24, 'Pen': 12}, 'drawnTotal': 36.0, 'rejected': 1}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame(data['rows'])\n     valid = orders.loc[(orders['so_coc'] >= 0) & (orders['price'] >= 0)].copy()\n     valid['revenue'] = valid['so_coc'] * valid['price']\n     totals = valid.groupby('category')['revenue'].sum().sort_index()\n     fig, ax = plt.subplots()\n     bars = ax.bar(totals.index,totals.values)\n     result = {'totals':totals.to_dict(),'drawnTotal':float(sum(b.get_height() for b in bars)),'rejected':len(orders)-len(valid)}\n     plt.close(fig)\n     return result\n",

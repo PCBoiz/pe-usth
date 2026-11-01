@@ -151,7 +151,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận bảng, mỗi hàng là một khu kho và mỗi cột là một ca. Trả tổng số kiện từng ca, giữ thứ tự cột."
+    "body": "Viết solve(data) nhận bảng, mỗi hàng là một khu kho và mỗi cột là một ca. Trả tổng số kiện từng ca, giữ thứ tự cột.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[[2, 4, 1], [3, 1, 5]]"
+     },
+     {
+      "label": "trả về",
+      "value": "[5, 5, 6]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data).sum(axis=0)\n",

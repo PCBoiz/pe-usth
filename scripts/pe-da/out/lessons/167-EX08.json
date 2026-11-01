@@ -151,7 +151,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Viết solve(data) nhận {\"nx\": số điểm x, \"ny\": số điểm y}, mỗi số ít nhất 2. Tạo mgrid x từ -1 đến 1 gồm nx điểm và y từ -2 đến 2 gồm ny điểm. Đặt U=-Y, V=X. Lưu U vào vector.npy rồi đọc lại bằng allow_pickle=False. Trả {\"shape\": shape của U dạng list, \"uFirst\": hàng đầu U, \"vLast\": hàng cuối V, \"roundtrip\": dữ liệu đọc có bằng U}."
+    "body": "Viết solve(data) nhận {\"nx\": số điểm x, \"ny\": số điểm y}, mỗi số ít nhất 2. Tạo mgrid x từ -1 đến 1 gồm nx điểm và y từ -2 đến 2 gồm ny điểm. Đặt U=-Y, V=X. Lưu U vào vector.npy rồi đọc lại bằng allow_pickle=False. Trả {\"shape\": shape của U dạng list, \"uFirst\": hàng đầu U, \"vLast\": hàng cuối V, \"roundtrip\": dữ liệu đọc có bằng U}.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'nx': 3, 'ny': 5}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'shape': [3, 5], 'uFirst': [2, 1, 0, -1, -2], 'vLast': [1, 1, 1, 1, 1], 'roundtrip': True}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    X,Y = np.mgrid[-1:1:complex(0,data['nx']), -2:2:complex(0,data['ny'])]\n    U,V = -Y,X\n    np.save('vector.npy',U)\n    loaded = np.load('vector.npy',allow_pickle=False)\n    return {'shape':list(U.shape),'uFirst':U[0].tolist(),'vLast':V[-1].tolist(),'roundtrip':bool(np.array_equal(loaded,U))}\n",

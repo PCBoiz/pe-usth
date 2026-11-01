@@ -147,7 +147,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận list thời gian chờ. Trả trung bình nếu có số đo; trả None nếu list rỗng. Đừng chỉ print kết quả."
+    "body": "Viết solve(data) nhận list thời gian chờ. Trả trung bình nếu có số đo; trả None nếu list rỗng. Đừng chỉ print kết quả.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[4, 6, 8]"
+     },
+     {
+      "label": "trả về",
+      "value": "6.0"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "def solve(data):\n    if len(data) == 0:\n        return None\n    return sum(data) / len(data)\n",

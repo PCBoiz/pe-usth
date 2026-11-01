@@ -161,7 +161,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận chuỗi CSV có một dòng tên cột, ít nhất hai dòng số và hai cột. Ô rỗng nghĩa là thiếu. Trả array số ô thiếu của từng cột, giữ thứ tự cột."
+    "body": "Viết solve(data) nhận chuỗi CSV có một dòng tên cột, ít nhất hai dòng số và hai cột. Ô rỗng nghĩa là thiếu. Trả array số ô thiếu của từng cột, giữ thứ tự cột.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "'pm,temp\\n1,2\\n,4'"
+     },
+     {
+      "label": "trả về",
+      "value": "[1, 0]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\nfrom io import StringIO\ndef solve(data):\n    table = np.genfromtxt(StringIO(data), delimiter=\",\", skip_header=1)\n    return np.isnan(table).sum(axis=0)\n",

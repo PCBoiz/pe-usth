@@ -1195,6 +1195,62 @@ test('bài đọc: đi hết 3 câu trắc nghiệm như học viên thật — 
   );
 });
 
+// --- Ô VÍ DỤ ĐẦU VÀO/ĐẦU RA (step_4.task.io) -------------------------------
+//
+// `SandboxScreen` dựng `<dl className={c.io}>` từ `step_4.task.io`, và cho tới
+// 1/11/2026 **0/130 bài có ca chấm phát ra khoá đó** — renderer dựng sẵn, không
+// ai đi qua. 87 bài giao đúng `def solve(data): pass` nên hình dạng của `data`
+// chỉ nằm trong văn xuôi; với PD01 thì đó là SÁU tên khoá không câu nào nói ra.
+//
+// Ba ca dưới đây đọc BẢN DỰNG từ phía người dùng dữ liệu, không từ khâu dựng:
+// gỡ `vi_du_io` khỏi build.py thì `kiem_vi_du_io` của check.py cũng thôi thấy gì
+// để kiểm (luật của nó mở đầu bằng "không có io thì bỏ qua"), nên hai khâu kia
+// cùng im lặng. Chỗ này thì đỏ.
+test('bài đọc: MỌI bài có ca chấm đều có ô ví dụ đầu vào/đầu ra', () => {
+  const coCaCham = DA.filter(([, l]) => (l.step_4?.tests ?? []).length > 0);
+  // SÀN, không phải con số đúng: thêm một module là 130 thành 137, và một ca
+  // ghim số chính xác sẽ đỏ oan — đúng bệnh 14 con số ghi cứng mà AGENTS.md ghi.
+  assert.ok(coCaCham.length >= 130, `chỉ còn ${coCaCham.length} bài có ca chấm`);
+  const thieu = coCaCham.filter(([, l]) => !(l.step_4?.task?.io ?? []).length);
+  assert.deepEqual(thieu.map(([c]) => c), []);
+});
+
+test('bài đọc: ô ví dụ có nhãn DUY NHẤT — renderer dùng label làm React key', () => {
+  for (const [code, l] of DA) {
+    const vd = l.step_4?.task?.io;
+    if (!vd) continue;
+    assert.equal(vd.length, 2, `${code}: ô ví dụ phải đúng 2 hàng`);
+    const nhan = vd.map((r) => r.label);
+    assert.equal(new Set(nhan).size, 2, `${code}: nhãn trùng ${nhan.join(' / ')}`);
+    for (const r of vd) {
+      assert.equal(typeof r.value, 'string');
+      assert.ok(r.value.length > 0, `${code}: hàng ${r.label} không có giá trị`);
+    }
+  }
+});
+
+test('bài đọc: ô ví dụ là repr PYTHON, không phải JSON', () => {
+  // Khác nhau ở đúng chỗ người học sẽ gõ lại: JSON viết `true/false/null` và
+  // bắt buộc nháy kép. Dán một giá trị JSON vào ô đề của bài Python là dạy sai
+  // cú pháp ngay trong đề. Nên không giá trị nào được chứa ba từ khoá JSON ở
+  // dạng token, và dict phải hiện ra với nháy ĐƠN.
+  const giaTri = DA.flatMap(([code, l]) =>
+    (l.step_4?.task?.io ?? []).map((r) => [code, r.value]),
+  );
+  assert.ok(giaTri.length >= 260, `chỉ có ${giaTri.length} giá trị ví dụ`);
+  for (const [code, v] of giaTri) {
+    for (const tu of ['true', 'false', 'null']) {
+      assert.ok(
+        !new RegExp(`\\b${tu}\\b`).test(v),
+        `${code}: ví dụ dùng từ khoá JSON "${tu}" thay cho Python: ${v.slice(0, 60)}`,
+      );
+    }
+  }
+  // Và ít nhất một bài phải thực sự có dict nháy đơn, kẻo phép kiểm trên xanh
+  // vì không giá trị nào là dict.
+  assert.ok(giaTri.some(([, v]) => v.includes("{'")), 'không ví dụ nào là dict Python');
+});
+
 test('bài đọc: khối terminal và khối table vẫn là hai loại riêng', () => {
   // PY02 dạy dựng môi trường: lệnh shell, không phải Python. Nếu hai loại này
   // bị gộp thì học viên copy `python -m venv .venv` vào ô Python.

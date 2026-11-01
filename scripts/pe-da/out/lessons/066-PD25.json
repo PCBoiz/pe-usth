@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.rows có so_coc, don_gia, giam_gia (0..1). Trả list tiền sau giảm giá so_coc*don_gia*(1-giam_gia), theo thứ tự. Dùng các cột trực tiếp, không phải apply cho phép nhân đơn giản này."
+    "body": "data.rows có so_coc, don_gia, giam_gia (0..1). Trả list tiền sau giảm giá so_coc*don_gia*(1-giam_gia), theo thứ tự. Dùng các cột trực tiếp, không phải apply cho phép nhân đơn giản này.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [{'so_coc': 2, 'don_gia': 15, 'giam_gia': 0.2}, {'so_coc': 3, 'don_gia': 8, 'giam_gia': 0}]}"
+     },
+     {
+      "label": "trả về",
+      "value": "[24.0, 24.0]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     return (df['so_coc'] * df['don_gia'] * (1 - df['giam_gia'])).tolist()\n",

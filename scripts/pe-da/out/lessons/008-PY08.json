@@ -161,7 +161,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Hệ thống cung cấp raw là chuỗi giá hợp lệ, có thể có khoảng trắng hai đầu. Gán vào message giá đã đổi sang số và hiển thị đúng hai chữ số sau dấu thập phân."
+    "body": "Hệ thống cung cấp raw là chuỗi giá hợp lệ, có thể có khoảng trắng hai đầu. Gán vào message giá đã đổi sang số và hiển thị đúng hai chữ số sau dấu thập phân.",
+    "io": [
+     {
+      "label": "raw =",
+      "value": "' 7.5 '"
+     },
+     {
+      "label": "message =",
+      "value": "'7.50'"
+     }
+    ]
    },
    "starterCode": "# Hệ thống cung cấp raw là chuỗi giá hợp lệ, có thể có khoảng trắng hai đầu.\n# Hệ thống cung cấp raw; gán kết quả vào message.\n",
    "solutionCode": "price = float(raw.strip())\nmessage = f\"{price:.2f}\"\n",

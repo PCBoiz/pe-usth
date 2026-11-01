@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.values có số hoặc None, có ít nhất một số. Trả count, size, mean, median từ một Series. Dùng các đại lượng này để thấy số rất lớn có thể kéo mean khác median."
+    "body": "data.values có số hoặc None, có ít nhất một số. Trả count, size, mean, median từ một Series. Dùng các đại lượng này để thấy số rất lớn có thể kéo mean khác median.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [2, 4, 6, 40]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'count': 4, 'size': 4, 'mean': 13.0, 'median': 5.0}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], dtype=float)\n     return {'count': int(s.count()), 'size': int(s.size), 'mean': float(s.mean()), 'median': float(s.median())}\n",

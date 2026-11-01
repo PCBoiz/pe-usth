@@ -157,7 +157,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận list giá gồm số nguyên hoặc số thực. Tạo array với dtype=float rồi trả dictionary gồm values là array đó và dtype là str(array.dtype). Giữ nguyên các phần thập phân."
+    "body": "Viết solve(data) nhận list giá gồm số nguyên hoặc số thực. Tạo array với dtype=float rồi trả dictionary gồm values là array đó và dtype là str(array.dtype). Giữ nguyên các phần thập phân.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[3, 4.5]"
+     },
+     {
+      "label": "trả về",
+      "value": "{'values': [3.0, 4.5], 'dtype': 'float64'}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    values = np.array(data, dtype=float)\n    return {\"values\": values, \"dtype\": str(values.dtype)}\n",

@@ -215,7 +215,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "solve(data) nhận list số. Tạo tuple từ list này; round-trip qua JSON và qua pickle trong bộ nhớ. Trả {\"json_type\": tên kiểu nhận từ JSON, \"pickle_type\": tên kiểu nhận từ pickle, \"json_values\": list giá trị, \"pickle_values\": list giá trị}. Chỉ unpickle byte vừa tự tạo."
+    "body": "solve(data) nhận list số. Tạo tuple từ list này; round-trip qua JSON và qua pickle trong bộ nhớ. Trả {\"json_type\": tên kiểu nhận từ JSON, \"pickle_type\": tên kiểu nhận từ pickle, \"json_values\": list giá trị, \"pickle_values\": list giá trị}. Chỉ unpickle byte vừa tự tạo.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[2, 9]"
+     },
+     {
+      "label": "trả về",
+      "value": "{'json_type': 'list', 'pickle_type': 'tuple', 'json_values': [2, 9], 'pickle_values': [2, 9]}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import json, pickle\ndef solve(data):\n    original = tuple(data)\n    from_json = json.loads(json.dumps(original))\n    from_pickle = pickle.loads(pickle.dumps(original))\n    return {'json_type':type(from_json).__name__, 'pickle_type':type(from_pickle).__name__, 'json_values':from_json, 'pickle_values':list(from_pickle)}\n",

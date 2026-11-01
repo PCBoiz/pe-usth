@@ -126,7 +126,17 @@
   "step_4": {
    "task": {
     "title": "Tỉ lệ thanh toán kèm mẫu số",
-    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict hai khoá: `mon` là tên món, `kieu` là `card` hoặc `cash`. Trả về dict ba khoá: `so_luot` là số lượt của món đó trả theo kiểu đó, `tong` là tổng số lượt của món, và `ti_le` là phần trăm làm tròn một chữ số thập phân."
+    "body": "File `coffee-sales-cc0.csv` nằm sẵn trong thư mục chạy. `data` là dict hai khoá: `mon` là tên món, `kieu` là `card` hoặc `cash`. Trả về dict ba khoá: `so_luot` là số lượt của món đó trả theo kiểu đó, `tong` là tổng số lượt của món, và `ti_le` là phần trăm làm tròn một chữ số thập phân.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'mon': 'Latte', 'kieu': 'cash'}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'so_luot': 25, 'tong': 618, 'ti_le': 4.0}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc đề rồi trả về đúng giá trị bài yêu cầu.\n    pass\n",
    "solutionCode": "import pandas as pd\n\n\ndef solve(data):\n    ban = pd.read_csv('coffee-sales-cc0.csv')\n    cua_mon = ban[ban['coffee_name'] == data['mon']]\n    so_luot = int((cua_mon['cash_type'] == data['kieu']).sum())\n    tong = int(len(cua_mon))\n    return {'so_luot': so_luot, 'tong': tong,\n            'ti_le': round(100 * so_luot / tong, 1)}\n",

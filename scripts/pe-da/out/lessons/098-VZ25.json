@@ -154,7 +154,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.x,data.y cùng độ dài; data.frame là chỉ số hợp lệ. Tạo Line2D rỗng một lần, viết update(frame) dùng set_data hiện từ đầu tới frame (gồm frame), gọi update với frame đã cho. Trả shownY đọc từ line và lineCount=len(ax.lines). Không tạo line mới bên trong update. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.x,data.y cùng độ dài; data.frame là chỉ số hợp lệ. Tạo Line2D rỗng một lần, viết update(frame) dùng set_data hiện từ đầu tới frame (gồm frame), gọi update với frame đã cho. Trả shownY đọc từ line và lineCount=len(ax.lines). Không tạo line mới bên trong update. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'x': [1, 2, 3, 4], 'y': [3, 7, 5, 9], 'frame': 1}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'shownY': [3, 7], 'lineCount': 1}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     line, = ax.plot([],[])\n     def update(frame):\n         line.set_data(data['x'][:frame+1],data['y'][:frame+1])\n         return (line,)\n     update(data['frame'])\n     result = {'shownY':list(line.get_ydata()),'lineCount':len(ax.lines)}\n     plt.close(fig)\n     return result\n",

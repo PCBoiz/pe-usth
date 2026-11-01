@@ -157,7 +157,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Hệ thống cung cấp quantities là dãy số đọc theo thứ tự. Số 0 báo hết phiên; số âm là lần nhập hỏng cần bỏ. Gán tổng các số dương trước số 0 đầu tiên vào total."
+    "body": "Hệ thống cung cấp quantities là dãy số đọc theo thứ tự. Số 0 báo hết phiên; số âm là lần nhập hỏng cần bỏ. Gán tổng các số dương trước số 0 đầu tiên vào total.",
+    "io": [
+     {
+      "label": "quantities =",
+      "value": "[2, -1, 4, 0, 8]"
+     },
+     {
+      "label": "total =",
+      "value": "6"
+     }
+    ]
    },
    "starterCode": "# Hệ thống cung cấp quantities là dãy số đọc theo thứ tự.\n# Hệ thống cung cấp quantities; gán kết quả vào total.\n",
    "solutionCode": "total = 0\nfor value in quantities:\n    if value == 0:\n        break\n    if value < 0:\n        continue\n    total += value\n",

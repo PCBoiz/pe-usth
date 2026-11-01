@@ -144,7 +144,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "solve(data) nhận {\"values\": list số, \"factor\": số}. Tạo Thread(target=worker, args=(values,factor,result)); worker nhân từng số với factor rồi ghi vào result. Main start, join, trả result. Dùng một worker để thứ tự không phụ thuộc lịch chạy."
+    "body": "solve(data) nhận {\"values\": list số, \"factor\": số}. Tạo Thread(target=worker, args=(values,factor,result)); worker nhân từng số với factor rồi ghi vào result. Main start, join, trả result. Dùng một worker để thứ tự không phụ thuộc lịch chạy.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [1, 4], 'factor': 3}"
+     },
+     {
+      "label": "trả về",
+      "value": "[3, 12]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import threading\ndef worker(values, factor, result):\n    for number in values: result.append(number * factor)\ndef solve(data):\n    result = []\n    thread = threading.Thread(target=worker, args=(data['values'], data['factor'], result))\n    thread.start()\n    thread.join()\n    return result\n",

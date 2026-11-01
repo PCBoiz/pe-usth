@@ -154,7 +154,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.names,complaints,orders có cùng độ dài, orders đều dương. Dựng bar chart của complaints/orders*100, ylabel=\"Complaints (%)\", trục y bắt đầu 0. Trả rates từ các bar và baseline là cận dưới get_ylim(). Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.names,complaints,orders có cùng độ dài, orders đều dương. Dựng bar chart của complaints/orders*100, ylabel=\"Complaints (%)\", trục y bắt đầu 0. Trả rates từ các bar và baseline là cận dưới get_ylim(). Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'names': ['A', 'B'], 'complaints': [12, 6], 'orders': [600, 60]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'rates': [2.0, 10.0], 'baseline': 0.0}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     rates = np.asarray(data['complaints']) / np.asarray(data['orders']) * 100\n     fig, ax = plt.subplots()\n     bars = ax.bar(data['names'],rates)\n     ax.set_ylabel('Complaints (%)')\n     ax.set_ylim(bottom=0)\n     result = {'rates':[float(bar.get_height()) for bar in bars],'baseline':float(ax.get_ylim()[0])}\n     plt.close(fig)\n     return result\n",

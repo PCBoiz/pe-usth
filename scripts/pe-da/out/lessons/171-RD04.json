@@ -143,7 +143,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận ma trận A vuông không suy biến và dãy b cùng kích thước. Trả nghiệm của A @ x = b bằng np.linalg.solve. Các bài kiểm đều có nghiệm duy nhất."
+    "body": "Viết solve(data) nhận ma trận A vuông không suy biến và dãy b cùng kích thước. Trả nghiệm của A @ x = b bằng np.linalg.solve. Các bài kiểm đều có nghiệm duy nhất.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'A': [[1, 1], [2, 1]], 'b': [7, 11]}"
+     },
+     {
+      "label": "trả về",
+      "value": "[4.0, 3.0]"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
    "solutionCode": "import numpy as np\ndef solve(data):\n    A = np.array(data[\"A\"], dtype=float)\n    b = np.array(data[\"b\"], dtype=float)\n    return np.linalg.solve(A, b)\n",

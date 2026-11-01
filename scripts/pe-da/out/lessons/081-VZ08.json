@@ -281,7 +281,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.z là ma trận chữ nhật, data.maximum >0. Tạo imshow với vmin=0,vmax=maximum,interpolation=\"nearest\"; thêm colorbar nằm ngang. Trả shape từ image.get_array().shape, clim từ image.get_clim(), và orientation của colorbar. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
+    "body": "data.z là ma trận chữ nhật, data.maximum >0. Tạo imshow với vmin=0,vmax=maximum,interpolation=\"nearest\"; thêm colorbar nằm ngang. Trả shape từ image.get_array().shape, clim từ image.get_clim(), và orientation của colorbar. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'z': [[1, 2, 3], [4, 5, 6]], 'maximum': 10}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'shape': [2, 3], 'clim': [0.0, 10.0], 'orientation': 'horizontal'}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     image = ax.imshow(data['z'],vmin=0,vmax=data['maximum'],interpolation='nearest')\n     colorbar = fig.colorbar(image,ax=ax,orientation='horizontal')\n     result = {'shape':list(image.get_array().shape),'clim':list(image.get_clim()),'orientation':colorbar.orientation}\n     plt.close(fig)\n     return result\n",

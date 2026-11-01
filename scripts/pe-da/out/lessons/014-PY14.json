@@ -157,7 +157,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Hệ thống cung cấp weights là list khối lượng kiện hàng. Chỉ những kiện từ 3 kg trở lên được đưa vào chuyến lớn. Gán tổng khối lượng các kiện đó vào total; list rỗng có tổng 0."
+    "body": "Hệ thống cung cấp weights là list khối lượng kiện hàng. Chỉ những kiện từ 3 kg trở lên được đưa vào chuyến lớn. Gán tổng khối lượng các kiện đó vào total; list rỗng có tổng 0.",
+    "io": [
+     {
+      "label": "weights =",
+      "value": "[2, 3, 4]"
+     },
+     {
+      "label": "total =",
+      "value": "7"
+     }
+    ]
    },
    "starterCode": "# Hệ thống cung cấp weights là list khối lượng kiện hàng.\n# Hệ thống cung cấp weights; gán kết quả vào total.\n",
    "solutionCode": "total = 0\nfor weight in weights:\n    if weight >= 3:\n        total += weight\n",

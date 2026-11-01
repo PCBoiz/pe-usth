@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.values là các số. Chia theo bins=[0,10,20], labels=[\"low\",\"high\"], include_lowest=True. Trả list nhãn, giá trị ngoài 0..20 thành None."
+    "body": "data.values là các số. Chia theo bins=[0,10,20], labels=[\"low\",\"high\"], include_lowest=True. Trả list nhãn, giá trị ngoài 0..20 thành None.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [0, 10, 20]}"
+     },
+     {
+      "label": "trả về",
+      "value": "['low', 'low', 'high']"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import pandas as pd\n\ndef solve(data):\n     bands = pd.cut(pd.Series(data['values']), bins=[0,10,20], labels=['low','high'], include_lowest=True)\n     return [None if pd.isna(v) else str(v) for v in bands]\n",

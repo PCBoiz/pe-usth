@@ -145,7 +145,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "solve(data) nhận {\"values\": list số nguyên không rỗng}. Tạo DataFrame một cột units, ghi Stata .dta trong TemporaryDirectory với write_index=False, đọc lại bằng read_stata; trả {\"columns\": list tên cột, \"values\": các units}. Thực hiện round-trip định dạng thật."
+    "body": "solve(data) nhận {\"values\": list số nguyên không rỗng}. Tạo DataFrame một cột units, ghi Stata .dta trong TemporaryDirectory với write_index=False, đọc lại bằng read_stata; trả {\"columns\": list tên cột, \"values\": các units}. Thực hiện round-trip định dạng thật.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [3, 8, 0]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'columns': ['units'], 'values': [3, 8, 0]}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "import tempfile\nfrom pathlib import Path\nimport pandas as pd\ndef solve(data):\n    with tempfile.TemporaryDirectory() as folder:\n        path = Path(folder) / 'units.dta'\n        pd.DataFrame({'units':data['values']}).to_stata(path, write_index=False)\n        frame = pd.read_stata(path)\n        return {'columns':list(frame.columns), 'values':frame['units'].tolist()}\n",

@@ -158,7 +158,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.values là dãy số. Vẽ một đường rồi dùng plt.setp để marker=\"s\",linestyle=\"--\",linewidth=2,alpha=0.5,color=\"black\". Trả marker, linestyle và width đọc từ Line2D. Các getter lần lượt là get_marker(),get_linestyle(),get_linewidth(). Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve. Trả thêm values bằng list(line.get_ydata()), alpha bằng line.get_alpha() và color bằng line.get_color()."
+    "body": "data.values là dãy số. Vẽ một đường rồi dùng plt.setp để marker=\"s\",linestyle=\"--\",linewidth=2,alpha=0.5,color=\"black\". Trả marker, linestyle và width đọc từ Line2D. Các getter lần lượt là get_marker(),get_linestyle(),get_linewidth(). Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve. Trả thêm values bằng list(line.get_ydata()), alpha bằng line.get_alpha() và color bằng line.get_color().",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'values': [3, 7, 5]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'marker': 's', 'linestyle': '--', 'width': 2.0, 'values': [3, 7, 5], 'alpha': 0.5, 'color': 'black'}"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
    "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     lines = ax.plot(data['values'])\n     plt.setp(lines,marker='s',linestyle='--',linewidth=2,alpha=0.5,color='black')\n     line = lines[0]\n     result = {'marker':line.get_marker(),'linestyle':line.get_linestyle(),'width':float(line.get_linewidth()),'values':list(line.get_ydata()),'alpha':line.get_alpha(),'color':line.get_color()}\n     plt.close(fig)\n     return result\n",

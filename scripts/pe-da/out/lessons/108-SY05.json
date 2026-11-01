@@ -536,7 +536,17 @@
   "step_4": {
    "task": {
     "title": "Tự viết rồi chạy Python",
-    "body": "Viết class Course(cid, name) có method label() trả \"mã: tên\". Trong solve(data), tạo một Course từ mỗi dictionary đầu vào rồi trả list các label theo thứ tự. Không gọi input trong __init__."
+    "body": "Viết class Course(cid, name) có method label() trả \"mã: tên\". Trong solve(data), tạo một Course từ mỗi dictionary đầu vào rồi trả list các label theo thứ tự. Không gọi input trong __init__.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "[{'id': 'ST', 'name': 'Statistics'}, {'id': 'DB', 'name': 'Database'}]"
+     },
+     {
+      "label": "trả về",
+      "value": "['ST: Statistics', 'DB: Database']"
+     }
+    ]
    },
    "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
    "solutionCode": "class Course:\n    def __init__(self, cid, name):\n        self.cid, self.name = cid, name\n    def label(self):\n        return self.cid + ': ' + self.name\ndef solve(data):\n    return [Course(row['id'], row['name']).label() for row in data]\n",

@@ -132,7 +132,9 @@ function kiemKyTuDb(x: unknown, duong: string, errors: string[]): void {
       if (m >= 0xd800 && m <= 0xdfff) {
         const doi = m <= 0xdbff ? x.charCodeAt(i + 1) : x.charCodeAt(i - 1);
         const ghep =
-          m <= 0xdbff ? doi >= 0xdc00 && doi <= 0xdfff : doi >= 0xd800 && doi <= 0xdbff;
+          m <= 0xdbff
+            ? doi >= 0xdc00 && doi <= 0xdfff
+            : doi >= 0xd800 && doi <= 0xdbff;
         if (!ghep) {
           errors.push(
             `${duong || 'nội dung'}: chứa surrogate lẻ — Postgres jsonb không lưu được.`,
@@ -268,6 +270,41 @@ export function validateStudioLesson(value: unknown): string[] {
 
   const four = lesson.step_4;
   if (isObject(four)) {
+    // Ô ví dụ đầu vào/đầu ra. Renderer (`SandboxScreen.tsx`) dựng
+    // `io.map(row => <div key={row.label}>)`, nên MỘT hàng thiếu `label` là một
+    // React key `undefined` và hai hàng cùng `label` là một hàng biến mất —
+    // không exception nào ném, chỉ là đề bài thiếu một nửa.
+    //
+    // Luật ở đây hẹp hơn `kiem_vi_du_io` của check.py có chủ đích: check.py so
+    // `value` với `repr` của ca chấm (nó có Python trong tay), còn cửa này chỉ
+    // canh HÌNH DẠNG. Đường nhập tài liệu (PDF/MD) cũng đi qua đây và nó dựng
+    // `task` bằng tay, nên đây là chỗ duy nhất chặn được một ô ví dụ gõ lệch.
+    const vd = isObject(four.task) ? four.task.io : undefined;
+    if (vd !== undefined) {
+      if (!Array.isArray(vd) || vd.length === 0) {
+        errors.push('step_4.task.io: có khoá nhưng không có hàng nào.');
+      } else {
+        const nhan = new Set<string>();
+        vd.forEach((row, i) => {
+          if (!isObject(row))
+            return errors.push(`step_4.task.io[${i}]: sai kiểu.`);
+          if (!nonEmptyString(row.label))
+            errors.push(
+              `step_4.task.io[${i}].label: thiếu nhãn (renderer dùng nó làm key).`,
+            );
+          if (!nonEmptyString(row.value))
+            errors.push(`step_4.task.io[${i}].value: thiếu giá trị ví dụ.`);
+          if (typeof row.label === 'string') {
+            if (nhan.has(row.label))
+              errors.push(
+                `step_4.task.io[${i}].label: nhãn ${row.label} trùng hàng trước.`,
+              );
+            nhan.add(row.label);
+          }
+        });
+      }
+    }
+
     const tests = four.tests;
     if (tests !== undefined) {
       if (!Array.isArray(tests) || tests.length === 0) {
