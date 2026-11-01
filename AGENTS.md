@@ -136,6 +136,13 @@ trong khi thực tế là 557:
 npx eslint "{src,apps,libs,test}/**/*.ts" --ignore-pattern "src/generated/**"
 ```
 
+## Vòng lặp tự kiểm
+
+Agent chạy việc trong repo này đi theo [LOOP.md](LOOP.md): bậc thang lệnh nói đúng/sai mà
+không cần người đọc, ba luật dừng, và bốn cách một vòng lặp nói dối (nới phép kiểm cho
+xanh · đo song song lúc đang build · xanh vì không ai đi qua · test không có răng). Mục
+tiêu là chạy tới xanh rồi mới bàn giao, không hỏi giữa chừng.
+
 ## Ràng buộc không được phá
 
 - **DB dùng chung với bản Django cũ.** Migration chỉ được THÊM: thêm cột nullable hoặc có
