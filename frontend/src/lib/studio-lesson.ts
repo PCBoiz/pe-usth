@@ -347,6 +347,76 @@ export function khopDapAn(doan: string, dapAn: string): boolean {
   return gon(doan).length > 0 && gon(doan) === gon(dapAn);
 }
 
+/**
+ * Trần của CỔNG DỰ ĐOÁN OUTPUT ở màn đọc (xem `doanDuocOutput`). Hai con số,
+ * ĐÃ ĐO trên bản dựng 179 bài — đừng đoán lại:
+ *
+ *   ≤1 dòng / ≤24 ký tự →  99 khối /  58 bài
+ *   ≤2 dòng / ≤40 ký tự → 262 khối / 127 bài   ← đang dùng
+ *   ≤3 dòng / ≤80 ký tự → 322 khối / 137 bài
+ *
+ * Vì sao dừng ở 2 dòng / 40 ký tự: ô gõ là MỘT dòng, và `khopDapAn` bỏ hết
+ * khoảng trắng nên hai dòng gõ liền nhau vẫn khớp — nhưng từ 3 dòng trở lên
+ * thì "đoán output" biến thành "chép lại cả một đoạn", tức người đoán ĐÚNG
+ * vẫn hay nhận "chưa khớp" chỉ vì gõ thiếu một dấu. Nới trần là nới đúng cái
+ * rủi ro đó, nên nó chỉ được HẠ.
+ */
+export const DOAN_OUTPUT_MAX_DONG = 2;
+export const DOAN_OUTPUT_MAX_KY_TU = 40;
+
+/**
+ * Thư viện vẽ hình. Khối nào gọi tới chúng thì KHÔNG hỏi "đoán xem in ra gì":
+ * thứ nó tạo ra là một biểu đồ (hiện bằng khối `figure` ngay dưới), còn
+ * `expected` chỉ là mấy con số in kèm — VZ01 có `expected: "36"` cho một đoạn
+ * vẽ cả một hình. Hỏi ở đó là hỏi về phần phụ của đoạn code.
+ *
+ * Đo trên bản dựng: 87 khối khớp regex này, trong đó 80 khối có khối `figure`
+ * đứng ngay sau. Bảy khối còn lại dựng Figure mà bài không xuất ảnh — đó đúng
+ * là lý do phép loại đọc CODE chứ không đọc "có khối figure phía sau".
+ */
+const THU_VIEN_VE_HINH = /\bplt\.|matplotlib|\bsns\.|plotly|ipywidgets|\.savefig\(/;
+
+/**
+ * Khối code ở màn đọc này có ĐỦ ĐIỀU KIỆN dựng cổng dự đoán output không?
+ *
+ * VÌ SAO CÓ CỔNG NÀY. Đo trên bản dựng 179 bài: **508 khối code ở màn đọc, cả
+ * 508 đều in sẵn `expected` ngay dưới code**, và chỉ 56 khối có bảng từng bước
+ * — tức 4/5 khối code của khoá không đòi người học nghĩ gì trước khi thấy đáp
+ * án. Người thử ngày 1/11/2026 nói "nên đặt trọng tâm vào practice" kèm ảnh
+ * một màn ĐỌC dày chữ. Cùng bằng chứng với `StepTrace` và nút "Xem đáp án" của
+ * `PracticeScreen`: Hundhausen 2002 — Gurka lặp lại thí nghiệm nhưng BỎ điều
+ * kiện "dự đoán trước" thì lợi thế BIẾN MẤT; Brod 2021 nói ra cơ chế (đoán sai
+ * → ngạc nhiên → chú ý dồn vào đáp án đúng).
+ *
+ * VÌ SAO LUẬT NÀY ĐƯỢC ĐẶT Ở FRONTEND, khác hẳn cờ `tryIt`: nó đọc được HOÀN
+ * TOÀN từ hình dạng `expected` và từ chữ trong `code`. Cờ `tryIt` thì không —
+ * ở đó build biết thứ frontend không biết (thiếu wheel, gói ẩn sau chuỗi
+ * `engine="openpyxl"`, `sys.executable`). Đừng suy từ đây sang đó.
+ *
+ * NĂM phép loại, mỗi phép một lý do riêng:
+ *  1. không phải khối `code`, hoặc không có `expected` → không có gì để đoán;
+ *  2. đã có `trace` (56 khối) → bảng từng bước đã hỏi dự đoán rồi, hỏi hai câu
+ *     trên cùng một khối là ma sát không mua thêm gì;
+ *  3. code gọi thư viện vẽ hình (87 khối) → xem THU_VIEN_VE_HINH;
+ *  4. `expected` dài hơn trần → xem DOAN_OUTPUT_MAX_*;
+ *  5. đáp án nằm NGUYÊN VĂN trong chính đoạn code (35 khối ở trần đang dùng) →
+ *     `print("Xin chào")` thì cổng chỉ bắt người học chép lại một chuỗi họ đang
+ *     nhìn. Cùng luật mà `gen_traces.py` đã phải đặt cho câu dự đoán của bảng
+ *     từng bước; so sau khi bỏ khoảng trắng, như `khopDapAn`.
+ */
+export function doanDuocOutput(block: ReadBlock): boolean {
+  if (block.type !== 'code') return false;
+  const exp = (block.expected ?? '').trim();
+  if (!exp) return false;
+  if (block.trace) return false;
+  if (THU_VIEN_VE_HINH.test(block.code)) return false;
+  if (exp.split('\n').filter((d) => d.trim()).length > DOAN_OUTPUT_MAX_DONG) return false;
+  if (exp.length > DOAN_OUTPUT_MAX_KY_TU) return false;
+  const gon = (s: string) => s.replace(/\s+/g, '');
+  if (gon(block.code).includes(gon(exp))) return false;
+  return true;
+}
+
 export type Step1 = {
   heading?: string;
   /**
@@ -744,6 +814,21 @@ export type LessonDraft = {
   practice?: Record<number, string>;
   /** Câu luyện tập đã bấm "Xem đáp án"; giữ trong nháp để quay lại màn vẫn thấy. */
   practiceSeen?: Record<number, boolean>;
+  /**
+   * CỔNG DỰ ĐOÁN OUTPUT ở màn đọc: câu người học đã NỘP cho một khối code, theo
+   * khoá `"<chỉ số màn>-<chỉ số khối>"` (cùng cách đánh khoá với `s1-read-<i>`).
+   * Có khoá = đã nộp = ô "Kết quả:" đã mở.
+   *
+   * Phải nằm TRONG NHÁP, không trong state của component như `daNop` của
+   * `StepTrace`: màn đọc là màn người học đi qua lại nhiều lần (nút "← Quay
+   * lại" ở thanh dưới), và bắt họ đoán LẠI cùng một câu mỗi lần quay lại là ma
+   * sát không mua thêm gì — lần đó họ đã biết đáp án rồi.
+   *
+   * MỘT trường, không hai: chữ đang gõ mà CHƯA nộp thì để trong state của
+   * component. Thêm một trường thứ hai cho nó là thêm một thứ phải khớp với
+   * trường này, và nó sẽ lệch — đúng họ bẫy fixture mà AGENTS.md ghi nhiều lần.
+   */
+  readGuess?: Record<string, string>;
   solutionUsed: boolean;
   /** Màn hình đã qua, theo `LessonScreen.key`. */
   done: Record<string, boolean>;
@@ -806,6 +891,7 @@ export function initialLessonDraft(lesson: StudioLesson): LessonDraft {
     code: lesson.step_4?.starterCode ?? '',
     practice: {},
     practiceSeen: {},
+    readGuess: {},
     solutionUsed: false,
     done: {},
     submitted: false,

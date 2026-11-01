@@ -13,15 +13,131 @@
 // Màn này chạy ở CỘT RỘNG như màn lý thuyết (StudioLesson truyền `wide`): bảng
 // và khối code cần chiều ngang. Riêng đoạn văn vẫn bó ~78 ký tự — xem
 // .read p trong studio-chrome.module.css.
+import { useState } from 'react';
+
 import CodeBlock from '@/components/lesson-chrome/exercises/CodeBlock';
 import TryItButton from '@/components/lesson-chrome/TryItButton';
 import { toCodeLines } from '@/lib/py-highlight';
-import { maDeThu, type ReadBlock } from '@/lib/studio-lesson';
+import { doanDuocOutput, khopDapAn, maDeThu, type ReadBlock } from '@/lib/studio-lesson';
 
 import c from '../studio-chrome.module.css';
 import { paragraphs, ScreenShell } from './chrome';
-import type { ShellProps } from './props';
+import type { LessonScreenProps } from './props';
 import StepTrace from './StepTrace';
+
+/**
+ * Ô "Kết quả:" — output của đoạn code ngay trên.
+ *
+ * Vì sao `expected` KHÔNG nằm trong CodeBlock: nó là cái chương trình IN RA,
+ * không phải dòng lệnh tiếp theo. Nhồi chung một thẻ (có số dòng, có tô màu cú
+ * pháp) thì học viên đọc output như code — đúng loại ngộ nhận mà cả giáo trình
+ * này đang cố gỡ.
+ */
+function KetQua({ expected }: { expected: string }) {
+  return (
+    <div className={c.readExpected}>
+      <span className={c.readExpectedLabel}>Kết quả:</span>
+      <pre>{expected}</pre>
+    </div>
+  );
+}
+
+/**
+ * CỔNG DỰ ĐOÁN OUTPUT — ô gõ + nút, mở ra thì hiện ô "Kết quả:" kèm một câu
+ * verdict.
+ *
+ * Lý lẽ và phép chọn khối nằm ở `doanDuocOutput` trong lib/studio-lesson.ts
+ * (508/508 khối code của khoá in sẵn đáp án; Hundhausen 2002 / Brod 2021).
+ * Khuôn thì CHÉP của `StepTrace`: cùng `disabled={!doan.trim()}`, cùng nhánh
+ * "chưa nộp → form, đã nộp → verdict", cùng bộ class CSS `tracePredict*` —
+ * dựng một bộ class thứ hai là hai cổng trông khác nhau trên cùng một màn.
+ *
+ * BA chi tiết là YÊU CẦU, không phải thẩm mỹ:
+ *
+ *  1. Ô "Kết quả:" MỞ RA dù đoán đúng hay sai. Giấu output của người đoán sai
+ *     là lấy đi đúng thứ họ cần nhất lúc đó (Brod 2021: đoán sai → ngạc nhiên
+ *     → chú ý dồn vào đáp án đúng). Đây là bước CAM KẾT, không phải bài thi.
+ *
+ *  2. Verdict KHÔNG phán xét, và nó phải NÓI RA giới hạn của phép so.
+ *     `khopDapAn` chỉ bỏ khoảng trắng — nó KHÔNG bỏ dấu nháy hay dấu ngoặc
+ *     (cố ý: `2` và `'2'` là hai giá trị khác nhau, và phân biệt được chúng là
+ *     một trong những thứ giáo trình này dạy). Nên `[ 6  8 10]` đòi đúng
+ *     ngoặc, và một người đoán ĐÚNG mà viết `6 8 10` sẽ nhận "chưa khớp". Vì
+ *     vậy chữ là "chưa khớp từng ký tự", không phải "sai", và câu sau nói
+ *     thẳng rằng đoán đúng ý mà viết khác dấu vẫn ra chữ đó.
+ *
+ *  3. KHÔNG animation lúc mở đáp án. Cùng kết luận đã ghim cho khối `diagram`
+ *     (Tversky 2002, xem SCHEMA.md): giá trị nằm ở việc SO hai thứ cạnh nhau,
+ *     mà so sánh thì cần cả hai cùng có mặt — một nhịp chạy lần lượt phá đúng
+ *     cái nó định giúp. Ô "Kết quả:" dùng lại nguyên class `readExpected` của
+ *     khối thường, nên nó hiện ra giống hệt khối không có cổng.
+ */
+function CongDuDoan({
+  expected,
+  daNop,
+  onNop,
+}: {
+  expected: string;
+  /** `undefined` = chưa nộp. Đến từ `draft.readGuess`, nên nó sống qua lần rời màn. */
+  daNop: string | undefined;
+  onNop: (doan: string) => void;
+}) {
+  // Chữ ĐANG GÕ mà chưa nộp thì chỉ ở đây: xem LessonDraft.readGuess để biết vì
+  // sao không thêm một trường nháp thứ hai cho nó.
+  const [doan, setDoan] = useState('');
+
+  if (daNop === undefined) {
+    return (
+      <form
+        className={c.tracePredict}
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (doan.trim()) onNop(doan.trim());
+        }}
+      >
+        <p className={c.tracePredictAsk}>
+          <strong>Đoán trước đã:</strong> đoạn code trên in ra gì?
+        </p>
+        <p className={c.tracePredictWhy}>
+          Đoán sai cũng được — chính lúc thấy mình đoán sai là lúc kết quả dưới đây
+          đáng đọc nhất. Đọc mà không đoán thì gần như không đọng lại gì. In ra nhiều
+          dòng thì gõ liền nhau trên một dòng cũng được.
+        </p>
+        <span className={c.tracePredictLine}>
+          <input
+            className={c.tracePredictInput}
+            value={doan}
+            onChange={(e) => setDoan(e.target.value)}
+            placeholder="đoạn code trên in ra gì?"
+            aria-label="Đoán xem đoạn code trên in ra gì"
+            autoComplete="off"
+            spellCheck={false}
+          />
+          <button type="submit" className={c.tracePredictGo} disabled={!doan.trim()}>
+            Xem kết quả
+          </button>
+        </span>
+      </form>
+    );
+  }
+
+  const khop = khopDapAn(daNop, expected);
+
+  return (
+    <>
+      <p className={khop ? c.traceVerdictOk : c.traceVerdictNo}>
+        {khop ? 'Khớp. ' : 'Chưa khớp từng ký tự. '}
+        <span className={c.traceVerdictNote}>
+          Bạn đoán <code>{daNop}</code>.
+          {khop
+            ? ''
+            : ' Phép so chỉ bỏ khoảng trắng, không bỏ dấu nháy hay dấu ngoặc — nên đoán đúng ý mà viết khác dấu vẫn ra dòng này. Đối chiếu với kết quả thật ngay dưới.'}
+        </span>
+      </p>
+      <KetQua expected={expected} />
+    </>
+  );
+}
 
 /**
  * Một khối — SÁU loại (xem READ_BLOCK_TYPES).
@@ -33,12 +149,19 @@ import StepTrace from './StepTrace';
  * trang trắng trước mặt người học. Với `never`, thêm loại khối mà quên renderer
  * thì `npm run typecheck` đỏ ngay.
  *
- * Vì sao `expected` KHÔNG nằm trong CodeBlock: nó là cái chương trình IN RA,
- * không phải dòng lệnh tiếp theo. Nhồi chung một thẻ (có số dòng, có tô màu cú
- * pháp) thì học viên đọc output như code — đúng loại ngộ nhận mà cả giáo trình
- * này đang cố gỡ.
+ * Vì sao `expected` KHÔNG nằm trong CodeBlock: xem <KetQua>.
  */
-function Block({ block, thu }: { block: ReadBlock; thu?: string | null }) {
+function Block({
+  block,
+  thu,
+  daNop,
+  onNop,
+}: {
+  block: ReadBlock;
+  thu?: string | null;
+  daNop: string | undefined;
+  onNop: (doan: string) => void;
+}) {
   switch (block.type) {
     case 'paragraph':
       return <p>{paragraphs(block.text)}</p>;
@@ -53,11 +176,14 @@ function Block({ block, thu }: { block: ReadBlock; thu?: string | null }) {
               lines={toCodeLines(block.code)}
             />
           </div>
-          {block.expected ? (
-            <div className={c.readExpected}>
-              <span className={c.readExpectedLabel}>Kết quả:</span>
-              <pre>{block.expected}</pre>
-            </div>
+          {/* Khối ĐỦ ĐIỀU KIỆN thì output nằm SAU một cổng dự đoán; khối không
+              đủ thì in thẳng như trước. Phép chọn là `doanDuocOutput` — một
+              hàm thuần ở lib, không phải một điều kiện viết tại đây: luật
+              trong component là luật không có test. */}
+          {doanDuocOutput(block) && block.expected ? (
+            <CongDuDoan expected={block.expected} daNop={daNop} onNop={onNop} />
+          ) : block.expected ? (
+            <KetQua expected={block.expected} />
           ) : null}
           {/* Nút đứng DƯỚI ô "Kết quả:", không ở trên: người học đọc code →
               đọc kết quả → mới nảy ra "nếu sửa chỗ này thì sao". Nhãn nói rõ
@@ -207,7 +333,12 @@ function Block({ block, thu }: { block: ReadBlock; thu?: string | null }) {
   }
 }
 
-export default function ReadScreen({ lesson, scr, metaLabel }: ShellProps) {
+type Props = Pick<
+  LessonScreenProps,
+  'lesson' | 'scr' | 'metaLabel' | 'draft' | 'update'
+>;
+
+export default function ReadScreen({ lesson, scr, metaLabel, draft, update }: Props) {
   const slices = lesson.step_1?.read ?? [];
   const at = scr.index ?? 0;
   const blocks = slices[at] ?? [];
@@ -232,6 +363,13 @@ export default function ReadScreen({ lesson, scr, metaLabel }: ShellProps) {
             // Tính ở ĐÂY, không trong <Block>: tiền tố cần cả `slices` và chỉ
             // số màn, mà Block chỉ nên biết về một khối.
             thu={block.type === 'code' && block.tryIt ? maDeThu(slices, at, i) : null}
+            // Khoá nháp mang CẢ chỉ số màn: `i` một mình trùng nhau giữa các
+            // màn đọc của cùng một bài, nên đoán ở màn 1 sẽ mở sẵn đáp án của
+            // khối cùng vị trí ở màn 2.
+            daNop={draft.readGuess?.[`${at}-${i}`]}
+            onNop={(doan) =>
+              update({ readGuess: { ...(draft.readGuess ?? {}), [`${at}-${i}`]: doan } })
+            }
           />
         ))}
       </div>
