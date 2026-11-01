@@ -152,6 +152,35 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
+      {
+        // Ảnh của giáo trình (80 PNG, 2,3 MB) và bộ dữ liệu quán (1,44 MB, riêng
+        // don_hang.csv là 1 289 915 byte). Trước bản này cả hai rơi về mặc định
+        // của `public/` — ĐO TRÊN PRODUCTION 1/11/2026, không suy từ config:
+        // `curl -I /static/da/VZ01-1.png` và `/static/da-dulieu/don_hang.csv`
+        // đều trả `public, max-age=0, must-revalidate`. Tức mỗi lần mở lại một
+        // bài biểu đồ là một lượt kiểm lại cho MỖI ảnh, và mỗi lần worker bị
+        // terminate() (cắt vòng lặp, bấm Dừng) là mất Map `daTaiDuLieu` nên CSV
+        // tải lại từ đầu.
+        //
+        // KHÔNG `immutable`, và đây là chỗ dễ sai nhất: tên `VZ01-1.png` và
+        // `don_hang.csv` KHÔNG ghim phiên bản, còn worker thì fetch
+        // `/static/da-dulieu/<tên>` TRẦN — không qua withAssetVersion(). Cache
+        // cứng là ghim học viên vào một bộ dữ liệu cũ, mà hỏng kiểu đó thì IM
+        // LẶNG: ca chấm đọc file sẽ trượt và không ai hiểu vì sao. Cùng lý lẽ
+        // với đoạn dặn về /static/js ngay trên.
+        // Hai khối rời, KHÔNG gộp thành `/static/da:path*`: cái đó còn khớp cả
+        // `/static/database.json` mai này ai đó thêm vào.
+        source: "/static/da/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=86400, must-revalidate" },
+        ],
+      },
+      {
+        source: "/static/da-dulieu/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=86400, must-revalidate" },
+        ],
+      },
     ];
   },
 };
