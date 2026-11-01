@@ -22,12 +22,12 @@
     [
      {
       "type": "paragraph",
-      "text": "Ô trống đã đếm được rồi, nhưng chữ trong sổ quán còn lệch kiểu hoa và dính dấu cách. Tên khu vực được nhập là \" North \", \"NORTH\" và \"South\". Nếu đếm ngay, cùng một khu vực North có thể bị tách thành hai tên."
+      "text": "Ô trống đã đếm được rồi, nhưng chữ trong sổ quán còn lệch kiểu hoa và dính dấu cách. Tên món được nhập là \" Latte \", \"LATTE\" và \"Mocha\". Nếu đếm ngay, cùng một món Latte có thể bị tách thành hai tên."
      },
      {
       "type": "code",
-      "code": "import pandas as pd\nregion = pd.Series([' North ', 'NORTH', 'South'], dtype='string')\nclean = region.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())",
-      "expected": "['north', 'north', 'south']\n2",
+      "code": "import pandas as pd\nmon = pd.Series([' Latte ', 'LATTE', 'Mocha'], dtype='string')\nclean = mon.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())",
+      "expected": "['latte', 'latte', 'mocha']\n2",
       "tryIt": true
      }
     ],
@@ -87,7 +87,7 @@
      "explanation": "Mỗi bước làm một việc; chuẩn hóa không tự sửa mọi lỗi dữ liệu."
     },
     {
-     "question": "strip có xóa dấu cách giữa hai từ không?\n\nimport pandas as pd\nregion = pd.Series([' North ', 'NORTH', 'South'], dtype='string')\nclean = region.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())",
+     "question": "strip có xóa dấu cách giữa hai từ không?\n\nimport pandas as pd\nmon = pd.Series([' Latte ', 'LATTE', 'Mocha'], dtype='string')\nclean = mon.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())",
      "options": [
       {
        "text": "Không; strip chỉ bỏ ký tự ở đầu và cuối chuỗi theo quy tắc được chọn.",
@@ -154,21 +154,21 @@
      "name": "chuẩn hóa tên mới",
      "input": {
       "names": [
-       " East ",
-       "EAST",
-       "West"
+       " Latte ",
+       "LATTE",
+       "Mocha"
       ],
-      "query": "east"
+      "query": "latte"
      },
      "expected": {
       "clean": [
-       "east",
-       "east",
-       "west"
+       "latte",
+       "latte",
+       "mocha"
       ],
       "matched": [
-       "east",
-       "east"
+       "latte",
+       "latte"
       ]
      }
     },
@@ -176,20 +176,20 @@
      "name": "dấu chấm là chữ",
      "input": {
       "names": [
-       "A.B",
-       "axb",
+       "Ca.Phe",
+       "CaxPhe",
        null
       ],
-      "query": "a.b"
+      "query": "ca.phe"
      },
      "expected": {
       "clean": [
-       "a.b",
-       "axb",
+       "ca.phe",
+       "caxphe",
        "unknown"
       ],
       "matched": [
-       "a.b"
+       "ca.phe"
       ]
      }
     },
@@ -197,16 +197,16 @@
      "name": "giữ khoảng giữa",
      "input": {
       "names": [
-       " New Town "
+       " Ca Phe Sua "
       ],
       "query": " "
      },
      "expected": {
       "clean": [
-       "new town"
+       "ca phe sua"
       ],
       "matched": [
-       "new town"
+       "ca phe sua"
       ]
      }
     }
@@ -214,7 +214,7 @@
    "hints": [
     {
      "title": "Gợi ý 1",
-     "body": "Chuỗi a.b phải được tìm nguyên văn; dấu chấm không được coi là ký hiệu đặc biệt."
+     "body": "Chuỗi ca.phe phải được tìm nguyên văn; dấu chấm không được coi là ký hiệu đặc biệt."
     },
     {
      "title": "Gợi ý 2",

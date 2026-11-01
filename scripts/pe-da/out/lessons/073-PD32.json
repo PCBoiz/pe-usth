@@ -26,7 +26,7 @@
      },
      {
       "type": "code",
-      "code": "import pandas as pd\nfrom io import StringIO\nraw = 'order,store,date,amount\\nO1, a ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'order': 'string', 'store': 'string'})\ndf['store'] = df['store'].str.strip().str.upper()\ndf['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['order'].is_unique\nprint(len(df), len(clean), clean['amount'].sum())",
+      "code": "import pandas as pd\nfrom io import StringIO\nraw = 'ma_don,quay,ngay,tong_tien\\nO1, q1 ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'ma_don': 'string', 'quay': 'string'})\ndf['quay'] = df['quay'].str.strip().str.upper()\ndf['ngay'] = pd.to_datetime(df['ngay'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['ma_don'].is_unique\nprint(len(df), len(clean), clean['tong_tien'].sum())",
       "expected": "4 3 60",
       "tryIt": true
      }
@@ -38,7 +38,7 @@
      },
      {
       "type": "code",
-      "code": "import pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2', 'O3'], 'store': ['A', 'B', 'C'], 'amount': [10, 20, 30]})\nstores = pd.DataFrame({'store': ['A', 'B'], 'region': ['North', 'South']})\njoined = orders.merge(stores, on='store', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(orders)\nassert joined['amount'].sum() == orders['amount'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'order'].tolist())\nprint(joined['amount'].sum())",
+      "code": "import pandas as pd\ndon = pd.DataFrame({'ma_don': ['O1', 'O2', 'O3'], 'quay': ['Q1', 'Q2', 'QH'], 'tong_tien': [10, 20, 30]})\ndanh_muc_quay = pd.DataFrame({'quay': ['Q1', 'Q2'], 'khu_vuc': ['Phía Nam', 'Trung tâm']})\njoined = don.merge(danh_muc_quay, on='quay', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(don)\nassert joined['tong_tien'].sum() == don['tong_tien'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'ma_don'].tolist())\nprint(joined['tong_tien'].sum())",
       "expected": "['O3']\n60",
       "tryIt": true
      }
@@ -50,13 +50,13 @@
      },
      {
       "type": "code",
-      "code": "import pandas as pd\ndf = pd.DataFrame({'date': pd.to_datetime(['2026-01-01', '2026-01-02', '2026-02-01']), 'region': ['North', 'South', None], 'amount': [10, 20, 30]})\ndf['region'] = df['region'].fillna('Unknown')\ndf['month'] = df['date'].dt.to_period('M').astype(str)\nreport = df.groupby(['month', 'region'], as_index=False)['amount'].sum().sort_values(['month', 'region'])\nassert report['amount'].sum() == df['amount'].sum()\nprint(report.to_csv(index=False, lineterminator='\\n').strip())",
-      "expected": "month,region,amount\n2026-01,North,10\n2026-01,South,20\n2026-02,Unknown,30",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'ngay': pd.to_datetime(['2026-01-01', '2026-01-02', '2026-02-01']), 'khu_vuc': ['Phía Nam', 'Trung tâm', None], 'tong_tien': [10, 20, 30]})\ndf['khu_vuc'] = df['khu_vuc'].fillna('Unknown')\ndf['thang'] = df['ngay'].dt.to_period('M').astype(str)\nreport = df.groupby(['thang', 'khu_vuc'], as_index=False)['tong_tien'].sum().sort_values(['thang', 'khu_vuc'])\nassert report['tong_tien'].sum() == df['tong_tien'].sum()\nprint(report.to_csv(index=False, lineterminator='\\n').strip())",
+      "expected": "thang,khu_vuc,tong_tien\n2026-01,Phía Nam,10\n2026-01,Trung tâm,20\n2026-02,Unknown,30",
       "tryIt": true
      },
      {
       "type": "paragraph",
-      "text": "Báo cáo giữ nhóm Unknown để tổng vẫn đối chiếu được. Cột month, region, amount ở dạng dài sẵn sàng cho biểu đồ cột hoặc đường ở phần visualization. Khi giao báo cáo, ghi đơn vị tiền, khoảng ngày, định nghĩa doanh thu, cách bỏ trùng và số đơn chưa khớp; nhận xét nên bám vào dữ liệu, không tự suy ra nguyên nhân. Quán đã có báo cáo bằng số; chặng sau là làm cho người khác đọc được nó."
+      "text": "Báo cáo giữ nhóm Unknown để tổng vẫn đối chiếu được. Cột thang, khu_vuc, tong_tien ở dạng dài sẵn sàng cho biểu đồ cột hoặc đường ở phần visualization. Khi giao báo cáo, ghi đơn vị tiền, khoảng ngày, định nghĩa doanh thu, cách bỏ trùng và số đơn chưa khớp; nhận xét nên bám vào dữ liệu, không tự suy ra nguyên nhân. Quán đã có báo cáo bằng số; chặng sau là làm cho người khác đọc được nó."
      }
     ]
    ],
@@ -68,30 +68,30 @@
   "step_2": {
    "mcq": [
     {
-     "question": "Đơn của cửa hàng chưa có vùng nên xử lý thế nào để tổng không mất?",
+     "question": "Đơn của quầy chưa có khu vực nên xử lý thế nào để tổng không mất?",
      "options": [
       {
        "text": "Bỏ đơn bằng inner merge",
        "detail": "Có thể làm mất doanh thu của đơn hợp lệ."
       },
       {
-       "text": "Giữ đơn và ghi vùng Unknown để xem lại",
+       "text": "Giữ đơn và ghi khu vực Unknown để xem lại",
        "detail": "Đúng: báo cáo còn đối chiếu được doanh thu.",
        "correct": true
       },
       {
-       "text": "Đổi amount của đơn thành 0",
+       "text": "Đổi tong_tien của đơn thành 0",
        "detail": "Chưa có vùng không có nghĩa chưa có doanh thu."
       }
      ],
      "explanation": "Thiếu danh mục và thiếu doanh thu là hai vấn đề khác nhau."
     },
     {
-     "question": "Vì sao dự án kiểm tra tổng tiền trước và sau merge?\n\nimport pandas as pd\nfrom io import StringIO\nraw = 'order,store,date,amount\\nO1, a ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'order': 'string', 'store': 'string'})\ndf['store'] = df['store'].str.strip().str.upper()\ndf['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['order'].is_unique\nprint(len(df), len(clean), clean['amount'].sum())",
+     "question": "Vì sao dự án kiểm tra tổng tiền trước và sau merge?\n\nimport pandas as pd\nfrom io import StringIO\nraw = 'ma_don,quay,ngay,tong_tien\\nO1, q1 ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'ma_don': 'string', 'quay': 'string'})\ndf['quay'] = df['quay'].str.strip().str.upper()\ndf['ngay'] = pd.to_datetime(df['ngay'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['ma_don'].is_unique\nprint(len(df), len(clean), clean['tong_tien'].sum())",
      "options": [
       {
-       "text": "Để ép mọi hàng thành cùng một amount.",
-       "detail": "Ép amount giống nhau làm thay dữ liệu thay vì đối chiếu."
+       "text": "Để ép mọi hàng thành cùng một tong_tien.",
+       "detail": "Ép tong_tien giống nhau làm thay dữ liệu thay vì đối chiếu."
       },
       {
        "text": "Vì merge luôn tăng tổng và cần chấp nhận mức tăng đó.",
@@ -106,7 +106,7 @@
      "explanation": "Để phát hiện việc nhân dòng hoặc làm mất đơn khi nối."
     },
     {
-     "question": "Tại sao giữ nhóm Unknown trong báo cáo mẫu?\n\nimport pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2', 'O3'], 'store': ['A', 'B', 'C'], 'amount': [10, 20, 30]})\nstores = pd.DataFrame({'store': ['A', 'B'], 'region': ['North', 'South']})\njoined = orders.merge(stores, on='store', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(orders)\nassert joined['amount'].sum() == orders['amount'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'order'].tolist())\nprint(joined['amount'].sum())",
+     "question": "Tại sao giữ nhóm Unknown trong báo cáo mẫu?\n\nimport pandas as pd\ndon = pd.DataFrame({'ma_don': ['O1', 'O2', 'O3'], 'quay': ['Q1', 'Q2', 'QH'], 'tong_tien': [10, 20, 30]})\ndanh_muc_quay = pd.DataFrame({'quay': ['Q1', 'Q2'], 'khu_vuc': ['Phía Nam', 'Trung tâm']})\njoined = don.merge(danh_muc_quay, on='quay', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(don)\nassert joined['tong_tien'].sum() == don['tong_tien'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'ma_don'].tolist())\nprint(joined['tong_tien'].sum())",
      "options": [
       {
        "text": "Để các đơn chưa khớp khu vực vẫn được thể hiện và tổng báo cáo còn khớp tổng đơn.",
@@ -114,8 +114,8 @@
        "correct": true
       },
       {
-       "text": "Để tự coi các đơn chưa khớp là đã biết vùng.",
-       "detail": "Unknown ghi rõ chưa xác định, không giả vờ đã biết vùng."
+       "text": "Để tự coi các đơn chưa khớp là đã biết khu vực.",
+       "detail": "Unknown ghi rõ chưa xác định, không giả vờ đã biết khu vực."
       },
       {
        "text": "Để bỏ các đơn chưa khớp ra khỏi tổng đối chiếu.",
@@ -135,9 +135,9 @@
      "answer": "Để các đơn chưa khớp khu vực vẫn được thể hiện và tổng báo cáo còn khớp tổng đơn."
     },
     {
-     "prompt": "Tự làm báo cáo: ngày=[2026-01-01,2026-01-02,2026-02-01], amount=[5,7,8]. Tính tổng tháng và kiểm tra tổng báo cáo bằng tổng gốc.",
+     "prompt": "Tự làm báo cáo: ngày=[2026-01-01,2026-01-02,2026-02-01], tong_tien=[5,7,8]. Tính tổng tháng và kiểm tra tổng báo cáo bằng tổng gốc.",
      "answer": "Tháng 1=12, tháng 2=8; tổng 20.",
-     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'date': pd.to_datetime(['2026-01-01', '2026-01-02', '2026-02-01']), 'amount': [5, 7, 8]})\nreport = df.set_index('date')['amount'].resample('MS').sum()\nassert report.sum() == df['amount'].sum()\nprint(report.tolist())\nprint(report.sum())",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'ngay': pd.to_datetime(['2026-01-01', '2026-01-02', '2026-02-01']), 'tong_tien': [5, 7, 8]})\nreport = df.set_index('ngay')['tong_tien'].resample('MS').sum()\nassert report.sum() == df['tong_tien'].sum()\nprint(report.tolist())\nprint(report.sum())",
      "answerExpected": "[12, 8]\n20"
     }
    ]
@@ -145,52 +145,52 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.orders có order, store, date ISO, amount; các dòng có thể trùng toàn bộ. data.stores có store, region và mã duy nhất. Chuẩn hóa mã store của cả orders và stores bằng strip/upper, bỏ dòng giống hệt, nối trái với validate many_to_one, vùng vắng là Unknown, tổng hợp theo YYYY-MM và region. Trả {report:list bản ghi month,region,amount đã sắp; total:tổng amount của đơn sau bỏ trùng}. Dữ liệu không có hai phiên bản xung đột của cùng order."
+    "body": "data.don có ma_don, quay, ngay ISO, tong_tien; các dòng có thể trùng toàn bộ. data.danh_muc_quay có quay, khu_vuc và mã duy nhất. Chuẩn hóa mã quay của cả don và danh_muc_quay bằng strip/upper, bỏ dòng giống hệt, nối trái với validate many_to_one, khu vực vắng là Unknown, tổng hợp theo YYYY-MM và khu_vuc. Trả {report:list bản ghi thang,khu_vuc,tong_tien đã sắp; total:tổng tong_tien của đơn sau bỏ trùng}. Dữ liệu không có hai phiên bản xung đột của cùng ma_don."
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame(data['orders']).copy()\n     orders['store'] = orders['store'].str.strip().str.upper()\n     orders = orders.drop_duplicates()\n     stores = pd.DataFrame(data['stores']).copy()\n     stores['store'] = stores['store'].str.strip().str.upper()\n     joined = orders.merge(stores, on='store', how='left', validate='many_to_one')\n     joined['region'] = joined['region'].fillna('Unknown')\n     joined['month'] = pd.to_datetime(joined['date']).dt.to_period('M').astype(str)\n     report = joined.groupby(['month','region'], as_index=False)['amount'].sum().sort_values(['month','region'])\n     return {'report':report.to_dict('records'), 'total':float(orders['amount'].sum())}\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     don = pd.DataFrame(data['don']).copy()\n     don['quay'] = don['quay'].str.strip().str.upper()\n     don = don.drop_duplicates()\n     danh_muc_quay = pd.DataFrame(data['danh_muc_quay']).copy()\n     danh_muc_quay['quay'] = danh_muc_quay['quay'].str.strip().str.upper()\n     joined = don.merge(danh_muc_quay, on='quay', how='left', validate='many_to_one')\n     joined['khu_vuc'] = joined['khu_vuc'].fillna('Unknown')\n     joined['thang'] = pd.to_datetime(joined['ngay']).dt.to_period('M').astype(str)\n     report = joined.groupby(['thang','khu_vuc'], as_index=False)['tong_tien'].sum().sort_values(['thang','khu_vuc'])\n     return {'report':report.to_dict('records'), 'total':float(don['tong_tien'].sum())}\n",
    "tests": [
     {
      "name": "trùng và chưa khớp",
      "input": {
-      "orders": [
+      "don": [
        {
-        "order": "1",
-        "store": " a ",
-        "date": "2026-03-01",
-        "amount": 5
+        "ma_don": "1",
+        "quay": " q1 ",
+        "ngay": "2026-03-01",
+        "tong_tien": 5
        },
        {
-        "order": "1",
-        "store": " a ",
-        "date": "2026-03-01",
-        "amount": 5
+        "ma_don": "1",
+        "quay": " q1 ",
+        "ngay": "2026-03-01",
+        "tong_tien": 5
        },
        {
-        "order": "2",
-        "store": "C",
-        "date": "2026-03-02",
-        "amount": 8
+        "ma_don": "2",
+        "quay": "QH",
+        "ngay": "2026-03-02",
+        "tong_tien": 8
        }
       ],
-      "stores": [
+      "danh_muc_quay": [
        {
-        "store": " a ",
-        "region": "East"
+        "quay": " q1 ",
+        "khu_vuc": "Phía Nam"
        }
       ]
      },
      "expected": {
       "report": [
        {
-        "month": "2026-03",
-        "region": "East",
-        "amount": 5
+        "thang": "2026-03",
+        "khu_vuc": "Phía Nam",
+        "tong_tien": 5
        },
        {
-        "month": "2026-03",
-        "region": "Unknown",
-        "amount": 8
+        "thang": "2026-03",
+        "khu_vuc": "Unknown",
+        "tong_tien": 8
        }
       ],
       "total": 13.0
@@ -199,38 +199,38 @@
     {
      "name": "hai tháng",
      "input": {
-      "orders": [
+      "don": [
        {
-        "order": "3",
-        "store": "B",
-        "date": "2026-01-02",
-        "amount": 2
+        "ma_don": "3",
+        "quay": "Q2",
+        "ngay": "2026-01-02",
+        "tong_tien": 2
        },
        {
-        "order": "4",
-        "store": "B",
-        "date": "2026-02-02",
-        "amount": 7
+        "ma_don": "4",
+        "quay": "Q2",
+        "ngay": "2026-02-02",
+        "tong_tien": 7
        }
       ],
-      "stores": [
+      "danh_muc_quay": [
        {
-        "store": "b ",
-        "region": "West"
+        "quay": "q2 ",
+        "khu_vuc": "Trung tâm"
        }
       ]
      },
      "expected": {
       "report": [
        {
-        "month": "2026-01",
-        "region": "West",
-        "amount": 2
+        "thang": "2026-01",
+        "khu_vuc": "Trung tâm",
+        "tong_tien": 2
        },
        {
-        "month": "2026-02",
-        "region": "West",
-        "amount": 7
+        "thang": "2026-02",
+        "khu_vuc": "Trung tâm",
+        "tong_tien": 7
        }
       ],
       "total": 9.0
@@ -239,27 +239,27 @@
     {
      "name": "đơn 0 vẫn còn",
      "input": {
-      "orders": [
+      "don": [
        {
-        "order": "5",
-        "store": "Z",
-        "date": "2026-04-01",
-        "amount": 0
+        "ma_don": "5",
+        "quay": "QX",
+        "ngay": "2026-04-01",
+        "tong_tien": 0
        }
       ],
-      "stores": [
+      "danh_muc_quay": [
        {
-        "store": "A",
-        "region": "East"
+        "quay": "Q1",
+        "khu_vuc": "Phía Nam"
        }
       ]
      },
      "expected": {
       "report": [
        {
-        "month": "2026-04",
-        "region": "Unknown",
-        "amount": 0
+        "thang": "2026-04",
+        "khu_vuc": "Unknown",
+        "tong_tien": 0
        }
       ],
       "total": 0.0
@@ -269,7 +269,7 @@
    "hints": [
     {
      "title": "Gợi ý 1",
-     "body": "Một cửa hàng có nhiều đơn nhưng danh mục chỉ được có một hàng cho mỗi cửa hàng."
+     "body": "Một quầy có nhiều đơn nhưng danh mục chỉ được có một hàng cho mỗi quầy."
     },
     {
      "title": "Gợi ý 2",

@@ -26,7 +26,7 @@
      },
      {
       "type": "code",
-      "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndf['revenue'] = df['qty'] * df['price']\nprint(df['revenue'].tolist())",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'so_coc': [2, 3], 'don_gia': [10, 20]})\ndf['tong_tien'] = df['so_coc'] * df['don_gia']\nprint(df['tong_tien'].tolist())",
       "expected": "[20, 60]",
       "tryIt": true
      }
@@ -38,19 +38,19 @@
      },
      {
       "type": "code",
-      "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\npriced = df.assign(revenue=df['qty'] * df['price'])\npriced.loc[priced['qty'] >= 3, 'revenue'] = 50\nprint(priced['revenue'].tolist())\nprint(df.columns.tolist())",
-      "expected": "[20, 50]\n['qty', 'price']",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'so_coc': [2, 3], 'don_gia': [10, 20]})\nco_tien = df.assign(tong_tien=df['so_coc'] * df['don_gia'])\nco_tien.loc[co_tien['so_coc'] >= 3, 'tong_tien'] = 50\nprint(co_tien['tong_tien'].tolist())\nprint(df.columns.tolist())",
+      "expected": "[20, 50]\n['so_coc', 'don_gia']",
       "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "df vẫn có hai cột cũ vì kết quả assign được lưu vào priced. Nếu muốn sửa một bảng con độc lập, có thể chọn rồi copy rõ ràng."
+      "text": "df vẫn có hai cột cũ vì kết quả assign được lưu vào co_tien. Nếu muốn sửa một bảng con độc lập, có thể chọn rồi copy rõ ràng."
      },
      {
       "type": "code",
-      "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\nlarge = df.loc[df['qty'] >= 3].copy()\nlarge.loc[:, 'price'] = 18\nprint(df['price'].tolist())\nprint(large['price'].tolist())",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'so_coc': [2, 3], 'don_gia': [10, 20]})\nlarge = df.loc[df['so_coc'] >= 3].copy()\nlarge.loc[:, 'don_gia'] = 18\nprint(df['don_gia'].tolist())\nprint(large['don_gia'].tolist())",
       "expected": "[10, 20]\n[18]",
       "tryIt": true
      },
@@ -68,7 +68,7 @@
   "step_2": {
    "mcq": [
     {
-     "question": "qty = pd.Series([2,4]); price = pd.Series([3,5]). (qty * price).tolist() cho gì?",
+     "question": "so_coc = pd.Series([2,4]); price = pd.Series([3,5]). (so_coc * price).tolist() cho gì?",
      "options": [
       {
        "text": "[6, 10, 12, 20]",
@@ -87,7 +87,7 @@
      "explanation": "Doanh thu thuộc từng hàng có cùng số lượng và đơn giá."
     },
     {
-     "question": "Hai cột của một DataFrame là qty=[2,3] và price=[10,20]. Nhân hai cột theo hàng cho doanh thu nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndf['revenue'] = df['qty'] * df['price']\nprint(df['revenue'].tolist())",
+     "question": "Hai cột của một DataFrame là so_coc=[2,3] và price=[10,20]. Nhân hai cột theo hàng cho doanh thu nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'so_coc': [2, 3], 'don_gia': [10, 20]})\ndf['tong_tien'] = df['so_coc'] * df['don_gia']\nprint(df['tong_tien'].tolist())",
      "options": [
       {
        "text": "[20, 30, 40, 60].",
@@ -106,38 +106,38 @@
      "explanation": "[20, 60]."
     },
     {
-     "question": "Muốn sửa bảng gốc ở các hàng qty >= 3, nên dùng câu lệnh nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\npriced = df.assign(revenue=df['qty'] * df['price'])\npriced.loc[priced['qty'] >= 3, 'revenue'] = 50\nprint(priced['revenue'].tolist())\nprint(df.columns.tolist())",
+     "question": "Muốn sửa bảng gốc ở các hàng so_coc >= 3, nên dùng câu lệnh nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'so_coc': [2, 3], 'don_gia': [10, 20]})\nco_tien = df.assign(tong_tien=df['so_coc'] * df['don_gia'])\nco_tien.loc[co_tien['so_coc'] >= 3, 'tong_tien'] = 50\nprint(co_tien['tong_tien'].tolist())\nprint(df.columns.tolist())",
      "options": [
       {
-       "text": "df.loc[df[\"qty\"] >= 3, \"price\"] = 18.",
-       "detail": "df.loc[df[\"qty\"] >= 3, \"price\"] = 18.",
+       "text": "df.loc[df[\"so_coc\"] >= 3, \"price\"] = 18.",
+       "detail": "df.loc[df[\"so_coc\"] >= 3, \"price\"] = 18.",
        "correct": true
       },
       {
-       "text": "df[df[\"qty\"] >= 3][\"price\"] = 18 là cách gán rõ ràng cho bảng gốc.",
+       "text": "df[df[\"so_coc\"] >= 3][\"price\"] = 18 là cách gán rõ ràng cho bảng gốc.",
        "detail": "Gán nối chuỗi như vậy không phải cách sửa rõ ràng trên bảng gốc."
       },
       {
        "text": "df.loc[:, \"price\"] = 18 vì điều kiện hàng không cần thiết.",
-       "detail": "Phương án này sửa toàn bộ cột, bỏ mất điều kiện qty."
+       "detail": "Phương án này sửa toàn bộ cột, bỏ mất điều kiện so_coc."
       }
      ],
-     "explanation": "df.loc[df[\"qty\"] >= 3, \"price\"] = 18."
+     "explanation": "df.loc[df[\"so_coc\"] >= 3, \"price\"] = 18."
     }
    ],
    "practice": [
     {
-     "prompt": "Nhân qty=[2, 3] với price=[10, 20] cho doanh thu nào?",
+     "prompt": "Nhân so_coc=[2, 3] với price=[10, 20] cho doanh thu nào?",
      "answer": "[20, 60]."
     },
     {
-     "prompt": "Muốn sửa bảng gốc ở các hàng qty >= 3, nên dùng câu lệnh nào?",
-     "answer": "df.loc[df[\"qty\"] >= 3, \"price\"] = 18."
+     "prompt": "Muốn sửa bảng gốc ở các hàng so_coc >= 3, nên dùng câu lệnh nào?",
+     "answer": "df.loc[df[\"so_coc\"] >= 3, \"price\"] = 18."
     },
     {
-     "prompt": "Tạo qty=[1, 4], sửa qty lớn hơn 2 thành 2 và in cột.",
+     "prompt": "Tạo so_coc=[1, 4], sửa so_coc lớn hơn 2 thành 2 và in cột.",
      "answer": "Kết quả [1, 2].",
-     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'qty': [1, 4]})\ndf.loc[df['qty'] > 2, 'qty'] = 2\nprint(df['qty'].tolist())",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'so_coc': [1, 4]})\ndf.loc[df['so_coc'] > 2, 'so_coc'] = 2\nprint(df['so_coc'].tolist())",
      "answerExpected": "[1, 2]"
     }
    ]
@@ -145,22 +145,22 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.rows có qty, price; data.cap là doanh thu áp dụng cố định cho mọi hàng qty>=3. Tạo revenue=qty*price, sửa revenue ở đúng các hàng đó bằng loc. Trả list revenue theo thứ tự hàng."
+    "body": "data.rows có so_coc, don_gia; data.cap là doanh thu áp dụng cố định cho mọi hàng so_coc>=3. Tạo tong_tien=so_coc*don_gia, sửa tong_tien ở đúng các hàng đó bằng loc. Trả list tong_tien theo thứ tự hàng."
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['qty','price'])\n     df['revenue'] = df['qty'] * df['price']\n     df.loc[df['qty'] >= 3, 'revenue'] = data['cap']\n     return df['revenue'].tolist()\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['so_coc','don_gia'])\n     df['tong_tien'] = df['so_coc'] * df['don_gia']\n     df.loc[df['so_coc'] >= 3, 'tong_tien'] = data['cap']\n     return df['tong_tien'].tolist()\n",
    "tests": [
     {
      "name": "giới hạn khác ví dụ",
      "input": {
       "rows": [
        {
-        "qty": 1,
-        "price": 12
+        "so_coc": 1,
+        "don_gia": 12
        },
        {
-        "qty": 4,
-        "price": 20
+        "so_coc": 4,
+        "don_gia": 20
        }
       ],
       "cap": 60
@@ -175,12 +175,12 @@
      "input": {
       "rows": [
        {
-        "qty": 3,
-        "price": 9
+        "so_coc": 3,
+        "don_gia": 9
        },
        {
-        "qty": 2,
-        "price": 8
+        "so_coc": 2,
+        "don_gia": 8
        }
       ],
       "cap": 25
@@ -195,8 +195,8 @@
      "input": {
       "rows": [
        {
-        "qty": 0,
-        "price": 100
+        "so_coc": 0,
+        "don_gia": 100
        }
       ],
       "cap": 30

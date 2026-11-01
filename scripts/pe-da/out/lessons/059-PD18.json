@@ -148,7 +148,7 @@
     "body": "data.batches là list các lô; mỗi lô là list số lượng. Có ít nhất một lô không rỗng. Tạo một DataFrame mỗi lô, concat một lần theo hàng với ignore_index=True. Trả values và index thành hai list; giữ mọi số kể cả số lặp."
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     parts = [pd.DataFrame({'qty':part}) for part in data['batches']]\n     combined = pd.concat(parts, ignore_index=True)\n     return {'values':combined['qty'].tolist(), 'index':combined.index.tolist()}\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     parts = [pd.DataFrame({'so_coc':part}) for part in data['batches']]\n     combined = pd.concat(parts, ignore_index=True)\n     return {'values':combined['so_coc'].tolist(), 'index':combined.index.tolist()}\n",
    "tests": [
     {
      "name": "lô cuối ngắn",

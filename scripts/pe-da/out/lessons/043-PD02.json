@@ -141,17 +141,17 @@
      "answer": "Nó cho biết kiểu dữ liệu và số giá trị không thiếu, cùng thông tin tổng quan của bảng. info đã in trực tiếp nên gọi sales.info(), không cần bọc print."
     },
     {
-     "prompt": "Tạo bảng qty=[2, 3], price=[10, 20], rồi in hàng đầu.",
+     "prompt": "Tạo bảng so_coc=[2, 3], price=[10, 20], rồi in hàng đầu.",
      "answer": "Dùng head(1).",
-     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\nprint(df.head(1).to_dict('records'))",
-     "answerExpected": "[{'qty': 2, 'price': 10}]"
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'so_coc': [2, 3], 'price': [10, 20]})\nprint(df.head(1).to_dict('records'))",
+     "answerExpected": "[{'so_coc': 2, 'price': 10}]"
     },
     {
-     "prompt": "Với bảng có index [\"A\",\"B\"] và columns [\"qty\",\"price\"], viết cách xem index, columns, hàng đầu, hàng cuối và thông tin kiểu cột.",
+     "prompt": "Với bảng có index [\"A\",\"B\"] và columns [\"so_coc\",\"price\"], viết cách xem index, columns, hàng đầu, hàng cuối và thông tin kiểu cột.",
      "answer": "Dùng df.index.tolist(), df.columns.tolist(), df.head(1), df.tail(1) và df.info(). Hai tên đầu là nhãn hàng, hai tên sau là nhãn cột; info in thông tin trực tiếp."
     },
     {
-     "prompt": "df[[\"qty\"]] có shape (2,1). Sau to_numpy(), các nhãn A/B và qty còn được giữ không? .values trong slide có ý nghĩa gì?",
+     "prompt": "df[[\"so_coc\"]] có shape (2,1). Sau to_numpy(), các nhãn A/B và so_coc còn được giữ không? .values trong slide có ý nghĩa gì?",
      "answer": "Không. to_numpy() trả ndarray shape (2,1) chỉ giữ giá trị. .values cũng lấy phần giá trị, nhưng to_numpy() thể hiện rõ thao tác và cho phép chọn dtype/copy. Giữ nhãn riêng nếu cần ghép kết quả trở lại bảng."
     }
    ]

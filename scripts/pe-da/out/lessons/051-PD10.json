@@ -135,9 +135,9 @@
      "answer": "Không nếu mỗi hàng là một mặt hàng; cần xác định khóa theo cấu trúc bảng."
     },
     {
-     "prompt": "Bỏ dòng trùng toàn bộ trong id=[1,1,2], qty=[3,3,4], rồi in số hàng.",
+     "prompt": "Bỏ dòng trùng toàn bộ trong id=[1,1,2], so_coc=[3,3,4], rồi in số hàng.",
      "answer": "Còn 2 hàng.",
-     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'id': [1, 1, 2], 'qty': [3, 3, 4]})\nprint(len(df.drop_duplicates()))",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'id': [1, 1, 2], 'so_coc': [3, 3, 4]})\nprint(len(df.drop_duplicates()))",
      "answerExpected": "2"
     }
    ]

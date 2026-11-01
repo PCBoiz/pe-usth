@@ -1504,14 +1504,14 @@
    }
   },
   "GU01": {
-   "codeHash": "686cf6049183ffa5",
+   "codeHash": "b80426b19346efef",
    "blocks": {
     "0": {
      "predict": {
       "kind": "final",
-      "var": "qty",
-      "prompt": "Sau khi chạy xong, `qty` bằng mấy?",
-      "answer": "3"
+      "var": "price",
+      "prompt": "Sau khi chạy xong, `price` bằng mấy?",
+      "answer": "20"
      },
      "rows": [
       {
@@ -1536,12 +1536,12 @@
        "line": 4,
        "set": [
         [
-         "price",
-         "20"
+         "cups",
+         "3"
         ],
         [
-         "qty",
-         "3"
+         "price",
+         "20"
         ]
        ]
       },
@@ -1555,12 +1555,12 @@
        "enter": true,
        "set": [
         [
-         "price",
-         "20"
+         "cups",
+         "3"
         ],
         [
-         "qty",
-         "3"
+         "price",
+         "20"
         ]
        ]
       },
@@ -2139,7 +2139,7 @@
    }
   },
   "NP18": {
-   "codeHash": "bff90be9a6096230",
+   "codeHash": "4b6201db2886abb0",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2357,7 +2357,7 @@
    }
   },
   "PD06": {
-   "codeHash": "77ea8af388f12a60",
+   "codeHash": "09c314364dd56eb0",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2371,7 +2371,7 @@
    }
   },
   "PD07": {
-   "codeHash": "7e0d301df1ddaf0b",
+   "codeHash": "cbfe50c800265e62",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2399,7 +2399,7 @@
    }
   },
   "PD09": {
-   "codeHash": "68c64a8973f16f45",
+   "codeHash": "dbea797fc46e127f",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2677,7 +2677,7 @@
    }
   },
   "PD26": {
-   "codeHash": "04cf775f8c56bbf2",
+   "codeHash": "72e76bb98dd96cc6",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -2819,7 +2819,7 @@
    }
   },
   "PD32": {
-   "codeHash": "92bf76beb4b88acc",
+   "codeHash": "76c5ab47b5a9ab9c",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -3060,7 +3060,7 @@
    }
   },
   "RD04": {
-   "codeHash": "d3921499378d4b94",
+   "codeHash": "b500ff49f19e12a3",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"
@@ -7996,7 +7996,7 @@
    }
   },
   "VZ26": {
-   "codeHash": "825a6c53f522804a",
+   "codeHash": "10ed359f5593e63b",
    "blocks": {
     "0": {
      "skip": "không có câu dự đoán nào bảng trả lời được"

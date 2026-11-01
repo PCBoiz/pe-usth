@@ -26,15 +26,15 @@
      },
      {
       "type": "code",
-      "code": "def total(qty, price):\n    return qty * price\ncommand = '3 20'\nqty, price = map(int, command.split())\nprint(total(qty, price))",
+      "code": "def total(cups, price):\n    return cups * price\ncommand = '3 20'\ncups, price = map(int, command.split())\nprint(total(cups, price))",
       "expected": "60",
       "tryIt": true,
       "trace": {
        "predict": {
         "kind": "final",
-        "var": "qty",
-        "prompt": "Sau khi chạy xong, `qty` bằng mấy?",
-        "answer": "3"
+        "var": "price",
+        "prompt": "Sau khi chạy xong, `price` bằng mấy?",
+        "answer": "20"
        },
        "rows": [
         {
@@ -59,12 +59,12 @@
          "line": 4,
          "set": [
           [
-           "price",
-           "20"
+           "cups",
+           "3"
           ],
           [
-           "qty",
-           "3"
+           "price",
+           "20"
           ]
          ]
         },
@@ -78,12 +78,12 @@
          "enter": true,
          "set": [
           [
-           "price",
-           "20"
+           "cups",
+           "3"
           ],
           [
-           "qty",
-           "3"
+           "price",
+           "20"
           ]
          ]
         },
@@ -114,7 +114,7 @@
      },
      {
       "type": "code",
-      "code": "import tkinter as tk\nroot = tk.Tk()\nroot.withdraw()\nqty = tk.Entry(root)\nqty.insert(0, '3')\nprice = tk.Entry(root)\nprice.insert(0, '20')\nprint(int(qty.get()) * int(price.get()))\nroot.destroy()",
+      "code": "import tkinter as tk\nroot = tk.Tk()\nroot.withdraw()\ncups = tk.Entry(root)\ncups.insert(0, '3')\nprice = tk.Entry(root)\nprice.insert(0, '20')\nprint(int(cups.get()) * int(price.get()))\nroot.destroy()",
       "expected": "60"
      }
     ],
@@ -239,7 +239,7 @@
     "title": "Chạy thử",
     "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (Tkinter cần hệ cửa sổ của máy) nên không nằm trong ô này."
    },
-   "starterCode": "def total(qty, price):\n    return qty * price\ncommand = '3 20'\nqty, price = map(int, command.split())\nprint(total(qty, price))\n",
+   "starterCode": "def total(cups, price):\n    return cups * price\ncommand = '3 20'\ncups, price = map(int, command.split())\nprint(total(cups, price))\n",
    "env": "2 đoạn phải chạy bằng Python trên máy: Tkinter cần hệ cửa sổ của máy."
   }
  },

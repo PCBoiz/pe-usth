@@ -50,7 +50,7 @@
      },
      {
       "type": "code",
-      "code": "import pandas as pd\nscores = pd.Series([10, 20, 30, 40])\nprint(pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist())\ndf = pd.DataFrame({'group': pd.Categorical(['A', 'A'], categories=['A', 'B']), 'qty': [2, 3]})\nprint(df.groupby('group', observed=True)['qty'].sum().to_dict())",
+      "code": "import pandas as pd\nscores = pd.Series([10, 20, 30, 40])\nprint(pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist())\ndf = pd.DataFrame({'group': pd.Categorical(['A', 'A'], categories=['A', 'B']), 'so_coc': [2, 3]})\nprint(df.groupby('group', observed=True)['so_coc'].sum().to_dict())",
       "expected": "['lower', 'lower', 'upper', 'upper']\n{'A': 5}",
       "tryIt": true
      },

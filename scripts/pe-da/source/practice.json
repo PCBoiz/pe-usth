@@ -8319,15 +8319,15 @@
           "id": "NP18-practice-4",
           "type": "code",
           "title": "Tự viết và chạy trong terminal",
-          "prompt": "Viết solve(data) nhận qty là bảng số lượng đơn hàng và price là dãy giá theo đúng thứ tự cột. Trả bảng tiền từng sản phẩm trong mỗi đơn, chưa cộng thành tổng đơn.",
+          "prompt": "Viết solve(data) nhận so_coc là bảng số lượng đơn hàng và price là dãy giá theo đúng thứ tự cột. Trả bảng tiền từng sản phẩm trong mỗi đơn, chưa cộng thành tổng đơn.",
           "mode": "function",
           "starter": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
-          "referenceSolution": "import numpy as np\ndef solve(data):\n    qty = np.array(data[\"qty\"])\n    price = np.array(data[\"price\"])\n    return qty * price\n",
+          "referenceSolution": "import numpy as np\ndef solve(data):\n    so_coc = np.array(data[\"so_coc\"])\n    price = np.array(data[\"price\"])\n    return so_coc * price\n",
           "tests": [
             {
               "name": "Hai sản phẩm",
               "input": {
-                "qty": [
+                "so_coc": [
                   [
                     2,
                     1
@@ -8356,7 +8356,7 @@
             {
               "name": "Ba sản phẩm",
               "input": {
-                "qty": [
+                "so_coc": [
                   [
                     1,
                     2,
@@ -8380,7 +8380,7 @@
             {
               "name": "Số lượng bằng không",
               "input": {
-                "qty": [
+                "so_coc": [
                   [
                     0,
                     0
@@ -8409,7 +8409,7 @@
           ],
           "hints": [
             "Mỗi cột là một sản phẩm nên giá phải ghép theo cột, không theo hàng.",
-            "Nhân bảng qty với dãy price; broadcasting áp lại cùng dãy giá cho các hàng."
+            "Nhân bảng so_coc với dãy price; broadcasting áp lại cùng dãy giá cho các hàng."
           ],
           "explanation": "Đối chiếu giá trị trả về với yêu cầu của bài; một lần chạy đúng trên dữ liệu mẫu chưa đủ để biết quy tắc đã đúng.",
           "transferNote": "Đầu vào mới thay đổi số lượng và giá trị. Viết quy tắc xử lý, không trả sẵn kết quả của ví dụ."
@@ -8420,7 +8420,7 @@
           "id": "NP18-practice-1",
           "type": "mcq",
           "title": "Dự đoán trước khi chạy",
-          "prompt": "qty có shape (3,2), mỗi cột là một sản phẩm. Dãy giá phù hợp có shape nào?",
+          "prompt": "so_coc có shape (3,2), mỗi cột là một sản phẩm. Dãy giá phù hợp có shape nào?",
           "options": [
             {
               "id": "c",
@@ -8472,7 +8472,7 @@
                 "Giá 10 và 20 gắn với cột, không lần lượt với hàng."
               ],
               "explanation": "Mỗi hàng dùng lại dãy hai giá theo đúng hai cột.",
-              "code": "import numpy as np\nqty = np.array([[2, 1], [1, 3]])\nprice = np.array([10, 20])\nprint(qty * price)"
+              "code": "import numpy as np\nso_coc = np.array([[2, 1], [1, 3]])\nprice = np.array([10, 20])\nprint(so_coc * price)"
             },
             {
               "id": "NP18-practice-1-v3",
@@ -8502,7 +8502,7 @@
                 "Mỗi cột phải luôn dùng cùng giá của sản phẩm đó."
               ],
               "explanation": "Dãy shape (2,) được áp dụng lên từng hàng của bảng có hai cột.",
-              "code": "import numpy as np\nqty = np.array([[2, 0], [1, 3], [4, 1]])\nprice = np.array([5, 10])\nprint(qty * price)"
+              "code": "import numpy as np\nso_coc = np.array([[2, 0], [1, 3], [4, 1]])\nprice = np.array([5, 10])\nprint(so_coc * price)"
             },
             {
               "id": "NP18-practice-1-v4",
@@ -8532,7 +8532,7 @@
                 "Ghi shape của từng toán hạng và xem chiều nào còn được giữ bởi keepdims trước khi broadcasting."
               ],
               "explanation": "Kết quả vẫn có ba hàng và hai cột tương ứng các lượng ban đầu.",
-              "code": "import numpy as np\nqty = np.array([[1, 2], [3, 4], [5, 6]])\nprice = np.array([7, 9])\namount = qty * price\nprint(amount.shape)"
+              "code": "import numpy as np\nso_coc = np.array([[1, 2], [3, 4], [5, 6]])\nprice = np.array([7, 9])\namount = so_coc * price\nprint(amount.shape)"
             },
             {
               "id": "NP18-practice-1-v5",
@@ -10307,7 +10307,7 @@
               "type": "mcq",
               "title": "Xem hàng đầu của bảng",
               "focus": "Xem hàng đầu của bảng",
-              "prompt": "Tạo bảng qty=[2, 3], price=[10, 20], rồi in hàng đầu.",
+              "prompt": "Tạo bảng so_coc=[2, 3], price=[10, 20], rồi in hàng đầu.",
               "options": [
                 {
                   "id": "a",
@@ -11203,21 +11203,21 @@
           "id": "PD06-code",
           "type": "code",
           "title": "Tự viết và chạy trong terminal",
-          "prompt": "data.rows có qty, price; data.cap là doanh thu áp dụng cố định cho mọi hàng qty>=3. Tạo revenue=qty*price, sửa revenue ở đúng các hàng đó bằng loc. Trả list revenue theo thứ tự hàng.",
+          "prompt": "data.rows có so_coc, don_gia; data.cap là doanh thu áp dụng cố định cho mọi hàng so_coc>=3. Tạo tong_tien=so_coc*don_gia, sửa tong_tien ở đúng các hàng đó bằng loc. Trả list tong_tien theo thứ tự hàng.",
           "starter": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['qty','price'])\n     df['revenue'] = df['qty'] * df['price']\n     df.loc[df['qty'] >= 3, 'revenue'] = data['cap']\n     return df['revenue'].tolist()\n",
+          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['so_coc','don_gia'])\n     df['tong_tien'] = df['so_coc'] * df['don_gia']\n     df.loc[df['so_coc'] >= 3, 'tong_tien'] = data['cap']\n     return df['tong_tien'].tolist()\n",
           "tests": [
             {
               "name": "giới hạn khác ví dụ",
               "input": {
                 "rows": [
                   {
-                    "qty": 1,
-                    "price": 12
+                    "so_coc": 1,
+                    "don_gia": 12
                   },
                   {
-                    "qty": 4,
-                    "price": 20
+                    "so_coc": 4,
+                    "don_gia": 20
                   }
                 ],
                 "cap": 60
@@ -11232,12 +11232,12 @@
               "input": {
                 "rows": [
                   {
-                    "qty": 3,
-                    "price": 9
+                    "so_coc": 3,
+                    "don_gia": 9
                   },
                   {
-                    "qty": 2,
-                    "price": 8
+                    "so_coc": 2,
+                    "don_gia": 8
                   }
                 ],
                 "cap": 25
@@ -11252,8 +11252,8 @@
               "input": {
                 "rows": [
                   {
-                    "qty": 0,
-                    "price": 100
+                    "so_coc": 0,
+                    "don_gia": 100
                   }
                 ],
                 "cap": 30
@@ -11276,7 +11276,7 @@
           "id": "PD06-predict",
           "type": "mcq",
           "title": "Dự đoán trước khi chạy",
-          "prompt": "qty = pd.Series([2,4]); price = pd.Series([3,5]). (qty * price).tolist() cho gì?",
+          "prompt": "so_coc = pd.Series([2,4]); price = pd.Series([3,5]). (so_coc * price).tolist() cho gì?",
           "options": [
             {
               "id": "a",
@@ -11305,7 +11305,7 @@
               "type": "mcq",
               "title": "Nhân hai cột theo hàng",
               "focus": "Nhân hai cột theo hàng",
-              "prompt": "Hai cột của một DataFrame là qty=[2,3] và price=[10,20]. Nhân hai cột theo hàng cho doanh thu nào?",
+              "prompt": "Hai cột của một DataFrame là so_coc=[2,3] và price=[10,20]. Nhân hai cột theo hàng cho doanh thu nào?",
               "options": [
                 {
                   "id": "a",
@@ -11328,44 +11328,44 @@
                 "Mỗi hàng ghép số lượng với đơn giá của chính hàng đó."
               ],
               "explanation": "[20, 60].",
-              "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndf['revenue'] = df['qty'] * df['price']\nprint(df['revenue'].tolist())"
+              "code": "import pandas as pd\ndf = pd.DataFrame({'so_coc': [2, 3], 'don_gia': [10, 20]})\ndf['tong_tien'] = df['so_coc'] * df['don_gia']\nprint(df['tong_tien'].tolist())"
             },
             {
               "id": "PD06-predict-v3",
               "type": "mcq",
               "title": "Gán đúng hàng trên bảng gốc",
               "focus": "Gán đúng hàng trên bảng gốc",
-              "prompt": "Muốn sửa bảng gốc ở các hàng qty >= 3, nên dùng câu lệnh nào?",
+              "prompt": "Muốn sửa bảng gốc ở các hàng so_coc >= 3, nên dùng câu lệnh nào?",
               "options": [
                 {
                   "id": "a",
-                  "text": "df.loc[df[\"qty\"] >= 3, \"price\"] = 18.",
-                  "feedback": "df.loc[df[\"qty\"] >= 3, \"price\"] = 18."
+                  "text": "df.loc[df[\"so_coc\"] >= 3, \"price\"] = 18.",
+                  "feedback": "df.loc[df[\"so_coc\"] >= 3, \"price\"] = 18."
                 },
                 {
                   "id": "b",
-                  "text": "df[df[\"qty\"] >= 3][\"price\"] = 18 là cách gán rõ ràng cho bảng gốc.",
+                  "text": "df[df[\"so_coc\"] >= 3][\"price\"] = 18 là cách gán rõ ràng cho bảng gốc.",
                   "feedback": "Gán nối chuỗi như vậy không phải cách sửa rõ ràng trên bảng gốc."
                 },
                 {
                   "id": "c",
                   "text": "df.loc[:, \"price\"] = 18 vì điều kiện hàng không cần thiết.",
-                  "feedback": "Phương án này sửa toàn bộ cột, bỏ mất điều kiện qty."
+                  "feedback": "Phương án này sửa toàn bộ cột, bỏ mất điều kiện so_coc."
                 }
               ],
               "correctOption": "a",
               "hints": [
                 "Tìm một câu lệnh chọn hàng và cột trong cùng một lần gán."
               ],
-              "explanation": "df.loc[df[\"qty\"] >= 3, \"price\"] = 18.",
-              "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\npriced = df.assign(revenue=df['qty'] * df['price'])\npriced.loc[priced['qty'] >= 3, 'revenue'] = 50\nprint(priced['revenue'].tolist())\nprint(df.columns.tolist())"
+              "explanation": "df.loc[df[\"so_coc\"] >= 3, \"price\"] = 18.",
+              "code": "import pandas as pd\ndf = pd.DataFrame({'so_coc': [2, 3], 'don_gia': [10, 20]})\nco_tien = df.assign(tong_tien=df['so_coc'] * df['don_gia'])\nco_tien.loc[co_tien['so_coc'] >= 3, 'tong_tien'] = 50\nprint(co_tien['tong_tien'].tolist())\nprint(df.columns.tolist())"
             },
             {
               "id": "PD06-predict-v4",
               "type": "mcq",
               "title": "Giới hạn một giá trị trong cột",
               "focus": "Giới hạn một giá trị trong cột",
-              "prompt": "Tạo qty=[1, 4], sửa qty lớn hơn 2 thành 2 và in cột.",
+              "prompt": "Tạo so_coc=[1, 4], sửa so_coc lớn hơn 2 thành 2 và in cột.",
               "options": [
                 {
                   "id": "a",
@@ -11399,25 +11399,25 @@
                 {
                   "id": "a",
                   "text": "2",
-                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc df['revenue'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[20, 60]"
+                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc df['tong_tien'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[20, 60]"
                 },
                 {
                   "id": "b",
                   "text": "[20, 60]",
-                  "feedback": "Các lệnh print đọc df['revenue'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[20, 60]"
+                  "feedback": "Các lệnh print đọc df['tong_tien'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[20, 60]"
                 },
                 {
                   "id": "c",
                   "text": "[60, 20]",
-                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc df['revenue'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[20, 60]"
+                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc df['tong_tien'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[20, 60]"
                 }
               ],
               "correctOption": "b",
               "hints": [
-                "Theo dõi biểu thức df['revenue'].tolist(). Mỗi print giữ thứ tự các đối số và các giá trị nó nhận."
+                "Theo dõi biểu thức df['tong_tien'].tolist(). Mỗi print giữ thứ tự các đối số và các giá trị nó nhận."
               ],
-              "explanation": "Các lệnh print đọc df['revenue'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[20, 60]",
-              "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndf['revenue'] = df['qty'] * df['price']\nprint(df['revenue'].tolist())"
+              "explanation": "Các lệnh print đọc df['tong_tien'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[20, 60]",
+              "code": "import pandas as pd\ndf = pd.DataFrame({'so_coc': [2, 3], 'don_gia': [10, 20]})\ndf['tong_tien'] = df['so_coc'] * df['don_gia']\nprint(df['tong_tien'].tolist())"
             },
             {
               "id": "PD06-predict-v6",
@@ -11429,25 +11429,25 @@
                 {
                   "id": "a",
                   "text": "[10, 20]\n[18]",
-                  "feedback": "Các lệnh print đọc df['price'].tolist() | large['price'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[10, 20]\n[18]"
+                  "feedback": "Các lệnh print đọc df['don_gia'].tolist() | large['don_gia'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[10, 20]\n[18]"
                 },
                 {
                   "id": "b",
                   "text": "[18]\n[10, 20]",
-                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc df['price'].tolist() | large['price'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[10, 20]\n[18]"
+                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc df['don_gia'].tolist() | large['don_gia'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[10, 20]\n[18]"
                 },
                 {
                   "id": "c",
                   "text": "[10, 20]",
-                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc df['price'].tolist() | large['price'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[10, 20]\n[18]"
+                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc df['don_gia'].tolist() | large['don_gia'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[10, 20]\n[18]"
                 }
               ],
               "correctOption": "a",
               "hints": [
-                "Theo dõi biểu thức df['price'].tolist() | large['price'].tolist(). Mỗi print giữ thứ tự các đối số và các giá trị nó nhận."
+                "Theo dõi biểu thức df['don_gia'].tolist() | large['don_gia'].tolist(). Mỗi print giữ thứ tự các đối số và các giá trị nó nhận."
               ],
-              "explanation": "Các lệnh print đọc df['price'].tolist() | large['price'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[10, 20]\n[18]",
-              "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\nlarge = df.loc[df['qty'] >= 3].copy()\nlarge.loc[:, 'price'] = 18\nprint(df['price'].tolist())\nprint(large['price'].tolist())"
+              "explanation": "Các lệnh print đọc df['don_gia'].tolist() | large['don_gia'].tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n[10, 20]\n[18]",
+              "code": "import pandas as pd\ndf = pd.DataFrame({'so_coc': [2, 3], 'don_gia': [10, 20]})\nlarge = df.loc[df['so_coc'] >= 3].copy()\nlarge.loc[:, 'don_gia'] = 18\nprint(df['don_gia'].tolist())\nprint(large['don_gia'].tolist())"
             }
           ]
         }
@@ -11461,9 +11461,9 @@
           "id": "PD07-code",
           "type": "code",
           "title": "Tự viết và chạy trong terminal",
-          "prompt": "data.codes là list mã dạng chữ; data.qty chứa số nguyên viết bằng chữ, None hoặc chuỗi lỗi. Giữ codes bằng dtype string; chuyển qty qua to_numeric(errors=\"coerce\") rồi Int64. Trả codes, qty (ô thiếu thành None) và dtype của qty.",
+          "prompt": "data.codes là list mã dạng chữ; data.so_coc chứa số nguyên viết bằng chữ, None hoặc chuỗi lỗi. Giữ codes bằng dtype string; chuyển so_coc qua to_numeric(errors=\"coerce\") rồi Int64. Trả codes, so_coc (ô thiếu thành None) và dtype của so_coc.",
           "starter": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     codes = pd.Series(data['codes'], dtype='string')\n     qty = pd.to_numeric(pd.Series(data['qty']), errors='coerce').astype('Int64')\n     return {'codes': codes.tolist(), 'qty': [None if pd.isna(v) else int(v) for v in qty], 'dtype': str(qty.dtype)}\n",
+          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     codes = pd.Series(data['codes'], dtype='string')\n     so_coc = pd.to_numeric(pd.Series(data['so_coc']), errors='coerce').astype('Int64')\n     return {'codes': codes.tolist(), 'so_coc': [None if pd.isna(v) else int(v) for v in so_coc], 'dtype': str(so_coc.dtype)}\n",
           "tests": [
             {
               "name": "mã có số 0 đầu",
@@ -11472,7 +11472,7 @@
                   "003",
                   "010"
                 ],
-                "qty": [
+                "so_coc": [
                   "4",
                   "bad"
                 ]
@@ -11482,7 +11482,7 @@
                   "003",
                   "010"
                 ],
-                "qty": [
+                "so_coc": [
                   4,
                   null
                 ],
@@ -11496,7 +11496,7 @@
                   "A",
                   "B"
                 ],
-                "qty": [
+                "so_coc": [
                   null,
                   "0"
                 ]
@@ -11506,7 +11506,7 @@
                   "A",
                   "B"
                 ],
-                "qty": [
+                "so_coc": [
                   null,
                   0
                 ],
@@ -11519,7 +11519,7 @@
                 "codes": [
                   "X"
                 ],
-                "qty": [
+                "so_coc": [
                   "-2"
                 ]
               },
@@ -11527,7 +11527,7 @@
                 "codes": [
                   "X"
                 ],
-                "qty": [
+                "so_coc": [
                   -2
                 ],
                 "dtype": "Int64"
@@ -11599,7 +11599,7 @@
                 "Mã định danh có cần dùng như một đại lượng để tính toán không?"
               ],
               "explanation": "Vì 001 là mã định danh; chuyển thành số sẽ mất số 0 đầu.",
-              "code": "import pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'),\n                   'qty': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['qty'].dtype))\nprint(df['qty'].isna().tolist())"
+              "code": "import pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'),\n                   'so_coc': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['so_coc'].dtype))\nprint(df['so_coc'].isna().tolist())"
             },
             {
               "id": "PD07-predict-v3",
@@ -11670,25 +11670,25 @@
                 {
                   "id": "a",
                   "text": "['001', '002']\nInt64\n[False, True]",
-                  "feedback": "Các lệnh print đọc df['order'].tolist() | str(df['qty'].dtype) | df['qty'].isna().tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['001', '002']\nInt64\n[False, True]"
+                  "feedback": "Các lệnh print đọc df['order'].tolist() | str(df['so_coc'].dtype) | df['so_coc'].isna().tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['001', '002']\nInt64\n[False, True]"
                 },
                 {
                   "id": "b",
                   "text": "[False, True]\nInt64\n['001', '002']",
-                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc df['order'].tolist() | str(df['qty'].dtype) | df['qty'].isna().tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['001', '002']\nInt64\n[False, True]"
+                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc df['order'].tolist() | str(df['so_coc'].dtype) | df['so_coc'].isna().tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['001', '002']\nInt64\n[False, True]"
                 },
                 {
                   "id": "c",
                   "text": "['001', '002']",
-                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc df['order'].tolist() | str(df['qty'].dtype) | df['qty'].isna().tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['001', '002']\nInt64\n[False, True]"
+                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc df['order'].tolist() | str(df['so_coc'].dtype) | df['so_coc'].isna().tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['001', '002']\nInt64\n[False, True]"
                 }
               ],
               "correctOption": "a",
               "hints": [
-                "Theo dõi biểu thức df['order'].tolist() | str(df['qty'].dtype) | df['qty'].isna().tolist(). Mỗi print giữ thứ tự các đối số và các giá trị nó nhận."
+                "Theo dõi biểu thức df['order'].tolist() | str(df['so_coc'].dtype) | df['so_coc'].isna().tolist(). Mỗi print giữ thứ tự các đối số và các giá trị nó nhận."
               ],
-              "explanation": "Các lệnh print đọc df['order'].tolist() | str(df['qty'].dtype) | df['qty'].isna().tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['001', '002']\nInt64\n[False, True]",
-              "code": "import pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'), 'qty': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['qty'].dtype))\nprint(df['qty'].isna().tolist())"
+              "explanation": "Các lệnh print đọc df['order'].tolist() | str(df['so_coc'].dtype) | df['so_coc'].isna().tolist(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['001', '002']\nInt64\n[False, True]",
+              "code": "import pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'), 'so_coc': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['so_coc'].dtype))\nprint(df['so_coc'].isna().tolist())"
             },
             {
               "id": "PD07-predict-v6",
@@ -11993,21 +11993,21 @@
               "name": "chuẩn hóa tên mới",
               "input": {
                 "names": [
-                  " East ",
-                  "EAST",
-                  "West"
+                  " Latte ",
+                  "LATTE",
+                  "Mocha"
                 ],
-                "query": "east"
+                "query": "latte"
               },
               "expected": {
                 "clean": [
-                  "east",
-                  "east",
-                  "west"
+                  "latte",
+                  "latte",
+                  "mocha"
                 ],
                 "matched": [
-                  "east",
-                  "east"
+                  "latte",
+                  "latte"
                 ]
               }
             },
@@ -12015,20 +12015,20 @@
               "name": "dấu chấm là chữ",
               "input": {
                 "names": [
-                  "A.B",
-                  "axb",
+                  "Ca.Phe",
+                  "CaxPhe",
                   null
                 ],
-                "query": "a.b"
+                "query": "ca.phe"
               },
               "expected": {
                 "clean": [
-                  "a.b",
-                  "axb",
+                  "ca.phe",
+                  "caxphe",
                   "unknown"
                 ],
                 "matched": [
-                  "a.b"
+                  "ca.phe"
                 ]
               }
             },
@@ -12036,22 +12036,22 @@
               "name": "giữ khoảng giữa",
               "input": {
                 "names": [
-                  " New Town "
+                  " Ca Phe Sua "
                 ],
                 "query": " "
               },
               "expected": {
                 "clean": [
-                  "new town"
+                  "ca phe sua"
                 ],
                 "matched": [
-                  "new town"
+                  "ca phe sua"
                 ]
               }
             }
           ],
           "hints": [
-            "Chuỗi a.b phải được tìm nguyên văn; dấu chấm không được coi là ký hiệu đặc biệt.",
+            "Chuỗi ca.phe phải được tìm nguyên văn; dấu chấm không được coi là ký hiệu đặc biệt.",
             "Chuẩn hóa chữ và tìm một đoạn chữ theo nghĩa đen."
           ],
           "explanation": "Chuẩn hóa chữ và tìm một đoạn chữ theo nghĩa đen.",
@@ -12115,7 +12115,7 @@
                 "Xem strip tác động ở biên chuỗi hay toàn bộ nội dung."
               ],
               "explanation": "Không; strip chỉ bỏ ký tự ở đầu và cuối chuỗi theo quy tắc được chọn.",
-              "code": "import pandas as pd\nregion = pd.Series([' North ', 'NORTH', 'South'], dtype='string')\nclean = region.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())"
+              "code": "import pandas as pd\nmon = pd.Series([' Latte ', 'LATTE', 'Mocha'], dtype='string')\nclean = mon.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())"
             },
             {
               "id": "PD09-predict-v3",
@@ -12185,26 +12185,26 @@
               "options": [
                 {
                   "id": "a",
-                  "text": "['north', 'north', 'south']",
-                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc clean.tolist() | clean.nunique(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['north', 'north', 'south']\n2"
+                  "text": "['latte', 'latte', 'mocha']",
+                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc clean.tolist() | clean.nunique(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['latte', 'latte', 'mocha']\n2"
                 },
                 {
                   "id": "b",
-                  "text": "['north', 'north', 'south']\n2",
-                  "feedback": "Các lệnh print đọc clean.tolist() | clean.nunique(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['north', 'north', 'south']\n2"
+                  "text": "['latte', 'latte', 'mocha']\n2",
+                  "feedback": "Các lệnh print đọc clean.tolist() | clean.nunique(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['latte', 'latte', 'mocha']\n2"
                 },
                 {
                   "id": "c",
-                  "text": "2\n['north', 'north', 'south']",
-                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc clean.tolist() | clean.nunique(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['north', 'north', 'south']\n2"
+                  "text": "2\n['latte', 'latte', 'mocha']",
+                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc clean.tolist() | clean.nunique(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['latte', 'latte', 'mocha']\n2"
                 }
               ],
               "correctOption": "b",
               "hints": [
                 "Theo dõi biểu thức clean.tolist() | clean.nunique(). Mỗi print giữ thứ tự các đối số và các giá trị nó nhận."
               ],
-              "explanation": "Các lệnh print đọc clean.tolist() | clean.nunique(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['north', 'north', 'south']\n2",
-              "code": "import pandas as pd\nregion = pd.Series([' North ', 'NORTH', 'South'], dtype='string')\nclean = region.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())"
+              "explanation": "Các lệnh print đọc clean.tolist() | clean.nunique(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['latte', 'latte', 'mocha']\n2",
+              "code": "import pandas as pd\nmon = pd.Series([' Latte ', 'LATTE', 'Mocha'], dtype='string')\nclean = mon.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())"
             },
             {
               "id": "PD09-predict-v6",
@@ -12454,7 +12454,7 @@
               "type": "mcq",
               "title": "Bỏ dòng trùng toàn bộ",
               "focus": "Bỏ dòng trùng toàn bộ",
-              "prompt": "Bỏ dòng trùng toàn bộ trong id=[1,1,2], qty=[3,3,4], rồi in số hàng.",
+              "prompt": "Bỏ dòng trùng toàn bộ trong id=[1,1,2], so_coc=[3,3,4], rồi in số hàng.",
               "options": [
                 {
                   "id": "a",
@@ -12953,7 +12953,7 @@
               "type": "mcq",
               "title": "Khai báo kiểu ngay khi đọc",
               "focus": "Khai báo kiểu ngay khi đọc",
-              "prompt": "Đọc CSV \"id,qty\n007,3\" và in mã giữ nguyên 007.",
+              "prompt": "Đọc CSV \"id,so_coc\n007,3\" và in mã giữ nguyên 007.",
               "options": [
                 {
                   "id": "a",
@@ -13196,29 +13196,29 @@
               "type": "mcq",
               "title": "Chọn sheet và cột Excel",
               "focus": "Chọn sheet và cột Excel",
-              "prompt": "Tạo một file Excel trong bộ nhớ có sheet Sales chứa qty=[2,3], price=[10,20]. Đọc riêng cột qty của sheet đó và in tổng.",
+              "prompt": "Tạo một file Excel trong bộ nhớ có sheet Sales chứa so_coc=[2,3], price=[10,20]. Đọc riêng cột so_coc của sheet đó và in tổng.",
               "options": [
                 {
                   "id": "a",
-                  "text": "Đọc sheet mặc định nào cũng cho tổng qty là 2.",
+                  "text": "Đọc sheet mặc định nào cũng cho tổng so_coc là 2.",
                   "feedback": "Workbook có thể có nhiều sheet; phải chọn đúng Sales."
                 },
                 {
                   "id": "b",
-                  "text": "Dùng sheet_name và usecols; tổng qty là 5.",
-                  "feedback": "Dùng sheet_name và usecols; tổng qty là 5."
+                  "text": "Dùng sheet_name và usecols; tổng so_coc là 5.",
+                  "feedback": "Dùng sheet_name và usecols; tổng so_coc là 5."
                 },
                 {
                   "id": "c",
-                  "text": "Tổng qty là 50 vì cần nhân giá.",
-                  "feedback": "50 là tổng qty nhân price, không phải tổng số lượng."
+                  "text": "Tổng so_coc là 50 vì cần nhân giá.",
+                  "feedback": "50 là tổng so_coc nhân price, không phải tổng số lượng."
                 }
               ],
               "correctOption": "b",
               "hints": [
-                "Yêu cầu chỉ đọc qty; đừng chuyển sang tính doanh thu."
+                "Yêu cầu chỉ đọc so_coc; đừng chuyển sang tính doanh thu."
               ],
-              "explanation": "Dùng sheet_name và usecols; tổng qty là 5."
+              "explanation": "Dùng sheet_name và usecols; tổng so_coc là 5."
             },
             {
               "id": "PD13-predict-v5",
@@ -13292,31 +13292,31 @@
           "id": "PD14-code",
           "type": "code",
           "title": "Tự viết và chạy trong terminal",
-          "prompt": "data.rows có region và qty. Quy ước region thiếu được ghi là \"Unknown\". Trả dictionary region→tổng qty, gồm cả nhóm Unknown; qty đều là số.",
+          "prompt": "data.rows có quay và so_coc. Quy ước quay thiếu được ghi là \"Unknown\". Trả dictionary quay→tổng so_coc, gồm cả nhóm Unknown; so_coc đều là số.",
           "starter": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['region','qty'])\n     df['region'] = df['region'].fillna('Unknown')\n     return df.groupby('region')['qty'].sum().to_dict()\n",
+          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['quay','so_coc'])\n     df['quay'] = df['quay'].fillna('Unknown')\n     return df.groupby('quay')['so_coc'].sum().to_dict()\n",
           "tests": [
             {
-              "name": "hai vùng",
+              "name": "hai quầy",
               "input": {
                 "rows": [
                   {
-                    "region": "E",
-                    "qty": 3
+                    "quay": "Q1",
+                    "so_coc": 3
                   },
                   {
-                    "region": "W",
-                    "qty": 7
+                    "quay": "Q2",
+                    "so_coc": 7
                   },
                   {
-                    "region": "E",
-                    "qty": 4
+                    "quay": "Q1",
+                    "so_coc": 4
                   }
                 ]
               },
               "expected": {
-                "E": 7,
-                "W": 7
+                "Q1": 7,
+                "Q2": 7
               }
             },
             {
@@ -13324,17 +13324,17 @@
               "input": {
                 "rows": [
                   {
-                    "region": null,
-                    "qty": 2
+                    "quay": null,
+                    "so_coc": 2
                   },
                   {
-                    "region": "N",
-                    "qty": 5
+                    "quay": "Q1",
+                    "so_coc": 5
                   }
                 ]
               },
               "expected": {
-                "N": 5,
+                "Q1": 5,
                 "Unknown": 2
               }
             },
@@ -13346,16 +13346,16 @@
               "expected": {}
             },
             {
-              "name": "mọi hàng đều thiếu vùng",
+              "name": "mọi hàng đều thiếu mã quầy",
               "input": {
                 "rows": [
                   {
-                    "region": null,
-                    "qty": 2
+                    "quay": null,
+                    "so_coc": 2
                   },
                   {
-                    "region": null,
-                    "qty": 3
+                    "quay": null,
+                    "so_coc": 3
                   }
                 ]
               },
@@ -13365,7 +13365,7 @@
             }
           ],
           "hints": [
-            "Cần giữ cả nhóm có khóa warehouse bị thiếu.",
+            "Cần giữ cả nhóm có mã quầy bị thiếu.",
             "Tổng hợp về một hàng cho mỗi nhóm và giữ khóa thiếu có chủ ý."
           ],
           "explanation": "Tổng hợp về một hàng cho mỗi nhóm và giữ khóa thiếu có chủ ý.",
@@ -13377,17 +13377,17 @@
           "id": "PD14-predict",
           "type": "mcq",
           "title": "Dự đoán trước khi chạy",
-          "prompt": "g=[N,N,S], qty=[2,5,4]. Tổng của N là gì?",
+          "prompt": "g=[Q1,Q1,Q2], so_coc=[2,5,4]. Tổng của Q1 là gì?",
           "options": [
             {
               "id": "c",
               "text": "11",
-              "feedback": "11 là tổng mọi nhóm, không phải riêng N."
+              "feedback": "11 là tổng mọi nhóm, không phải riêng Q1."
             },
             {
               "id": "a",
               "text": "7",
-              "feedback": "Đúng: cộng hai hàng có cùng nhãn N."
+              "feedback": "Đúng: cộng hai hàng có cùng nhãn Q1."
             },
             {
               "id": "b",
@@ -13464,31 +13464,31 @@
             {
               "id": "PD14-predict-v4",
               "type": "mcq",
-              "title": "Cộng số lượng theo vùng",
-              "focus": "Cộng số lượng theo vùng",
-              "prompt": "Tính tổng qty theo region cho region=[N,N,S], qty=[2,3,4].",
+              "title": "Cộng số cốc theo quầy",
+              "focus": "Cộng số cốc theo quầy",
+              "prompt": "Tính tổng so_coc theo quay cho quay=[Q1,Q1,Q2], so_coc=[2,3,4].",
               "options": [
                 {
                   "id": "a",
-                  "text": "N=5 và S=4.",
-                  "feedback": "N=5 và S=4."
+                  "text": "Q1=5 và Q2=4.",
+                  "feedback": "Q1=5 và Q2=4."
                 },
                 {
                   "id": "b",
-                  "text": "N=2.5, S=4 vì sum mặc định tính trung bình.",
-                  "feedback": "2.5 là trung bình của nhóm N, không phải tổng."
+                  "text": "Q1=2.5, Q2=4 vì sum mặc định tính trung bình.",
+                  "feedback": "2.5 là trung bình của nhóm Q1, không phải tổng."
                 },
                 {
                   "id": "c",
-                  "text": "N=2, S=1 vì sum mặc định đếm số hàng.",
-                  "feedback": "Bạn đang đếm số hàng thay vì cộng qty."
+                  "text": "Q1=2, Q2=1 vì sum mặc định đếm số hàng.",
+                  "feedback": "Bạn đang đếm số hàng thay vì cộng so_coc."
                 }
               ],
               "correctOption": "a",
               "hints": [
-                "Tách từng vùng rồi cộng các qty trong vùng đó."
+                "Tách từng quầy rồi cộng các so_coc của quầy đó."
               ],
-              "explanation": "N=5 và S=4."
+              "explanation": "Q1=5 và Q2=4."
             },
             {
               "id": "PD14-predict-v5",
@@ -13523,8 +13523,8 @@
             {
               "id": "PD14-predict-v6",
               "type": "mcq",
-              "title": "Đọc kết quả: Cộng số lượng theo vùng",
-              "focus": "Đọc kết quả: Cộng số lượng theo vùng",
+              "title": "Đọc kết quả: Cộng số cốc theo quầy",
+              "focus": "Đọc kết quả: Cộng số cốc theo quầy",
               "prompt": "Đoạn code dưới đây in gì? Các dòng trong một phương án được đọc theo thứ tự từ trên xuống.",
               "options": [
                 {
@@ -13822,9 +13822,9 @@
           "id": "PD16-code",
           "type": "code",
           "title": "Tự viết và chạy trong terminal",
-          "prompt": "data.orders chứa product_id và qty; data.products chứa product_id và name, mã danh mục là duy nhất. Nối trái theo product_id, trả list tên theo thứ tự đơn; tên chưa khớp là \"Unknown\".",
+          "prompt": "data.orders chứa product_id và so_coc; data.products chứa product_id và name, mã danh mục là duy nhất. Nối trái theo product_id, trả list tên theo thứ tự đơn; tên chưa khớp là \"Unknown\".",
           "starter": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame(data['orders'], columns=['product_id','qty'])\n     products = pd.DataFrame(data['products'], columns=['product_id','name'])\n     joined = orders.merge(products, on='product_id', how='left', sort=False)\n     return joined['name'].fillna('Unknown').tolist()\n",
+          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame(data['orders'], columns=['product_id','so_coc'])\n     products = pd.DataFrame(data['products'], columns=['product_id','name'])\n     joined = orders.merge(products, on='product_id', how='left', sort=False)\n     return joined['name'].fillna('Unknown').tolist()\n",
           "tests": [
             {
               "name": "danh mục khác thứ tự",
@@ -13832,11 +13832,11 @@
                 "orders": [
                   {
                     "product_id": 2,
-                    "qty": 1
+                    "so_coc": 1
                   },
                   {
                     "product_id": 1,
-                    "qty": 3
+                    "so_coc": 3
                   }
                 ],
                 "products": [
@@ -13861,7 +13861,7 @@
                 "orders": [
                   {
                     "product_id": 9,
-                    "qty": 2
+                    "so_coc": 2
                   }
                 ],
                 "products": [
@@ -13881,11 +13881,11 @@
                 "orders": [
                   {
                     "product_id": 1,
-                    "qty": 1
+                    "so_coc": 1
                   },
                   {
                     "product_id": 1,
-                    "qty": 2
+                    "so_coc": 2
                   }
                 ],
                 "products": [
@@ -14360,7 +14360,7 @@
           "title": "Tự viết và chạy trong terminal",
           "prompt": "data.batches là list các lô; mỗi lô là list số lượng. Có ít nhất một lô không rỗng. Tạo một DataFrame mỗi lô, concat một lần theo hàng với ignore_index=True. Trả values và index thành hai list; giữ mọi số kể cả số lặp.",
           "starter": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     parts = [pd.DataFrame({'qty':part}) for part in data['batches']]\n     combined = pd.concat(parts, ignore_index=True)\n     return {'values':combined['qty'].tolist(), 'index':combined.index.tolist()}\n",
+          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     parts = [pd.DataFrame({'so_coc':part}) for part in data['batches']]\n     combined = pd.concat(parts, ignore_index=True)\n     return {'values':combined['so_coc'].tolist(), 'index':combined.index.tolist()}\n",
           "tests": [
             {
               "name": "lô cuối ngắn",
@@ -14536,12 +14536,12 @@
               "type": "mcq",
               "title": "Cộng dữ liệu qua nhiều lô",
               "focus": "Cộng dữ liệu qua nhiều lô",
-              "prompt": "Nối ba bảng mỗi bảng một qty là 1, 2, 3; in tổng.",
+              "prompt": "Nối ba bảng mỗi bảng một so_coc là 1, 2, 3; in tổng.",
               "options": [
                 {
                   "id": "a",
                   "text": "Tổng là 3 vì chỉ đếm các bảng.",
-                  "feedback": "Ba là số lô, không phải tổng các qty."
+                  "feedback": "Ba là số lô, không phải tổng các so_coc."
                 },
                 {
                   "id": "b",
@@ -16194,23 +16194,23 @@
           "id": "PD25-code",
           "type": "code",
           "title": "Tự viết và chạy trong terminal",
-          "prompt": "data.rows có qty, price, discount (0..1). Trả list tiền sau giảm giá qty*price*(1-discount), theo thứ tự. Dùng các cột trực tiếp, không phải apply cho phép nhân đơn giản này.",
+          "prompt": "data.rows có so_coc, don_gia, giam_gia (0..1). Trả list tiền sau giảm giá so_coc*don_gia*(1-giam_gia), theo thứ tự. Dùng các cột trực tiếp, không phải apply cho phép nhân đơn giản này.",
           "starter": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     return (df['qty'] * df['price'] * (1 - df['discount'])).tolist()\n",
+          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     return (df['so_coc'] * df['don_gia'] * (1 - df['giam_gia'])).tolist()\n",
           "tests": [
             {
               "name": "giảm một phần",
               "input": {
                 "rows": [
                   {
-                    "qty": 2,
-                    "price": 15,
-                    "discount": 0.2
+                    "so_coc": 2,
+                    "don_gia": 15,
+                    "giam_gia": 0.2
                   },
                   {
-                    "qty": 3,
-                    "price": 8,
-                    "discount": 0
+                    "so_coc": 3,
+                    "don_gia": 8,
+                    "giam_gia": 0
                   }
                 ]
               },
@@ -16224,9 +16224,9 @@
               "input": {
                 "rows": [
                   {
-                    "qty": 5,
-                    "price": 9,
-                    "discount": 1
+                    "so_coc": 5,
+                    "don_gia": 9,
+                    "giam_gia": 1
                   }
                 ]
               },
@@ -16239,9 +16239,9 @@
               "input": {
                 "rows": [
                   {
-                    "qty": 0,
-                    "price": 20,
-                    "discount": 0.5
+                    "so_coc": 0,
+                    "don_gia": 20,
+                    "giam_gia": 0.5
                   }
                 ]
               },
@@ -16352,11 +16352,11 @@
               "type": "mcq",
               "title": "Đổi mã thành tên bằng map",
               "focus": "Đổi mã thành tên bằng map",
-              "prompt": "Dùng map đổi [N,S] thành [North,South].",
+              "prompt": "Dùng map đổi [Q1,Q2] thành [Trung tâm,Phía Tây].",
               "options": [
                 {
                   "id": "a",
-                  "text": "Kết quả [\"South\", \"North\"].",
+                  "text": "Kết quả [\"Phía Tây\", \"Trung tâm\"].",
                   "feedback": "Hai giá trị đã bị đổi vị trí so với mã nguồn."
                 },
                 {
@@ -16366,7 +16366,7 @@
                 },
                 {
                   "id": "c",
-                  "text": "Kết quả [\"N\", \"S\"].",
+                  "text": "Kết quả [\"Q1\", \"Q2\"].",
                   "feedback": "Đây là dữ liệu mã trước khi map, chưa phải tên đầy đủ."
                 }
               ],
@@ -16662,25 +16662,25 @@
                 {
                   "id": "a",
                   "text": "['lower', 'lower', 'upper', 'upper']",
-                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist() | df.groupby('group', observed=True)['qty'].sum().to_dict(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['lower', 'lower', 'upper', 'upper']\n{'A': 5}"
+                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist() | df.groupby('group', observed=True)['so_coc'].sum().to_dict(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['lower', 'lower', 'upper', 'upper']\n{'A': 5}"
                 },
                 {
                   "id": "b",
                   "text": "['lower', 'lower', 'upper', 'upper']\n{'A': 5}",
-                  "feedback": "Các lệnh print đọc pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist() | df.groupby('group', observed=True)['qty'].sum().to_dict(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['lower', 'lower', 'upper', 'upper']\n{'A': 5}"
+                  "feedback": "Các lệnh print đọc pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist() | df.groupby('group', observed=True)['so_coc'].sum().to_dict(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['lower', 'lower', 'upper', 'upper']\n{'A': 5}"
                 },
                 {
                   "id": "c",
                   "text": "{'A': 5}\n['lower', 'lower', 'upper', 'upper']",
-                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist() | df.groupby('group', observed=True)['qty'].sum().to_dict(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['lower', 'lower', 'upper', 'upper']\n{'A': 5}"
+                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist() | df.groupby('group', observed=True)['so_coc'].sum().to_dict(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['lower', 'lower', 'upper', 'upper']\n{'A': 5}"
                 }
               ],
               "correctOption": "b",
               "hints": [
-                "Theo dõi biểu thức pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist() | df.groupby('group', observed=True)['qty'].sum().to_dict(). Mỗi print giữ thứ tự các đối số và các giá trị nó nhận."
+                "Theo dõi biểu thức pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist() | df.groupby('group', observed=True)['so_coc'].sum().to_dict(). Mỗi print giữ thứ tự các đối số và các giá trị nó nhận."
               ],
-              "explanation": "Các lệnh print đọc pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist() | df.groupby('group', observed=True)['qty'].sum().to_dict(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['lower', 'lower', 'upper', 'upper']\n{'A': 5}",
-              "code": "import pandas as pd\nscores = pd.Series([10, 20, 30, 40])\nprint(pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist())\ndf = pd.DataFrame({'group': pd.Categorical(['A', 'A'], categories=['A', 'B']), 'qty': [2, 3]})\nprint(df.groupby('group', observed=True)['qty'].sum().to_dict())"
+              "explanation": "Các lệnh print đọc pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist() | df.groupby('group', observed=True)['so_coc'].sum().to_dict(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n['lower', 'lower', 'upper', 'upper']\n{'A': 5}",
+              "code": "import pandas as pd\nscores = pd.Series([10, 20, 30, 40])\nprint(pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist())\ndf = pd.DataFrame({'group': pd.Categorical(['A', 'A'], categories=['A', 'B']), 'so_coc': [2, 3]})\nprint(df.groupby('group', observed=True)['so_coc'].sum().to_dict())"
             }
           ]
         }
@@ -18020,51 +18020,51 @@
           "id": "PD32-code",
           "type": "code",
           "title": "Tự viết và chạy trong terminal",
-          "prompt": "data.orders có order, store, date ISO, amount; các dòng có thể trùng toàn bộ. data.stores có store, region và mã duy nhất. Chuẩn hóa mã store của cả orders và stores bằng strip/upper, bỏ dòng giống hệt, nối trái với validate many_to_one, vùng vắng là Unknown, tổng hợp theo YYYY-MM và region. Trả {report:list bản ghi month,region,amount đã sắp; total:tổng amount của đơn sau bỏ trùng}. Dữ liệu không có hai phiên bản xung đột của cùng order.",
+          "prompt": "data.don có ma_don, quay, ngay ISO, tong_tien; các dòng có thể trùng toàn bộ. data.danh_muc_quay có quay, khu_vuc và mã duy nhất. Chuẩn hóa mã quay của cả don và danh_muc_quay bằng strip/upper, bỏ dòng giống hệt, nối trái với validate many_to_one, khu vực vắng là Unknown, tổng hợp theo YYYY-MM và khu_vuc. Trả {report:list bản ghi thang,khu_vuc,tong_tien đã sắp; total:tổng tong_tien của đơn sau bỏ trùng}. Dữ liệu không có hai phiên bản xung đột của cùng ma_don.",
           "starter": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame(data['orders']).copy()\n     orders['store'] = orders['store'].str.strip().str.upper()\n     orders = orders.drop_duplicates()\n     stores = pd.DataFrame(data['stores']).copy()\n     stores['store'] = stores['store'].str.strip().str.upper()\n     joined = orders.merge(stores, on='store', how='left', validate='many_to_one')\n     joined['region'] = joined['region'].fillna('Unknown')\n     joined['month'] = pd.to_datetime(joined['date']).dt.to_period('M').astype(str)\n     report = joined.groupby(['month','region'], as_index=False)['amount'].sum().sort_values(['month','region'])\n     return {'report':report.to_dict('records'), 'total':float(orders['amount'].sum())}\n",
+          "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     don = pd.DataFrame(data['don']).copy()\n     don['quay'] = don['quay'].str.strip().str.upper()\n     don = don.drop_duplicates()\n     danh_muc_quay = pd.DataFrame(data['danh_muc_quay']).copy()\n     danh_muc_quay['quay'] = danh_muc_quay['quay'].str.strip().str.upper()\n     joined = don.merge(danh_muc_quay, on='quay', how='left', validate='many_to_one')\n     joined['khu_vuc'] = joined['khu_vuc'].fillna('Unknown')\n     joined['thang'] = pd.to_datetime(joined['ngay']).dt.to_period('M').astype(str)\n     report = joined.groupby(['thang','khu_vuc'], as_index=False)['tong_tien'].sum().sort_values(['thang','khu_vuc'])\n     return {'report':report.to_dict('records'), 'total':float(don['tong_tien'].sum())}\n",
           "tests": [
             {
               "name": "trùng và chưa khớp",
               "input": {
-                "orders": [
+                "don": [
                   {
-                    "order": "1",
-                    "store": " a ",
-                    "date": "2026-03-01",
-                    "amount": 5
+                    "ma_don": "1",
+                    "quay": " q1 ",
+                    "ngay": "2026-03-01",
+                    "tong_tien": 5
                   },
                   {
-                    "order": "1",
-                    "store": " a ",
-                    "date": "2026-03-01",
-                    "amount": 5
+                    "ma_don": "1",
+                    "quay": " q1 ",
+                    "ngay": "2026-03-01",
+                    "tong_tien": 5
                   },
                   {
-                    "order": "2",
-                    "store": "C",
-                    "date": "2026-03-02",
-                    "amount": 8
+                    "ma_don": "2",
+                    "quay": "QH",
+                    "ngay": "2026-03-02",
+                    "tong_tien": 8
                   }
                 ],
-                "stores": [
+                "danh_muc_quay": [
                   {
-                    "store": " a ",
-                    "region": "East"
+                    "quay": " q1 ",
+                    "khu_vuc": "Phía Nam"
                   }
                 ]
               },
               "expected": {
                 "report": [
                   {
-                    "month": "2026-03",
-                    "region": "East",
-                    "amount": 5
+                    "thang": "2026-03",
+                    "khu_vuc": "Phía Nam",
+                    "tong_tien": 5
                   },
                   {
-                    "month": "2026-03",
-                    "region": "Unknown",
-                    "amount": 8
+                    "thang": "2026-03",
+                    "khu_vuc": "Unknown",
+                    "tong_tien": 8
                   }
                 ],
                 "total": 13.0
@@ -18073,38 +18073,38 @@
             {
               "name": "hai tháng",
               "input": {
-                "orders": [
+                "don": [
                   {
-                    "order": "3",
-                    "store": "B",
-                    "date": "2026-01-02",
-                    "amount": 2
+                    "ma_don": "3",
+                    "quay": "Q2",
+                    "ngay": "2026-01-02",
+                    "tong_tien": 2
                   },
                   {
-                    "order": "4",
-                    "store": "B",
-                    "date": "2026-02-02",
-                    "amount": 7
+                    "ma_don": "4",
+                    "quay": "Q2",
+                    "ngay": "2026-02-02",
+                    "tong_tien": 7
                   }
                 ],
-                "stores": [
+                "danh_muc_quay": [
                   {
-                    "store": "b ",
-                    "region": "West"
+                    "quay": "q2 ",
+                    "khu_vuc": "Trung tâm"
                   }
                 ]
               },
               "expected": {
                 "report": [
                   {
-                    "month": "2026-01",
-                    "region": "West",
-                    "amount": 2
+                    "thang": "2026-01",
+                    "khu_vuc": "Trung tâm",
+                    "tong_tien": 2
                   },
                   {
-                    "month": "2026-02",
-                    "region": "West",
-                    "amount": 7
+                    "thang": "2026-02",
+                    "khu_vuc": "Trung tâm",
+                    "tong_tien": 7
                   }
                 ],
                 "total": 9.0
@@ -18113,27 +18113,27 @@
             {
               "name": "đơn 0 vẫn còn",
               "input": {
-                "orders": [
+                "don": [
                   {
-                    "order": "5",
-                    "store": "Z",
-                    "date": "2026-04-01",
-                    "amount": 0
+                    "ma_don": "5",
+                    "quay": "QX",
+                    "ngay": "2026-04-01",
+                    "tong_tien": 0
                   }
                 ],
-                "stores": [
+                "danh_muc_quay": [
                   {
-                    "store": "A",
-                    "region": "East"
+                    "quay": "Q1",
+                    "khu_vuc": "Phía Nam"
                   }
                 ]
               },
               "expected": {
                 "report": [
                   {
-                    "month": "2026-04",
-                    "region": "Unknown",
-                    "amount": 0
+                    "thang": "2026-04",
+                    "khu_vuc": "Unknown",
+                    "tong_tien": 0
                   }
                 ],
                 "total": 0.0
@@ -18141,7 +18141,7 @@
             }
           ],
           "hints": [
-            "Một cửa hàng có nhiều đơn nhưng danh mục chỉ được có một hàng cho mỗi cửa hàng.",
+            "Một quầy có nhiều đơn nhưng danh mục chỉ được có một hàng cho mỗi quầy.",
             "Báo cáo tổng tháng vẫn giữ đơn chưa khớp và đối chiếu được tổng."
           ],
           "explanation": "Báo cáo tổng tháng vẫn giữ đơn chưa khớp và đối chiếu được tổng.",
@@ -18153,16 +18153,16 @@
           "id": "PD32-predict",
           "type": "mcq",
           "title": "Dự đoán trước khi chạy",
-          "prompt": "Đơn của cửa hàng chưa có vùng nên xử lý thế nào để tổng không mất?",
+          "prompt": "Đơn của quầy chưa có khu vực nên xử lý thế nào để tổng không mất?",
           "options": [
             {
               "id": "c",
-              "text": "Đổi amount của đơn thành 0",
+              "text": "Đổi tong_tien của đơn thành 0",
               "feedback": "Chưa có vùng không có nghĩa chưa có doanh thu."
             },
             {
               "id": "a",
-              "text": "Giữ đơn và ghi vùng Unknown để xem lại",
+              "text": "Giữ đơn và ghi khu vực Unknown để xem lại",
               "feedback": "Đúng: báo cáo còn đối chiếu được doanh thu."
             },
             {
@@ -18186,8 +18186,8 @@
               "options": [
                 {
                   "id": "a",
-                  "text": "Để ép mọi hàng thành cùng một amount.",
-                  "feedback": "Ép amount giống nhau làm thay dữ liệu thay vì đối chiếu."
+                  "text": "Để ép mọi hàng thành cùng một tong_tien.",
+                  "feedback": "Ép tong_tien giống nhau làm thay dữ liệu thay vì đối chiếu."
                 },
                 {
                   "id": "b",
@@ -18205,13 +18205,13 @@
                 "Những kiểu nối nào có thể làm tăng hoặc giảm số bản ghi?"
               ],
               "explanation": "Để phát hiện việc nhân dòng hoặc làm mất đơn khi nối.",
-              "code": "import pandas as pd\nfrom io import StringIO\nraw = 'order,store,date,amount\\nO1, a ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'order': 'string', 'store': 'string'})\ndf['store'] = df['store'].str.strip().str.upper()\ndf['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['order'].is_unique\nprint(len(df), len(clean), clean['amount'].sum())"
+              "code": "import pandas as pd\nfrom io import StringIO\nraw = 'ma_don,quay,ngay,tong_tien\\nO1, q1 ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'ma_don': 'string', 'quay': 'string'})\ndf['quay'] = df['quay'].str.strip().str.upper()\ndf['ngay'] = pd.to_datetime(df['ngay'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['ma_don'].is_unique\nprint(len(df), len(clean), clean['tong_tien'].sum())"
             },
             {
               "id": "PD32-predict-v3",
               "type": "mcq",
-              "title": "Giữ nhóm chưa xác định vùng",
-              "focus": "Giữ nhóm chưa xác định vùng",
+              "title": "Giữ nhóm chưa xác định khu vực",
+              "focus": "Giữ nhóm chưa xác định khu vực",
               "prompt": "Tại sao giữ nhóm Unknown trong báo cáo mẫu?",
               "options": [
                 {
@@ -18226,23 +18226,23 @@
                 },
                 {
                   "id": "c",
-                  "text": "Để tự coi các đơn chưa khớp là đã biết vùng.",
-                  "feedback": "Unknown ghi rõ chưa xác định, không giả vờ đã biết vùng."
+                  "text": "Để tự coi các đơn chưa khớp là đã biết khu vực.",
+                  "feedback": "Unknown ghi rõ chưa xác định, không giả vờ đã biết khu vực."
                 }
               ],
               "correctOption": "b",
               "hints": [
-                "Nếu bỏ đơn chưa có vùng, tổng báo cáo còn khớp tổng đơn không?"
+                "Nếu bỏ đơn chưa có khu vực, tổng báo cáo còn khớp tổng đơn không?"
               ],
               "explanation": "Để các đơn chưa khớp khu vực vẫn được thể hiện và tổng báo cáo còn khớp tổng đơn.",
-              "code": "import pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2', 'O3'], 'store': ['A', 'B', 'C'], 'amount': [10, 20, 30]})\nstores = pd.DataFrame({'store': ['A', 'B'], 'region': ['North', 'South']})\njoined = orders.merge(stores, on='store', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(orders)\nassert joined['amount'].sum() == orders['amount'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'order'].tolist())\nprint(joined['amount'].sum())"
+              "code": "import pandas as pd\ndon = pd.DataFrame({'ma_don': ['O1', 'O2', 'O3'], 'quay': ['Q1', 'Q2', 'QH'], 'tong_tien': [10, 20, 30]})\ndanh_muc_quay = pd.DataFrame({'quay': ['Q1', 'Q2'], 'khu_vuc': ['Phía Nam', 'Trung tâm']})\njoined = don.merge(danh_muc_quay, on='quay', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(don)\nassert joined['tong_tien'].sum() == don['tong_tien'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'ma_don'].tolist())\nprint(joined['tong_tien'].sum())"
             },
             {
               "id": "PD32-predict-v4",
               "type": "mcq",
               "title": "Tổng từng tháng và tổng toàn báo cáo",
               "focus": "Tổng từng tháng và tổng toàn báo cáo",
-              "prompt": "Tự làm báo cáo: ngày=[2026-01-01,2026-01-02,2026-02-01], amount=[5,7,8]. Tính tổng tháng và kiểm tra tổng báo cáo bằng tổng gốc.",
+              "prompt": "Tự làm báo cáo: ngày=[2026-01-01,2026-01-02,2026-02-01], tong_tien=[5,7,8]. Tính tổng tháng và kiểm tra tổng báo cáo bằng tổng gốc.",
               "options": [
                 {
                   "id": "a",
@@ -18257,7 +18257,7 @@
                 {
                   "id": "c",
                   "text": "Tháng 1=12, tháng 2=0; tổng 12.",
-                  "feedback": "Tháng 2 có một đơn amount=8 nên không thể tự chuyển thành 0."
+                  "feedback": "Tháng 2 có một đơn tong_tien=8 nên không thể tự chuyển thành 0."
                 }
               ],
               "correctOption": "a",
@@ -18276,25 +18276,25 @@
                 {
                   "id": "a",
                   "text": "0",
-                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc len(df); len(clean); clean['amount'].sum(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n4 3 60"
+                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc len(df); len(clean); clean['tong_tien'].sum(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n4 3 60"
                 },
                 {
                   "id": "b",
                   "text": "Không in gì vì dòng print chỉ tạo đối tượng trong bộ nhớ.",
-                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc len(df); len(clean); clean['amount'].sum(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n4 3 60"
+                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc len(df); len(clean); clean['tong_tien'].sum(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n4 3 60"
                 },
                 {
                   "id": "c",
                   "text": "4 3 60",
-                  "feedback": "Các lệnh print đọc len(df); len(clean); clean['amount'].sum(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n4 3 60"
+                  "feedback": "Các lệnh print đọc len(df); len(clean); clean['tong_tien'].sum(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n4 3 60"
                 }
               ],
               "correctOption": "c",
               "hints": [
-                "Theo dõi biểu thức len(df); len(clean); clean['amount'].sum(). Mỗi print giữ thứ tự các đối số và các giá trị nó nhận."
+                "Theo dõi biểu thức len(df); len(clean); clean['tong_tien'].sum(). Mỗi print giữ thứ tự các đối số và các giá trị nó nhận."
               ],
-              "explanation": "Các lệnh print đọc len(df); len(clean); clean['amount'].sum(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n4 3 60",
-              "code": "import pandas as pd\nfrom io import StringIO\nraw = 'order,store,date,amount\\nO1, a ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'order': 'string', 'store': 'string'})\ndf['store'] = df['store'].str.strip().str.upper()\ndf['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['order'].is_unique\nprint(len(df), len(clean), clean['amount'].sum())"
+              "explanation": "Các lệnh print đọc len(df); len(clean); clean['tong_tien'].sum(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n4 3 60",
+              "code": "import pandas as pd\nfrom io import StringIO\nraw = 'ma_don,quay,ngay,tong_tien\\nO1, q1 ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'ma_don': 'string', 'quay': 'string'})\ndf['quay'] = df['quay'].str.strip().str.upper()\ndf['ngay'] = pd.to_datetime(df['ngay'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['ma_don'].is_unique\nprint(len(df), len(clean), clean['tong_tien'].sum())"
             },
             {
               "id": "PD32-predict-v6",
@@ -18305,26 +18305,26 @@
               "options": [
                 {
                   "id": "a",
-                  "text": "month,region,amount",
-                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc report.to_csv(index=False, lineterminator='\\n').strip(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\nmonth,region,amount\n2026-01,North,10\n2026-01,South,20\n2026-02,Unknown,30"
+                  "text": "thang,khu_vuc,tong_tien",
+                  "feedback": "Phương án này bỏ qua một phần của biểu thức print hoặc nhầm giá trị với kích thước. Các lệnh print đọc report.to_csv(index=False, lineterminator='\\n').strip(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\nthang,khu_vuc,tong_tien\n2026-01,Phía Nam,10\n2026-01,Trung tâm,20\n2026-02,Unknown,30"
                 },
                 {
                   "id": "b",
-                  "text": "month,region,amount\n2026-01,North,10\n2026-01,South,20\n2026-02,Unknown,30",
-                  "feedback": "Các lệnh print đọc report.to_csv(index=False, lineterminator='\\n').strip(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\nmonth,region,amount\n2026-01,North,10\n2026-01,South,20\n2026-02,Unknown,30"
+                  "text": "thang,khu_vuc,tong_tien\n2026-01,Phía Nam,10\n2026-01,Trung tâm,20\n2026-02,Unknown,30",
+                  "feedback": "Các lệnh print đọc report.to_csv(index=False, lineterminator='\\n').strip(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\nthang,khu_vuc,tong_tien\n2026-01,Phía Nam,10\n2026-01,Trung tâm,20\n2026-02,Unknown,30"
                 },
                 {
                   "id": "c",
-                  "text": "2026-02,Unknown,30\n2026-01,South,20\n2026-01,North,10\nmonth,region,amount",
-                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc report.to_csv(index=False, lineterminator='\\n').strip(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\nmonth,region,amount\n2026-01,North,10\n2026-01,South,20\n2026-02,Unknown,30"
+                  "text": "2026-02,Unknown,30\n2026-01,Trung tâm,20\n2026-01,Phía Nam,10\nthang,khu_vuc,tong_tien",
+                  "feedback": "Phương án này đổi giá trị hoặc thứ tự được in. Các lệnh print đọc report.to_csv(index=False, lineterminator='\\n').strip(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\nthang,khu_vuc,tong_tien\n2026-01,Phía Nam,10\n2026-01,Trung tâm,20\n2026-02,Unknown,30"
                 }
               ],
               "correctOption": "b",
               "hints": [
                 "Theo dõi biểu thức report.to_csv(index=False, lineterminator='\\n').strip(). Mỗi print giữ thứ tự các đối số và các giá trị nó nhận."
               ],
-              "explanation": "Các lệnh print đọc report.to_csv(index=False, lineterminator='\\n').strip(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\nmonth,region,amount\n2026-01,North,10\n2026-01,South,20\n2026-02,Unknown,30",
-              "code": "import pandas as pd\ndf = pd.DataFrame({'date': pd.to_datetime(['2026-01-01', '2026-01-02', '2026-02-01']), 'region': ['North', 'South', None], 'amount': [10, 20, 30]})\ndf['region'] = df['region'].fillna('Unknown')\ndf['month'] = df['date'].dt.to_period('M').astype(str)\nreport = df.groupby(['month', 'region'], as_index=False)['amount'].sum().sort_values(['month', 'region'])\nassert report['amount'].sum() == df['amount'].sum()\nprint(report.to_csv(index=False, lineterminator='\\n').strip())"
+              "explanation": "Các lệnh print đọc report.to_csv(index=False, lineterminator='\\n').strip(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\nthang,khu_vuc,tong_tien\n2026-01,Phía Nam,10\n2026-01,Trung tâm,20\n2026-02,Unknown,30",
+              "code": "import pandas as pd\ndf = pd.DataFrame({'ngay': pd.to_datetime(['2026-01-01', '2026-01-02', '2026-02-01']), 'khu_vuc': ['Phía Nam', 'Trung tâm', None], 'tong_tien': [10, 20, 30]})\ndf['khu_vuc'] = df['khu_vuc'].fillna('Unknown')\ndf['thang'] = df['ngay'].dt.to_period('M').astype(str)\nreport = df.groupby(['thang', 'khu_vuc'], as_index=False)['tong_tien'].sum().sort_values(['thang', 'khu_vuc'])\nassert report['tong_tien'].sum() == df['tong_tien'].sum()\nprint(report.to_csv(index=False, lineterminator='\\n').strip())"
             }
           ]
         }
@@ -23984,9 +23984,9 @@
           "id": "VZ22-code",
           "type": "code",
           "title": "Tự viết và chạy trong terminal",
-          "prompt": "data.rows có customer,category,qty. Tổng hợp qty theo category trước khi dựng px.bar, không truyền customer vào Figure. Xuất to_html(include_plotlyjs=True,full_html=True). Trả total là tổng y của các trace, isPage là \"<html>\" có trong HTML, hasPlot là \"Plotly.newPlot\" có trong HTML. Việc số tổng đúng chưa thay việc kiểm thủ công dữ liệu riêng trước khi chia sẻ. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+          "prompt": "data.rows có customer,category,so_coc. Tổng hợp so_coc theo category trước khi dựng px.bar, không truyền customer vào Figure. Xuất to_html(include_plotlyjs=True,full_html=True). Trả total là tổng y của các trace, isPage là \"<html>\" có trong HTML, hasPlot là \"Plotly.newPlot\" có trong HTML. Việc số tổng đúng chưa thay việc kiểm thủ công dữ liệu riêng trước khi chia sẻ. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
           "starter": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-          "referenceSolution": "import pandas as pd\nimport plotly.express as px\n\ndef solve(data):\n     public = pd.DataFrame(data['rows']).groupby('category',as_index=False)['qty'].sum()\n     fig = px.bar(public,x='category',y='qty')\n     html = fig.to_html(include_plotlyjs=True,full_html=True)\n     return {'total':float(sum(sum(trace.y) for trace in fig.data)),'isPage':'<html>' in html,'hasPlot':'Plotly.newPlot' in html}\n",
+          "referenceSolution": "import pandas as pd\nimport plotly.express as px\n\ndef solve(data):\n     public = pd.DataFrame(data['rows']).groupby('category',as_index=False)['so_coc'].sum()\n     fig = px.bar(public,x='category',y='so_coc')\n     html = fig.to_html(include_plotlyjs=True,full_html=True)\n     return {'total':float(sum(sum(trace.y) for trace in fig.data)),'isPage':'<html>' in html,'hasPlot':'Plotly.newPlot' in html}\n",
           "tests": [
             {
               "name": "không cần tên khách trong hình",
@@ -23995,12 +23995,12 @@
                   {
                     "customer": "Lan",
                     "category": "Book",
-                    "qty": 2
+                    "so_coc": 2
                   },
                   {
                     "customer": "An",
                     "category": "Book",
-                    "qty": 3
+                    "so_coc": 3
                   }
                 ]
               },
@@ -24017,12 +24017,12 @@
                   {
                     "customer": "A",
                     "category": "Pen",
-                    "qty": 4
+                    "so_coc": 4
                   },
                   {
                     "customer": "B",
                     "category": "Paper",
-                    "qty": 6
+                    "so_coc": 6
                   }
                 ]
               },
@@ -24039,7 +24039,7 @@
                   {
                     "customer": "C",
                     "category": "Tea",
-                    "qty": 0
+                    "so_coc": 0
                   }
                 ]
               },
@@ -25043,9 +25043,9 @@
           "id": "VZ26-code",
           "type": "code",
           "title": "Tự viết và chạy trong terminal",
-          "prompt": "data.rows chứa category,qty,price. Quy tắc mẫu: bỏ dòng qty<0 hoặc price<0; các hàng còn lại tính revenue=qty*price. Có ít nhất một hàng hợp lệ. Tổng hợp category, sắp tăng theo tên rồi vẽ cột. Trả totals là dictionary category→doanh thu, drawnTotal là tổng chiều cao các cột, rejected là số dòng bị loại. Không gọi số đó là lợi nhuận. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
+          "prompt": "data.rows chứa category,so_coc,price. Quy tắc mẫu: bỏ dòng so_coc<0 hoặc price<0; các hàng còn lại tính revenue=so_coc*price. Có ít nhất một hàng hợp lệ. Tổng hợp category, sắp tăng theo tên rồi vẽ cột. Trả totals là dictionary category→doanh thu, drawnTotal là tổng chiều cao các cột, rejected là số dòng bị loại. Không gọi số đó là lợi nhuận. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve.",
           "starter": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-          "referenceSolution": "import matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame(data['rows'])\n     valid = orders.loc[(orders['qty'] >= 0) & (orders['price'] >= 0)].copy()\n     valid['revenue'] = valid['qty'] * valid['price']\n     totals = valid.groupby('category')['revenue'].sum().sort_index()\n     fig, ax = plt.subplots()\n     bars = ax.bar(totals.index,totals.values)\n     result = {'totals':totals.to_dict(),'drawnTotal':float(sum(b.get_height() for b in bars)),'rejected':len(orders)-len(valid)}\n     plt.close(fig)\n     return result\n",
+          "referenceSolution": "import matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame(data['rows'])\n     valid = orders.loc[(orders['so_coc'] >= 0) & (orders['price'] >= 0)].copy()\n     valid['revenue'] = valid['so_coc'] * valid['price']\n     totals = valid.groupby('category')['revenue'].sum().sort_index()\n     fig, ax = plt.subplots()\n     bars = ax.bar(totals.index,totals.values)\n     result = {'totals':totals.to_dict(),'drawnTotal':float(sum(b.get_height() for b in bars)),'rejected':len(orders)-len(valid)}\n     plt.close(fig)\n     return result\n",
           "tests": [
             {
               "name": "loại dòng âm",
@@ -25053,17 +25053,17 @@
                 "rows": [
                   {
                     "category": "Book",
-                    "qty": 2,
+                    "so_coc": 2,
                     "price": 12
                   },
                   {
                     "category": "Pen",
-                    "qty": 3,
+                    "so_coc": 3,
                     "price": 4
                   },
                   {
                     "category": "Book",
-                    "qty": -1,
+                    "so_coc": -1,
                     "price": 12
                   }
                 ]
@@ -25083,12 +25083,12 @@
                 "rows": [
                   {
                     "category": "Tea",
-                    "qty": 1,
+                    "so_coc": 1,
                     "price": 5
                   },
                   {
                     "category": "Tea",
-                    "qty": 2,
+                    "so_coc": 2,
                     "price": 5
                   }
                 ]
@@ -25107,12 +25107,12 @@
                 "rows": [
                   {
                     "category": "X",
-                    "qty": 0,
+                    "so_coc": 0,
                     "price": 10
                   },
                   {
                     "category": "Y",
-                    "qty": 1,
+                    "so_coc": 1,
                     "price": -2
                   }
                 ]
@@ -25140,7 +25140,7 @@
           "id": "VZ26-predict",
           "type": "mcq",
           "title": "Dự đoán trước khi chạy",
-          "prompt": "Chỉ có qty và price, đã tính revenue. Có gọi nhóm revenue cao nhất là lợi nhuận cao nhất không?",
+          "prompt": "Chỉ có so_coc và price, đã tính revenue. Có gọi nhóm revenue cao nhất là lợi nhuận cao nhất không?",
           "options": [
             {
               "id": "c",
@@ -25192,7 +25192,7 @@
                 "Từng dòng cần lượng nhân giá trước khi cộng doanh thu."
               ],
               "explanation": "Cà phê 40, trà 36; tổng 76 theo cùng đơn vị giá. Phải ghi rõ đơn vị và quy tắc lượng, giá.",
-              "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"qty\":[2, 3, 1], \"price\":[20, 12, 20]})\nvalid = orders.loc[orders[\"qty\"].ge(0) & orders[\"price\"].ge(0)].copy()\nvalid[\"revenue\"] = valid[\"qty\"] * valid[\"price\"]\ntotals = valid.groupby(\"drink\")[\"revenue\"].sum().sort_values()\ntotals.plot.barh(ax=ax)\nax.set(xlabel=\"Revenue (thousand VND)\", ylabel=\"Drink\", title=\"Coffee contributes more revenue in this sample\")\nprint(totals.to_dict())\nplt.show()"
+              "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"so_coc\":[2, 3, 1], \"price\":[20, 12, 20]})\nvalid = orders.loc[orders[\"so_coc\"].ge(0) & orders[\"price\"].ge(0)].copy()\nvalid[\"revenue\"] = valid[\"so_coc\"] * valid[\"price\"]\ntotals = valid.groupby(\"drink\")[\"revenue\"].sum().sort_values()\ntotals.plot.barh(ax=ax)\nax.set(xlabel=\"Revenue (thousand VND)\", ylabel=\"Drink\", title=\"Coffee contributes more revenue in this sample\")\nprint(totals.to_dict())\nplt.show()"
             },
             {
               "id": "VZ26-predict-v3",
@@ -25233,8 +25233,8 @@
               "options": [
                 {
                   "id": "a",
-                  "text": "Bảng đã kiểm tra, công thức revenue=qty*price, tổng 96, hình có đơn vị, mô tả Coffee=60/96=62.5%, file PNG/SVG và HTML mở được, cùng giới hạn mẫu nhỏ. Không gán nguyên nhân kinh doanh.",
-                  "feedback": "Bảng đã kiểm tra, công thức revenue=qty*price, tổng 96, hình có đơn vị, mô tả Coffee=60/96=62.5%, file PNG/SVG và HTML mở được, cùng giới hạn mẫu nhỏ. Không gán nguyên nhân kinh doanh."
+                  "text": "Bảng đã kiểm tra, công thức revenue=so_coc*price, tổng 96, hình có đơn vị, mô tả Coffee=60/96=62.5%, file PNG/SVG và HTML mở được, cùng giới hạn mẫu nhỏ. Không gán nguyên nhân kinh doanh.",
+                  "feedback": "Bảng đã kiểm tra, công thức revenue=so_coc*price, tổng 96, hình có đơn vị, mô tả Coffee=60/96=62.5%, file PNG/SVG và HTML mở được, cùng giới hạn mẫu nhỏ. Không gán nguyên nhân kinh doanh."
                 },
                 {
                   "id": "b",
@@ -25251,7 +25251,7 @@
               "hints": [
                 "Một báo cáo có thể đối chiếu cần cả phép tính, dữ liệu và cách biểu diễn."
               ],
-              "explanation": "Bảng đã kiểm tra, công thức revenue=qty*price, tổng 96, hình có đơn vị, mô tả Coffee=60/96=62.5%, file PNG/SVG và HTML mở được, cùng giới hạn mẫu nhỏ. Không gán nguyên nhân kinh doanh.",
+              "explanation": "Bảng đã kiểm tra, công thức revenue=so_coc*price, tổng 96, hình có đơn vị, mô tả Coffee=60/96=62.5%, file PNG/SVG và HTML mở được, cùng giới hạn mẫu nhỏ. Không gán nguyên nhân kinh doanh.",
               "code": "import pandas as pd\nimport plotly.express as px\nsummary = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\"], \"revenue\":[60, 36], \"orders\":[2, 1]})\nassert summary[\"revenue\"].sum() == 96\nfig = px.bar(summary, x=\"drink\", y=\"revenue\", hover_data=[\"orders\"], labels={\"drink\":\"Drink\", \"revenue\":\"Revenue (thousand VND)\", \"orders\":\"Order rows\"}, title=\"Synthetic sample: three orders, total revenue 96\")\nprint(int(summary[\"orders\"].sum()), int(summary[\"revenue\"].sum()))\nfig.show()"
             },
             {
@@ -25282,7 +25282,7 @@
                 "Theo dõi biểu thức totals.to_dict(). Mỗi print giữ thứ tự các đối số và các giá trị nó nhận."
               ],
               "explanation": "Các lệnh print đọc totals.to_dict(). Với dữ liệu trong đoạn code, các dòng nhận được theo thứ tự là:\n{'Tea': 36, 'Coffee': 60}",
-              "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout='constrained')\nimport pandas as pd\norders = pd.DataFrame({'drink': ['Coffee', 'Tea', 'Coffee'], 'qty': [2, 3, 1], 'price': [20, 12, 20]})\nvalid = orders.loc[orders['qty'].ge(0) & orders['price'].ge(0)].copy()\nvalid['revenue'] = valid['qty'] * valid['price']\ntotals = valid.groupby('drink')['revenue'].sum().sort_values()\ntotals.plot.barh(ax=ax)\nax.set(xlabel='Revenue (thousand VND)', ylabel='Drink', title='Coffee contributes more revenue in this sample')\nprint(totals.to_dict())\nplt.close(fig)"
+              "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout='constrained')\nimport pandas as pd\norders = pd.DataFrame({'drink': ['Coffee', 'Tea', 'Coffee'], 'so_coc': [2, 3, 1], 'price': [20, 12, 20]})\nvalid = orders.loc[orders['so_coc'].ge(0) & orders['price'].ge(0)].copy()\nvalid['revenue'] = valid['so_coc'] * valid['price']\ntotals = valid.groupby('drink')['revenue'].sum().sort_values()\ntotals.plot.barh(ax=ax)\nax.set(xlabel='Revenue (thousand VND)', ylabel='Drink', title='Coffee contributes more revenue in this sample')\nprint(totals.to_dict())\nplt.close(fig)"
             },
             {
               "id": "VZ26-predict-v6",
@@ -41002,7 +41002,7 @@
                 "Với nhân ma trận, cộng các tích theo hàng; với dấu nhân từng phần tử, các khoản vẫn còn tách riêng."
               ],
               "explanation": "Mỗi hàng nhân với các giá tương ứng rồi cộng các tích.",
-              "code": "import numpy as np\nqty = np.array([[1,2],[3,0]])\nprice = np.array([10,5])\nprint(qty @ price)"
+              "code": "import numpy as np\ncups = np.array([[1,2],[3,0]])\nprice = np.array([10,5])\nprint(cups @ price)"
             },
             {
               "id": "RD04-practice-1-v3",
@@ -41032,7 +41032,7 @@
                 "Với nhân ma trận, cộng các tích theo hàng; với dấu nhân từng phần tử, các khoản vẫn còn tách riêng."
               ],
               "explanation": "Dấu * với broadcasting giữ riêng khoản tiền từng sản phẩm.",
-              "code": "import numpy as np\nqty = np.array([[1,2],[3,0]])\nprice = np.array([10,5])\nprint(qty * price)"
+              "code": "import numpy as np\ncups = np.array([[1,2],[3,0]])\nprice = np.array([10,5])\nprint(cups * price)"
             },
             {
               "id": "RD04-practice-1-v4",

@@ -156,10 +156,10 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.orders chứa product_id và qty; data.products chứa product_id và name, mã danh mục là duy nhất. Nối trái theo product_id, trả list tên theo thứ tự đơn; tên chưa khớp là \"Unknown\"."
+    "body": "data.orders chứa product_id và so_coc; data.products chứa product_id và name, mã danh mục là duy nhất. Nối trái theo product_id, trả list tên theo thứ tự đơn; tên chưa khớp là \"Unknown\"."
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame(data['orders'], columns=['product_id','qty'])\n     products = pd.DataFrame(data['products'], columns=['product_id','name'])\n     joined = orders.merge(products, on='product_id', how='left', sort=False)\n     return joined['name'].fillna('Unknown').tolist()\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame(data['orders'], columns=['product_id','so_coc'])\n     products = pd.DataFrame(data['products'], columns=['product_id','name'])\n     joined = orders.merge(products, on='product_id', how='left', sort=False)\n     return joined['name'].fillna('Unknown').tolist()\n",
    "tests": [
     {
      "name": "danh mục khác thứ tự",
@@ -167,11 +167,11 @@
       "orders": [
        {
         "product_id": 2,
-        "qty": 1
+        "so_coc": 1
        },
        {
         "product_id": 1,
-        "qty": 3
+        "so_coc": 3
        }
       ],
       "products": [
@@ -196,7 +196,7 @@
       "orders": [
        {
         "product_id": 9,
-        "qty": 2
+        "so_coc": 2
        }
       ],
       "products": [
@@ -216,11 +216,11 @@
       "orders": [
        {
         "product_id": 1,
-        "qty": 1
+        "so_coc": 1
        },
        {
         "product_id": 1,
-        "qty": 2
+        "so_coc": 2
        }
       ],
       "products": [

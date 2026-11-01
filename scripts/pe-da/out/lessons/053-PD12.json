@@ -184,9 +184,9 @@
      "answer": "Để không mất số 0 đầu khi pandas suy luận mã thành số."
     },
     {
-     "prompt": "Đọc CSV \"id,qty\n007,3\" và in mã giữ nguyên 007.",
+     "prompt": "Đọc CSV \"id,so_coc\n007,3\" và in mã giữ nguyên 007.",
      "answer": "Khai báo cột id là string.",
-     "answerCode": "import pandas as pd\nfrom io import StringIO\ndf = pd.read_csv(StringIO('id,qty\\n007,3'), dtype={'id': 'string'})\nprint(df.loc[0, 'id'])",
+     "answerCode": "import pandas as pd\nfrom io import StringIO\ndf = pd.read_csv(StringIO('id,so_coc\\n007,3'), dtype={'id': 'string'})\nprint(df.loc[0, 'id'])",
      "answerExpected": "007"
     },
     {

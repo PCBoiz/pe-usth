@@ -26,7 +26,7 @@
      },
      {
       "type": "code",
-      "code": "import pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'),\n                   'qty': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['qty'].dtype))\nprint(df['qty'].isna().tolist())",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'),\n                   'so_coc': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['so_coc'].dtype))\nprint(df['so_coc'].isna().tolist())",
       "expected": "['001', '002']\nInt64\n[False, True]",
       "tryIt": true
      }
@@ -87,7 +87,7 @@
      "explanation": "Mã định danh không nên bị coi là đại lượng để tính."
     },
     {
-     "question": "Vì sao mã 001 nên giữ dạng chữ?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'),\n                   'qty': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['qty'].dtype))\nprint(df['qty'].isna().tolist())",
+     "question": "Vì sao mã 001 nên giữ dạng chữ?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'),\n                   'so_coc': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['so_coc'].dtype))\nprint(df['so_coc'].isna().tolist())",
      "options": [
       {
        "text": "Vì chuyển mã thành số luôn giữ số 0 đầu.",
@@ -145,10 +145,10 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "data.codes là list mã dạng chữ; data.qty chứa số nguyên viết bằng chữ, None hoặc chuỗi lỗi. Giữ codes bằng dtype string; chuyển qty qua to_numeric(errors=\"coerce\") rồi Int64. Trả codes, qty (ô thiếu thành None) và dtype của qty."
+    "body": "data.codes là list mã dạng chữ; data.so_coc chứa số nguyên viết bằng chữ, None hoặc chuỗi lỗi. Giữ codes bằng dtype string; chuyển so_coc qua to_numeric(errors=\"coerce\") rồi Int64. Trả codes, so_coc (ô thiếu thành None) và dtype của so_coc."
    },
    "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
-   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     codes = pd.Series(data['codes'], dtype='string')\n     qty = pd.to_numeric(pd.Series(data['qty']), errors='coerce').astype('Int64')\n     return {'codes': codes.tolist(), 'qty': [None if pd.isna(v) else int(v) for v in qty], 'dtype': str(qty.dtype)}\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     codes = pd.Series(data['codes'], dtype='string')\n     so_coc = pd.to_numeric(pd.Series(data['so_coc']), errors='coerce').astype('Int64')\n     return {'codes': codes.tolist(), 'so_coc': [None if pd.isna(v) else int(v) for v in so_coc], 'dtype': str(so_coc.dtype)}\n",
    "tests": [
     {
      "name": "mã có số 0 đầu",
@@ -157,7 +157,7 @@
        "003",
        "010"
       ],
-      "qty": [
+      "so_coc": [
        "4",
        "bad"
       ]
@@ -167,7 +167,7 @@
        "003",
        "010"
       ],
-      "qty": [
+      "so_coc": [
        4,
        null
       ],
@@ -181,7 +181,7 @@
        "A",
        "B"
       ],
-      "qty": [
+      "so_coc": [
        null,
        "0"
       ]
@@ -191,7 +191,7 @@
        "A",
        "B"
       ],
-      "qty": [
+      "so_coc": [
        null,
        0
       ],
@@ -204,7 +204,7 @@
       "codes": [
        "X"
       ],
-      "qty": [
+      "so_coc": [
        "-2"
       ]
      },
@@ -212,7 +212,7 @@
       "codes": [
        "X"
       ],
-      "qty": [
+      "so_coc": [
        -2
       ],
       "dtype": "Int64"

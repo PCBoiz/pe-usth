@@ -144,9 +144,9 @@
      "answer": "Vì sau khi ghi, con trỏ đang ở cuối dữ liệu; cần đưa về đầu để đọc."
     },
     {
-     "prompt": "Tạo một file Excel trong bộ nhớ có sheet Sales chứa qty=[2,3], price=[10,20]. Đọc riêng cột qty của sheet đó và in tổng.",
-     "answer": "Dùng sheet_name và usecols; tổng qty là 5.",
-     "answerCode": "import pandas as pd\nfrom io import BytesIO\nbuffer = BytesIO()\npd.DataFrame({'qty': [2, 3], 'price': [10, 20]}).to_excel(buffer, sheet_name='Sales', index=False, engine='openpyxl')\nbuffer.seek(0)\nread = pd.read_excel(buffer, sheet_name='Sales', usecols=['qty'], engine='openpyxl')\nprint(read['qty'].sum())",
+     "prompt": "Tạo một file Excel trong bộ nhớ có sheet Sales chứa so_coc=[2,3], price=[10,20]. Đọc riêng cột so_coc của sheet đó và in tổng.",
+     "answer": "Dùng sheet_name và usecols; tổng so_coc là 5.",
+     "answerCode": "import pandas as pd\nfrom io import BytesIO\nbuffer = BytesIO()\npd.DataFrame({'so_coc': [2, 3], 'price': [10, 20]}).to_excel(buffer, sheet_name='Sales', index=False, engine='openpyxl')\nbuffer.seek(0)\nread = pd.read_excel(buffer, sheet_name='Sales', usecols=['so_coc'], engine='openpyxl')\nprint(read['so_coc'].sum())",
      "answerExpected": "5"
     },
     {
