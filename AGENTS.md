@@ -51,11 +51,11 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | **33 bộ, 471 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
+| Backend test | **33 bộ, 472 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
 | Backend lint | 223 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **435 ca** / 34 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **463 ca** / 35 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **130 bài tập được chấm / 433 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
@@ -73,17 +73,20 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 435 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 463 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · consent-banner 15 · course-resume 8 ·
 data-files 18 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
 ide-trace 38 · inline-code 3 · insert-gate-sync 2 · label-version 2 ·
 learning-events 48 · lesson-back 7 · lesson-load 7 · mcq-code 9 ·
 mcq-next-after-wrong 23 · practice-contract 15 · prewarm-gate 5 · read-diagram 12 ·
-read-trace 15 · read-try-it 20 · review-quiz 21 · run-stale 15 · session-marker 5 ·
-studio-lesson 41 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 = 435.
-Mốc trước là 434; thêm practice-contract 14 → 15 (CỔNG LUYỆN TẬP).
+read-guess 16 · read-trace 15 · read-try-it 20 · review-quiz 33 · run-stale 15 ·
+session-marker 5 · studio-lesson 41 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
+worker-csp 7 = 463.
+Mốc trước là 435; thêm read-guess 16 (CỔNG DỰ ĐOÁN ở màn đọc — 301 khối code in sẵn
+kết quả nay đòi gõ dự đoán trước khi mở) và review-quiz 21 → 33 (tải lại trang giữa đề
+không còn mất đề — `GET quizzes/:id` nay có người gọi, xem bẫy cuối file).
+Trước đó 434 → 435 là practice-contract 14 → 15 (CỔNG LUYỆN TẬP).
 Trước đó 413 → 434 là review-quiz 21 — đề ôn tập chấm ở MÁY CHỦ nay có đường tới
 người học (xem bẫy cuối file).
 Trước đó 393 → 413 là data-files 18 (CƠ CHẾ NẠP FILE DỮ LIỆU — xem bẫy dưới) và
@@ -1368,6 +1371,77 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   giờ nên giữ 39 là TRƯỢT), `catalog-duration`, `mcq-code` (516 → 537, 214 → 219),
   `practice-contract` (124 → 130, 415 → 433), `studio-lesson` (172 → 179, và bảng đếm
   khối `paragraph` 775 → 811 · `code` 501 → 508 · `table` 1 → 2).
+
+- **508/508 khối code ở màn đọc đều IN SẴN đáp án ngay dưới — nay 262 khối hỏi trước.**
+  Đo trên bản dựng 179 bài: 508 khối `code` ở màn đọc, **cả 508 đều có `expected`**, và
+  chỉ 56 có bảng từng bước ⇒ **4/5 khối code của khoá không đòi người học nghĩ gì**. Người
+  thử 1/11/2026 nói *"nên đặt trọng tâm vào practice"* kèm ảnh một màn ĐỌC dày chữ — nhưng
+  số đo nói ngược với cách đọc hiển nhiên: luyện tập ĐÃ là khối lớn nhất (669 màn = 31%,
+  hơn cả 565 màn đọc). Thiếu không phải khối lượng mà là **lời đòi**.
+  Cùng bằng chứng đã dùng cho `StepTrace` và nút "Xem đáp án" của `PracticeScreen`:
+  Hundhausen 2002 — Gurka lặp lại thí nghiệm nhưng BỎ điều kiện "dự đoán trước" thì lợi
+  thế BIẾN MẤT; Brod 2021 nói ra cơ chế (đoán sai → ngạc nhiên → chú ý dồn vào đáp án
+  đúng). Nên phần có bằng chứng của tính năng này gọn vào `disabled={!doan.trim()}`.
+  **Luật chọn khối đặt ở FRONTEND, và đó KHÔNG mâu thuẫn với cờ `tryIt`.** `doanDuocOutput`
+  (`lib/studio-lesson.ts`, hàm thuần) đọc được HOÀN TOÀN từ hình dạng `expected` + chữ
+  trong `code`. Cờ `tryIt` thì phải ở build vì ở đó build biết thứ frontend không biết
+  (thiếu wheel, `engine="openpyxl"`, `sys.executable`). **Đừng suy từ cái này sang cái kia.**
+  Và vì luật ở frontend nên **KHÔNG CẦN NẠP DB** — đó là lý do mục này đi trước `task.io`
+  trong hàng đợi.
+  **NĂM phép loại, mỗi phép một lý do riêng** (số đã đo ở trần đang dùng): đã có `trace`
+  (56 — hỏi hai câu trên cùng một khối là ma sát không mua gì) · code gọi thư viện vẽ hình
+  (87, trong đó 80 có khối `figure` ngay sau — **phép loại đọc CODE chứ không đọc "có
+  figure phía sau"**, vì 7 khối dựng Figure mà bài không xuất ảnh; VZ01 có
+  `expected: "36"` cho một đoạn vẽ cả một hình, hỏi ở đó là hỏi về phần phụ) · quá trần ·
+  đáp án nằm NGUYÊN VĂN trong chính đoạn code (35 — `print("Xin chào")` thì cổng chỉ bắt
+  chép lại một chuỗi đang nhìn; cùng luật `gen_traces.py` đã phải đặt).
+  **Trần 2 dòng / 40 ký tự CHỈ ĐƯỢC HẠ.** Đã đo cả ba bậc: ≤1/≤24 → 99 khối/58 bài ·
+  **≤2/≤40 → 262 khối/127 bài** · ≤3/≤80 → 322/137. Ô gõ là MỘT dòng và `khopDapAn` bỏ hết
+  khoảng trắng nên hai dòng gõ liền vẫn khớp, nhưng từ 3 dòng trở lên "đoán output" thành
+  "chép lại một đoạn", tức người đoán ĐÚNG vẫn hay nhận "chưa khớp" vì thiếu một dấu.
+  **Ô "Kết quả:" MỞ RA dù đoán đúng hay sai** — giấu output của người đoán sai là lấy đi
+  đúng thứ họ cần nhất lúc đó. Đây là bước CAM KẾT, không phải bài thi.
+  **Và verdict phải NÓI RA giới hạn của phép so:** `khopDapAn` chỉ bỏ khoảng trắng, KHÔNG
+  bỏ dấu nháy hay dấu ngoặc (cố ý — `2` và `'2'` là hai giá trị khác nhau, phân biệt được
+  chúng là thứ giáo trình này dạy), nên `[ 6  8 10]` đòi đúng ngoặc và người đoán đúng ý mà
+  viết `6 8 10` vẫn nhận "chưa khớp". Vì vậy chữ là **"chưa khớp từng ký tự"**, không phải
+  "sai", và câu sau nói thẳng điều đó.
+  **`readGuess` phải ở trong NHÁP, không trong state component như `daNop` của `StepTrace`:**
+  màn đọc là màn người học đi qua lại nhiều lần (nút "← Quay lại"), bắt đoán LẠI cùng một
+  câu là ma sát không mua gì — lần đó họ đã biết đáp án. Nhưng **MỘT trường, không hai**:
+  chữ ĐANG GÕ mà chưa nộp để trong state; thêm trường thứ hai cho nó là thêm một thứ phải
+  khớp, và nó sẽ lệch.
+  **Khoá nháp mang CẢ chỉ số màn** (`"<màn>-<khối>"`): `i` một mình trùng nhau giữa các màn
+  đọc của cùng một bài, nên đoán ở màn 1 sẽ mở sẵn đáp án của khối cùng vị trí ở màn 2.
+  **KHÔNG animation lúc mở đáp án** — cùng kết luận đã ghim cho khối `diagram` (Tversky
+  2002): giá trị nằm ở việc SO hai thứ cạnh nhau, mà so sánh cần cả hai cùng có mặt. Ô
+  "Kết quả:" dùng lại NGUYÊN class `readExpected`, nên nó hiện ra giống hệt khối không cổng.
+  `read-guess.test.mjs` (16 ca) — và các hàng rào của nó là **SÀN, không phải con số đúng**
+  (`CODE.length === 508`, `bai.size >= 110`): ghim con số chính xác thì thêm một module là
+  đỏ oan, đúng bệnh 14 ca ghi cứng ở bẫy trên.
+
+- **Tải lại trang giữa lúc làm đề ôn là MẤT ĐỀ VĨNH VIỄN — đã sửa, lần thứ CHÍN.**
+  `quiz_id` chỉ sống trong state React, nên một lần F5 làm hàng `quizzes` kẹt ở `generated`
+  MÃI MÃI (`submitQuiz` đòi đúng id đó) và người học chỉ còn đường phát một đề khác. Route
+  `GET quizzes/:id` đã tồn tại và trả đúng đề đã `stripAnswers`, mà `grep` trên
+  `frontend/src` ra **0 lời gọi** — đúng hình dạng "dựng xong mà không có đường tới", lần
+  thứ chín. Nay `ReviewQuiz` gọi nó TRONG CÙNG `Promise.all` với `status`.
+  **Cất ở `localStorage` theo KHOÁ HỌC, không trong nháp BÀI.** Nháp có khoá
+  `…:<khoá>:<bài>`, còn đề ôn rút câu từ MỌI bài đã hoàn thành và ô đề ôn mount ở màn tổng
+  kết của BẤT KỲ bài nào — cất vào nháp bài 12 thì làm xong bài 13 là màn tổng kết bài 13
+  phát một đề THỨ HAI, và một trong hai chắc chắn kẹt lại mãi.
+  **Khoá KHÔNG mang `userId`, và đó là an toàn:** phép chặn theo chủ sở hữu ở MÁY CHỦ —
+  `getQuiz` trả **404** cho quiz người khác (không 403, để không tiết lộ nó tồn tại). Nên
+  một id sót lại của tài khoản khách cũ chỉ ra 404 và ô này xoá nó đi.
+  **"ĐÃ NỘP" KHÁC "ĐANG LÀM", và đọc từ máy chủ.** Nộp lần hai là 409 (compare-and-set
+  `generated → submitted`), nên khôi phục một đề ĐÃ NỘP thành "đang làm" là mời người học
+  chọn lại đủ 10 câu rồi nhận một câu lỗi. `docDeKhoiPhuc` không bao giờ trả nhánh `dangLam`
+  cho đề `submitted`, kể cả khi response có kèm `questions`.
+  **Quá `HAN_GIU_DE_MS` (7 ngày) thì bỏ IM LẶNG** — người học không nhớ mình có đề mở dở
+  nên một câu nói về nó chỉ gây hoang mang. Hạn tính từ lúc PHÁT đề, không từ lần bấm cuối:
+  nó bó TUỔI của đề (pool lớn dần theo số bài xong) chứ không bó độ rảnh của người học.
+  `review-quiz.test.mjs` 21 → 33 ca.
+  **8/11 route của `quizzes.controller.ts` vẫn CHƯA có đường tới.**
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
