@@ -262,3 +262,20 @@ test('mọi bài tập được chấm đều có lời giải mẫu KHÁC khung
     );
   }
 });
+
+test('CỔNG LUYỆN TẬP: chưa gõ gì thì không xem được đáp án', () => {
+  // 669 màn luyện tập = 31% toàn khoá, nhiều hơn cả 565 màn đọc — và trước
+  // 1/11/2026 không màn nào đòi người học làm gì trước khi hiện đáp án. Người
+  // thử nói đúng một câu: "nên đặt trọng tâm vào practice"; khối lượng đã là
+  // trọng tâm rồi, thứ thiếu là lời đòi.
+  //
+  // Cùng luật với cổng dự đoán của StepTrace (`disabled={!doan.trim()}`) và
+  // cùng bằng chứng: Hundhausen 2002 — bỏ điều kiện "dự đoán" thì lợi thế
+  // BIẾN MẤT. Một dòng `disabled`, và nó là toàn bộ phần có bằng chứng; gỡ ra
+  // thì mọi ca về DỮ LIỆU trong file này vẫn xanh.
+  const src = doc('src', 'components', 'python-studio', 'screens', 'PracticeScreen.tsx');
+  assert.match(src, /disabled=\{!typed\.trim\(\)\}/);
+  // Nhãn phải NÓI RA điều kiện. Một nút xám không giải thích gì thì người học
+  // đọc ra là "hỏng", đúng họ lỗi mà repo này đã gặp ở thanh tiến độ.
+  assert.match(src, /Viết thử rồi mới xem được/);
+});

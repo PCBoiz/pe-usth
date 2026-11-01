@@ -11,6 +11,18 @@
 //
 // Thứ tự dựng là có ý: ô viết ĐỨNG TRƯỚC nút "Xem đáp án". Mở sẵn đáp án thì
 // câu luyện tập thành câu đọc, mà khoá này đã có 172 bài đọc rồi.
+//
+// VÀ THỨ TỰ THÔI LÀ CHƯA ĐỦ — nút phải KHOÁ tới khi có chữ. Đo trên bản dựng:
+// 669 màn luyện tập = 31% toàn khoá, nhiều hơn cả màn đọc (565) — mà không màn
+// nào đòi người học làm gì trước khi hiện đáp án. Người thử ngày 1/11/2026 nói
+// đúng một câu: "nên đặt trọng tâm vào practice". Khối lượng thì đã là trọng
+// tâm rồi; thứ thiếu là lời đòi.
+// Cùng bằng chứng với nút "Mở bảng" của StepTrace (`disabled={!doan.trim()}`):
+// Hundhausen 2002 — Gurka lặp lại thí nghiệm nhưng BỎ điều kiện "dự đoán" thì
+// lợi thế BIẾN MẤT; Brod 2021 nói ra cơ chế (đoán sai → ngạc nhiên → chú ý dồn
+// vào đáp án đúng). Một dòng `disabled`, và nó là toàn bộ phần có bằng chứng.
+// Không chấm chữ họ gõ: 516 câu nguồn là câu MỞ, bịa bộ chấm ra là báo sai cho
+// câu trả lời đúng (xem đoạn trên).
 import CodeBlock from '@/components/lesson-chrome/exercises/CodeBlock';
 import { toCodeLines } from '@/lib/py-highlight';
 
@@ -88,11 +100,12 @@ export default function PracticeScreen({ lesson, scr, metaLabel, draft, update }
           <button
             type="button"
             className={c.practiceReveal}
+            disabled={!typed.trim()}
             onClick={() =>
               update({ practiceSeen: { ...(draft.practiceSeen ?? {}), [at]: true } })
             }
           >
-            Xem đáp án
+            {typed.trim() ? 'Xem đáp án' : 'Viết thử rồi mới xem được'}
           </button>
         )}
       </div>
