@@ -293,6 +293,97 @@ for (const lesson of bundle.lessons) {
   if (verbose) console.log(`  ✓ ${ma} · ${khoi.length} đoạn · ${ms} ms`);
 }
 
+/* ------------------------------------------------------------------ PHA 2
+ *
+ * `answerCode` của màn LUYỆN TẬP — 63 câu / 62 bài.
+ *
+ * Pha 1 chỉ đi qua `step_1.read`, nên 63 đoạn này chưa bộ kiểm nào chạy. Chúng
+ * là đáp án mẫu NGƯỜI HỌC ĐỌC ĐƯỢC ngay hôm nay (PracticeScreen dựng chúng khi
+ * bấm "Xem đáp án"), nên một đoạn hỏng là một đáp án mẫu sai nằm trong bài —
+ * và nó sẽ hỏng im lặng, vì không ai chạy đáp án mẫu.
+ *
+ * Mỗi câu chạy ĐỘC LẬP: `answerCode` của gói nguồn là chương trình tự đủ (có
+ * `import` riêng), khác hẳn khối `read` vốn viết để chạy NỐI TIẾP nhau.
+ */
+/**
+ * Đáp án mẫu KHÔNG chạy được ở runtime này, kèm lý do. Danh sách này bị kiểm
+ * theo CẢ HAI CHIỀU: thiếu một mục ⇒ đỏ; thừa một mục (nay chạy được rồi) ⇒
+ * cũng đỏ. Không có chiều thứ hai thì nó chỉ dài ra và thành chỗ giấu rác.
+ */
+const DAP_AN_MAU_KHONG_CHAY = {
+  'PD13#3': 'openpyxl — Pyodide 314 không có wheel (xem danh sách 14 bài không chấm được)',
+};
+
+const luyen = [];
+let boQuaLocal = 0;
+for (const lesson of bundle.lessons) {
+  const ma = lesson.lesson_code;
+  if (only && !only.has(ma)) continue;
+  // Bài chạy trên máy (Tkinter, fork, seaborn…) bị bỏ ở pha 1 vì runtime này
+  // không có thư viện của chúng — bỏ ở đây cùng lý do, không phải vì lười.
+  if (lesson._mode === 'local') {
+    boQuaLocal += (lesson.content_json.step_2?.practice ?? [])
+      .filter((p) => p.answerCode && p.answerExpected).length;
+    continue;
+  }
+  const ds = lesson.content_json.step_2?.practice ?? [];
+  ds.forEach((p, i) => {
+    if (p.answerCode && p.answerExpected) luyen.push({ ma, i, p, lesson });
+  });
+}
+
+let luyenDat = 0;
+const biet = [];
+for (const { ma, i, p, lesson } of luyen) {
+  // Gói của bài đã được nạp ở pha 1 cho bài đó; nhưng bài có thể bị bỏ qua ở
+  // pha 1 (không có khối code nào), nên nạp lại cho chắc — `warmed` chặn lượt
+  // thừa, nên chi phí là 0 với bài đã đi qua.
+  const khai = (lesson.content_json.step_4?.packages || []).filter(
+    (x) => coTrongLock.has(x) && !warmed.has(x),
+  );
+  if (khai.length) {
+    await py.loadPackage(khai, { messageCallback: () => {} });
+    JSON.parse(preload(JSON.stringify(khai)));
+    khai.forEach((x) => warmed.add(x));
+  }
+
+  const khoa = `${ma}#${i + 1}`;
+  const coLyDo = DAP_AN_MAU_KHONG_CHAY[khoa];
+  const res = JSON.parse(grade(p.answerCode, '[]', '{}'));
+  if (res.error) {
+    if (coLyDo) {
+      biet.push(`${khoa}: ${coLyDo}`);
+      continue;
+    }
+    hong.push({
+      ma: `${ma} luyện tập #${i + 1}`,
+      loai: 'đáp án mẫu NỔ',
+      chiTiet: String(res.error).split('\n').slice(-2).join(' | '),
+    });
+    continue;
+  }
+  if (coLyDo) {
+    hong.push({
+      ma: `${ma} luyện tập #${i + 1}`,
+      loai: 'ngoại lệ đã lỗi thời',
+      chiTiet: `khai là không chạy được (${coLyDo}) nhưng nay chạy xong — xoá khỏi DAP_AN_MAU_KHONG_CHAY`,
+    });
+    continue;
+  }
+  const { sach } = tachCanhBao(res.output);
+  const thuc = chuanHoa(sach);
+  const mong = chuanHoa(p.answerExpected);
+  if (thuc !== mong) {
+    hong.push({
+      ma: `${ma} luyện tập #${i + 1}`,
+      loai: 'đáp án mẫu LỆCH',
+      chiTiet: lech(mong, thuc),
+    });
+    continue;
+  }
+  luyenDat += 1;
+}
+
 function lech(mongDoi, thuc) {
   const a = mongDoi.split('\n');
   const b = thuc.split('\n');
@@ -307,6 +398,12 @@ function lech(mongDoi, thuc) {
 
 const giay = ((Date.now() - batDau) / 1000).toFixed(1);
 console.log(`\n${daChay} bài · ${soDoan} đoạn code · ${chamQua.length} đạt · ${hong.length} hỏng · ${giay}s`);
+console.log(
+  `đáp án mẫu màn luyện tập: ${luyenDat}/${luyen.length} chạy đúng`
+  + (biet.length ? ` · ${biet.length} ngoại lệ đã khai` : '')
+  + (boQuaLocal ? ` · ${boQuaLocal} câu BỎ QUA (bài chạy trên máy)` : ''),
+);
+for (const b of biet) console.log(`  — ${b}`);
 if (canhBaoTheoBai.length) {
   const tong = canhBaoTheoBai.reduce((n, c) => n + c.canhBao.length, 0);
   console.log(`\n${tong} cảnh báo thư viện ở ${canhBaoTheoBai.length} bài (không làm trượt, nhưng học viên SẼ thấy chúng trong console):`);

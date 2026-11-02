@@ -143,6 +143,22 @@ export const BAN_DO = [
     toiThieu: 150,
   },
 
+  {
+    id: 'dap-an-mau-luyen-tap',
+    ten: 'Đáp án mẫu CHẠY ĐƯỢC của màn luyện tập (có answerCode)',
+    thucHien: 'scripts/pe-da/check-pyodide.mjs:DAP_AN_MAU_KHONG_CHAY',
+    mount: 'frontend/src/components/python-studio/screens/PracticeScreen.tsx',
+    manHinh: 'practice',
+    duLieu: 'answerCode',
+    dem: (ctx) =>
+      ctx.bai.reduce(
+        (n, l) =>
+          n + (l.content_json.step_2?.practice ?? []).filter((p) => p.answerCode).length,
+        0,
+      ),
+    toiThieu: 50,
+  },
+
   // ---- ĐÃ DỰNG MÀ CHƯA CÓ ĐƯỜNG TỚI — khai ra, không để im lặng -----------
   {
     id: 'nut-thu-ide-man-brief',

@@ -61,12 +61,12 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **130 bài tập được chấm / 433 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
-| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 153 bài, 417 đoạn code, **0 hỏng**, 14 cảnh báo, ~30 s |
+| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 153 bài, 417 đoạn code, **0 hỏng**, 14 cảnh báo, ~55 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 130 bài, **433 ca đạt**, 585 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, ~15 s |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 356 khối đủ điều kiện** (300 bỏ qua, phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
-| Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **13 mục, 10 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
+| Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **14 mục, 11 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
 **pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 179
@@ -1561,6 +1561,31 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   liệu, renderer dựng) không bao giờ nhắc tên hàm của nhau, nên phép so theo ký hiệu ở đó
   sai 100% số lần. Với cặp đó, thứ NỐI hai nửa là KHOÁ DỮ LIỆU (`duLieu`: `trace`,
   `task?.io`, `tests`, `dataFiles`, `diagram`).
+
+- **63 đáp án mẫu của màn LUYỆN TẬP chưa bộ kiểm nào từng chạy — nay chạy, và một cái
+  hỏng.** `step_2.practice` có 63 câu mang sẵn `answerCode` + `answerExpected` (chương
+  trình hoàn chỉnh, tự đủ, kèm output chính xác), và `PracticeScreen` ĐÃ dựng chúng khi
+  người học bấm "Xem đáp án" — tức 63 đoạn code đang hiện ra cho người học mà không ai
+  biết chúng còn chạy được không. Vòng lặp của `check-pyodide.mjs` chỉ đi qua
+  `step_1.read`, nên chúng nằm ngoài mọi bộ kiểm. Pha 2 chạy chúng bằng CHÍNH bộ máy đã
+  có (chặn mạng, nạp wheel, hâm nóng, harness) — viết bộ chạy thứ hai là tạo một thứ sẽ
+  trôi khỏi thứ nhất.
+  **Bắt được ngay một cái:** PD13 luyện tập #3 `import openpyxl` — Pyodide 314 không có
+  wheel đó. Không phải lỗi nội dung mới (AGENTS.md đã ghi PD13 không chấm được vì đúng lý
+  do này); nó là một giới hạn đã biết vừa lộ ra ở chỗ chưa ai nhìn.
+  **Xử lý bằng NGOẠI LỆ CÓ TÊN, kiểm theo CẢ HAI CHIỀU.** Để đỏ mãi thì CI đỏ vĩnh viễn vì
+  một thứ không sửa được, rồi người ta quen với màu đỏ; bỏ qua im lặng thì đúng "nới phép
+  kiểm cho xanh". `DAP_AN_MAU_KHONG_CHAY` khai tên + lý do, và **một mục nay chạy được
+  cũng là LỖI** — thiếu chiều đó thì danh sách chỉ dài ra rồi thành chỗ giấu rác.
+  Ablate: xoá ngoại lệ → 1 đỏ (`đáp án mẫu NỔ`); bịa một ngoại lệ cho câu đang chạy được →
+  1 đỏ (`ngoại lệ đã lỗi thời`).
+  **63 nhưng chỉ chạy 53, và con số bị bỏ phải NÓI RA:** 10 câu nằm trong bài
+  `_mode: 'local'` (GU* Tkinter) — cùng lý do pha 1 bỏ chúng. Im lặng thì "52/53" đọc như
+  đã phủ hết, mà thật ra còn 10 đoạn chưa ai chạy.
+  **Khoá ngoại lệ là `<mã>#<thứ tự trong step_2.practice>`, KHÔNG phải thứ tự trong số câu
+  có answerCode** — NP02 có answerCode ở câu thứ 3 nên khoá là `NP02#3`. Lần ablate đầu
+  tôi gõ `NP02#1` và phép kiểm không bắn, trông y như nó không có răng; bịa khoá sai là
+  một cách tự lừa mình rằng bộ kiểm hỏng.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
