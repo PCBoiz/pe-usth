@@ -160,6 +160,23 @@ export const BAN_DO = [
   },
 
   {
+    id: 'cong-du-doan-hinh',
+    ten: 'Cổng dự đoán hình — che biểu đồ tới khi người học nói trước nó trông thế nào',
+    thucHien: 'frontend/src/lib/studio-lesson.ts:doanDuocHinh',
+    mount: 'frontend/src/components/python-studio/screens/ReadScreen.tsx',
+    manHinh: 'read',
+    dem: (ctx) =>
+      ctx.bai.reduce(
+        (n, l) =>
+          n +
+          (l.content_json.step_1?.read ?? []).filter((man) =>
+            man.some((b) => b.type === 'figure'),
+          ).length,
+        0,
+      ),
+    toiThieu: 50,
+  },
+  {
     id: 'on-gian-cach',
     ten: 'Ôn giãn cách — hỏi lại 1 câu ĐÃ SAI ở đầu một bài sau',
     thucHien: 'frontend/src/lib/spaced-review.ts:layCauOn',

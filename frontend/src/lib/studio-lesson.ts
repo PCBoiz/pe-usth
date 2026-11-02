@@ -417,6 +417,30 @@ export function doanDuocOutput(block: ReadBlock): boolean {
   return true;
 }
 
+/**
+ * Khối `figure` này có dựng CỔNG DỰ ĐOÁN HÌNH không?
+ *
+ * VÌ SAO. `doanDuocOutput` CỐ Ý loại 81 khối code gọi thư viện vẽ hình — lý lẽ
+ * đúng: `expected` của chúng chỉ là mấy con số in kèm, hỏi ở đó là hỏi về phần
+ * phụ của đoạn code. Nhưng hệ quả đo được: **26/27 bài có hình thuộc module 4**,
+ * tức gần như toàn bộ phần trực quan hoá của khoá không có cổng nào.
+ *
+ * KHÔNG CÓ VERDICT, và đó là giới hạn đã biết: không có đáp án máy đọc được cho
+ * "hình sắp hiện trông thế nào". Nên đây là bước CAM KẾT, đúng mức mà ô
+ * "Kết quả:" của cổng dự đoán output đã chấp nhận — có phần "đoán" của
+ * Hundhausen 2002, thiếu phần "bất ngờ vì sai" của Brod 2021. Người học tự đối
+ * chiếu. Đừng bịa một bộ chấm cho nó.
+ *
+ * CHỈ HÌNH ĐẦU của mỗi màn. Đo trên bản dựng: 62 màn có 1 hình, **9 màn có 2** —
+ * hỏi hai lần trên một màn là đúng loại ma sát mà repo đã từ chối khi quyết
+ * "khối đã có `trace` thì không dựng thêm cổng output". Hình thứ hai trong cùng
+ * màn gần như luôn là biến thể để SO với hình đầu; che nó là phá phép so.
+ */
+export function doanDuocHinh(khoi: ReadBlock[], i: number): boolean {
+  if (khoi[i]?.type !== 'figure') return false;
+  return khoi.findIndex((b) => b.type === 'figure') === i;
+}
+
 export type Step1 = {
   heading?: string;
   /**

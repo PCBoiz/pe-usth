@@ -61,6 +61,7 @@ import {
   doanDuocOutput,
   initialLessonDraft,
   khopDapAn,
+  doanDuocHinh,
 } from '../../src/lib/studio-lesson.ts';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -305,8 +306,15 @@ test('câu đã nộp nằm trong NHÁP, nên rời màn rồi quay lại không
   // Đọc từ draft và ghi qua `update` — KHÔNG useState cho câu đã nộp.
   assert.match(SCREEN_CODE, /draft\.readGuess\?\.\[/);
   assert.match(SCREEN_CODE, /update\(\{ readGuess:/);
-  // `useState` chỉ được dùng cho chữ ĐANG GÕ, đúng một chỗ.
-  assert.equal((SCREEN_CODE.match(/useState\(/g) ?? []).length, 1);
+  // `useState` chỉ được dùng cho chữ ĐANG GÕ. Ghim TÍNH CHẤT chứ không ghim SỐ
+  // LƯỢNG: màn đọc nay có hai cổng (dự đoán output và dự đoán hình), mỗi cổng
+  // một ô gõ riêng, nên một `assert.equal(…, 1)` sẽ bắn mỗi lần thêm cổng.
+  // Thứ KHÔNG được mất là: không `useState` nào giữ câu ĐÃ NỘP — câu đã nộp
+  // phải ở trong nháp, nếu không thì rời màn quay lại là bị hỏi lại.
+  const moiUseState = SCREEN_CODE.match(/useState\([^)]*\)/g) ?? [];
+  assert.ok(moiUseState.length >= 1, 'không còn useState nào cho chữ đang gõ');
+  for (const u of moiUseState)
+    assert.equal(u, "useState('')", `useState giữ thứ khác chữ đang gõ: ${u}`);
   // React 19 chặn setState đồng bộ trong thân effect; cổng này không cần effect
   // nào, nên có một `useEffect` ở đây là dấu hiệu đã đi sai đường.
   assert.ok(!SCREEN_CODE.includes('useEffect'), 'ReadScreen dựng useEffect');
@@ -329,4 +337,49 @@ test('khoá nháp mang CẢ chỉ số màn — thiếu nó là đoán ở màn 
     [...theoBai.values()].filter((s) => s.size >= 2).length >= 20,
     'không bài nào có cổng ở hai màn — khoá nháp chưa cần phân biệt màn?',
   );
+});
+
+// --- CỔNG DỰ ĐOÁN HÌNH ------------------------------------------------------
+//
+// `doanDuocOutput` CỐ Ý loại 81 khối code gọi thư viện vẽ hình (lý lẽ đúng:
+// `expected` của chúng chỉ là mấy con số in kèm). Hệ quả đo được: 26/27 bài có
+// hình thuộc module 4, tức gần như toàn bộ phần trực quan hoá không có cổng nào.
+test('cổng hình chỉ dựng ở hình ĐẦU của mỗi màn', () => {
+  const f = (t) => ({ type: t });
+  const man = [f('paragraph'), f('figure'), f('code'), f('figure')];
+  assert.equal(doanDuocHinh(man, 1), true);
+  assert.equal(doanDuocHinh(man, 3), false, 'hình thứ hai cũng bị che — mất phép so');
+  assert.equal(doanDuocHinh(man, 0), false);
+  assert.equal(doanDuocHinh(man, 2), false, 'khối code bị coi là hình');
+  assert.equal(doanDuocHinh([], 0), false);
+});
+
+test('bản dựng: 9 màn có HAI hình — đó là lý do luật "hình đầu" tồn tại', () => {
+  let mot = 0;
+  let haiTroLen = 0;
+  let tongCong = 0;
+  for (const b of DA)
+    for (const man of b.content_json.step_1?.read ?? []) {
+      const n = man.filter((x) => x.type === 'figure').length;
+      if (n === 1) mot += 1;
+      if (n >= 2) haiTroLen += 1;
+      tongCong += n;
+    }
+  assert.ok(tongCong >= 70, `chỉ còn ${tongCong} khối figure`);
+  assert.ok(mot >= 50, `chỉ ${mot} màn có đúng 1 hình`);
+  // Nếu con số này về 0 thì luật "chỉ hình đầu" không còn chặn gì — xem lại.
+  assert.ok(haiTroLen >= 1, 'không còn màn nào có 2 hình, luật hình-đầu thành vô nghĩa');
+});
+
+test('cổng hình KHÔNG có verdict — không có đáp án máy đọc được', () => {
+  // Bịa một lời chấm cho "hình trông thế nào" là nói một câu mà nền tảng không
+  // biết đúng hay sai. Đây là giới hạn đã biết, không phải phần làm dở.
+  const i = SCREEN_CODE.indexOf('function CongDuDoanHinh');
+  assert.ok(i > 0, 'không tìm thấy CongDuDoanHinh');
+  const than = SCREEN_CODE.slice(i, SCREEN_CODE.indexOf('\nfunction ', i + 10));
+  assert.ok(!/khopDapAn|traceVerdict/.test(than), 'cổng hình đang chấm câu trả lời');
+  assert.ok(/disabled=\{!doan\.trim\(\)\}/.test(than), 'nút mở hình không khoá khi ô trống');
+  // Dùng CHUNG bộ class với cổng kia — hai bộ class là hai cổng trông khác nhau
+  // trên cùng một màn.
+  assert.ok(/tracePredict/.test(than), 'cổng hình dựng bộ class riêng');
 });

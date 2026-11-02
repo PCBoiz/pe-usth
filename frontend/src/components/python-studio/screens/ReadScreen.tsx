@@ -18,7 +18,13 @@ import { useState } from 'react';
 import CodeBlock from '@/components/lesson-chrome/exercises/CodeBlock';
 import TryItButton from '@/components/lesson-chrome/TryItButton';
 import { toCodeLines } from '@/lib/py-highlight';
-import { doanDuocOutput, khopDapAn, maDeThu, type ReadBlock } from '@/lib/studio-lesson';
+import {
+  doanDuocHinh,
+  doanDuocOutput,
+  khopDapAn,
+  maDeThu,
+  type ReadBlock,
+} from '@/lib/studio-lesson';
 
 import c from '../studio-chrome.module.css';
 import { paragraphs, ScreenShell } from './chrome';
@@ -140,6 +146,67 @@ function CongDuDoan({
 }
 
 /**
+ * CỔNG DỰ ĐOÁN HÌNH — che biểu đồ cho tới khi người học nói trước nó trông thế nào.
+ *
+ * Lý lẽ và phép chọn khối ở `doanDuocHinh` (lib/studio-lesson.ts). Khuôn CHÉP
+ * của `CongDuDoan`: cùng `disabled={!doan.trim()}`, cùng bộ class `tracePredict*`
+ * — dựng một bộ class thứ hai là hai cổng trông khác nhau trên cùng một màn.
+ *
+ * KHÁC một chỗ, và đó là chỗ phải nói ra: KHÔNG CÓ VERDICT. Không có đáp án máy
+ * đọc được cho "hình sắp hiện trông thế nào", nên sau khi mở chỉ còn chính cái
+ * hình để người học tự đối chiếu. Bịa một lời chấm ở đây là nói một câu mà nền
+ * tảng không biết đúng hay sai.
+ *
+ * Câu hỏi hỏi ba thứ CỤ THỂ (trục ngang, trục dọc, mấy cột/mấy đường) chứ không
+ * hỏi "bạn nghĩ hình trông thế nào": một câu hỏi mở thì trả lời được bằng một
+ * chữ, mà phần có bằng chứng của cổng nằm ở chỗ người học phải DỰNG một dự đoán
+ * có hình dạng.
+ */
+function CongDuDoanHinh({
+  daNop,
+  onNop,
+  children,
+}: {
+  daNop: string | undefined;
+  onNop: (doan: string) => void;
+  children: React.ReactNode;
+}) {
+  const [doan, setDoan] = useState('');
+  if (daNop !== undefined) return <>{children}</>;
+  return (
+    <form
+      className={c.tracePredict}
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (doan.trim()) onNop(doan.trim());
+      }}
+    >
+      <p className={c.tracePredictAsk}>
+        <strong>Trước khi mở hình:</strong> trục ngang là gì, trục dọc là gì, và hình
+        sẽ có mấy cột (hoặc mấy đường)?
+      </p>
+      <p className={c.tracePredictWhy}>
+        Đoán sai cũng được — mở ra rồi tự đối chiếu. Phần này không chấm, vì không có
+        đáp án nào máy đọc được cho một cái biểu đồ.
+      </p>
+      <span className={c.tracePredictLine}>
+        <input
+          className={c.tracePredictInput}
+          value={doan}
+          onChange={(e) => setDoan(e.target.value)}
+          placeholder="ví dụ: trục ngang là giờ, trục dọc là số cốc, 10 cột"
+          aria-label="Đoán xem biểu đồ sắp hiện trông thế nào"
+          autoComplete="off"
+        />
+        <button type="submit" className={c.tracePredictGo} disabled={!doan.trim()}>
+          Mở hình
+        </button>
+      </span>
+    </form>
+  );
+}
+
+/**
  * Một khối — SÁU loại (xem READ_BLOCK_TYPES).
  *
  * `switch` có nhánh `default` ép kiểu `never` chứ KHÔNG phải chuỗi `if` rồi
@@ -156,11 +223,14 @@ function Block({
   thu,
   daNop,
   onNop,
+  coCongHinh,
 }: {
   block: ReadBlock;
   thu?: string | null;
   daNop: string | undefined;
   onNop: (doan: string) => void;
+  /** Khối `figure` này có dựng cổng không — xem `doanDuocHinh`. */
+  coCongHinh?: boolean;
 }) {
   switch (block.type) {
     case 'paragraph':
@@ -244,8 +314,8 @@ function Block({
     // màn lý thuyết: `LessonFigure.caption` là trường bắt buộc mà khối này
     // không có, và `.theoryFigure img` ghim `aspect-ratio: 2 / 1` trong khi
     // 68/80 ảnh ở đây là 780×455 (tỉ lệ 1,71) — dùng lại là méo hết.
-    case 'figure':
-      return (
+    case 'figure': {
+      const anh = (
         <figure className={c.readFigure}>
           {/* next/image không hợp: PNG đã nằm sẵn trong public/ và khổ cố định,
               tối ưu hoá chỉ thêm một vòng xử lý. width/height là khổ THẬT của
@@ -256,6 +326,14 @@ function Block({
           <img src={block.src} alt={block.alt} width={780} height={455} loading="lazy" />
         </figure>
       );
+      // Khối không đủ điều kiện (hình THỨ HAI của màn) thì hiện thẳng.
+      if (!coCongHinh) return anh;
+      return (
+        <CongDuDoanHinh daNop={daNop} onNop={onNop}>
+          {anh}
+        </CongDuDoanHinh>
+      );
+    }
 
     // Bảng: bảng HTML thường, có <th> thật để trình đọc màn hình đọc được tên
     // cột khi nhảy ô — không dùng div grid.
@@ -363,6 +441,7 @@ export default function ReadScreen({ lesson, scr, metaLabel, draft, update }: Pr
             // Tính ở ĐÂY, không trong <Block>: tiền tố cần cả `slices` và chỉ
             // số màn, mà Block chỉ nên biết về một khối.
             thu={block.type === 'code' && block.tryIt ? maDeThu(slices, at, i) : null}
+            coCongHinh={doanDuocHinh(blocks, i)}
             // Khoá nháp mang CẢ chỉ số màn: `i` một mình trùng nhau giữa các
             // màn đọc của cùng một bài, nên đoán ở màn 1 sẽ mở sẵn đáp án của
             // khối cùng vị trí ở màn 2.
