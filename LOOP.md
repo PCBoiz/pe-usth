@@ -24,6 +24,7 @@ dưới).
 | 6 | `node scripts/pe-da/check-practice.mjs` | lời giải mẫu đạt, lời giải sai trượt, cổng file dữ liệu |
 | 7 | `npx jest --ci --runInBand` · `cd frontend && npm run test:unit` | hợp đồng mã |
 | 8 | lint bằng ĐÚNG lệnh CI (xem AGENTS.md) | trần, chỉ được hạ |
+| 9 | `node scripts/check-duong-toi.mjs` | **có ai đi qua không** — xem dưới |
 
 Việc nào không chạm giáo trình thì bỏ bậc 2–6; việc nào không chạm `src/` thì bỏ bậc 7.
 Đừng chạy bậc không liên quan — nó chỉ tốn thời gian và làm nhiễu tín hiệu.
@@ -52,8 +53,24 @@ Chạy test trong lúc có ai đó `build.py` là đọc file đang ghi dở —
 **Dựng xong rồi mới đo.** Tranh CPU là một kiểu nói dối khác, cùng hậu quả.
 
 **Xanh vì không ai đi qua.** Hình dạng lỗi thống trị của repo: *dựng xong mà không có
-đường tới người dùng* — đã TÁM lần. Bộ kiểm xanh không chứng minh có ai dùng được. Mỗi
-việc phải trả lời: **ai bấm vào nó, ở màn nào.** Không trả lời được thì việc chưa xong.
+đường tới người dùng* — đã **MƯỜI** lần. Bộ kiểm xanh không chứng minh có ai dùng được.
+Mỗi việc phải trả lời: **ai bấm vào nó, ở màn nào.** Không trả lời được thì việc chưa xong.
+
+Câu hỏi đó từng chỉ nằm ở đây, trong một file văn xuôi — mà một câu hỏi trong văn xuôi
+thì không chặn được ai bỏ qua nó, và nó đã bị bỏ qua mười lần. Nay câu TRẢ LỜI có chỗ
+giữ: `scripts/ban-do-tinh-nang.mjs` khai từng tính năng kèm nơi thực hiện, nơi MOUNT, và
+một phép ĐẾM chạy trên bản dựng thật. Bậc 9 bắt nó phải đúng:
+
+- `thucHien` trỏ trúng file + ký hiệu còn tồn tại (đổi tên hàm ⇒ đỏ);
+- `mount` có thật **và có dấu hiệu dựng tính năng đó** — đây là phép kiểm "ai bấm vào nó";
+- phép đếm ≥ sàn, đếm trên `out/lessons.json` chứ không phải một hằng gõ tay;
+- đếm 0 thì **bắt buộc** khai `chuaCoDuongToi` kèm lý do — "chưa ai đi qua" được phép tồn
+  tại, im lặng thì không;
+- và ngược chiều: khai "chưa có đường tới" mà đếm > 0 cũng ĐỎ, kẻo bản đồ chỉ trôi theo
+  một chiều rồi thành một danh sách than thở.
+
+Thêm một tính năng người học thấy được ⇒ thêm một mục vào bản đồ. Đó là chỗ duy nhất
+trong repo buộc phải viết ra ai đi qua nó.
 
 **Ablate để biết test có răng.** Gỡ bản sửa ra, chạy lại, ĐẾM số ca đỏ, ghi con số đó vào
 báo cáo. Gỡ ra mà vẫn xanh nghĩa là test không canh gì — viết lại test, đừng ghi "đã có

@@ -30,6 +30,8 @@ node scripts/pe-da/check-practice.mjs  # chấm 415 ca BÀI TẬP + đòi 556 bi
 # 516 câu trắc nghiệm: check.py đối chiếu với nguồn (kiem_trac_nghiem), không có bộ riêng
 node scripts/check-perf.mjs            # kiểm BỘ ĐO ĐỘ HIỆU QUẢ trong studio-harness.py
 node scripts/check-figures.mjs         # kiểm việc XUẤT HÌNH của studio-harness.py
+node scripts/check-duong-toi.mjs       # BẢN ĐỒ TÍNH NĂNG: tính năng nào có người đi qua
+node scripts/check-duong-toi.mjs --json  # bản máy đọc
 
 # pe-v4 (48 bài, 427 ca chấm) — GIỮ LẠI nhưng KHÔNG còn xuất bản; xem mục dưới
 py scripts/pe-v4/build.py              # dựng lại 48 bài -> scripts/pe-v4/out/
@@ -64,6 +66,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 356 khối đủ điều kiện** (300 bỏ qua, phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
+| Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **13 mục, 10 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
 **pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 179
@@ -1527,6 +1530,37 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   (temps <= 35)"* trong khi lời giải mẫu đặt tên biến khác là gợi ý trỏ vào một biến không
   có trong đoạn mã người học vừa mở ra.
   Phép đo để kiểm lại (màn đọc nói miền quán, đề bài tập nói miền khác): nay **0 bài**.
+
+- **BẢN ĐỒ TÍNH NĂNG: biến "dựng xong mà không có đường tới" từ lỗi IM LẶNG thành một
+  dòng khai báo.** Mười lần rồi, và mỗi lần bộ kiểm vẫn XANH — vì test chứng minh code
+  chạy đúng, không chứng minh có ai đi qua nó. `LOOP.md` đã đặt đúng câu hỏi (*"ai bấm vào
+  nó, ở màn nào"*) nhưng để nó trong văn xuôi, mà một câu hỏi trong văn xuôi thì không
+  chặn được ai bỏ qua. Nay `scripts/ban-do-tinh-nang.mjs` giữ CÂU TRẢ LỜI và
+  `scripts/check-duong-toi.mjs` bắt nó phải đúng.
+  **Phép đếm chạy trên BẢN DỰNG THẬT, không phải hằng gõ tay** — một con số gõ tay là thứ
+  sẽ trôi, đúng bệnh mục mốc nền đã cảnh báo. Và nó đọc hai hằng `DOAN_OUTPUT_MAX_*` từ
+  chính cây mã thay vì chép lại, nên hạ trần ở frontend là con số ở đây đổi theo.
+  **LUẬT HAI CHIỀU, và chiều thứ hai mới là chiều hay bị quên:** đếm 0 thì bắt buộc khai
+  `chuaCoDuongToi` kèm lý do; NHƯNG khai "chưa có đường tới" mà đếm > 0 cũng ĐỎ. Thiếu
+  chiều sau thì bản đồ chỉ trôi một phía rồi thành một danh sách than thở mà không ai dọn.
+  **Ba mục đang khai TỐI, và chúng là tài sản chứ không phải nợ:** nút "Thử ngay trong
+  IDE" ở màn brief/explain (0/179 bài có hai màn đó) · 8/11 route của
+  `quizzes.controller.ts` · ô nhập `stdin` (0/508 khối code dùng `input(`). Trước đây ba
+  thứ này tối mà không chỗ nào nói ra.
+  **Ablate 5 mảnh, cả 5 đỏ:** build thôi phát `task.io` → 1 · mount trỏ file không liên
+  quan → 1 · tối mà không khai lý do → 2 · ký hiệu đổi tên → 1 · khai "tối" mà thật ra đã
+  sáng → 1.
+  **Và chính ablate bắt được một lỗi trong bộ kiểm này:** bản đầu, khi cả đường `task?.io`
+  không khớp thì nó rơi về MẢNH CUỐI `io` — hai ký tự, có trong `version`, `option`,
+  `programmingedu.io.vn` — nên mount trỏ vào `api.ts` vẫn qua cửa, tức bậc quan trọng nhất
+  của bộ RỖNG trong khi mọi thứ vẫn xanh. Nay so bằng phép chuẩn hoá (bỏ `?` và khoảng
+  trắng ở cả hai vế) chứ không bằng mảnh cuối. **Một cổng chỉ chứng minh được là có răng
+  bằng cách gỡ bản sửa ra và đếm số đỏ** — không ablate thì tôi đã commit một cái cổng
+  rỗng và tin là mình vừa chữa được lỗi thống trị của repo.
+  **Cảnh báo phải thôi kêu oan, nếu không nó sẽ bị tắt:** cặp Python→TSX (build phát dữ
+  liệu, renderer dựng) không bao giờ nhắc tên hàm của nhau, nên phép so theo ký hiệu ở đó
+  sai 100% số lần. Với cặp đó, thứ NỐI hai nửa là KHOÁ DỮ LIỆU (`duLieu`: `trace`,
+  `task?.io`, `tests`, `dataFiles`, `diagram`).
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
