@@ -51,6 +51,7 @@ import {
   isRunnableGame,
   markDoneOnNext,
   maxReachedStep,
+  nhomMan,
   quizPercent,
   screenVerdict,
   type LessonScreen,
@@ -443,6 +444,10 @@ export default function StudioLesson({
         onSeek={screens.length > 1 ? goTo : undefined}
         seekMax={Math.max(d.step, Math.min(screens.length, reached))}
         doneSteps={screens.map((x) => completed || Boolean(d.done[x.key]))}
+        // Ranh giới ba phần. `nhomMan` gom theo khối LIỀN NHAU chứ không theo
+        // phần, nên nếu một ngày màn bị xen kẽ thì thanh vẽ đúng thứ có thật
+        // thay vì gộp hai khối rời thành một.
+        mocPhan={nhomMan(screens).map((g) => g.tu)}
         // Màn lý thuyết và màn BÀI ĐỌC chạy ở cột rộng — xem .contentWide
         // trong LessonChrome.module.css (hình minh hoạ khổ 1280×640; bài đọc
         // thì vì bảng và khối code cần chiều ngang — chữ vẫn bó ~78 ký tự).

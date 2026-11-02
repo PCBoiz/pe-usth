@@ -9,6 +9,8 @@ import FeedbackBanner from '@/components/lesson-chrome/exercises/FeedbackBanner'
 import ShellB from '@/components/lesson-chrome/ShellB';
 import {
   isChoiceScreen,
+  phanCuaMan,
+  PHAN_NHAN,
   type LessonScreen,
   type PlayGame,
   type StudioLesson as Lesson,
@@ -68,8 +70,28 @@ export function paragraphs(text?: string): React.ReactNode {
   ));
 }
 
-/** Nhãn nhỏ trên mỗi thẻ: "S2 · Bẫy ngộ nhận". */
-export function eyebrowOf(scr: LessonScreen): { icon: React.ReactNode; label: string } {
+/**
+ * Nhãn nhỏ trên mỗi thẻ: "LÝ THUYẾT · Bài đọc" (CSS viết hoa nó).
+ *
+ * Tiền tố TỪNG là `S{origin}` — S1..S4, cấu trúc bốn bước của gói nội dung. Với
+ * người học thì "S2" không nói gì: nó là tên của một khoá trong JSON. Nay tiền
+ * tố là TÊN PHẦN, nên mỗi màn tự nói mình thuộc lý thuyết, thực hành hay bài
+ * tập — xem `phanCuaMan`, và xem vì sao `recap` không thuộc phần nào.
+ *
+ * `che` là `sandboxMode(lesson)` của bài, chỉ có ý nghĩa cho màn `sandbox`.
+ * Tham số TUỲ CHỌN vì `ScreenShell` không có `lesson` trong tay — mà nó cũng
+ * không bao giờ dựng màn sandbox, nên chỗ đó không cần. Thiếu `che` thì phần 3
+ * về nhãn chung "Bài tập".
+ *
+ * Vì sao phần 3 phải đọc chế độ: **49/179 bài KHÔNG có ca chấm nào** (24 bài
+ * `procedure` — các bước tự làm trên máy; 25 bài `free` — chạy thử tự do, thiếu
+ * wheel hoặc `sys.executable`). Dán "BÀI TẬP" lên 24 bài procedure là hứa một
+ * thứ máy chấm mà bài đó không có.
+ */
+export function eyebrowOf(
+  scr: LessonScreen,
+  che?: 'graded' | 'procedure' | 'free',
+): { icon: React.ReactNode; label: string } {
   const map: Record<string, { icon: React.ReactNode; label: string }> = {
     brief: { icon: ICON.book, label: 'Tổng quan bài' },
     read: { icon: ICON.book, label: 'Bài đọc' },
@@ -101,7 +123,15 @@ export function eyebrowOf(scr: LessonScreen): { icon: React.ReactNode; label: st
   };
   if (scr.kind === 'game' && scr.gameType) return games[scr.gameType];
   const found = map[scr.kind] ?? { icon: ICON.book, label: scr.label };
-  return { icon: found.icon, label: `S${scr.origin} · ${found.label}` };
+  const phan = phanCuaMan(scr.kind);
+  if (!phan) return { icon: found.icon, label: found.label };
+  const ten =
+    phan === 'baiTap' && che === 'procedure'
+      ? 'Thực hành trên máy'
+      : phan === 'baiTap' && che === 'free'
+        ? 'Chạy thử'
+        : PHAN_NHAN[phan];
+  return { icon: found.icon, label: `${ten} · ${found.label}` };
 }
 
 /** Thụt lề của một dòng Python, tính theo bậc 4 dấu cách (Parsons hiển thị). */

@@ -946,6 +946,97 @@ export type LessonScreen = {
   gameType?: PlayGame['type'];
 };
 
+/* ---------------------------------------------------------------- BA PHẦN
+ *
+ * Người dùng muốn bài học chia rõ LÝ THUYẾT / THỰC HÀNH / BÀI TẬP. Đo trên bản
+ * dựng 179 bài: **cả 179 bài có CÙNG MỘT dãy loại màn** —
+ * `read | mcq | practice | sandbox | recap` — và **0 bài** có loại màn nào xuất
+ * hiện ở hai khối rời nhau. Tức phép chia ba phần ĐÃ nằm sẵn trong dữ liệu; thứ
+ * thiếu là cái TÊN. Không phải sắp lại màn, không đổi một byte nội dung, và vì
+ * luật đọc được hoàn toàn từ `ScreenKind` nên **KHÔNG CẦN NẠP DB** — cùng lý do
+ * `doanDuocOutput` được đặt ở frontend.
+ *
+ * `mcq` thuộc THỰC HÀNH, không thuộc LÝ THUYẾT. Đó là 3 câu ĐƯỢC CHẤM và nó
+ * quyết định XP (`scaledXp = xp_reward × (50% + 50% × quizScore)`); gộp nó vào
+ * "lý thuyết" là giấu chuyện người học đang bị chấm ở đó. Hệ quả có lợi kèm
+ * theo: THỰC HÀNH thành khối lớn nhất (1 206/2 129 màn = 56,6 %), và đó đúng là
+ * sự thật mà phản hồi 1/11 ("nên đặt trọng tâm vào practice") đang hiểu ngược.
+ *
+ * `recap` KHÔNG thuộc phần nào, và đó là lựa chọn: màn tổng kết không phải lý
+ * thuyết, không phải thực hành, cũng không phải bài tập. Dán nó vào "BÀI TẬP"
+ * cho đủ ba phần là nói sai về đúng một màn mà người học nhìn cuối cùng.
+ */
+export type PhanBai = 'lyThuyet' | 'thucHanh' | 'baiTap';
+
+export const PHAN_NHAN: Record<PhanBai, string> = {
+  lyThuyet: 'Lý thuyết',
+  thucHanh: 'Thực hành',
+  baiTap: 'Bài tập',
+};
+
+/**
+ * Màn này thuộc phần nào của bài — `null` nghĩa là không thuộc phần nào.
+ *
+ * `switch` đầy đủ ép `never` ở nhánh cuối, KHÔNG dùng `default` nuốt: 13/19
+ * `ScreenKind` hôm nay không có bài nào đi qua (chúng là của pe-v4 đã ẩn), nên
+ * không ca test nào chạm tới chúng được — thứ duy nhất giữ chúng khỏi trôi là
+ * trình biên dịch. Thêm một loại màn mà quên gán phần ⇒ typecheck đỏ ngay.
+ */
+export function phanCuaMan(kind: ScreenKind): PhanBai | null {
+  switch (kind) {
+    case 'brief':
+    case 'read':
+    case 'theory':
+    case 'context':
+    case 'explain':
+    case 'memory':
+    case 'misconception':
+      return 'lyThuyet';
+    case 'predict':
+    case 'mcq':
+    case 'classify':
+    case 'practice':
+    case 'selfExplain':
+    case 'scaffold':
+    case 'trace':
+    case 'counter':
+    case 'game':
+      return 'thucHanh';
+    case 'sandbox':
+      return 'baiTap';
+    case 'recap':
+      return null;
+    default: {
+      const _het: never = kind;
+      return _het;
+    }
+  }
+}
+
+/** Một nhóm màn liền khối cùng phần — dùng cho thanh tiến độ. */
+export type NhomMan = { phan: PhanBai | null; tu: number; so: number };
+
+/**
+ * Gom dãy màn thành các nhóm LIỀN KHỐI.
+ *
+ * Gom theo khối liền nhau chứ không gom theo phần: nếu một ngày nào đó màn bị
+ * xen kẽ (hôm nay 0/179 bài), hàm này phát ra nhiều nhóm cùng phần thay vì nói
+ * dối rằng chúng liền nhau. Thanh tiến độ vẽ đúng thứ có thật.
+ *
+ * `tu` đếm từ 1, cùng gốc với `step` của LessonChrome.
+ */
+export function nhomMan(screens: LessonScreen[]): NhomMan[] {
+  const ra: NhomMan[] = [];
+  screens.forEach((scr, i) => {
+    const phan = phanCuaMan(scr.kind);
+    const cuoi = ra[ra.length - 1];
+    if (cuoi && cuoi.phan === phan) cuoi.so += 1;
+    else ra.push({ phan, tu: i + 1, so: 1 });
+  });
+  return ra;
+}
+
+
 const ORIGIN_LABEL: Record<1 | 2 | 3 | 4, string> = {
   1: STEP_LABELS.step_1,
   2: STEP_LABELS.step_2,

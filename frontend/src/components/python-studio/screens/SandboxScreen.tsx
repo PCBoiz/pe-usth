@@ -78,7 +78,10 @@ export default function SandboxScreen({
   procedure: procedureUi,
 }: Props) {
   const four = lesson.step_4;
-  const eyebrow = eyebrowOf(scr);
+  // Truyền chế độ: 49/179 bài không có ca chấm nào, nên nhãn phần phải nói
+  // "Thực hành trên máy" / "Chạy thử" thay vì hứa một bài tập được chấm.
+  const mode = sandboxMode(lesson);
+  const eyebrow = eyebrowOf(scr, mode);
   const io = four?.task?.io ?? [];
   const hints = four?.hints ?? [];
   const procedure = four?.procedure ?? [];
@@ -86,7 +89,6 @@ export default function SandboxScreen({
   const contracts = four?.contracts ?? [];
   const gate = Boolean(four?.gate);
   const boss = Boolean(lesson.play?.boss);
-  const mode = sandboxMode(lesson);
 
   return (
     <ShellB

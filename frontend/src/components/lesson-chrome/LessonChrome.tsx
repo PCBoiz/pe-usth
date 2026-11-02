@@ -50,6 +50,14 @@ export interface LessonChromeProps {
    *  Không truyền thì mọi đoạn trước bước hiện tại cũng coi như đầy. */
   doneSteps?: boolean[];
   /**
+   * Số thứ tự (đếm từ 1) của những màn MỞ ĐẦU một phần mới — xem `nhomMan`.
+   * Thanh tiến độ chừa một khe hở trước chúng, để ba phần lý thuyết / thực
+   * hành / bài tập đọc được thành ba khối thay vì một dải liền.
+   *
+   * Mốc ĐẦU TIÊN luôn là 1 và không cần khe hở; component tự bỏ qua nó.
+   */
+  mocPhan?: number[];
+  /**
    * Nới cột nội dung từ 680px lên --st-col-wide cho MỘT màn. Dùng ở màn lý
    * thuyết của khoá Python Advanced: hình minh hoạ vẽ khổ 1280×640, trong cột
    * 680px thì chữ trong sơ đồ chỉ còn 6–7px. Không truyền thì mọi màn giữ đúng
@@ -62,6 +70,7 @@ export interface LessonChromeProps {
 export default function LessonChrome({
   step,
   totalSteps,
+  mocPhan,
   streak,
   points,
   courseLabel = 'Python Studio',
@@ -116,11 +125,16 @@ export default function LessonChrome({
               // mở (khi xem lại) tô nhạt hơn để vẫn thấy mình đang ở đâu.
               const width = doneSteps?.[i] || idx < step || current ? '100%' : '0%';
               const ahead = !current && idx > step && Boolean(doneSteps?.[i]);
-              const className = current
-                ? `${styles.segment} ${styles.segmentCurrent}`
-                : ahead
-                  ? `${styles.segment} ${styles.segmentAhead}`
-                  : styles.segment;
+              // Màn mở đầu một phần (trừ màn 1) mang thêm lớp chừa khe hở.
+              const dauPhan = idx > 1 && mocPhan?.includes(idx);
+              const className = [
+                styles.segment,
+                current ? styles.segmentCurrent : '',
+                ahead ? styles.segmentAhead : '',
+                dauPhan ? styles.segmentDauPhan : '',
+              ]
+                .filter(Boolean)
+                .join(' ');
               const fill = <div className={styles.segmentFill} style={{ width }} />;
               // Chỉ những màn đã đi qua mới bấm được: thanh tiến độ không phải
               // đường tắt bỏ qua phần chưa làm.

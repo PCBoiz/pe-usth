@@ -100,6 +100,22 @@
   border: 0;
   display: block;
 }
+/* Ranh giới giữa ba phần của bài (lý thuyết / thực hành / bài tập).
+   6px là khe hở nhỏ nhất còn đọc được thành "hai khối" trên dải cao 6px; lớn
+   hơn thì ở bài 19 màn (CT03 — dài nhất) hai khe hở ăn mất chiều ngang của
+   chính các đoạn. Bo góc hai bên khe để mỗi khối trông liền mạch, cùng cách
+   `:first-child`/`:last-child` bo hai đầu thanh. */
+.segmentDauPhan {
+  margin-left: 6px;
+  border-radius: 3px 0 0 3px;
+}
+.segmentDauPhan + .segment {
+  border-radius: 0;
+}
+.segment:has(+ .segmentDauPhan) {
+  border-radius: 0 3px 3px 0;
+}
+
 .segment:first-child {
   border-radius: 3px 0 0 3px;
 }
