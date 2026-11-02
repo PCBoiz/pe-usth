@@ -80,17 +80,23 @@ function rule(selector) {
 
 // ───────────────────────────── dữ liệu build phát ra
 
-test('sơ đồ CÓ ĐƯỜNG TỚI người học — đúng một bài, đúng chỗ', () => {
+test('sơ đồ CÓ ĐƯỜNG TỚI người học, và đứng ĐÚNG CHỖ', () => {
   // Lỗi hay gặp nhất của repo này không phải "làm sai" mà là "làm rồi không ai
   // nối" (AGENTS.md: tracer không bài nào tới, nút Try-it không màn nào mount).
   // Một loại khối khai trong ReadBlock mà build không bao giờ phát thì với
   // người học nó không tồn tại.
-  assert.equal(soDo.length, 1, 'bản dựng không có khối diagram nào');
-  assert.equal(soDo[0].ma, 'PY05');
-  // Và nó phải đứng SAU khối code nó gộp lại: đọc sơ đồ trước code là đọc đáp
-  // án trước đề.
-  const truoc = soDo[0].lat.slice(0, soDo[0].i).map((k) => k.type);
-  assert.ok(truoc.includes('code'), `sơ đồ đứng sau ${truoc.join(' ')} — thiếu code`);
+  // SÀN, không phải con số đúng. Ca này từng ghim `=== 1` vì khối `diagram`
+  // khi đó là một PHÉP THỬ đúng một bài; nay có ba (PY05 · NP02 · NP08), và
+  // ghim số chính xác thì mỗi lần thêm một sơ đồ là một ca đỏ oan — đúng bệnh
+  // 14 con số ghi cứng mà AGENTS.md ghi. Thứ KHÔNG được mất là "có ít nhất
+  // một sơ đồ tới được người học".
+  assert.ok(soDo.length >= 1, 'bản dựng không có khối diagram nào');
+  // Và MỌI sơ đồ phải đứng SAU khối code nó gộp lại: đọc sơ đồ trước code là
+  // đọc đáp án trước đề. Trước đây luật này chỉ kiểm sơ đồ ĐẦU TIÊN.
+  for (const sd of soDo) {
+    const truoc = sd.lat.slice(0, sd.i).map((k) => k.type);
+    assert.ok(truoc.includes('code'), `${sd.ma}: sơ đồ đứng sau ${truoc.join(' ')} — thiếu code`);
+  }
 });
 
 test('hình dạng: chữ thật ở cả ba chỗ, làn CHẴN, bước ≥ 2', () => {

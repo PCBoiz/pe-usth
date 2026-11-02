@@ -914,7 +914,7 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
     terminal: 17,
     figure: 80,
     table: 2,
-    diagram: 1,
+    diagram: 3,
   });
   // Câu luyện tập là câu MỞ kèm lời giải mẫu — không có phương án sai nào để
   // so, nên không chấm được. Đây là lý do isGraded('practice') phải là false.

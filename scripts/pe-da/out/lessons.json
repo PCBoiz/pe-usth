@@ -4366,6 +4366,30 @@
         "tryIt": true
        },
        {
+        "type": "diagram",
+        "title": "Một dãy, hai cách đếm — từ đầu và từ cuối",
+        "lanes": [
+         {
+          "label": "Đếm từ ĐẦU",
+          "steps": [
+           "a[1]",
+           "bỏ qua 1 phần tử tính từ trái",
+           "8"
+          ],
+          "note": "Chỉ số dương bắt đầu từ `0`, nên `a[1]` là phần tử THỨ HAI."
+         },
+         {
+          "label": "Đếm từ CUỐI",
+          "steps": [
+           "a[-1]",
+           "phần tử đầu tiên tính từ phải",
+           "10"
+          ],
+          "note": "Chỉ số âm bắt đầu từ `-1`, không có `-0` — nên `a[-1]` là phần tử CUỐI, không phải phần tử kế cuối."
+         }
+        ]
+       },
+       {
         "type": "paragraph",
         "text": "Nếu sử dụng một chỉ số không tồn tại, bạn sẽ nhận một `IndexError`. Array ba phần tử ở trên có các chỉ số từ 0 đến 2, nên `a[3]` không lấy được phần tử nào."
        }
@@ -5834,6 +5858,30 @@
         "code": "a = np.arange(1, 7)\nprint(a.reshape(3, 2))",
         "expected": "[[1 2]\n [3 4]\n [5 6]]",
         "tryIt": true
+       },
+       {
+        "type": "diagram",
+        "title": "Cùng sáu con số, hai hình dạng",
+        "lanes": [
+         {
+          "label": "2 hàng × 3 cột",
+          "steps": [
+           "a.reshape(2, 3)",
+           "sáu số xếp thành 2 hàng",
+           "[[1 2 3] [4 5 6]]"
+          ],
+          "note": "Đọc theo HÀNG: lấp đầy hàng thứ nhất rồi mới xuống hàng sau."
+         },
+         {
+          "label": "3 hàng × 2 cột",
+          "steps": [
+           "a.reshape(3, 2)",
+           "sáu số xếp thành 3 hàng",
+           "[[1 2] [3 4] [5 6]]"
+          ],
+          "note": "Vẫn đúng sáu số và đúng thứ tự — chỉ chỗ XUỐNG DÒNG đổi. Tích hai số phải bằng 6, nếu không numpy báo lỗi."
+         }
+        ]
        }
       ],
       [

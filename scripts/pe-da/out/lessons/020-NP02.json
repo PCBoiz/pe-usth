@@ -76,6 +76,30 @@
       "tryIt": true
      },
      {
+      "type": "diagram",
+      "title": "Một dãy, hai cách đếm — từ đầu và từ cuối",
+      "lanes": [
+       {
+        "label": "Đếm từ ĐẦU",
+        "steps": [
+         "a[1]",
+         "bỏ qua 1 phần tử tính từ trái",
+         "8"
+        ],
+        "note": "Chỉ số dương bắt đầu từ `0`, nên `a[1]` là phần tử THỨ HAI."
+       },
+       {
+        "label": "Đếm từ CUỐI",
+        "steps": [
+         "a[-1]",
+         "phần tử đầu tiên tính từ phải",
+         "10"
+        ],
+        "note": "Chỉ số âm bắt đầu từ `-1`, không có `-0` — nên `a[-1]` là phần tử CUỐI, không phải phần tử kế cuối."
+       }
+      ]
+     },
+     {
       "type": "paragraph",
       "text": "Nếu sử dụng một chỉ số không tồn tại, bạn sẽ nhận một `IndexError`. Array ba phần tử ở trên có các chỉ số từ 0 đến 2, nên `a[3]` không lấy được phần tử nào."
      }

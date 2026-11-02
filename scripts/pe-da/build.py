@@ -522,6 +522,44 @@ LECH_PHIEN_BAN = {
 #     `3 * 15 - 5` thành con số khác, bài dạy một chuyện và sơ đồ dạy chuyện
 #     khác ngay cạnh nó.
 SO_DO_DOC: dict[tuple[str, int], dict] = {
+    # NP02 "chỉ số âm". Màn 1 là `a[1]`, màn 2 là `a[-1]` — đặt ở màn 2 thì cả
+    # hai vế đã ở trước mặt. Thứ sơ đồ thêm vào là chỗ ĐẾM TỪ ĐÂU: chữ phải nói
+    # "phần tử thứ hai tính từ trái", còn hình thì chỉ thẳng vào vị trí.
+    ('NP02', 2): {
+        'title': 'Một dãy, hai cách đếm — từ đầu và từ cuối',
+        'lanes': [
+            {
+                'label': 'Đếm từ ĐẦU',
+                'steps': ['a[1]', 'bỏ qua 1 phần tử tính từ trái', '8'],
+                'note': 'Chỉ số dương bắt đầu từ `0`, nên `a[1]` là phần tử THỨ HAI.',
+            },
+            {
+                'label': 'Đếm từ CUỐI',
+                'steps': ['a[-1]', 'phần tử đầu tiên tính từ phải', '10'],
+                'note': 'Chỉ số âm bắt đầu từ `-1`, không có `-0` — nên `a[-1]` '
+                        'là phần tử CUỐI, không phải phần tử kế cuối.',
+            },
+        ],
+    },
+    # NP08 "reshape". Cùng SÁU con số, hai hình dạng — đây đúng là thứ một bảng
+    # chữ nói kém: `[[1 2 3] [4 5 6]]` và `[[1 2] [3 4] [5 6]]` đọc gần giống
+    # nhau, nhưng xếp cạnh nhau thì hàng × cột lộ ra ngay.
+    ('NP08', 2): {
+        'title': 'Cùng sáu con số, hai hình dạng',
+        'lanes': [
+            {
+                'label': '2 hàng × 3 cột',
+                'steps': ['a.reshape(2, 3)', 'sáu số xếp thành 2 hàng', '[[1 2 3] [4 5 6]]'],
+                'note': 'Đọc theo HÀNG: lấp đầy hàng thứ nhất rồi mới xuống hàng sau.',
+            },
+            {
+                'label': '3 hàng × 2 cột',
+                'steps': ['a.reshape(3, 2)', 'sáu số xếp thành 3 hàng', '[[1 2] [3 4] [5 6]]'],
+                'note': 'Vẫn đúng sáu số và đúng thứ tự — chỉ chỗ XUỐNG DÒNG đổi. '
+                        'Tích hai số phải bằng 6, nếu không numpy báo lỗi.',
+            },
+        ],
+    },
     # PY05 "thứ tự phép tính". Đặt sau khối code THỨ HAI (`7 / 2`, `7 // 2`):
     # tới đó người học đã thấy cả hai cặp — dấu ngoặc ở khối 1, chia ở khối 2 —
     # nên sơ đồ là chỗ gộp chúng lại, không phải chỗ giới thiệu.
