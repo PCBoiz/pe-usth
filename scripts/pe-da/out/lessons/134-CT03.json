@@ -216,16 +216,78 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dict có useful, switches, switch_cost. Trả tỉ lệ thời gian chạy hữu ích useful/(useful + switches*switch_cost), làm tròn 3 chữ số. Trả None nếu useful bằng 0.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'useful': 10, 'switches': 4, 'switch_cost': 0.1}"
+     },
+     {
+      "label": "trả về",
+      "value": "0.962"
+     }
+    ]
    },
-   "starterCode": "# ── Đoạn 1 ──\nqueues = {\"job\": [\"A\", \"B\", \"C\"], \"ready\": [\"A\", \"B\"], \"disk\": [\"C\"]}\ncurrent = queues[\"ready\"].pop(0)\nprint(current, queues[\"disk\"])\n\n# ── Đoạn 2 ──\npcb = {\"pid\": 12, \"state\": \"ready\", \"pc\": 40, \"registers\": [0, 1], \"priority\": 2, \"open_fds\": [0, 1, 2]}\npcb[\"state\"] = \"running\"\nprint(pcb[\"pid\"], pcb[\"pc\"], pcb[\"state\"])\n\n# ── Đoạn 3 ──\nuseful, switches, switch_cost = 10, 4, 0.1\nprint(round(useful / (useful + switches * switch_cost), 3))\n"
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "def solve(data):\n    useful = data[\"useful\"]\n    if useful == 0:\n        return None\n    tong = useful + data[\"switches\"] * data[\"switch_cost\"]\n    return round(useful / tong, 3)\n",
+   "tests": [
+    {
+     "name": "Bốn lần chuyển",
+     "input": {
+      "useful": 10,
+      "switches": 4,
+      "switch_cost": 0.1
+     },
+     "expected": 0.962
+    },
+    {
+     "name": "Không lần chuyển nào",
+     "input": {
+      "useful": 8,
+      "switches": 0,
+      "switch_cost": 0.1
+     },
+     "expected": 1.0
+    },
+    {
+     "name": "Chuyển nhiều, tốn hơn",
+     "input": {
+      "useful": 5,
+      "switches": 10,
+      "switch_cost": 0.5
+     },
+     "expected": 0.5
+    },
+    {
+     "name": "Chưa chạy gì",
+     "input": {
+      "useful": 0,
+      "switches": 3,
+      "switch_cost": 0.1
+     },
+     "expected": null
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Mẫu số là useful cộng tổng chi phí chuyển ngữ cảnh."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "round(x, 3) làm tròn 3 chữ số sau dấu phẩy."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co",
+ "_bai_tap": "cham",
  "_vet": {
   "can": 3,
   "co": 1,

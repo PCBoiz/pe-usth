@@ -547,16 +547,136 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dict có ready là list [tên, burst] và quantum. Mô phỏng Round Robin: mỗi lượt chạy tối đa quantum đơn vị rồi xếp lại cuối hàng nếu còn. Trả list [tên, số đơn vị đã chạy] theo đúng thứ tự.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'ready': [['A', 3], ['B', 2]], 'quantum': 2}"
+     },
+     {
+      "label": "trả về",
+      "value": "[['A', 2], ['B', 2], ['A', 1]]"
+     }
+    ]
    },
-   "starterCode": "# ── Đoạn 1 ──\nfrom collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(1, remaining)\n    trace.append(name)\n    if remaining > used:\n        ready.append((name, remaining-used))\nprint(trace)\n\n# ── Đoạn 2 ──\nfrom collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(2, remaining)\n    trace.append((name, used))\n    if remaining > used: ready.append((name, remaining-used))\nprint(trace)\n\n# ── Đoạn 3 ──\nuseful = 5\nfor switches in [4, 2]:\n    print(round(useful + switches * 0.1, 1))\n"
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "from collections import deque\ndef solve(data):\n    hang = deque([list(x) for x in data[\"ready\"]])\n    q = data[\"quantum\"]\n    vet = []\n    while hang:\n        ten, con = hang.popleft()\n        chay = min(q, con)\n        vet.append([ten, chay])\n        if con > chay:\n            hang.append([ten, con - chay])\n    return vet\n",
+   "tests": [
+    {
+     "name": "Quantum 2 như trong bài",
+     "input": {
+      "ready": [
+       [
+        "A",
+        3
+       ],
+       [
+        "B",
+        2
+       ]
+      ],
+      "quantum": 2
+     },
+     "expected": [
+      [
+       "A",
+       2
+      ],
+      [
+       "B",
+       2
+      ],
+      [
+       "A",
+       1
+      ]
+     ]
+    },
+    {
+     "name": "Quantum 1 thì xen kẽ",
+     "input": {
+      "ready": [
+       [
+        "A",
+        3
+       ],
+       [
+        "B",
+        2
+       ]
+      ],
+      "quantum": 1
+     },
+     "expected": [
+      [
+       "A",
+       1
+      ],
+      [
+       "B",
+       1
+      ],
+      [
+       "A",
+       1
+      ],
+      [
+       "B",
+       1
+      ],
+      [
+       "A",
+       1
+      ]
+     ]
+    },
+    {
+     "name": "Quantum lớn hơn mọi việc",
+     "input": {
+      "ready": [
+       [
+        "A",
+        2
+       ],
+       [
+        "B",
+        1
+       ]
+      ],
+      "quantum": 5
+     },
+     "expected": [
+      [
+       "A",
+       2
+      ],
+      [
+       "B",
+       1
+      ]
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "deque.popleft() lấy đầu hàng, append() xếp lại cuối hàng."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Số đơn vị chạy mỗi lượt là min(quantum, phần còn lại)."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co",
+ "_bai_tap": "cham",
  "_vet": {
   "can": 3,
   "co": 2,

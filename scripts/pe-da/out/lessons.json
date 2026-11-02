@@ -34362,16 +34362,129 @@
     },
     "step_4": {
      "task": {
-      "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+      "title": "Tự viết và chạy trong terminal",
+      "body": "Viết solve(data) nhận dict có items (dict mã→dict có name) và recipe (list [mã món, mã nguyên liệu, định lượng]) và ingredient_id. Trả list [mã món, tên món, định lượng] của những món DÙNG nguyên liệu đó, xếp theo mã món tăng dần.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'ingredient_id': 'ca-phe-hat', 'items': {'latte': {'name': 'Latte'}, 'mocha': {'name': 'Mocha'}}, 'recipe': [['mocha', 'ca-phe-hat', 9.0], ['latte', 'ca-phe-hat', 8.0]]}"
+       },
+       {
+        "label": "trả về",
+        "value": "[['latte', 'Latte', 8.0], ['mocha', 'Mocha', 9.0]]"
+       }
+      ]
      },
-     "starterCode": "# ── Đoạn 1 ──\nitems = {\"latte\": {\"name\": \"Latte\", \"group\": \"Ca phe\"}}\ningredients = {\"ca-phe-hat\": {\"name\": \"Ca phe hat\", \"unit\": \"g\"}}\nrecipe = {(\"latte\", \"ca-phe-hat\"): 8.0}\nprint(items[\"latte\"][\"group\"])\nprint(recipe[(\"latte\", \"ca-phe-hat\")])\n\n# ── Đoạn 2 ──\ndef ingredient_lines(items, recipe, ingredient_id):\n    return [(iid, items[iid][\"name\"], amount) for (iid, ing), amount in recipe.items() if ing == ingredient_id]\nitems = {\"latte\": {\"name\": \"Latte\", \"group\": \"Ca phe\"}, \"mocha\": {\"name\": \"Mocha\", \"group\": \"Ca phe\"}}\nrecipe = {(\"latte\", \"ca-phe-hat\"): 8, (\"mocha\", \"ca-phe-hat\"): 0, (\"latte\", \"sua-tuoi\"): 7}\nprint(ingredient_lines(items, recipe, \"ca-phe-hat\"))\n\n# ── Đoạn 3 ──\ndef read_item(ask):\n    iid = ask(\"Ma mon: \").strip()\n    name = ask(\"Ten mon: \").strip()\n    group = ask(\"Nhom mon: \").strip()\n    if not iid or not name: raise ValueError(\"empty field\")\n    if group not in (\"Ca phe\", \"Tra\", \"Da xay\", \"Banh\"): raise ValueError(\"group\")\n    return iid, {\"name\": name, \"group\": group}\nanswers = iter([\"latte\", \"Latte\", \"Ca phe\"])\niid, info = read_item(lambda prompt: next(answers))\nprint(iid, info[\"name\"], info[\"group\"])\n"
+     "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+     "solutionCode": "def solve(data):\n    ra = []\n    for ma_mon, ma_ng, luong in data[\"recipe\"]:\n        if ma_ng == data[\"ingredient_id\"]:\n            ra.append([ma_mon, data[\"items\"][ma_mon][\"name\"], luong])\n    return sorted(ra, key=lambda x: x[0])\n",
+     "tests": [
+      {
+       "name": "Hai món dùng cà phê hạt",
+       "input": {
+        "ingredient_id": "ca-phe-hat",
+        "items": {
+         "latte": {
+          "name": "Latte"
+         },
+         "mocha": {
+          "name": "Mocha"
+         }
+        },
+        "recipe": [
+         [
+          "mocha",
+          "ca-phe-hat",
+          9.0
+         ],
+         [
+          "latte",
+          "ca-phe-hat",
+          8.0
+         ]
+        ]
+       },
+       "expected": [
+        [
+         "latte",
+         "Latte",
+         8.0
+        ],
+        [
+         "mocha",
+         "Mocha",
+         9.0
+        ]
+       ]
+      },
+      {
+       "name": "Nguyên liệu không món nào dùng",
+       "input": {
+        "ingredient_id": "tra",
+        "items": {
+         "latte": {
+          "name": "Latte"
+         }
+        },
+        "recipe": [
+         [
+          "latte",
+          "ca-phe-hat",
+          8.0
+         ]
+        ]
+       },
+       "expected": []
+      },
+      {
+       "name": "Một món duy nhất",
+       "input": {
+        "ingredient_id": "sua",
+        "items": {
+         "latte": {
+          "name": "Latte"
+         }
+        },
+        "recipe": [
+         [
+          "latte",
+          "sua",
+          150.0
+         ],
+         [
+          "latte",
+          "ca-phe-hat",
+          8.0
+         ]
+        ]
+       },
+       "expected": [
+        [
+         "latte",
+         "Latte",
+         150.0
+        ]
+       ]
+      }
+     ],
+     "contract": {
+      "mode": "function"
+     },
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "Lọc trước theo mã nguyên liệu, rồi mới tra tên món."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "sorted(..., key=lambda x: x[0]) xếp theo mã món."
+      }
+     ]
     }
    },
    "_mode": "pyodide",
    "_blocked": [],
    "_so_mcq": 3,
-   "_bai_tap": "khong co",
+   "_bai_tap": "cham",
    "_vet": {
     "can": 3,
     "co": 2,
@@ -35358,19 +35471,118 @@
     },
     "step_4": {
      "task": {
-      "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+      "title": "Tự viết và chạy trong terminal",
+      "body": "Viết solve(data) nhận dict có lines là list [mã món, định lượng]. Trả dict có amounts (list định lượng làm tròn 1 chữ số, giữ thứ tự) và mean (trung bình các định lượng ĐÃ làm tròn, làm tròn 2 chữ số). Lines rỗng thì amounts là [] và mean là None — trung bình của không số đo nào thì không có, đừng trả 0.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'lines': [['latte', 8.74], ['mocha', 6.21]]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'amounts': [8.7, 6.2], 'mean': 7.45}"
+       }
+      ]
      },
-     "starterCode": "# ── Đoạn 1 ──\nclass Item:\n    def __init__(self, code, name, group): self.code, self.name, self.group = code, name, group\n    def describe(self): return f\"{self.code}: {self.name} ({self.group})\"\nclass Ingredient:\n    def __init__(self, code, name, unit): self.code, self.name, self.unit = code, name, unit\n    def describe(self): return f\"{self.code}: {self.name}\"\nfor row in [Item(\"latte\", \"Latte\", \"Ca phe\"), Ingredient(\"ca-phe-hat\", \"Ca phe hat\", \"g\")]:\n    print(row.describe())\n\n# ── Đoạn 2 ──\nimport math\nimport numpy as np\nclass RecipeLine:\n    def __init__(self, item_id, ingredient_id, amount):\n        self.item_id, self.ingredient_id = item_id, ingredient_id\n        self.set_amount(amount)\n    def set_amount(self, amount):\n        if type(amount) not in (int, float) or not math.isfinite(amount):\n            raise ValueError(\"amount\")\n        if not 0 <= amount <= 50:\n            raise ValueError(\"amount\")\n        self.amount = math.floor(amount * 10) / 10\nrows = [RecipeLine(\"latte\", \"ca-phe-hat\", 8.79), RecipeLine(\"mocha\", \"ca-phe-hat\", 6.29)]\namounts = np.array([row.amount for row in rows])\ncups = np.array([3, 1])\nprint(amounts.tolist())\nprint(round(float((amounts * cups).sum() / cups.sum()), 2))\n\n# ── Đoạn 3 ──\nfiles = {\"input.py\": \"doc du lieu\", \"output.py\": \"curses output\", \"domains/item.py\": \"Item\", \"domains/ingredient.py\": \"Ingredient\", \"domains/recipe.py\": \"RecipeLine\", \"domains/registry.py\": \"Registry\", \"domains/__init__.py\": \"exports\", \"main.py\": \"dieu phoi\"}\nprint(files[\"output.py\"])\nprint(sorted(name for name in files if name.startswith(\"domains/\")))\n",
-     "packages": [
-      "numpy"
+     "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+     "solutionCode": "def solve(data):\n    amounts = [round(luong, 1) for _, luong in data[\"lines\"]]\n    if not amounts:\n        return {\"amounts\": [], \"mean\": None}\n    return {\"amounts\": amounts,\n            \"mean\": round(sum(amounts) / len(amounts), 2)}\n",
+     "tests": [
+      {
+       "name": "Hai dòng như trong bài",
+       "input": {
+        "lines": [
+         [
+          "latte",
+          8.74
+         ],
+         [
+          "mocha",
+          6.21
+         ]
+        ]
+       },
+       "expected": {
+        "amounts": [
+         8.7,
+         6.2
+        ],
+        "mean": 7.45
+       }
+      },
+      {
+       "name": "Một dòng",
+       "input": {
+        "lines": [
+         [
+          "latte",
+          10.0
+         ]
+        ]
+       },
+       "expected": {
+        "amounts": [
+         10.0
+        ],
+        "mean": 10.0
+       }
+      },
+      {
+       "name": "Ba dòng, trung bình lẻ",
+       "input": {
+        "lines": [
+         [
+          "a",
+          1.04
+         ],
+         [
+          "b",
+          2.06
+         ],
+         [
+          "c",
+          3.01
+         ]
+        ]
+       },
+       "expected": {
+        "amounts": [
+         1.0,
+         2.1,
+         3.0
+        ],
+        "mean": 2.03
+       }
+      },
+      {
+       "name": "Chưa có định lượng nào",
+       "input": {
+        "lines": []
+       },
+       "expected": {
+        "amounts": [],
+        "mean": null
+       }
+      }
+     ],
+     "contract": {
+      "mode": "function"
+     },
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "Làm tròn TỪNG định lượng trước, rồi mới lấy trung bình của chúng."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "List rỗng vẫn phải trả dict đủ hai khoá — chỉ `mean` là None."
+      }
      ]
     }
    },
    "_mode": "pyodide",
    "_blocked": [],
    "_so_mcq": 3,
-   "_bai_tap": "khong co",
+   "_bai_tap": "cham",
    "_vet": {
     "can": 3,
     "co": 3,
@@ -35702,16 +35914,78 @@
     },
     "step_4": {
      "task": {
-      "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+      "title": "Tự viết và chạy trong terminal",
+      "body": "Viết solve(data) nhận dict có csv_text (dòng đầu là tên cột). Trả list dict, mỗi dòng dữ liệu một dict. Giữ nguyên dấu phẩy nằm trong ô được bọc bởi dấu nháy kép. Trả [] nếu chỉ có dòng tiêu đề.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'csv_text': 'id,name,group\\nlatte,\"Latte, nong\",Ca phe\\n'}"
+       },
+       {
+        "label": "trả về",
+        "value": "[{'id': 'latte', 'name': 'Latte, nong', 'group': 'Ca phe'}]"
+       }
+      ]
      },
-     "starterCode": "# ── Đoạn 1 ──\nimport csv\nfrom io import StringIO\nbuffer = StringIO(newline=\"\")\nwriter = csv.writer(buffer)\nwriter.writerow([\"id\", \"name\", \"group\"])\nwriter.writerow([\"latte\", \"Latte, nong\", \"Ca phe\"])\nbuffer.seek(0)\nprint(list(csv.DictReader(buffer))[0])\n\n# ── Đoạn 2 ──\nfrom io import BytesIO\nimport zipfile\ntexts = {\"items.txt\": \"id,name,group\\nlatte,Latte,Ca phe\\n\", \"ingredients.txt\": \"id,name,unit\\nca-phe-hat,Ca phe hat,g\\n\", \"recipe.txt\": \"item_id,ingredient_id,amount\\nlatte,ca-phe-hat,8.7\\n\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    for name, text in texts.items(): archive.writestr(name, text)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name).decode(\"utf8\") for name in archive.namelist()}\nprint(restored == texts)\n\n# ── Đoạn 3 ──\nimport tempfile, zipfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"quan.dat\"\n    print(path.exists())\n    with zipfile.ZipFile(path, \"w\") as archive:\n        archive.writestr(\"items.txt\", \"latte,Latte,Ca phe\\n\")\n    with zipfile.ZipFile(path) as archive:\n        print(archive.read(\"items.txt\").decode().strip())\n"
+     "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+     "solutionCode": "import csv\nfrom io import StringIO\ndef solve(data):\n    doc = csv.DictReader(StringIO(data[\"csv_text\"]))\n    return [dict(h) for h in doc]\n",
+     "tests": [
+      {
+       "name": "Ô có dấu phẩy bên trong",
+       "input": {
+        "csv_text": "id,name,group\nlatte,\"Latte, nong\",Ca phe\n"
+       },
+       "expected": [
+        {
+         "id": "latte",
+         "name": "Latte, nong",
+         "group": "Ca phe"
+        }
+       ]
+      },
+      {
+       "name": "Hai dòng dữ liệu",
+       "input": {
+        "csv_text": "id,unit\nca-phe-hat,g\nsua,ml\n"
+       },
+       "expected": [
+        {
+         "id": "ca-phe-hat",
+         "unit": "g"
+        },
+        {
+         "id": "sua",
+         "unit": "ml"
+        }
+       ]
+      },
+      {
+       "name": "Chỉ có dòng tiêu đề",
+       "input": {
+        "csv_text": "id,name,group\n"
+       },
+       "expected": []
+      }
+     ],
+     "contract": {
+      "mode": "function"
+     },
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "csv.DictReader đọc dòng đầu làm tên cột."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "StringIO biến một chuỗi thành thứ đọc được như file."
+      }
+     ]
     }
    },
    "_mode": "pyodide",
    "_blocked": [],
    "_so_mcq": 3,
-   "_bai_tap": "khong co",
+   "_bai_tap": "cham",
    "_vet": {
     "can": 3,
     "co": 1,
@@ -36049,16 +36323,96 @@
     },
     "step_4": {
      "task": {
-      "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+      "title": "Tự viết và chạy trong terminal",
+      "body": "Viết solve(data) nhận dict có state. Nếu state là dict và state[\"version\"] bằng 1 thì trả dict có ok là True và items là SỐ món trong state[\"items\"]. Ngược lại trả dict có ok là False và reason là \"Can chuyen doi du lieu\".",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'state': {'version': 1, 'items': {'latte': {}, 'mocha': {}}}}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'ok': True, 'items': 2}"
+       }
+      ]
      },
-     "starterCode": "# ── Đoạn 1 ──\nimport gzip, pickle\nstate = {\"version\": 1, \"items\": {\"latte\": {\"name\": \"Latte\", \"group\": \"Ca phe\"}}, \"ingredients\": {\"ca-phe-hat\": {\"name\": \"Ca phe hat\", \"unit\": \"g\"}}, \"recipe\": {(\"latte\", \"ca-phe-hat\"): 8.7}}\nblob = gzip.compress(pickle.dumps(state))\nloaded = pickle.loads(gzip.decompress(blob))\nprint(loaded == state)\nprint(loaded[\"recipe\"][(\"latte\", \"ca-phe-hat\")])\n\n# ── Đoạn 2 ──\nimport gzip, pickle, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"quan.dat\"\n    with gzip.open(path, \"wb\") as f: pickle.dump({\"version\": 1, \"amounts\": (8, 9)}, f)\n    with gzip.open(path, \"rb\") as f: loaded = pickle.load(f)\n    print(type(loaded[\"amounts\"]).__name__)\n    print(loaded[\"version\"])\n\n# ── Đoạn 3 ──\ndef validate_version(state):\n    if not isinstance(state, dict) or state.get(\"version\") != 1:\n        raise ValueError(\"unsupported schema\")\n    return state\ntry:\n    validate_version({\"version\": 2})\nexcept ValueError:\n    print(\"Can chuyen doi du lieu\")\nprint(validate_version({\"version\": 1})[\"version\"])\n"
+     "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+     "solutionCode": "def solve(data):\n    state = data[\"state\"]\n    if not isinstance(state, dict) or state.get(\"version\") != 1:\n        return {\"ok\": False, \"reason\": \"Can chuyen doi du lieu\"}\n    return {\"ok\": True, \"items\": len(state.get(\"items\", {}))}\n",
+     "tests": [
+      {
+       "name": "Đúng phiên bản, hai món",
+       "input": {
+        "state": {
+         "version": 1,
+         "items": {
+          "latte": {},
+          "mocha": {}
+         }
+        }
+       },
+       "expected": {
+        "ok": true,
+        "items": 2
+       }
+      },
+      {
+       "name": "Phiên bản lạ",
+       "input": {
+        "state": {
+         "version": 2,
+         "items": {
+          "latte": {}
+         }
+        }
+       },
+       "expected": {
+        "ok": false,
+        "reason": "Can chuyen doi du lieu"
+       }
+      },
+      {
+       "name": "Không phải dict",
+       "input": {
+        "state": "quan.dat"
+       },
+       "expected": {
+        "ok": false,
+        "reason": "Can chuyen doi du lieu"
+       }
+      },
+      {
+       "name": "Đúng phiên bản, chưa có món nào",
+       "input": {
+        "state": {
+         "version": 1,
+         "items": {}
+        }
+       },
+       "expected": {
+        "ok": true,
+        "items": 0
+       }
+      }
+     ],
+     "contract": {
+      "mode": "function"
+     },
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "Kiểm kiểu TRƯỚC khi gọi .get() — state có thể không phải dict."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "state.get(\"version\") != 1 bắt cả trường hợp thiếu hẳn khoá version."
+      }
+     ]
     }
    },
    "_mode": "pyodide",
    "_blocked": [],
    "_so_mcq": 3,
-   "_bai_tap": "khong co",
+   "_bai_tap": "cham",
    "_vet": {
     "can": 3,
     "co": 2,
@@ -36741,16 +37095,78 @@
     },
     "step_4": {
      "task": {
-      "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+      "title": "Tự viết và chạy trong terminal",
+      "body": "Viết solve(data) nhận dict có useful, switches, switch_cost. Trả tỉ lệ thời gian chạy hữu ích useful/(useful + switches*switch_cost), làm tròn 3 chữ số. Trả None nếu useful bằng 0.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'useful': 10, 'switches': 4, 'switch_cost': 0.1}"
+       },
+       {
+        "label": "trả về",
+        "value": "0.962"
+       }
+      ]
      },
-     "starterCode": "# ── Đoạn 1 ──\nqueues = {\"job\": [\"A\", \"B\", \"C\"], \"ready\": [\"A\", \"B\"], \"disk\": [\"C\"]}\ncurrent = queues[\"ready\"].pop(0)\nprint(current, queues[\"disk\"])\n\n# ── Đoạn 2 ──\npcb = {\"pid\": 12, \"state\": \"ready\", \"pc\": 40, \"registers\": [0, 1], \"priority\": 2, \"open_fds\": [0, 1, 2]}\npcb[\"state\"] = \"running\"\nprint(pcb[\"pid\"], pcb[\"pc\"], pcb[\"state\"])\n\n# ── Đoạn 3 ──\nuseful, switches, switch_cost = 10, 4, 0.1\nprint(round(useful / (useful + switches * switch_cost), 3))\n"
+     "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+     "solutionCode": "def solve(data):\n    useful = data[\"useful\"]\n    if useful == 0:\n        return None\n    tong = useful + data[\"switches\"] * data[\"switch_cost\"]\n    return round(useful / tong, 3)\n",
+     "tests": [
+      {
+       "name": "Bốn lần chuyển",
+       "input": {
+        "useful": 10,
+        "switches": 4,
+        "switch_cost": 0.1
+       },
+       "expected": 0.962
+      },
+      {
+       "name": "Không lần chuyển nào",
+       "input": {
+        "useful": 8,
+        "switches": 0,
+        "switch_cost": 0.1
+       },
+       "expected": 1.0
+      },
+      {
+       "name": "Chuyển nhiều, tốn hơn",
+       "input": {
+        "useful": 5,
+        "switches": 10,
+        "switch_cost": 0.5
+       },
+       "expected": 0.5
+      },
+      {
+       "name": "Chưa chạy gì",
+       "input": {
+        "useful": 0,
+        "switches": 3,
+        "switch_cost": 0.1
+       },
+       "expected": null
+      }
+     ],
+     "contract": {
+      "mode": "function"
+     },
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "Mẫu số là useful cộng tổng chi phí chuyển ngữ cảnh."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "round(x, 3) làm tròn 3 chữ số sau dấu phẩy."
+      }
+     ]
     }
    },
    "_mode": "pyodide",
    "_blocked": [],
    "_so_mcq": 3,
-   "_bai_tap": "khong co",
+   "_bai_tap": "cham",
    "_vet": {
     "can": 3,
     "co": 1,
@@ -37189,16 +37605,107 @@
     },
     "step_4": {
      "task": {
-      "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+      "title": "Tự viết và chạy trong terminal",
+      "body": "Viết solve(data) nhận dict có jobs là list [tên, burst]. Trả dict có fcfs và sjf: thời gian CHỜ trung bình khi chạy theo thứ tự đến (FCFS) và khi chạy việc ngắn trước (SJF), mỗi số làm tròn 2 chữ số.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'jobs': [['A', 6], ['B', 2], ['C', 1]]}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'fcfs': 4.67, 'sjf': 1.33}"
+       }
+      ]
      },
-     "starterCode": "# ── Đoạn 1 ──\njobs = [(\"A\", 6), (\"B\", 2), (\"C\", 1)]\nclock = 0\nfor name, burst in jobs:\n    print(name, clock)\n    clock += burst\n\n# ── Đoạn 2 ──\njobs = [(\"A\", 6), (\"B\", 2), (\"C\", 1)]\nclock = 0\nfor name, burst in sorted(jobs, key=lambda job: job[1]):\n    print(name, clock)\n    clock += burst\n\n# ── Đoạn 3 ──\nfcfs_waits = [0, 6, 8]\nsjf_waits = [0, 1, 3]\nprint(round(sum(fcfs_waits)/3, 2))\nprint(round(sum(sjf_waits)/3, 2))\n"
+     "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+     "solutionCode": "def solve(data):\n    jobs = data[\"jobs\"]\n    def cho_tb(ds):\n        clock = 0\n        tong = 0\n        for _, burst in ds:\n            tong += clock\n            clock += burst\n        return round(tong / len(ds), 2)\n    return {\"fcfs\": cho_tb(jobs),\n            \"sjf\": cho_tb(sorted(jobs, key=lambda j: j[1]))}\n",
+     "tests": [
+      {
+       "name": "Ba việc như trong bài",
+       "input": {
+        "jobs": [
+         [
+          "A",
+          6
+         ],
+         [
+          "B",
+          2
+         ],
+         [
+          "C",
+          1
+         ]
+        ]
+       },
+       "expected": {
+        "fcfs": 4.67,
+        "sjf": 1.33
+       }
+      },
+      {
+       "name": "Việc ngắn đến trước nên hai cách cho cùng kết quả",
+       "input": {
+        "jobs": [
+         [
+          "A",
+          1
+         ],
+         [
+          "B",
+          2
+         ],
+         [
+          "C",
+          3
+         ]
+        ]
+       },
+       "expected": {
+        "fcfs": 1.33,
+        "sjf": 1.33
+       }
+      },
+      {
+       "name": "Hai việc",
+       "input": {
+        "jobs": [
+         [
+          "A",
+          4
+         ],
+         [
+          "B",
+          1
+         ]
+        ]
+       },
+       "expected": {
+        "fcfs": 2.0,
+        "sjf": 0.5
+       }
+      }
+     ],
+     "contract": {
+      "mode": "function"
+     },
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "Thời gian chờ của một việc là đồng hồ TRƯỚC khi nó bắt đầu."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "SJF chỉ khác ở thứ tự: sorted(jobs, key=lambda j: j[1])."
+      }
+     ]
     }
    },
    "_mode": "pyodide",
    "_blocked": [],
    "_so_mcq": 3,
-   "_bai_tap": "khong co",
+   "_bai_tap": "cham",
    "_vet": {
     "can": 3,
     "co": 2,
@@ -37407,16 +37914,99 @@
     },
     "step_4": {
      "task": {
-      "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+      "title": "Tự viết và chạy trong terminal",
+      "body": "Viết solve(data) nhận dict có jobs (list dict có name, burst, deadline) và policy là \"sjf\" hoặc \"edf\". Trả TÊN việc được chọn: sjf chọn burst nhỏ nhất, edf chọn deadline sớm nhất. Hoà thì lấy việc đứng trước.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'policy': 'edf', 'jobs': [{'name': 'A', 'burst': 1, 'deadline': 10}, {'name': 'B', 'burst': 4, 'deadline': 5}]}"
+       },
+       {
+        "label": "trả về",
+        "value": "'B'"
+       }
+      ]
      },
-     "starterCode": "# ── Đoạn 1 ──\nremaining = {\"A\": 5, \"B\": 2}\nprint(min(remaining, key=remaining.get))\n\n# ── Đoạn 2 ──\njobs = [{\"name\":\"A\", \"burst\":1, \"deadline\":10}, {\"name\":\"B\", \"burst\":4, \"deadline\":5}]\nprint(min(jobs, key=lambda x:x[\"deadline\"])[\"name\"])\nprint(min(jobs, key=lambda x:x[\"burst\"])[\"name\"])\n\n# ── Đoạn 3 ──\nqueues = {\"high\": [\"A\"], \"low\": [\"B\"]}\nunfinished = queues[\"high\"].pop(0)\nqueues[\"low\"].append(unfinished)\nprint(queues[\"high\"], queues[\"low\"])\n"
+     "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+     "solutionCode": "def solve(data):\n    khoa = \"burst\" if data[\"policy\"] == \"sjf\" else \"deadline\"\n    return min(data[\"jobs\"], key=lambda j: j[khoa])[\"name\"]\n",
+     "tests": [
+      {
+       "name": "EDF chọn deadline sớm",
+       "input": {
+        "policy": "edf",
+        "jobs": [
+         {
+          "name": "A",
+          "burst": 1,
+          "deadline": 10
+         },
+         {
+          "name": "B",
+          "burst": 4,
+          "deadline": 5
+         }
+        ]
+       },
+       "expected": "B"
+      },
+      {
+       "name": "SJF chọn việc ngắn",
+       "input": {
+        "policy": "sjf",
+        "jobs": [
+         {
+          "name": "A",
+          "burst": 1,
+          "deadline": 10
+         },
+         {
+          "name": "B",
+          "burst": 4,
+          "deadline": 5
+         }
+        ]
+       },
+       "expected": "A"
+      },
+      {
+       "name": "Hoà burst thì lấy việc đứng trước",
+       "input": {
+        "policy": "sjf",
+        "jobs": [
+         {
+          "name": "X",
+          "burst": 2,
+          "deadline": 9
+         },
+         {
+          "name": "Y",
+          "burst": 2,
+          "deadline": 3
+         }
+        ]
+       },
+       "expected": "X"
+      }
+     ],
+     "contract": {
+      "mode": "function"
+     },
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "min(..., key=...) trả về chính phần tử, không phải chỉ số."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "Hai chính sách chỉ khác nhau ở KHOÁ đem so."
+      }
+     ]
     }
    },
    "_mode": "pyodide",
    "_blocked": [],
    "_so_mcq": 3,
-   "_bai_tap": "khong co",
+   "_bai_tap": "cham",
    "_vet": {
     "can": 3,
     "co": 1,
@@ -37973,16 +38563,136 @@
     },
     "step_4": {
      "task": {
-      "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+      "title": "Tự viết và chạy trong terminal",
+      "body": "Viết solve(data) nhận dict có ready là list [tên, burst] và quantum. Mô phỏng Round Robin: mỗi lượt chạy tối đa quantum đơn vị rồi xếp lại cuối hàng nếu còn. Trả list [tên, số đơn vị đã chạy] theo đúng thứ tự.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'ready': [['A', 3], ['B', 2]], 'quantum': 2}"
+       },
+       {
+        "label": "trả về",
+        "value": "[['A', 2], ['B', 2], ['A', 1]]"
+       }
+      ]
      },
-     "starterCode": "# ── Đoạn 1 ──\nfrom collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(1, remaining)\n    trace.append(name)\n    if remaining > used:\n        ready.append((name, remaining-used))\nprint(trace)\n\n# ── Đoạn 2 ──\nfrom collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(2, remaining)\n    trace.append((name, used))\n    if remaining > used: ready.append((name, remaining-used))\nprint(trace)\n\n# ── Đoạn 3 ──\nuseful = 5\nfor switches in [4, 2]:\n    print(round(useful + switches * 0.1, 1))\n"
+     "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+     "solutionCode": "from collections import deque\ndef solve(data):\n    hang = deque([list(x) for x in data[\"ready\"]])\n    q = data[\"quantum\"]\n    vet = []\n    while hang:\n        ten, con = hang.popleft()\n        chay = min(q, con)\n        vet.append([ten, chay])\n        if con > chay:\n            hang.append([ten, con - chay])\n    return vet\n",
+     "tests": [
+      {
+       "name": "Quantum 2 như trong bài",
+       "input": {
+        "ready": [
+         [
+          "A",
+          3
+         ],
+         [
+          "B",
+          2
+         ]
+        ],
+        "quantum": 2
+       },
+       "expected": [
+        [
+         "A",
+         2
+        ],
+        [
+         "B",
+         2
+        ],
+        [
+         "A",
+         1
+        ]
+       ]
+      },
+      {
+       "name": "Quantum 1 thì xen kẽ",
+       "input": {
+        "ready": [
+         [
+          "A",
+          3
+         ],
+         [
+          "B",
+          2
+         ]
+        ],
+        "quantum": 1
+       },
+       "expected": [
+        [
+         "A",
+         1
+        ],
+        [
+         "B",
+         1
+        ],
+        [
+         "A",
+         1
+        ],
+        [
+         "B",
+         1
+        ],
+        [
+         "A",
+         1
+        ]
+       ]
+      },
+      {
+       "name": "Quantum lớn hơn mọi việc",
+       "input": {
+        "ready": [
+         [
+          "A",
+          2
+         ],
+         [
+          "B",
+          1
+         ]
+        ],
+        "quantum": 5
+       },
+       "expected": [
+        [
+         "A",
+         2
+        ],
+        [
+         "B",
+         1
+        ]
+       ]
+      }
+     ],
+     "contract": {
+      "mode": "function"
+     },
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "deque.popleft() lấy đầu hàng, append() xếp lại cuối hàng."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "Số đơn vị chạy mỗi lượt là min(quantum, phần còn lại)."
+      }
+     ]
     }
    },
    "_mode": "pyodide",
    "_blocked": [],
    "_so_mcq": 3,
-   "_bai_tap": "khong co",
+   "_bai_tap": "cham",
    "_vet": {
     "can": 3,
     "co": 2,

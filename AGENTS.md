@@ -60,13 +60,13 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Frontend unit test | `cd frontend && npm run test:unit` → **507 ca** / 39 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
-| Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **130 bài tập được chấm / 433 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
+| Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **138 bài tập được chấm / 460 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 153 bài, 417 đoạn code, **0 hỏng**, 14 cảnh báo, ~55 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
-| pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 130 bài, **433 ca đạt**, 585 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, ~15 s |
+| pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 138 bài, **460 ca đạt**, 621 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, ~15 s |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 356 khối đủ điều kiện** (300 bỏ qua, phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
-| Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **14 mục, 11 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
+| Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **17 mục, 14 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
 **pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 179
@@ -1593,6 +1593,27 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   có answerCode** — NP02 có answerCode ở câu thứ 3 nên khoá là `NP02#3`. Lần ablate đầu
   tôi gõ `NP02#1` và phép kiểm không bắn, trông y như nó không có răng; bịa khoá sai là
   một cách tự lừa mình rằng bộ kiểm hỏng.
+
+- **TÁM bài `free` cuối cùng còn chấm được nay đã có ca chấm — và cái giá là chúng bị KHOÁ.**
+  CT03–CT06, SY25–SY28. Con số thật là **8, không phải 49**: trong 49 bài không có ca chấm
+  thì 24 là `procedure` (không có mã Python nào chạy) và 17 thiếu wheel hoặc đụng
+  `sys.executable`. Gói nguồn có **0 bài tập** cho cả tám, nên chúng được soạn tại repo.
+  **ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC:** `primaryCta` ở màn tổng kết trả "Nộp bài ở màn trước"
+  khi `step_4.tests` không rỗng, nên tám bài này đổi từ "tự đánh dấu hoàn thành" sang "phải
+  nộp đạt mới xong". **Nhưng đó là cách 130/179 bài còn lại ĐÃ hoạt động** — tám bài này là
+  những bài `free` duy nhất còn chấm được mà chưa chấm, nên đây là làm cho NHẤT QUÁN chứ
+  không phải siết thêm. `isGraded` KHÔNG gồm `sandbox`, nên `firstUnfinished` không chặn —
+  đường khoá nằm ở `cta.ts`, không ở `firstUnfinished`; kiểm nhầm chỗ là kết luận sai.
+  **Bộ chấm bắt hai lỗi của chính tôi, và đó là lý do nó tồn tại:**
+  · CT04 — tôi gõ `expected` sai: jobs `[1,2,3]` thì thời gian chờ là 0,1,3 ⇒ 1.33, tôi viết
+    1.0. Lời giải mẫu ĐÚNG, con số tôi tính nhẩm thì sai.
+  · SY26 — ca "rỗng → None" làm biến thể "thừa một khoá dict" lọt 1/3, vì thêm khoá vào
+    `None` không làm gì cả. Bộ chấm gọi đúng tên: *"bộ chấm CHO ĐẠT bài sai"*. Sửa HỢP ĐỒNG
+    (mọi ca trả cùng hình dạng dict, ca rỗng trả `{"amounts": [], "mean": None}`), KHÔNG nới
+    bộ chấm — `mean` của list rỗng là KHÔNG CÓ, nên `None` ở đó trung thực hơn `0.0`.
+  **Mỗi bài tối thiểu ba ca và `expected` của chúng phải KHÁC NHAU**, nếu không thì "trả hằng
+  của ca 1" đạt hết; và tránh `expected` BẰNG `input` (biến thể "dội nguyên đầu vào ra").
+  130 → 138 bài · 433 → 460 ca · 585 → 621 biến thể sai, tất cả vẫn trượt.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

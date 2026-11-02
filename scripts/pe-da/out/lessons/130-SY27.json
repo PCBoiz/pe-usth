@@ -322,16 +322,78 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dict có csv_text (dòng đầu là tên cột). Trả list dict, mỗi dòng dữ liệu một dict. Giữ nguyên dấu phẩy nằm trong ô được bọc bởi dấu nháy kép. Trả [] nếu chỉ có dòng tiêu đề.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'csv_text': 'id,name,group\\nlatte,\"Latte, nong\",Ca phe\\n'}"
+     },
+     {
+      "label": "trả về",
+      "value": "[{'id': 'latte', 'name': 'Latte, nong', 'group': 'Ca phe'}]"
+     }
+    ]
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport csv\nfrom io import StringIO\nbuffer = StringIO(newline=\"\")\nwriter = csv.writer(buffer)\nwriter.writerow([\"id\", \"name\", \"group\"])\nwriter.writerow([\"latte\", \"Latte, nong\", \"Ca phe\"])\nbuffer.seek(0)\nprint(list(csv.DictReader(buffer))[0])\n\n# ── Đoạn 2 ──\nfrom io import BytesIO\nimport zipfile\ntexts = {\"items.txt\": \"id,name,group\\nlatte,Latte,Ca phe\\n\", \"ingredients.txt\": \"id,name,unit\\nca-phe-hat,Ca phe hat,g\\n\", \"recipe.txt\": \"item_id,ingredient_id,amount\\nlatte,ca-phe-hat,8.7\\n\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    for name, text in texts.items(): archive.writestr(name, text)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name).decode(\"utf8\") for name in archive.namelist()}\nprint(restored == texts)\n\n# ── Đoạn 3 ──\nimport tempfile, zipfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"quan.dat\"\n    print(path.exists())\n    with zipfile.ZipFile(path, \"w\") as archive:\n        archive.writestr(\"items.txt\", \"latte,Latte,Ca phe\\n\")\n    with zipfile.ZipFile(path) as archive:\n        print(archive.read(\"items.txt\").decode().strip())\n"
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import csv\nfrom io import StringIO\ndef solve(data):\n    doc = csv.DictReader(StringIO(data[\"csv_text\"]))\n    return [dict(h) for h in doc]\n",
+   "tests": [
+    {
+     "name": "Ô có dấu phẩy bên trong",
+     "input": {
+      "csv_text": "id,name,group\nlatte,\"Latte, nong\",Ca phe\n"
+     },
+     "expected": [
+      {
+       "id": "latte",
+       "name": "Latte, nong",
+       "group": "Ca phe"
+      }
+     ]
+    },
+    {
+     "name": "Hai dòng dữ liệu",
+     "input": {
+      "csv_text": "id,unit\nca-phe-hat,g\nsua,ml\n"
+     },
+     "expected": [
+      {
+       "id": "ca-phe-hat",
+       "unit": "g"
+      },
+      {
+       "id": "sua",
+       "unit": "ml"
+      }
+     ]
+    },
+    {
+     "name": "Chỉ có dòng tiêu đề",
+     "input": {
+      "csv_text": "id,name,group\n"
+     },
+     "expected": []
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "csv.DictReader đọc dòng đầu làm tên cột."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "StringIO biến một chuỗi thành thứ đọc được như file."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co",
+ "_bai_tap": "cham",
  "_vet": {
   "can": 3,
   "co": 1,

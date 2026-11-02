@@ -977,19 +977,118 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dict có lines là list [mã món, định lượng]. Trả dict có amounts (list định lượng làm tròn 1 chữ số, giữ thứ tự) và mean (trung bình các định lượng ĐÃ làm tròn, làm tròn 2 chữ số). Lines rỗng thì amounts là [] và mean là None — trung bình của không số đo nào thì không có, đừng trả 0.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'lines': [['latte', 8.74], ['mocha', 6.21]]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'amounts': [8.7, 6.2], 'mean': 7.45}"
+     }
+    ]
    },
-   "starterCode": "# ── Đoạn 1 ──\nclass Item:\n    def __init__(self, code, name, group): self.code, self.name, self.group = code, name, group\n    def describe(self): return f\"{self.code}: {self.name} ({self.group})\"\nclass Ingredient:\n    def __init__(self, code, name, unit): self.code, self.name, self.unit = code, name, unit\n    def describe(self): return f\"{self.code}: {self.name}\"\nfor row in [Item(\"latte\", \"Latte\", \"Ca phe\"), Ingredient(\"ca-phe-hat\", \"Ca phe hat\", \"g\")]:\n    print(row.describe())\n\n# ── Đoạn 2 ──\nimport math\nimport numpy as np\nclass RecipeLine:\n    def __init__(self, item_id, ingredient_id, amount):\n        self.item_id, self.ingredient_id = item_id, ingredient_id\n        self.set_amount(amount)\n    def set_amount(self, amount):\n        if type(amount) not in (int, float) or not math.isfinite(amount):\n            raise ValueError(\"amount\")\n        if not 0 <= amount <= 50:\n            raise ValueError(\"amount\")\n        self.amount = math.floor(amount * 10) / 10\nrows = [RecipeLine(\"latte\", \"ca-phe-hat\", 8.79), RecipeLine(\"mocha\", \"ca-phe-hat\", 6.29)]\namounts = np.array([row.amount for row in rows])\ncups = np.array([3, 1])\nprint(amounts.tolist())\nprint(round(float((amounts * cups).sum() / cups.sum()), 2))\n\n# ── Đoạn 3 ──\nfiles = {\"input.py\": \"doc du lieu\", \"output.py\": \"curses output\", \"domains/item.py\": \"Item\", \"domains/ingredient.py\": \"Ingredient\", \"domains/recipe.py\": \"RecipeLine\", \"domains/registry.py\": \"Registry\", \"domains/__init__.py\": \"exports\", \"main.py\": \"dieu phoi\"}\nprint(files[\"output.py\"])\nprint(sorted(name for name in files if name.startswith(\"domains/\")))\n",
-   "packages": [
-    "numpy"
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "def solve(data):\n    amounts = [round(luong, 1) for _, luong in data[\"lines\"]]\n    if not amounts:\n        return {\"amounts\": [], \"mean\": None}\n    return {\"amounts\": amounts,\n            \"mean\": round(sum(amounts) / len(amounts), 2)}\n",
+   "tests": [
+    {
+     "name": "Hai dòng như trong bài",
+     "input": {
+      "lines": [
+       [
+        "latte",
+        8.74
+       ],
+       [
+        "mocha",
+        6.21
+       ]
+      ]
+     },
+     "expected": {
+      "amounts": [
+       8.7,
+       6.2
+      ],
+      "mean": 7.45
+     }
+    },
+    {
+     "name": "Một dòng",
+     "input": {
+      "lines": [
+       [
+        "latte",
+        10.0
+       ]
+      ]
+     },
+     "expected": {
+      "amounts": [
+       10.0
+      ],
+      "mean": 10.0
+     }
+    },
+    {
+     "name": "Ba dòng, trung bình lẻ",
+     "input": {
+      "lines": [
+       [
+        "a",
+        1.04
+       ],
+       [
+        "b",
+        2.06
+       ],
+       [
+        "c",
+        3.01
+       ]
+      ]
+     },
+     "expected": {
+      "amounts": [
+       1.0,
+       2.1,
+       3.0
+      ],
+      "mean": 2.03
+     }
+    },
+    {
+     "name": "Chưa có định lượng nào",
+     "input": {
+      "lines": []
+     },
+     "expected": {
+      "amounts": [],
+      "mean": null
+     }
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Làm tròn TỪNG định lượng trước, rồi mới lấy trung bình của chúng."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "List rỗng vẫn phải trả dict đủ hai khoá — chỉ `mean` là None."
+    }
    ]
   }
  },
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co",
+ "_bai_tap": "cham",
  "_vet": {
   "can": 3,
   "co": 3,

@@ -328,16 +328,96 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dict có state. Nếu state là dict và state[\"version\"] bằng 1 thì trả dict có ok là True và items là SỐ món trong state[\"items\"]. Ngược lại trả dict có ok là False và reason là \"Can chuyen doi du lieu\".",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'state': {'version': 1, 'items': {'latte': {}, 'mocha': {}}}}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'ok': True, 'items': 2}"
+     }
+    ]
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport gzip, pickle\nstate = {\"version\": 1, \"items\": {\"latte\": {\"name\": \"Latte\", \"group\": \"Ca phe\"}}, \"ingredients\": {\"ca-phe-hat\": {\"name\": \"Ca phe hat\", \"unit\": \"g\"}}, \"recipe\": {(\"latte\", \"ca-phe-hat\"): 8.7}}\nblob = gzip.compress(pickle.dumps(state))\nloaded = pickle.loads(gzip.decompress(blob))\nprint(loaded == state)\nprint(loaded[\"recipe\"][(\"latte\", \"ca-phe-hat\")])\n\n# ── Đoạn 2 ──\nimport gzip, pickle, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"quan.dat\"\n    with gzip.open(path, \"wb\") as f: pickle.dump({\"version\": 1, \"amounts\": (8, 9)}, f)\n    with gzip.open(path, \"rb\") as f: loaded = pickle.load(f)\n    print(type(loaded[\"amounts\"]).__name__)\n    print(loaded[\"version\"])\n\n# ── Đoạn 3 ──\ndef validate_version(state):\n    if not isinstance(state, dict) or state.get(\"version\") != 1:\n        raise ValueError(\"unsupported schema\")\n    return state\ntry:\n    validate_version({\"version\": 2})\nexcept ValueError:\n    print(\"Can chuyen doi du lieu\")\nprint(validate_version({\"version\": 1})[\"version\"])\n"
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "def solve(data):\n    state = data[\"state\"]\n    if not isinstance(state, dict) or state.get(\"version\") != 1:\n        return {\"ok\": False, \"reason\": \"Can chuyen doi du lieu\"}\n    return {\"ok\": True, \"items\": len(state.get(\"items\", {}))}\n",
+   "tests": [
+    {
+     "name": "Đúng phiên bản, hai món",
+     "input": {
+      "state": {
+       "version": 1,
+       "items": {
+        "latte": {},
+        "mocha": {}
+       }
+      }
+     },
+     "expected": {
+      "ok": true,
+      "items": 2
+     }
+    },
+    {
+     "name": "Phiên bản lạ",
+     "input": {
+      "state": {
+       "version": 2,
+       "items": {
+        "latte": {}
+       }
+      }
+     },
+     "expected": {
+      "ok": false,
+      "reason": "Can chuyen doi du lieu"
+     }
+    },
+    {
+     "name": "Không phải dict",
+     "input": {
+      "state": "quan.dat"
+     },
+     "expected": {
+      "ok": false,
+      "reason": "Can chuyen doi du lieu"
+     }
+    },
+    {
+     "name": "Đúng phiên bản, chưa có món nào",
+     "input": {
+      "state": {
+       "version": 1,
+       "items": {}
+      }
+     },
+     "expected": {
+      "ok": true,
+      "items": 0
+     }
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Kiểm kiểu TRƯỚC khi gọi .get() — state có thể không phải dict."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "state.get(\"version\") != 1 bắt cả trường hợp thiếu hẳn khoá version."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co",
+ "_bai_tap": "cham",
  "_vet": {
   "can": 3,
   "co": 2,

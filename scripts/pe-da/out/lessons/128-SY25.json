@@ -425,16 +425,129 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dict có items (dict mã→dict có name) và recipe (list [mã món, mã nguyên liệu, định lượng]) và ingredient_id. Trả list [mã món, tên món, định lượng] của những món DÙNG nguyên liệu đó, xếp theo mã món tăng dần.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'ingredient_id': 'ca-phe-hat', 'items': {'latte': {'name': 'Latte'}, 'mocha': {'name': 'Mocha'}}, 'recipe': [['mocha', 'ca-phe-hat', 9.0], ['latte', 'ca-phe-hat', 8.0]]}"
+     },
+     {
+      "label": "trả về",
+      "value": "[['latte', 'Latte', 8.0], ['mocha', 'Mocha', 9.0]]"
+     }
+    ]
    },
-   "starterCode": "# ── Đoạn 1 ──\nitems = {\"latte\": {\"name\": \"Latte\", \"group\": \"Ca phe\"}}\ningredients = {\"ca-phe-hat\": {\"name\": \"Ca phe hat\", \"unit\": \"g\"}}\nrecipe = {(\"latte\", \"ca-phe-hat\"): 8.0}\nprint(items[\"latte\"][\"group\"])\nprint(recipe[(\"latte\", \"ca-phe-hat\")])\n\n# ── Đoạn 2 ──\ndef ingredient_lines(items, recipe, ingredient_id):\n    return [(iid, items[iid][\"name\"], amount) for (iid, ing), amount in recipe.items() if ing == ingredient_id]\nitems = {\"latte\": {\"name\": \"Latte\", \"group\": \"Ca phe\"}, \"mocha\": {\"name\": \"Mocha\", \"group\": \"Ca phe\"}}\nrecipe = {(\"latte\", \"ca-phe-hat\"): 8, (\"mocha\", \"ca-phe-hat\"): 0, (\"latte\", \"sua-tuoi\"): 7}\nprint(ingredient_lines(items, recipe, \"ca-phe-hat\"))\n\n# ── Đoạn 3 ──\ndef read_item(ask):\n    iid = ask(\"Ma mon: \").strip()\n    name = ask(\"Ten mon: \").strip()\n    group = ask(\"Nhom mon: \").strip()\n    if not iid or not name: raise ValueError(\"empty field\")\n    if group not in (\"Ca phe\", \"Tra\", \"Da xay\", \"Banh\"): raise ValueError(\"group\")\n    return iid, {\"name\": name, \"group\": group}\nanswers = iter([\"latte\", \"Latte\", \"Ca phe\"])\niid, info = read_item(lambda prompt: next(answers))\nprint(iid, info[\"name\"], info[\"group\"])\n"
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "def solve(data):\n    ra = []\n    for ma_mon, ma_ng, luong in data[\"recipe\"]:\n        if ma_ng == data[\"ingredient_id\"]:\n            ra.append([ma_mon, data[\"items\"][ma_mon][\"name\"], luong])\n    return sorted(ra, key=lambda x: x[0])\n",
+   "tests": [
+    {
+     "name": "Hai món dùng cà phê hạt",
+     "input": {
+      "ingredient_id": "ca-phe-hat",
+      "items": {
+       "latte": {
+        "name": "Latte"
+       },
+       "mocha": {
+        "name": "Mocha"
+       }
+      },
+      "recipe": [
+       [
+        "mocha",
+        "ca-phe-hat",
+        9.0
+       ],
+       [
+        "latte",
+        "ca-phe-hat",
+        8.0
+       ]
+      ]
+     },
+     "expected": [
+      [
+       "latte",
+       "Latte",
+       8.0
+      ],
+      [
+       "mocha",
+       "Mocha",
+       9.0
+      ]
+     ]
+    },
+    {
+     "name": "Nguyên liệu không món nào dùng",
+     "input": {
+      "ingredient_id": "tra",
+      "items": {
+       "latte": {
+        "name": "Latte"
+       }
+      },
+      "recipe": [
+       [
+        "latte",
+        "ca-phe-hat",
+        8.0
+       ]
+      ]
+     },
+     "expected": []
+    },
+    {
+     "name": "Một món duy nhất",
+     "input": {
+      "ingredient_id": "sua",
+      "items": {
+       "latte": {
+        "name": "Latte"
+       }
+      },
+      "recipe": [
+       [
+        "latte",
+        "sua",
+        150.0
+       ],
+       [
+        "latte",
+        "ca-phe-hat",
+        8.0
+       ]
+      ]
+     },
+     "expected": [
+      [
+       "latte",
+       "Latte",
+       150.0
+      ]
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Lọc trước theo mã nguyên liệu, rồi mới tra tên món."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "sorted(..., key=lambda x: x[0]) xếp theo mã món."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co",
+ "_bai_tap": "cham",
  "_vet": {
   "can": 3,
   "co": 2,

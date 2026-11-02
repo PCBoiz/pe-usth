@@ -32196,6 +32196,110 @@
             }
           ]
         }
+      ],
+      "exercises": [
+        {
+          "id": "SY25-practice-1",
+          "type": "code",
+          "title": "Tự viết và chạy trong terminal",
+          "prompt": "Viết solve(data) nhận dict có items (dict mã→dict có name) và recipe (list [mã món, mã nguyên liệu, định lượng]) và ingredient_id. Trả list [mã món, tên món, định lượng] của những món DÙNG nguyên liệu đó, xếp theo mã món tăng dần.",
+          "mode": "function",
+          "starter": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+          "referenceSolution": "def solve(data):\n    ra = []\n    for ma_mon, ma_ng, luong in data[\"recipe\"]:\n        if ma_ng == data[\"ingredient_id\"]:\n            ra.append([ma_mon, data[\"items\"][ma_mon][\"name\"], luong])\n    return sorted(ra, key=lambda x: x[0])\n",
+          "tests": [
+            {
+              "name": "Hai món dùng cà phê hạt",
+              "input": {
+                "ingredient_id": "ca-phe-hat",
+                "items": {
+                  "latte": {
+                    "name": "Latte"
+                  },
+                  "mocha": {
+                    "name": "Mocha"
+                  }
+                },
+                "recipe": [
+                  [
+                    "mocha",
+                    "ca-phe-hat",
+                    9.0
+                  ],
+                  [
+                    "latte",
+                    "ca-phe-hat",
+                    8.0
+                  ]
+                ]
+              },
+              "expected": [
+                [
+                  "latte",
+                  "Latte",
+                  8.0
+                ],
+                [
+                  "mocha",
+                  "Mocha",
+                  9.0
+                ]
+              ]
+            },
+            {
+              "name": "Nguyên liệu không món nào dùng",
+              "input": {
+                "ingredient_id": "tra",
+                "items": {
+                  "latte": {
+                    "name": "Latte"
+                  }
+                },
+                "recipe": [
+                  [
+                    "latte",
+                    "ca-phe-hat",
+                    8.0
+                  ]
+                ]
+              },
+              "expected": []
+            },
+            {
+              "name": "Một món duy nhất",
+              "input": {
+                "ingredient_id": "sua",
+                "items": {
+                  "latte": {
+                    "name": "Latte"
+                  }
+                },
+                "recipe": [
+                  [
+                    "latte",
+                    "sua",
+                    150.0
+                  ],
+                  [
+                    "latte",
+                    "ca-phe-hat",
+                    8.0
+                  ]
+                ]
+              },
+              "expected": [
+                [
+                  "latte",
+                  "Latte",
+                  150.0
+                ]
+              ]
+            }
+          ],
+          "hints": [
+            "Lọc trước theo mã nguyên liệu, rồi mới tra tên món.",
+            "sorted(..., key=lambda x: x[0]) xếp theo mã món."
+          ]
+        }
       ]
     },
     {
@@ -32375,6 +32479,99 @@
               ],
               "explanation": "Chính sách phần đã biết không biến thiếu dữ liệu thành điểm đã chấm."
             }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "SY26-practice-1",
+          "type": "code",
+          "title": "Tự viết và chạy trong terminal",
+          "prompt": "Viết solve(data) nhận dict có lines là list [mã món, định lượng]. Trả dict có amounts (list định lượng làm tròn 1 chữ số, giữ thứ tự) và mean (trung bình các định lượng ĐÃ làm tròn, làm tròn 2 chữ số). Lines rỗng thì amounts là [] và mean là None — trung bình của không số đo nào thì không có, đừng trả 0.",
+          "mode": "function",
+          "starter": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+          "referenceSolution": "def solve(data):\n    amounts = [round(luong, 1) for _, luong in data[\"lines\"]]\n    if not amounts:\n        return {\"amounts\": [], \"mean\": None}\n    return {\"amounts\": amounts,\n            \"mean\": round(sum(amounts) / len(amounts), 2)}\n",
+          "tests": [
+            {
+              "name": "Hai dòng như trong bài",
+              "input": {
+                "lines": [
+                  [
+                    "latte",
+                    8.74
+                  ],
+                  [
+                    "mocha",
+                    6.21
+                  ]
+                ]
+              },
+              "expected": {
+                "amounts": [
+                  8.7,
+                  6.2
+                ],
+                "mean": 7.45
+              }
+            },
+            {
+              "name": "Một dòng",
+              "input": {
+                "lines": [
+                  [
+                    "latte",
+                    10.0
+                  ]
+                ]
+              },
+              "expected": {
+                "amounts": [
+                  10.0
+                ],
+                "mean": 10.0
+              }
+            },
+            {
+              "name": "Ba dòng, trung bình lẻ",
+              "input": {
+                "lines": [
+                  [
+                    "a",
+                    1.04
+                  ],
+                  [
+                    "b",
+                    2.06
+                  ],
+                  [
+                    "c",
+                    3.01
+                  ]
+                ]
+              },
+              "expected": {
+                "amounts": [
+                  1.0,
+                  2.1,
+                  3.0
+                ],
+                "mean": 2.03
+              }
+            },
+            {
+              "name": "Chưa có định lượng nào",
+              "input": {
+                "lines": []
+              },
+              "expected": {
+                "amounts": [],
+                "mean": null
+              }
+            }
+          ],
+          "hints": [
+            "Làm tròn TỪNG định lượng trước, rồi mới lấy trung bình của chúng.",
+            "List rỗng vẫn phải trả dict đủ hai khoá — chỉ `mean` là None."
           ]
         }
       ]
@@ -32558,6 +32755,59 @@
             }
           ]
         }
+      ],
+      "exercises": [
+        {
+          "id": "SY27-practice-1",
+          "type": "code",
+          "title": "Tự viết và chạy trong terminal",
+          "prompt": "Viết solve(data) nhận dict có csv_text (dòng đầu là tên cột). Trả list dict, mỗi dòng dữ liệu một dict. Giữ nguyên dấu phẩy nằm trong ô được bọc bởi dấu nháy kép. Trả [] nếu chỉ có dòng tiêu đề.",
+          "mode": "function",
+          "starter": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+          "referenceSolution": "import csv\nfrom io import StringIO\ndef solve(data):\n    doc = csv.DictReader(StringIO(data[\"csv_text\"]))\n    return [dict(h) for h in doc]\n",
+          "tests": [
+            {
+              "name": "Ô có dấu phẩy bên trong",
+              "input": {
+                "csv_text": "id,name,group\nlatte,\"Latte, nong\",Ca phe\n"
+              },
+              "expected": [
+                {
+                  "id": "latte",
+                  "name": "Latte, nong",
+                  "group": "Ca phe"
+                }
+              ]
+            },
+            {
+              "name": "Hai dòng dữ liệu",
+              "input": {
+                "csv_text": "id,unit\nca-phe-hat,g\nsua,ml\n"
+              },
+              "expected": [
+                {
+                  "id": "ca-phe-hat",
+                  "unit": "g"
+                },
+                {
+                  "id": "sua",
+                  "unit": "ml"
+                }
+              ]
+            },
+            {
+              "name": "Chỉ có dòng tiêu đề",
+              "input": {
+                "csv_text": "id,name,group\n"
+              },
+              "expected": []
+            }
+          ],
+          "hints": [
+            "csv.DictReader đọc dòng đầu làm tên cột.",
+            "StringIO biến một chuỗi thành thứ đọc được như file."
+          ]
+        }
       ]
     },
     {
@@ -32737,6 +32987,77 @@
               ],
               "explanation": "Nạp có kiểm giúp giữ state tốt khi file thiếu trường hoặc không tương thích."
             }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "SY28-practice-1",
+          "type": "code",
+          "title": "Tự viết và chạy trong terminal",
+          "prompt": "Viết solve(data) nhận dict có state. Nếu state là dict và state[\"version\"] bằng 1 thì trả dict có ok là True và items là SỐ món trong state[\"items\"]. Ngược lại trả dict có ok là False và reason là \"Can chuyen doi du lieu\".",
+          "mode": "function",
+          "starter": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+          "referenceSolution": "def solve(data):\n    state = data[\"state\"]\n    if not isinstance(state, dict) or state.get(\"version\") != 1:\n        return {\"ok\": False, \"reason\": \"Can chuyen doi du lieu\"}\n    return {\"ok\": True, \"items\": len(state.get(\"items\", {}))}\n",
+          "tests": [
+            {
+              "name": "Đúng phiên bản, hai món",
+              "input": {
+                "state": {
+                  "version": 1,
+                  "items": {
+                    "latte": {},
+                    "mocha": {}
+                  }
+                }
+              },
+              "expected": {
+                "ok": true,
+                "items": 2
+              }
+            },
+            {
+              "name": "Phiên bản lạ",
+              "input": {
+                "state": {
+                  "version": 2,
+                  "items": {
+                    "latte": {}
+                  }
+                }
+              },
+              "expected": {
+                "ok": false,
+                "reason": "Can chuyen doi du lieu"
+              }
+            },
+            {
+              "name": "Không phải dict",
+              "input": {
+                "state": "quan.dat"
+              },
+              "expected": {
+                "ok": false,
+                "reason": "Can chuyen doi du lieu"
+              }
+            },
+            {
+              "name": "Đúng phiên bản, chưa có món nào",
+              "input": {
+                "state": {
+                  "version": 1,
+                  "items": {}
+                }
+              },
+              "expected": {
+                "ok": true,
+                "items": 0
+              }
+            }
+          ],
+          "hints": [
+            "Kiểm kiểu TRƯỚC khi gọi .get() — state có thể không phải dict.",
+            "state.get(\"version\") != 1 bắt cả trường hợp thiếu hẳn khoá version."
           ]
         }
       ]
@@ -33282,6 +33603,59 @@
             }
           ]
         }
+      ],
+      "exercises": [
+        {
+          "id": "CT03-practice-1",
+          "type": "code",
+          "title": "Tự viết và chạy trong terminal",
+          "prompt": "Viết solve(data) nhận dict có useful, switches, switch_cost. Trả tỉ lệ thời gian chạy hữu ích useful/(useful + switches*switch_cost), làm tròn 3 chữ số. Trả None nếu useful bằng 0.",
+          "mode": "function",
+          "starter": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+          "referenceSolution": "def solve(data):\n    useful = data[\"useful\"]\n    if useful == 0:\n        return None\n    tong = useful + data[\"switches\"] * data[\"switch_cost\"]\n    return round(useful / tong, 3)\n",
+          "tests": [
+            {
+              "name": "Bốn lần chuyển",
+              "input": {
+                "useful": 10,
+                "switches": 4,
+                "switch_cost": 0.1
+              },
+              "expected": 0.962
+            },
+            {
+              "name": "Không lần chuyển nào",
+              "input": {
+                "useful": 8,
+                "switches": 0,
+                "switch_cost": 0.1
+              },
+              "expected": 1.0
+            },
+            {
+              "name": "Chuyển nhiều, tốn hơn",
+              "input": {
+                "useful": 5,
+                "switches": 10,
+                "switch_cost": 0.5
+              },
+              "expected": 0.5
+            },
+            {
+              "name": "Chưa chạy gì",
+              "input": {
+                "useful": 0,
+                "switches": 3,
+                "switch_cost": 0.1
+              },
+              "expected": null
+            }
+          ],
+          "hints": [
+            "Mẫu số là useful cộng tổng chi phí chuyển ngữ cảnh.",
+            "round(x, 3) làm tròn 3 chữ số sau dấu phẩy."
+          ]
+        }
       ]
     },
     {
@@ -33461,6 +33835,88 @@
               ],
               "explanation": "Burst thường cần ước lượng; các việc dài còn có thể phải chờ nhiều việc ngắn đến sau."
             }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "CT04-practice-1",
+          "type": "code",
+          "title": "Tự viết và chạy trong terminal",
+          "prompt": "Viết solve(data) nhận dict có jobs là list [tên, burst]. Trả dict có fcfs và sjf: thời gian CHỜ trung bình khi chạy theo thứ tự đến (FCFS) và khi chạy việc ngắn trước (SJF), mỗi số làm tròn 2 chữ số.",
+          "mode": "function",
+          "starter": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+          "referenceSolution": "def solve(data):\n    jobs = data[\"jobs\"]\n    def cho_tb(ds):\n        clock = 0\n        tong = 0\n        for _, burst in ds:\n            tong += clock\n            clock += burst\n        return round(tong / len(ds), 2)\n    return {\"fcfs\": cho_tb(jobs),\n            \"sjf\": cho_tb(sorted(jobs, key=lambda j: j[1]))}\n",
+          "tests": [
+            {
+              "name": "Ba việc như trong bài",
+              "input": {
+                "jobs": [
+                  [
+                    "A",
+                    6
+                  ],
+                  [
+                    "B",
+                    2
+                  ],
+                  [
+                    "C",
+                    1
+                  ]
+                ]
+              },
+              "expected": {
+                "fcfs": 4.67,
+                "sjf": 1.33
+              }
+            },
+            {
+              "name": "Việc ngắn đến trước nên hai cách cho cùng kết quả",
+              "input": {
+                "jobs": [
+                  [
+                    "A",
+                    1
+                  ],
+                  [
+                    "B",
+                    2
+                  ],
+                  [
+                    "C",
+                    3
+                  ]
+                ]
+              },
+              "expected": {
+                "fcfs": 1.33,
+                "sjf": 1.33
+              }
+            },
+            {
+              "name": "Hai việc",
+              "input": {
+                "jobs": [
+                  [
+                    "A",
+                    4
+                  ],
+                  [
+                    "B",
+                    1
+                  ]
+                ]
+              },
+              "expected": {
+                "fcfs": 2.0,
+                "sjf": 0.5
+              }
+            }
+          ],
+          "hints": [
+            "Thời gian chờ của một việc là đồng hồ TRƯỚC khi nó bắt đầu.",
+            "SJF chỉ khác ở thứ tự: sorted(jobs, key=lambda j: j[1])."
           ]
         }
       ]
@@ -33644,6 +34100,80 @@
             }
           ]
         }
+      ],
+      "exercises": [
+        {
+          "id": "CT05-practice-1",
+          "type": "code",
+          "title": "Tự viết và chạy trong terminal",
+          "prompt": "Viết solve(data) nhận dict có jobs (list dict có name, burst, deadline) và policy là \"sjf\" hoặc \"edf\". Trả TÊN việc được chọn: sjf chọn burst nhỏ nhất, edf chọn deadline sớm nhất. Hoà thì lấy việc đứng trước.",
+          "mode": "function",
+          "starter": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+          "referenceSolution": "def solve(data):\n    khoa = \"burst\" if data[\"policy\"] == \"sjf\" else \"deadline\"\n    return min(data[\"jobs\"], key=lambda j: j[khoa])[\"name\"]\n",
+          "tests": [
+            {
+              "name": "EDF chọn deadline sớm",
+              "input": {
+                "policy": "edf",
+                "jobs": [
+                  {
+                    "name": "A",
+                    "burst": 1,
+                    "deadline": 10
+                  },
+                  {
+                    "name": "B",
+                    "burst": 4,
+                    "deadline": 5
+                  }
+                ]
+              },
+              "expected": "B"
+            },
+            {
+              "name": "SJF chọn việc ngắn",
+              "input": {
+                "policy": "sjf",
+                "jobs": [
+                  {
+                    "name": "A",
+                    "burst": 1,
+                    "deadline": 10
+                  },
+                  {
+                    "name": "B",
+                    "burst": 4,
+                    "deadline": 5
+                  }
+                ]
+              },
+              "expected": "A"
+            },
+            {
+              "name": "Hoà burst thì lấy việc đứng trước",
+              "input": {
+                "policy": "sjf",
+                "jobs": [
+                  {
+                    "name": "X",
+                    "burst": 2,
+                    "deadline": 9
+                  },
+                  {
+                    "name": "Y",
+                    "burst": 2,
+                    "deadline": 3
+                  }
+                ]
+              },
+              "expected": "X"
+            }
+          ],
+          "hints": [
+            "min(..., key=...) trả về chính phần tử, không phải chỉ số.",
+            "Hai chính sách chỉ khác nhau ở KHOÁ đem so."
+          ]
+        }
       ]
     },
     {
@@ -33823,6 +34353,117 @@
               ],
               "explanation": "Chỉ job có phần CPU còn lại mới cần lượt sau."
             }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "CT06-practice-1",
+          "type": "code",
+          "title": "Tự viết và chạy trong terminal",
+          "prompt": "Viết solve(data) nhận dict có ready là list [tên, burst] và quantum. Mô phỏng Round Robin: mỗi lượt chạy tối đa quantum đơn vị rồi xếp lại cuối hàng nếu còn. Trả list [tên, số đơn vị đã chạy] theo đúng thứ tự.",
+          "mode": "function",
+          "starter": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+          "referenceSolution": "from collections import deque\ndef solve(data):\n    hang = deque([list(x) for x in data[\"ready\"]])\n    q = data[\"quantum\"]\n    vet = []\n    while hang:\n        ten, con = hang.popleft()\n        chay = min(q, con)\n        vet.append([ten, chay])\n        if con > chay:\n            hang.append([ten, con - chay])\n    return vet\n",
+          "tests": [
+            {
+              "name": "Quantum 2 như trong bài",
+              "input": {
+                "ready": [
+                  [
+                    "A",
+                    3
+                  ],
+                  [
+                    "B",
+                    2
+                  ]
+                ],
+                "quantum": 2
+              },
+              "expected": [
+                [
+                  "A",
+                  2
+                ],
+                [
+                  "B",
+                  2
+                ],
+                [
+                  "A",
+                  1
+                ]
+              ]
+            },
+            {
+              "name": "Quantum 1 thì xen kẽ",
+              "input": {
+                "ready": [
+                  [
+                    "A",
+                    3
+                  ],
+                  [
+                    "B",
+                    2
+                  ]
+                ],
+                "quantum": 1
+              },
+              "expected": [
+                [
+                  "A",
+                  1
+                ],
+                [
+                  "B",
+                  1
+                ],
+                [
+                  "A",
+                  1
+                ],
+                [
+                  "B",
+                  1
+                ],
+                [
+                  "A",
+                  1
+                ]
+              ]
+            },
+            {
+              "name": "Quantum lớn hơn mọi việc",
+              "input": {
+                "ready": [
+                  [
+                    "A",
+                    2
+                  ],
+                  [
+                    "B",
+                    1
+                  ]
+                ],
+                "quantum": 5
+              },
+              "expected": [
+                [
+                  "A",
+                  2
+                ],
+                [
+                  "B",
+                  1
+                ]
+              ]
+            }
+          ],
+          "hints": [
+            "deque.popleft() lấy đầu hàng, append() xếp lại cuối hàng.",
+            "Số đơn vị chạy mỗi lượt là min(quantum, phần còn lại)."
           ]
         }
       ]

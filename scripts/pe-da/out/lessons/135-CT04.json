@@ -429,16 +429,107 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dict có jobs là list [tên, burst]. Trả dict có fcfs và sjf: thời gian CHỜ trung bình khi chạy theo thứ tự đến (FCFS) và khi chạy việc ngắn trước (SJF), mỗi số làm tròn 2 chữ số.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'jobs': [['A', 6], ['B', 2], ['C', 1]]}"
+     },
+     {
+      "label": "trả về",
+      "value": "{'fcfs': 4.67, 'sjf': 1.33}"
+     }
+    ]
    },
-   "starterCode": "# ── Đoạn 1 ──\njobs = [(\"A\", 6), (\"B\", 2), (\"C\", 1)]\nclock = 0\nfor name, burst in jobs:\n    print(name, clock)\n    clock += burst\n\n# ── Đoạn 2 ──\njobs = [(\"A\", 6), (\"B\", 2), (\"C\", 1)]\nclock = 0\nfor name, burst in sorted(jobs, key=lambda job: job[1]):\n    print(name, clock)\n    clock += burst\n\n# ── Đoạn 3 ──\nfcfs_waits = [0, 6, 8]\nsjf_waits = [0, 1, 3]\nprint(round(sum(fcfs_waits)/3, 2))\nprint(round(sum(sjf_waits)/3, 2))\n"
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "def solve(data):\n    jobs = data[\"jobs\"]\n    def cho_tb(ds):\n        clock = 0\n        tong = 0\n        for _, burst in ds:\n            tong += clock\n            clock += burst\n        return round(tong / len(ds), 2)\n    return {\"fcfs\": cho_tb(jobs),\n            \"sjf\": cho_tb(sorted(jobs, key=lambda j: j[1]))}\n",
+   "tests": [
+    {
+     "name": "Ba việc như trong bài",
+     "input": {
+      "jobs": [
+       [
+        "A",
+        6
+       ],
+       [
+        "B",
+        2
+       ],
+       [
+        "C",
+        1
+       ]
+      ]
+     },
+     "expected": {
+      "fcfs": 4.67,
+      "sjf": 1.33
+     }
+    },
+    {
+     "name": "Việc ngắn đến trước nên hai cách cho cùng kết quả",
+     "input": {
+      "jobs": [
+       [
+        "A",
+        1
+       ],
+       [
+        "B",
+        2
+       ],
+       [
+        "C",
+        3
+       ]
+      ]
+     },
+     "expected": {
+      "fcfs": 1.33,
+      "sjf": 1.33
+     }
+    },
+    {
+     "name": "Hai việc",
+     "input": {
+      "jobs": [
+       [
+        "A",
+        4
+       ],
+       [
+        "B",
+        1
+       ]
+      ]
+     },
+     "expected": {
+      "fcfs": 2.0,
+      "sjf": 0.5
+     }
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Thời gian chờ của một việc là đồng hồ TRƯỚC khi nó bắt đầu."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "SJF chỉ khác ở thứ tự: sorted(jobs, key=lambda j: j[1])."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co",
+ "_bai_tap": "cham",
  "_vet": {
   "can": 3,
   "co": 2,

@@ -199,16 +199,99 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dict có jobs (list dict có name, burst, deadline) và policy là \"sjf\" hoặc \"edf\". Trả TÊN việc được chọn: sjf chọn burst nhỏ nhất, edf chọn deadline sớm nhất. Hoà thì lấy việc đứng trước.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'policy': 'edf', 'jobs': [{'name': 'A', 'burst': 1, 'deadline': 10}, {'name': 'B', 'burst': 4, 'deadline': 5}]}"
+     },
+     {
+      "label": "trả về",
+      "value": "'B'"
+     }
+    ]
    },
-   "starterCode": "# ── Đoạn 1 ──\nremaining = {\"A\": 5, \"B\": 2}\nprint(min(remaining, key=remaining.get))\n\n# ── Đoạn 2 ──\njobs = [{\"name\":\"A\", \"burst\":1, \"deadline\":10}, {\"name\":\"B\", \"burst\":4, \"deadline\":5}]\nprint(min(jobs, key=lambda x:x[\"deadline\"])[\"name\"])\nprint(min(jobs, key=lambda x:x[\"burst\"])[\"name\"])\n\n# ── Đoạn 3 ──\nqueues = {\"high\": [\"A\"], \"low\": [\"B\"]}\nunfinished = queues[\"high\"].pop(0)\nqueues[\"low\"].append(unfinished)\nprint(queues[\"high\"], queues[\"low\"])\n"
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "def solve(data):\n    khoa = \"burst\" if data[\"policy\"] == \"sjf\" else \"deadline\"\n    return min(data[\"jobs\"], key=lambda j: j[khoa])[\"name\"]\n",
+   "tests": [
+    {
+     "name": "EDF chọn deadline sớm",
+     "input": {
+      "policy": "edf",
+      "jobs": [
+       {
+        "name": "A",
+        "burst": 1,
+        "deadline": 10
+       },
+       {
+        "name": "B",
+        "burst": 4,
+        "deadline": 5
+       }
+      ]
+     },
+     "expected": "B"
+    },
+    {
+     "name": "SJF chọn việc ngắn",
+     "input": {
+      "policy": "sjf",
+      "jobs": [
+       {
+        "name": "A",
+        "burst": 1,
+        "deadline": 10
+       },
+       {
+        "name": "B",
+        "burst": 4,
+        "deadline": 5
+       }
+      ]
+     },
+     "expected": "A"
+    },
+    {
+     "name": "Hoà burst thì lấy việc đứng trước",
+     "input": {
+      "policy": "sjf",
+      "jobs": [
+       {
+        "name": "X",
+        "burst": 2,
+        "deadline": 9
+       },
+       {
+        "name": "Y",
+        "burst": 2,
+        "deadline": 3
+       }
+      ]
+     },
+     "expected": "X"
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "min(..., key=...) trả về chính phần tử, không phải chỉ số."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Hai chính sách chỉ khác nhau ở KHOÁ đem so."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co",
+ "_bai_tap": "cham",
  "_vet": {
   "can": 3,
   "co": 1,
