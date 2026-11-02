@@ -55,7 +55,7 @@ jobs:
             -f json -o "$RUNNER_TEMP/eslint-report.json" || true
           node -e "
           const r = require(process.env.RUNNER_TEMP + '/eslint-report.json');
-          const TRAN = 245; // đo được 225 ngày 27/10/2026 (dọn định dạng course-admin); dư chỗ cho spec đang viết dở
+          const TRAN = 150; // đo được 134 ngày 03/11/2026 (dọn `any` ở courses.service.spec); dư chỗ cho spec đang viết dở
           const loi = r.reduce((s, f) => s + f.errorCount, 0);
           const canhBao = r.reduce((s, f) => s + f.warningCount, 0);
           const top = r.filter((f) => f.errorCount).sort((a, b) => b.errorCount - a.errorCount);

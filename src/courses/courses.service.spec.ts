@@ -26,33 +26,79 @@ const NHAP = {
 
 const DA_PHAT_HANH = { ...NHAP, id: 'python', isPublished: true };
 
+/**
+ * Điều kiện WHERE mà spec đọc lại từ `mock.calls`. Chỉ khai phần CÓ ĐỌC — mục
+ * đích là để `whereDaGui()?.AND` có kiểu thật, không phải mô tả lại Prisma.
+ */
+type DieuKien = { AND?: unknown[] } & Record<string, unknown>;
+type TruyVan = { where?: DieuKien } & Record<string, unknown>;
+
+/**
+ * Mock Prisma cho spec này. CHỈ khai bảng/hàm mà `CoursesService` thật sự gọi —
+ * khai thừa là mô tả lại Prisma, mà bản mô tả đó sẽ trôi.
+ *
+ * VÌ SAO KHÔNG `let prisma: any`, và đây không phải chuyện con số lint: `any` ở
+ * spec làm TEST NÓI DỐI. Với `any`, gõ `solution_code` thay cho `solutionCode`
+ * vẫn biên dịch, `toBeUndefined()` vẫn ĐẠT, và lỗ lộ lời giải vẫn còn nguyên.
+ * Công thức này đã dọn `quizzes` + `lessons` từ 553 → 263 lỗi (AGENTS.md).
+ *
+ * Kiểu THẬT chỉ cần ở phần ĐỐI SỐ: spec đọc lại `mock.calls` để chứng minh
+ * "điều kiện publish do SERVICE gửi xuống DB". Giá trị trả về để `unknown` là
+ * đủ, vì mỗi ca tự `mockResolvedValue()`.
+ */
+type HamMock = jest.Mock<Promise<unknown>, [TruyVan?]>;
+
+/** `jest.fn()` trần trả `Mock<any, any>`, gán vào field đã khai kiểu lại thành
+ *  `no-unsafe-assignment`. Bọc một lần ở đây thay vì ép kiểu từng chỗ. */
+const mock = (): HamMock => jest.fn<Promise<unknown>, [TruyVan?]>();
+
+type PrismaMock = {
+  user: { findUnique: HamMock };
+  course: { findMany: HamMock; findUnique: HamMock };
+  enrollment: {
+    findMany: HamMock;
+    findUnique: HamMock;
+    createMany: HamMock;
+    updateMany: HamMock;
+    deleteMany: HamMock;
+  };
+  lesson: { findMany: HamMock; findFirst: HamMock };
+  lessonProgress: { findMany: HamMock; count: HamMock };
+  $transaction: jest.Mock<
+    Promise<unknown>,
+    [(p: PrismaMock) => Promise<unknown>]
+  >;
+};
+
 describe('CoursesService — cổng is_published', () => {
   let service: CoursesService;
-  let prisma: any;
+  let prisma: PrismaMock;
 
   beforeEach(async () => {
     prisma = {
-      user: { findUnique: jest.fn().mockResolvedValue({ role: 'user' }) },
+      user: { findUnique: mock().mockResolvedValue({ role: 'user' }) },
       course: {
-        findMany: jest.fn().mockResolvedValue([]),
-        findUnique: jest.fn(),
+        findMany: mock().mockResolvedValue([]),
+        findUnique: mock(),
       },
       enrollment: {
-        findMany: jest.fn().mockResolvedValue([]),
-        findUnique: jest.fn().mockResolvedValue(null),
-        createMany: jest.fn().mockResolvedValue({ count: 1 }),
-        updateMany: jest.fn().mockResolvedValue({ count: 1 }),
-        deleteMany: jest.fn().mockResolvedValue({ count: 1 }),
+        findMany: mock().mockResolvedValue([]),
+        findUnique: mock().mockResolvedValue(null),
+        createMany: mock().mockResolvedValue({ count: 1 }),
+        updateMany: mock().mockResolvedValue({ count: 1 }),
+        deleteMany: mock().mockResolvedValue({ count: 1 }),
       },
       lesson: {
-        findMany: jest.fn().mockResolvedValue([]),
-        findFirst: jest.fn().mockResolvedValue(null),
+        findMany: mock().mockResolvedValue([]),
+        findFirst: mock().mockResolvedValue(null),
       },
       lessonProgress: {
-        findMany: jest.fn().mockResolvedValue([]),
-        count: jest.fn().mockResolvedValue(0),
+        findMany: mock().mockResolvedValue([]),
+        count: mock().mockResolvedValue(0),
       },
-      $transaction: jest.fn(async (cb: any) => cb(prisma)),
+      $transaction: jest.fn((cb: (p: PrismaMock) => Promise<unknown>) =>
+        cb(prisma),
+      ),
     };
 
     const mod = await Test.createTestingModule({
@@ -65,36 +111,48 @@ describe('CoursesService — cổng is_published', () => {
     prisma.user.findUnique.mockResolvedValue({ role: 'admin' });
 
   /** Điều kiện WHERE mà listCourses()/getCoursesEnrolled() thực sự gửi xuống DB. */
-  const whereDaGui = (call = 0) =>
-    prisma.course.findMany.mock.calls[call][0]?.where;
+  // HAI chuyện khác hẳn nhau, và gộp chúng là mất một ca:
+  //  - CHƯA GỌI findMany lần nào  → ca hỏng, nên NÉM kèm tên hàm. Trả
+  //    `undefined` ở đây thì một ca đọc `.AND` chỉ báo "undefined không chứa
+  //    {isPublished:true}", không nói được là service chưa chạm tới DB.
+  //  - CÓ GỌI nhưng KHÔNG kèm `where` → một khẳng định HỢP LỆ: đó đúng là
+  //    cách quản trị viên được phục vụ ("không lọc gì"), và ca đó đọc kết quả
+  //    bằng `toBeUndefined()`. Ném ở đây là bắt ca đúng phải trượt.
+  const whereDaGui = (call = 0): DieuKien | undefined => {
+    const calls = prisma.course.findMany.mock.calls;
+    if (!calls[call])
+      throw new Error(`course.findMany chưa được gọi lần thứ ${call}`);
+    return calls[call][0]?.where;
+  };
 
   // ---------- 1. Danh sách khám phá ----------
   describe('listCourses', () => {
     it('học viên thường: truy vấn BẮT BUỘC có is_published = true', async () => {
       prisma.course.findMany.mockResolvedValue([DA_PHAT_HANH]);
 
-      const res: any = await service.listCourses(1);
+      const res = await service.listCourses(1);
 
-      expect(whereDaGui().AND).toContainEqual({ isPublished: true });
-      expect(res.courses.map((c: any) => c.id)).toEqual(['python']);
+      expect(whereDaGui()?.AND).toContainEqual({ isPublished: true });
+      expect(res.courses.map((c) => c.id)).toEqual(['python']);
     });
 
     it('học viên thường + filter/search: điều kiện publish không bị filter ghi đè', async () => {
       await service.listCourses(1, 'python', 'advanced', 'python');
 
-      expect(whereDaGui().AND).toContainEqual({ isPublished: true });
+      expect(whereDaGui()?.AND).toContainEqual({ isPublished: true });
       // Các mệnh đề search/level/language vẫn còn nguyên bên cạnh.
-      expect(whereDaGui().AND.length).toBe(4);
+      const and = whereDaGui()?.AND;
+      expect(and).toHaveLength(4);
     });
 
     it('quản trị viên: KHÔNG lọc publish, thấy cả khoá nháp', async () => {
       lamAdmin();
       prisma.course.findMany.mockResolvedValue([DA_PHAT_HANH, NHAP]);
 
-      const res: any = await service.listCourses(9);
+      const res = await service.listCourses(9);
 
       expect(JSON.stringify(whereDaGui() ?? {})).not.toContain('isPublished');
-      expect(res.courses.map((c: any) => c.id)).toEqual([
+      expect(res.courses.map((c) => c.id)).toEqual([
         'python',
         'python_advanced',
       ]);
@@ -115,7 +173,7 @@ describe('CoursesService — cổng is_published', () => {
     it('học viên thường vào khoá đã phát hành -> ghi danh bình thường', async () => {
       prisma.course.findUnique.mockResolvedValue(DA_PHAT_HANH);
 
-      const res: any = await service.enroll(1, 'python');
+      const res = await service.enroll(1, 'python');
 
       expect(res.ok).toBe(true);
       expect(prisma.enrollment.createMany).toHaveBeenCalled();
@@ -125,7 +183,7 @@ describe('CoursesService — cổng is_published', () => {
       lamAdmin();
       prisma.course.findUnique.mockResolvedValue(NHAP);
 
-      const res: any = await service.enroll(9, 'python_advanced');
+      const res = await service.enroll(9, 'python_advanced');
 
       expect(res.ok).toBe(true);
       expect(prisma.enrollment.createMany).toHaveBeenCalled();
@@ -136,7 +194,7 @@ describe('CoursesService — cổng is_published', () => {
       prisma.enrollment.findUnique.mockResolvedValue({ userId: 1 });
       prisma.lessonProgress.count.mockResolvedValue(3);
 
-      const res: any = await service.enroll(1, 'python_advanced');
+      const res = await service.enroll(1, 'python_advanced');
 
       expect(res).toEqual({ ok: true, completedLessons: 3, progress: 30 });
       expect(prisma.enrollment.updateMany).toHaveBeenCalled();
@@ -158,11 +216,11 @@ describe('CoursesService — cổng is_published', () => {
     it('getEnrolled: không lọc is_published, khoá bị ẩn vẫn nằm trong danh sách', async () => {
       prisma.enrollment.findMany.mockResolvedValue([DONG_GHI_DANH]);
 
-      const res: any = await service.getEnrolled(1);
+      const res = await service.getEnrolled(1);
 
-      expect(res.enrolled.map((e: any) => e.id)).toEqual(['python_advanced']);
+      expect(res.enrolled.map((e) => e.id)).toEqual(['python_advanced']);
       // Truy vấn chỉ ràng buộc theo userId — không có mệnh đề publish nào.
-      const where = prisma.enrollment.findMany.mock.calls[0][0].where;
+      const where = prisma.enrollment.findMany.mock.calls[0]?.[0]?.where;
       expect(where).toEqual({ userId: 1 });
     });
 
@@ -170,15 +228,18 @@ describe('CoursesService — cổng is_published', () => {
       prisma.course.findMany.mockResolvedValue([DA_PHAT_HANH, NHAP]);
       prisma.enrollment.findMany.mockResolvedValue([DONG_GHI_DANH]);
 
-      const res: any = await service.getCoursesEnrolled(1);
+      const res = await service.getCoursesEnrolled(1);
 
       expect(whereDaGui()).toEqual({
         OR: [{ isPublished: true }, { enrollments: { some: { userId: 1 } } }],
       });
-      expect(res.enrolled.map((e: any) => e.id)).toEqual(['python_advanced']);
-      expect(
-        res.courses.find((c: any) => c.id === 'python_advanced').enrolled,
-      ).toBe(true);
+      expect(res.enrolled.map((e) => e.id)).toEqual(['python_advanced']);
+      // Tìm RỒI khẳng định có: `find()` trả `undefined` khi không thấy, và
+      // đọc thẳng `.enrolled` của nó là ném TypeError thay vì báo "không có
+      // khoá đó trong danh mục" — tức ca test mất chính câu nó định nói.
+      const khoaNhap = res.courses.find((c) => c.id === 'python_advanced');
+      expect(khoaNhap).toBeDefined();
+      expect(khoaNhap?.enrolled).toBe(true);
     });
 
     it('getCoursesEnrolled của quản trị viên: không lọc gì', async () => {
@@ -199,9 +260,9 @@ describe('CoursesService — cổng is_published', () => {
       prisma.lesson.findMany.mockResolvedValue(MODULES);
       prisma.course.findMany.mockResolvedValue([{ id: 'python' }]);
 
-      const res: any = await service.getSkills(1);
+      const res = await service.getSkills(1);
 
-      expect(res.skills.map((s: any) => s.courseId)).toEqual(['python']);
+      expect(res.skills.map((s) => s.courseId)).toEqual(['python']);
       expect(JSON.stringify(res)).not.toContain('Decorator');
     });
 
@@ -214,21 +275,20 @@ describe('CoursesService — cổng is_published', () => {
       ]);
       prisma.lessonProgress.findMany.mockResolvedValue([{ lessonId: 2 }]);
 
-      const res: any = await service.getSkills(1);
+      const res = await service.getSkills(1);
 
-      const nangCao = res.skills.find(
-        (s: any) => s.courseId === 'python_advanced',
-      );
-      expect(nangCao.progress).toBe(100);
+      const nangCao = res.skills.find((s) => s.courseId === 'python_advanced');
+      expect(nangCao).toBeDefined();
+      expect(nangCao?.progress).toBe(100);
     });
 
     it('quản trị viên: thấy hết, không cần truy vấn lọc khoá', async () => {
       lamAdmin();
       prisma.lesson.findMany.mockResolvedValue(MODULES);
 
-      const res: any = await service.getSkills(9);
+      const res = await service.getSkills(9);
 
-      expect(res.skills.map((s: any) => s.courseId)).toEqual([
+      expect(res.skills.map((s) => s.courseId)).toEqual([
         'python',
         'python_advanced',
       ]);

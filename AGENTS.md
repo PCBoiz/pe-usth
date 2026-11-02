@@ -54,7 +54,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 |---|---|
 | Backend typecheck | sạch |
 | Backend test | **33 bộ, 478 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
-| Backend lint | 222 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
+| Backend lint | 134 lỗi, 2 cảnh báo — **mốc trần trong CI là 150, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
 | Frontend unit test | `cd frontend && npm run test:unit` → **507 ca** / 39 tệp, tất cả đạt |
@@ -835,6 +835,25 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **Vì sao đáng làm, chứ không chỉ để con số đẹp:** `any` ở spec làm test nói dối. Gõ
   `solution_code` thay cho `solutionCode` vẫn biên dịch, `toBeUndefined()` vẫn ĐẠT, và lỗ lộ
   lời giải vẫn còn nguyên. Làm dần từng module rồi hạ mốc trần trong `ci.yml` (chỉ được hạ).
+  **Lần thứ ba, 03/11/2026 — `courses.service.spec.ts`: 222 → 134 lỗi (−88), 40% tổng
+  số lỗi backend nằm trong MỘT file.** Công thức bốn bước ở trên chạy nguyên không đổi.
+  Hai điều học thêm, và cả hai đều ở bước 3:
+  · **`(c: any) => c.id` trong `.map()` cũng là một dòng `: any` tự tạo ra `any`.** Tám chỗ
+    như vậy sinh 16 lỗi `no-unsafe-return`/`no-unsafe-member-access`. `listCourses` và
+    `getSkills` đều ĐỂ TS TỰ SUY return type (`mapCourse` khai kiểu tham số đầy đủ), nên bỏ
+    hẳn chú thích là hết — thêm một kiểu tay vào đó là mô tả lại thứ TS đã biết.
+  · **Một helper đọc `mock.calls` KHÔNG được gộp "chưa gọi lần nào" với "gọi mà không kèm
+    `where`".** Bản đầu của tôi cho `whereDaGui()` NÉM khi không có `where`, để kiểu trả về
+    xác định và khỏi rải `?.` — và nó làm **1/478 ca ĐỎ**: ca "getCoursesEnrolled của quản
+    trị viên: không lọc gì" khẳng định đúng cái `undefined` đó. "Không lọc gì" là một KẾT
+    QUẢ hợp lệ của service, không phải một ca hỏng. Nay helper ném khi `calls[call]` không
+    tồn tại (service chưa chạm tới DB — đọc `.AND` ở đó chỉ báo "undefined không chứa
+    {isPublished:true}", không nói được nguyên nhân) và trả `undefined` khi có lời gọi mà
+    không kèm điều kiện. Ba chỗ đọc `.AND` dùng `?.`, và chúng KHÔNG mất răng:
+    `expect(undefined).toContainEqual(...)` là TRƯỢT, không phải đạt rỗng.
+  Ablate: gõ `prisma.course.findMayn` → typecheck ĐỎ kèm "Did you mean 'findMany'?". Với
+  `let prisma: any` thì đúng dòng đó biên dịch sạch và ca test im lặng chạy trên một mock
+  không ai gọi — đó là cái giá thật của `any` ở spec, không phải con số lint.
 - **Khoá Advanced có ĐÚNG 3 bài cửa tự kiểm tra, không phải 5.** Danh sách 5 bài
   (B20, I07, I12, N04, N08) là của khoá cơ bản pe-v3 ĐÃ XOÁ; chú thích nào còn ghi nó là chú
   thích cũ. Ba bài hiện tại: **R02** (`sort_order` 20), **DA01** (47), **DA02** (48) — đếm bằng
