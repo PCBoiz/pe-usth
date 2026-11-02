@@ -829,6 +829,24 @@ export type LessonDraft = {
    * trường này, và nó sẽ lệch — đúng họ bẫy fixture mà AGENTS.md ghi nhiều lần.
    */
   readGuess?: Record<string, string>;
+  /**
+   * CỔNG HỒI TƯỞNG ở màn tổng kết: câu người học viết ra TRƯỚC khi ô "KIẾN THỨC
+   * CỐT LÕI ĐÃ HỌC" mở. Có giá trị = đã viết = ô đó đã mở.
+   *
+   * Vì sao cần cổng chứ không phải một ô tuỳ chọn: hôm nay 100% màn tổng kết là
+   * ĐỌC LẠI — `facts` lấy đoạn văn đầu của từng màn đọc. Roediger & Karpicke
+   * 2006: nhóm HỒI TƯỞNG nhớ 61% sau một tuần, nhóm ĐỌC LẠI 40% — mà nhóm đọc
+   * lại TỰ TIN hơn. Tức màn tổng kết hiện tại đang bán đúng cái cảm giác nắm
+   * được mà không kèm việc nắm được. Một ô tuỳ chọn thì người ta bỏ qua, và khi
+   * đó nó thành cùng loại với "Thử lại" trần (d = 0,05).
+   *
+   * MỘT trường, không hai — chữ đang gõ mà chưa nộp để trong state component,
+   * đúng lý lẽ đã ghi cho `readGuess`.
+   *
+   * KHÔNG CHẤM chữ họ viết: giá trị nằm ở hành động hồi tưởng, không ở lời
+   * chấm. Và không có đáp án máy đọc được cho "bạn nhớ được gì".
+   */
+  recall?: string;
   solutionUsed: boolean;
   /** Màn hình đã qua, theo `LessonScreen.key`. */
   done: Record<string, boolean>;
@@ -892,6 +910,7 @@ export function initialLessonDraft(lesson: StudioLesson): LessonDraft {
     practice: {},
     practiceSeen: {},
     readGuess: {},
+    recall: '',
     solutionUsed: false,
     done: {},
     submitted: false,

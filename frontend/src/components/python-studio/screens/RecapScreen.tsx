@@ -21,6 +21,7 @@ type Props = Pick<
   | 'xpReward'
   | 'result'
   | 'onFinish'
+  | 'update'
 >;
 
 export default function RecapScreen({
@@ -33,6 +34,7 @@ export default function RecapScreen({
   xpReward,
   result,
   onFinish,
+  update,
 }: Props) {
   const tests = lesson.step_4?.tests ?? [];
   const gate = Boolean(lesson.step_4?.gate);
@@ -186,6 +188,21 @@ export default function RecapScreen({
         .slice(0, 4)}
       onFinish={onFinish}
       extra={deOn}
+      // CỔNG HỒI TƯỞNG — xem `LessonDraft.recall`. Chỉ khoá bài ĐỌC truyền nó;
+      // `Recap` dùng chung cho mọi loại bài nên prop này tuỳ chọn.
+      //
+      // Bài ĐÃ HOÀN THÀNH thì không hỏi lại: người quay lại ôn đã đi qua bước
+      // này một lần, và bắt họ viết lại để xem chính thứ họ đang muốn xem là
+      // ma sát không mua thêm gì — cùng lý lẽ đã quyết cho `readGuess` (màn đọc
+      // đi qua lại nhiều lần thì không bắt đoán lại).
+      hoiTruoc={
+        completed
+          ? undefined
+          : {
+              daViet: Boolean(draft.recall?.trim()),
+              onNop: (chu) => update({ recall: chu }),
+            }
+      }
     />
   );
 }
