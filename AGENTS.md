@@ -53,8 +53,8 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | **33 bộ, 478 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
-| Backend lint | 134 lỗi, 2 cảnh báo — **mốc trần trong CI là 150, chỉ được hạ** |
+| Backend test | **33 bộ, 482 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
+| Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
 | Frontend unit test | `cd frontend && npm run test:unit` → **507 ca** / 39 tệp, tất cả đạt |
@@ -854,6 +854,38 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   Ablate: gõ `prisma.course.findMayn` → typecheck ĐỎ kèm "Did you mean 'findMany'?". Với
   `let prisma: any` thì đúng dòng đó biên dịch sạch và ca test im lặng chạy trên một mock
   không ai gọi — đó là cái giá thật của `any` ở spec, không phải con số lint.
+  **Lần thứ tư, cùng ngày — và lần này là CODE CHẠY THẬT, không phải spec.**
+  `all-exceptions.filter.ts` (bộ lọc mà AGENTS.md bắt MỌI lỗi phải đi qua) có 26 lỗi, tất
+  cả từ MỘT nguồn: `ctx.getResponse()` / `ctx.getRequest()` gọi không kèm tham số kiểu nên
+  trả `any` — trong khi `Request`/`Response` của Express **đã được import ở đầu file và
+  không dùng lần nào**. Hệ quả không phải con số: `let message` (khai `string`) và
+  `let fields: Record<string, string> | null` đều nhận giá trị từ `any`, nên hai dòng khai
+  kiểu đó CHỈ LÀ CHỮ.
+  **Nói cho đúng: lỗ KIỂU, không phải bug sống.** Đã đo — chỉ MỘT `ValidationPipe` toàn cục
+  và nó dùng `validationExceptionFactory` của ta, nên hôm nay `message` luôn là `string[]`
+  và `fields` luôn `Record<string, string>`. Đừng viết như vừa chữa một lỗi người dùng gặp.
+  Cái bộ lọc này KHÔNG bảo đảm được là: nó `@Catch()` TOÀN CỤC, nên bất kỳ ai ném
+  `HttpException` với payload hình dạng khác cũng rơi vào đây, và chú thích ngay trong file
+  nói rõ client hiện `message` TRỰC TIẾP cho người dùng — tức một object lọt vào là người
+  dùng đọc được chữ "[object Object]". Nay hai hàm ép kiểu ở BIÊN (`chuoiHoac`, `mapChuoi`)
+  biến lỗ kiểu thành một bất biến được canh; `mapChuoi` lọc từng cặp và trả `null` khi
+  không còn cặp chuỗi nào, để `...(fields ? …)` bỏ hẳn trường — đúng hành vi cũ.
+  **`requestId` từng có BỐN bản mô tả của CÙNG một hợp đồng**, mỗi chỗ một cách:
+  `(req as any).requestId = …` (bên GHI, `request-id.middleware.ts`) · `request.requestId`
+  trên một `any` (`all-exceptions.filter.ts`) · `(request as any).requestId`
+  (`prisma-exception.filter.ts`) · `(req as unknown as { requestId?: string })`
+  (`overload-protection.middleware.ts`). Bốn bản mô tả là bốn thứ TRÔI ĐƯỢC: đổi tên trường
+  ở middleware thì ba bên đọc vẫn biên dịch sạch và lặng lẽ trả `request_id: null` trên MỌI
+  response lỗi — không exception nào ném. Nay một module augmentation duy nhất
+  (`src/common/types/express.d.ts`) khai `requestId?: string` trên `Express.Request`; `?`
+  chứ không bắt buộc, vì middleware chỉ chạy trên đường HTTP đã đăng ký.
+  **Ablate, số đã đếm:** xoá `express.d.ts` → **4 lỗi typecheck**, đúng bốn chỗ, GỒM CẢ bên
+  ghi · `chuoiHoac` trả thẳng không kiểm → **2 ca đỏ** · `mapChuoi` ép kiểu thay vì lọc →
+  **2 ca đỏ**. Bốn ca mới của `all-exceptions.filter.spec.ts` (12 → 16) khoá đúng cái biên
+  đó, và chúng KHÔNG tái hiện lỗi người dùng đang gặp — mục đó phải nói ra.
+  **Và chính bộ test ấy cũng đang nói dối ở chỗ nhỏ:** `const json = jest.fn()` trần nên
+  `json.mock.calls[0][0]` là `any`, tức mọi phép so trên thân response đều không được TS
+  kiểm. `jest.fn<void, [ThanPhanHoi]>()` sửa ở GỐC, thay cho việc ép kiểu ở từng ca.
 - **Khoá Advanced có ĐÚNG 3 bài cửa tự kiểm tra, không phải 5.** Danh sách 5 bài
   (B20, I07, I12, N04, N08) là của khoá cơ bản pe-v3 ĐÃ XOÁ; chú thích nào còn ghi nó là chú
   thích cũ. Ba bài hiện tại: **R02** (`sort_order` 20), **DA01** (47), **DA02** (48) — đếm bằng

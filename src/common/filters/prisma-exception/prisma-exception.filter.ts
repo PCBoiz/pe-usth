@@ -71,7 +71,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
         : 'Dữ liệu liên quan không còn tồn tại, vui lòng tải lại trang';
     }
 
-    const requestId = (request as any).requestId || null;
+    const requestId = request.requestId || null;
 
     if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
       this.logger.error(

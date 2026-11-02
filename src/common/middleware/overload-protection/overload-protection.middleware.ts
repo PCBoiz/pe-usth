@@ -65,8 +65,7 @@ export class OverloadProtectionMiddleware implements NestMiddleware {
           message: 'Hệ thống đang quá tải, vui lòng thử lại sau ít phút',
           detail: null,
         },
-        request_id:
-          (req as unknown as { requestId?: string }).requestId ?? null,
+        request_id: req.requestId ?? null,
       });
       return;
     }

@@ -31,18 +31,52 @@ function isDbUnavailable(exception: unknown): boolean {
   return DB_UNAVAILABLE_PATTERNS.some((p) => msg.includes(p));
 }
 
+/**
+ * Phần payload của một `HttpException` mà bộ lọc này THẬT SỰ đọc. Khai hẹp đúng
+ * bằng thứ dùng tới, và để `unknown` chứ không `string[]`/`Record<string,string>`:
+ * đây là dữ liệu từ NGOÀI vào (bất kỳ ai cũng ném được `HttpException`), nên
+ * khai kiểu đẹp ở đây là tự hứa hộ người khác — hai hàm dưới mới là chỗ kiểm.
+ */
+type ThanLoiHttp = { message?: unknown; fields?: unknown };
+
+/** Giữ nguyên nếu là chuỗi, nếu không thì dùng câu dự phòng. */
+function chuoiHoac(v: unknown, duPhong: string): string {
+  return typeof v === 'string' && v ? v : duPhong;
+}
+
+/**
+ * Chỉ giữ các cặp mà CẢ khoá lẫn giá trị là chuỗi; không còn cặp nào thì trả
+ * `null` để `...(fields ? …)` ở dưới bỏ hẳn trường này khỏi response — đúng
+ * hành vi cũ khi không có `fields`.
+ */
+function mapChuoi(v: unknown): Record<string, string> | null {
+  if (typeof v !== 'object' || v === null) return null;
+  const ra: Record<string, string> = {};
+  for (const [k, giaTri] of Object.entries(v)) {
+    if (typeof giaTri === 'string') ra[k] = giaTri;
+  }
+  return Object.keys(ra).length ? ra : null;
+}
+
 @Catch()
 export class AllExceptionsFilter<T> implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
 
   catch(exception: T, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
-    const request = ctx.getRequest();
+    // Tham số kiểu là GỐC của mọi `any` từng chảy qua file này: không có nó,
+    // `getResponse()`/`getRequest()` trả `any`, nên `message` (khai `string`) và
+    // `fields` (khai `Record<string, string>`) nhận giá trị mà TS KHÔNG kiểm —
+    // hai dòng khai kiểu ở dưới trước đây chỉ là chữ. Hai kiểu này đã được
+    // import ở đầu file từ lâu và chưa dùng lần nào.
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Đã có lỗi xảy ra, xin vui lòng thử lại sau';
-    let detail: any = null;
+    // `unknown` chứ không `any`: `detail` chỉ được ĐƯA VÀO response, không ai
+    // đọc thuộc tính của nó ở đây, nên `unknown` đủ và nó không rò ra tiếp.
+    let detail: unknown = null;
     let fields: Record<string, string> | null = null;
 
     if (exception instanceof ThrottlerException) {
@@ -73,19 +107,24 @@ export class AllExceptionsFilter<T> implements ExceptionFilter {
       if (typeof res === 'string') {
         message = res;
       } else if (typeof res === 'object' && res != null) {
-        const resObj = res as any;
+        const resObj = res as ThanLoiHttp;
         if (Array.isArray(resObj.message)) {
           // Nói RÕ sai ở đâu thay vì câu chung chung 'Dữ liệu không hợp lệ':
           // client hiển thị message này trực tiếp cho người dùng.
-          message = resObj.message[0] ?? 'Dữ liệu không hợp lệ';
+          // `chuoiHoac` vì bộ lọc này là `@Catch()` TOÀN CỤC: hôm nay chỉ
+          // `validationExceptionFactory` sinh mảng và nó luôn sinh `string[]`,
+          // nhưng bất kỳ ai ném `HttpException` với payload khác cũng rơi vào
+          // đây — và một object lọt vào `message` thì người dùng đọc được đúng
+          // chữ "[object Object]".
+          message = chuoiHoac(resObj.message[0], 'Dữ liệu không hợp lệ');
           detail = resObj.message;
           // Map field -> message (do validationExceptionFactory sinh ra) giúp
-          // form tô đỏ đúng ô nhập.
-          if (resObj.fields && typeof resObj.fields === 'object') {
-            fields = resObj.fields;
-          }
+          // form tô đỏ đúng ô nhập. LỌC lại thay vì gán thẳng: trước đây
+          // `fields` khai `Record<string, string>` mà nhận từ `any`, nên một
+          // map lồng sẽ được gửi nguyên và form tô đỏ bằng "[object Object]".
+          fields = mapChuoi(resObj.fields);
         } else {
-          message = resObj.message || message;
+          message = chuoiHoac(resObj.message, message);
         }
       }
 
