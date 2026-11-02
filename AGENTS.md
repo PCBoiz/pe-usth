@@ -57,7 +57,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 222 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **489 ca** / 38 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **490 ca** / 38 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **130 bài tập được chấm / 433 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
@@ -76,18 +76,18 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 489 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 490 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · consent-banner 15 · course-resume 8 ·
 data-files 18 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
 ide-trace 38 · inline-code 3 · insert-gate-sync 2 · label-version 2 ·
 learning-events 48 · lesson-back 7 · lesson-load 7 · mcq-code 9 ·
-mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 8 · prewarm-gate 5 ·
+mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 · prewarm-gate 5 ·
 read-diagram 12 ·
 read-guess 16 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 33 · run-stale 15 ·
 session-marker 5 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 = 489.
-Mốc trước là 481; thêm practice-run 8 (Ô CHẠY THỬ ở màn luyện tập).
+worker-csp 7 = 490.
+Mốc trước là 481; thêm practice-run 9 (Ô CHẠY THỬ ở màn luyện tập).
 Trước đó 474 → 481; thêm recap-recall 7 (CỔNG HỒI TƯỞNG ở màn tổng kết).
 Trước đó 466 → 474; thêm phan-bai 8 (BA PHẦN: lý thuyết / thực hành / bài tập).
 Trước đó 463 → 466; thêm studio-lesson 41 → 44 (Ô VÍ DỤ ĐẦU VÀO/ĐẦU RA).

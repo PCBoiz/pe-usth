@@ -73,7 +73,9 @@ test('chayThu KHÔNG truyền `contract` và KHÔNG ghi nhật ký', () => {
 });
 
 test('màn luyện tập gọi `chayThu`, KHÔNG gọi `onRun`', () => {
-  assert.ok(/chayThu\(typed, setKetQua\)/.test(SRC_MAN), 'không gọi chayThu với mã người học');
+  // Ghim CƠ CHẾ (gọi `chayThu` với mã người học), không ghim nguyên hình dạng
+  // callback — nó đã đổi một lần khi state được khoá theo chỉ số câu.
+  assert.ok(/chayThu\(typed,/.test(SRC_MAN), 'không gọi chayThu với mã người học');
   assert.ok(!/onRun/.test(SRC_MAN), 'màn luyện tập gọi onRun — đó là đường của bài tập');
 });
 
@@ -92,7 +94,15 @@ test('sửa code thì kết quả cũ bị XOÁ', () => {
   // Không làm mờ như màn sandbox: ở đây không có chip "Đạt" nào để giữ, và một
   // ô output trống đọc rõ hơn một ô mờ. Nhưng KHÔNG được để nguyên — một đầu ra
   // của bản code trước nằm dưới một bản đang gõ là thứ nói dối to nhất ở đây.
-  assert.ok(/if \(ketQua\) setKetQua\(null\)/.test(SRC_MAN), 'kết quả cũ không bị xoá khi sửa code');
+  // Ghim TÍNH CHẤT: trong nhánh `onChange` của ô nhập phải có một lệnh dọn kết
+  // quả. Hình dạng lệnh đó đã đổi một lần (biến trần → map theo câu), nên ghim
+  // nguyên chuỗi là thứ sẽ bắn oan ở lần refactor sau.
+  const onChange = SRC_MAN.slice(SRC_MAN.indexOf('onChange={(e) => {'), SRC_MAN.indexOf('/>', SRC_MAN.indexOf('onChange={(e) => {')));
+  assert.ok(/if \(ketQua\)/.test(onChange), 'onChange không kiểm có kết quả cũ');
+  assert.ok(
+    /setKetQuaTheoCau/.test(onChange),
+    'sửa code mà không dọn kết quả cũ — một đầu ra của bản trước nằm dưới bản đang gõ',
+  );
 });
 
 test('verdict dùng `khopDapAn` và NÓI RA giới hạn của phép so', () => {
@@ -120,4 +130,29 @@ test('606 câu KHÔNG có answerCode giữ nguyên ô văn bản', () => {
     for (const p of l.content_json.step_2?.practice ?? [])
       if (Boolean(p.answerCode) !== Boolean(p.answerExpected)) thieuMotNua += 1;
   assert.equal(thieuMotNua, 0, 'có câu chỉ có một trong hai trường');
+});
+
+test('state của màn luyện tập KHOÁ THEO CÂU — nếu không nó rò sang câu sau', () => {
+  // `<LessonScreenView>` được mount KHÔNG có `key` (StudioLesson.tsx), nên React
+  // dùng lại CÙNG MỘT instance khi người học đi từ câu 1 sang câu 2. Hai biến
+  // `useState` trần sẽ mang cờ "đã chạy" và kết quả của câu trước sang câu sau:
+  // chạy câu 1 xong thì cổng của câu 2 mở sẵn, và ô kết quả còn hiện đầu ra cũ.
+  //
+  // Đây là lỗi ĐÃ XẢY RA trên production (3/11) và **tám ca còn lại của file này
+  // không bắt được** — chúng đọc cây mã, mà cây mã thì "đúng"; lỗi nằm ở vòng
+  // đời component. Ghi lại giới hạn đó ngay tại đây.
+  assert.ok(
+    /ketQuaTheoCau\[at\]/.test(SRC_MAN) && /daChayTheoCau\[at\]/.test(SRC_MAN),
+    'state không khoá theo chỉ số câu — nó sẽ rò sang câu sau',
+  );
+  assert.ok(
+    !/useState<RunResult \| null>\(null\)/.test(SRC_MAN),
+    'còn một biến state trần cho kết quả — đúng hình dạng đã gây ra lỗi rò',
+  );
+  // Và nếu một ngày StudioLesson thêm `key` cho LessonScreenView thì ca này nên
+  // được xem lại — nhưng ĐỪNG gỡ nó chỉ vì có key: khoá theo câu vẫn đúng, và
+  // nó không phụ thuộc vào một quyết định ở file khác.
+  const SRC_SL = doc('frontend/src/components/python-studio/StudioLesson.tsx');
+  const i = SRC_SL.indexOf('<LessonScreenView');
+  assert.ok(i > 0, 'không tìm thấy chỗ mount LessonScreenView');
 });

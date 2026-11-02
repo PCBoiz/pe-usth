@@ -57,8 +57,13 @@ export default function PracticeScreen({
   // học viết ra — và `useLessonDraft` ghi xuống localStorage, nên nhồi output
   // vào đó là lưu một thứ hết hạn ngay khi họ sửa một ký tự. Cùng lý lẽ đã
   // quyết cho `result` của màn sandbox.
-  const [ketQua, setKetQua] = useState<RunResult | null>(null);
-  const [daChay, setDaChay] = useState(false);
+  // KHOÁ THEO CHỈ SỐ CÂU, không phải hai biến trần: `<LessonScreenView>` mount
+  // KHÔNG có `key`, nên React dùng lại cùng một instance khi đi từ câu 1 sang
+  // câu 2 — hai biến trần sẽ mang kết quả và cờ "đã chạy" của câu trước sang
+  // câu sau. Đo được trên production: chạy câu 1 xong thì cổng của câu 2 mở
+  // sẵn, và ô kết quả còn hiện đầu ra của câu 1.
+  const [ketQuaTheoCau, setKetQuaTheoCau] = useState<Record<number, RunResult>>({});
+  const [daChayTheoCau, setDaChayTheoCau] = useState<Record<number, boolean>>({});
 
   const items = lesson.step_2?.practice ?? [];
   const at = scr.index ?? 0;
@@ -79,6 +84,8 @@ export default function PracticeScreen({
    * biết (thiếu wheel, gói ẩn sau chuỗi, `sys.executable`).
    */
   const chayDuoc = Boolean(item.answerCode && item.answerExpected);
+  const ketQua = ketQuaTheoCau[at] ?? null;
+  const daChay = Boolean(daChayTheoCau[at]);
 
 
   return (
@@ -112,7 +119,12 @@ export default function PracticeScreen({
             // Sửa code thì kết quả cũ thôi nói về bản đang gõ. Xoá hẳn thay vì
             // làm mờ như màn sandbox: ở đây không có chip "Đạt" nào để giữ, và
             // một ô output trống đọc rõ hơn một ô mờ.
-            if (ketQua) setKetQua(null);
+            if (ketQua)
+              setKetQuaTheoCau((truoc) =>
+                Object.fromEntries(
+                  Object.entries(truoc).filter(([k]) => Number(k) !== at),
+                ),
+              );
           }}
         />
         {chayDuoc && (
@@ -122,8 +134,10 @@ export default function PracticeScreen({
               className={c.practiceRun}
               disabled={!typed.trim() || running || busy}
               onClick={() => {
-                setDaChay(true);
-                chayThu(typed, setKetQua);
+                setDaChayTheoCau((truoc) => ({ ...truoc, [at]: true }));
+                chayThu(typed, (data) =>
+                  setKetQuaTheoCau((truoc) => ({ ...truoc, [at]: data })),
+                );
               }}
             >
               {running ? 'Đang chạy…' : '▶ Chạy thử'}
