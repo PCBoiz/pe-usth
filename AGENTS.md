@@ -149,6 +149,9 @@ npx eslint "{src,apps,libs,test}/**/*.ts" --ignore-pattern "src/generated/**"
 
 ## Vòng lặp tự kiểm
 
+**Hàng đợi việc nằm ở Kanzo** (`http://localhost:4242`, project `pe-usth`), không ở
+file markdown — xem mục đầu của LOOP.md để biết nếp dùng và vì sao đổi.
+
 Agent chạy việc trong repo này đi theo [LOOP.md](LOOP.md): bậc thang lệnh nói đúng/sai mà
 không cần người đọc, ba luật dừng, và bốn cách một vòng lặp nói dối (nới phép kiểm cho
 xanh · đo song song lúc đang build · xanh vì không ai đi qua · test không có răng). Mục

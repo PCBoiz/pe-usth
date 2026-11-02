@@ -8,6 +8,38 @@ Repo này hợp với cách làm đó hơn hầu hết repo khác, vì thứ kh�
 thang lệnh nói đúng/sai mà không cần người đọc**. Đó là tín hiệu dừng. Không có nó thì
 "vòng lặp" chỉ là đoán nhiều lần.
 
+## Hàng đợi sống ở đâu: Kanzo (bảng kanban trên máy)
+
+Từ 3/11/2026 hàng đợi việc nằm ở **Kanzo**, không ở file markdown nữa. Board tại
+`http://localhost:4242`, project `pe-usth`, dữ liệu ở `~/kanzo/kanzo.db`.
+
+```
+kanzo                      # bật board (đang chạy thì bỏ qua)
+claude mcp add kanzo --scope user -- kanzo mcp    # đã chạy, chỉ cần một lần
+```
+
+Phiên có MCP `kanzo` thì dùng tool trực tiếp; không có thì gọi
+`http://localhost:4242/mcp` khi board đang chạy.
+
+**Nếp làm, do chính Kanzo dặn:** `next_task` khi bắt đầu (nó tự chuyển sang
+`doing`) · `add_comment` nói đã làm gì · `update_task` sang `review` khi xong
+hoặc khi tắc. **`done` và task gắn `human` để NGƯỜI quyết** — agent không tự
+đóng việc của mình.
+
+**Vì sao đổi, và đây là số đã đo:** hàng đợi dạng markdown tốn ~2 913 token mỗi
+lần đọc cộng ~1 000 mỗi lần viết lại; Kanzo tốn ~900 token mô tả tool một lần
+mỗi phiên, phản hồi 10–60 token mỗi lượt. Hoà vốn sau khoảng một lượt.
+
+**Thứ KHÔNG chuyển sang Kanzo:** phần "đã bác bỏ, kèm lý do đã đo" và mọi bẫy
+trong `AGENTS.md`. Đó là KIẾN THỨC, không phải việc — và SQLite ngoài repo thì
+không review được trong PR, không đi theo một lần clone, không ai đọc được khi
+Kanzo không chạy.
+
+**MỖI TASK phải trả lời bốn câu**, vì thiếu câu nào thì nó không phải mục tiêu
+mà chỉ là một ý tưởng: *xong là gì* (một con số hoặc một lệnh nói đúng/sai, không
+phải "cải thiện") · *ai đi qua* (màn nào, bao nhiêu chỗ) · *có cần nạp DB không*
+(việc đó bị chặn với agent nên nó đổi thứ tự làm) · *đã đo được gì*.
+
 ## Bậc thang — chạy theo đúng thứ tự này
 
 Chạy từ rẻ tới đắt, dừng ở bậc đầu tiên ĐỎ và sửa ngay tại đó. Leo lên bậc sau khi bậc
