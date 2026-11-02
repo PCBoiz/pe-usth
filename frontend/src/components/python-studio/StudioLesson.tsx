@@ -262,7 +262,7 @@ export default function StudioLesson({
     // chặn trần XP bằng `lessons.xp_reward`).
     saveCompletion: () => data.complete(diemBai()),
   });
-  const { running, runtimeStatus, result, run, runGame } = lessonRun;
+  const { running, runtimeStatus, result, run, runGame, chayThu } = lessonRun;
   const cancelRun = lessonRun.cancel;
   // Kết quả đang hiện có thuộc bản code đang gõ không. Luật nằm ở hàm thuần
   // `ketQuaLaCu` (lib/run-freshness.ts), ở đó cũng ghi vì sao phép so là SO
@@ -603,6 +603,7 @@ export default function StudioLesson({
           result={result}
           resultStale={resultStale}
           onRun={() => run(false)}
+          chayThu={chayThu}
           onStop={cancelRun}
           busy={busy}
           setMessage={setMessage}

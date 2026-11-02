@@ -274,7 +274,11 @@ test('CỔNG LUYỆN TẬP: chưa gõ gì thì không xem được đáp án', (
   // BIẾN MẤT. Một dòng `disabled`, và nó là toàn bộ phần có bằng chứng; gỡ ra
   // thì mọi ca về DỮ LIỆU trong file này vẫn xanh.
   const src = doc('src', 'components', 'python-studio', 'screens', 'PracticeScreen.tsx');
-  assert.match(src, /disabled=\{!typed\.trim\(\)\}/);
+  // Ghim TÍNH CHẤT, không ghim nguyên chuỗi: từ 3/11 cổng còn đòi thêm "đã
+  // chạy" với 63 câu có `answerCode`, nên một `assert` khớp cả dòng
+  // `disabled={!typed.trim()}` sẽ bắn oan mỗi lần cổng MẠNH THÊM. Thứ không
+  // được mất là điều kiện "chưa gõ gì thì không mở".
+  assert.match(src, /disabled=\{!typed\.trim\(\)/);
   // Nhãn phải NÓI RA điều kiện. Một nút xám không giải thích gì thì người học
   // đọc ra là "hỏng", đúng họ lỗi mà repo này đã gặp ở thanh tiến độ.
   assert.match(src, /Viết thử rồi mới xem được/);

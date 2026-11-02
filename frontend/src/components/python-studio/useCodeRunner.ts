@@ -221,6 +221,43 @@ export function useLessonRun({
       });
   }
 
+  /**
+   * Chạy `code` KHÔNG kèm ca chấm nào — đường của ô "Chạy thử" ở màn LUYỆN TẬP.
+   *
+   * Vì sao không dùng lại `execute`: nó ghim cứng `tests: four.tests`, tức mọi
+   * lượt chạy ở màn luyện tập sẽ bị chấm bằng ca chấm của BÀI TẬP cuối bài —
+   * một bộ ca hỏi về một hàm `solve` mà câu luyện tập không có. Người học sẽ
+   * nhận "0/3 ca đạt" cho một đoạn code đúng.
+   *
+   * Và KHÔNG truyền `contract`: nó chỉ có nghĩa với ca chấm dạng dữ liệu (tiêm
+   * `inputVariable` vào namespace trước khi chạy). Không có ca nào thì nó chỉ
+   * là một biến lạ hiện ra trong chương trình người học.
+   *
+   * `packages`/`dataFiles` thì VẪN lấy của bài: `answerCode` của câu luyện tập
+   * import numpy/pandas y như bài, và đã đo — 0/63 câu thiếu gói.
+   *
+   * KHÔNG ghi nhật ký lần thử: `ghiLuotChay` gắn với ca chấm ("trượt ca nào",
+   * "trượt y hệt lần trước"), mà ở đây không có ca nào. Trộn vào cùng một loại
+   * sự kiện là làm hỏng hai câu SQL đang đếm theo nó.
+   */
+  function chayThu(code: string, onDone: (data: RunResult) => void) {
+    const four = lesson?.step_4;
+    setMessage('');
+    void runner
+      .run({
+        code,
+        tests: [],
+        forbid: four?.forbid ?? [],
+        files: four?.files ?? [],
+        dataFiles: four?.dataFiles ?? [],
+        stdin: [],
+        packages: four?.packages ?? [],
+      })
+      .then((data) => {
+        if (data) onDone(data);
+      });
+  }
+
   function passedAll(data: RunResult): boolean {
     const total = lesson?.step_4?.tests?.length ?? 0;
     return (
@@ -320,6 +357,7 @@ export function useLessonRun({
     ranCode,
     run,
     runGame,
+    chayThu,
     cancel: runner.cancel,
   };
 }

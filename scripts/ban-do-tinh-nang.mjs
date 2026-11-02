@@ -145,7 +145,7 @@ export const BAN_DO = [
 
   {
     id: 'dap-an-mau-luyen-tap',
-    ten: 'Đáp án mẫu CHẠY ĐƯỢC của màn luyện tập (có answerCode)',
+    ten: 'Màn luyện tập CHẠY ĐƯỢC: ô Chạy thử + so đầu ra với đáp án mẫu',
     thucHien: 'scripts/pe-da/check-pyodide.mjs:DAP_AN_MAU_KHONG_CHAY',
     mount: 'frontend/src/components/python-studio/screens/PracticeScreen.tsx',
     manHinh: 'practice',

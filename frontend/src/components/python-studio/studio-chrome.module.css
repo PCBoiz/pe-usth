@@ -1264,6 +1264,62 @@
 /* "Xem đáp án" là hành động CHÍNH của màn luyện tập (nút CTA dưới đáy chỉ đi
    tiếp), nên nó không dùng .resetLink — cỡ chữ 12px gạch chân mờ của .resetLink
    là dành cho hành động phụ như "Ẩn đi". */
+/* Ô CHẠY THỬ của màn luyện tập — 63 câu có `answerCode`.
+   Dùng lại hình dạng của .practiceReveal (nút bo tròn, cùng cỡ chữ) nhưng TÔ
+   ĐẬM: đây là hành động CHÍNH của màn, còn "Xem đáp án" là đường thoát. Ngược
+   lại thì người học bấm xem đáp án trước, và cả cổng mất nghĩa. */
+.practiceRun {
+  align-self: flex-start;
+  padding: 9px 18px;
+  border: none;
+  border-radius: 999px;
+  background: var(--edu-accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.practiceRun:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.practiceResult {
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 10px;
+  background: var(--edu-card-bg);
+  padding: 10px 14px;
+}
+
+.practiceResult pre {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--edu-t1);
+}
+
+/* Chữ ở tương phản ĐẦY ĐỦ, không làm mờ: với người dùng trình đọc màn hình thì
+   màu không nói gì, nên câu verdict phải tự nói ra. Cùng quyết định đã ghi cho
+   băng "kết quả của bản code trước". */
+.practiceVerdictOk,
+.practiceVerdictNo {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.practiceVerdictOk {
+  color: var(--edu-ok, #1b8a5a);
+}
+
+.practiceVerdictNo {
+  color: var(--edu-t2);
+}
+
 .practiceReveal {
   align-self: flex-start;
   padding: 9px 16px;

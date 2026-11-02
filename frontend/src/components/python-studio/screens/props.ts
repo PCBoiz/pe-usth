@@ -64,6 +64,15 @@ export type LessonScreenProps = {
    */
   resultStale: boolean;
   onRun: () => void;
+  /**
+   * Chạy một đoạn mã KHÔNG kèm ca chấm — ô "Chạy thử" của màn LUYỆN TẬP.
+   *
+   * Tách khỏi `onRun` vì hai thứ khác nhau ở chỗ quan trọng nhất: `onRun` chạy
+   * `draft.code` với ca chấm của BÀI TẬP và ghi nhật ký lần thử; cái này chạy
+   * mã của MỘT CÂU luyện tập, không ca chấm, không ghi. Gộp chúng là bắt màn
+   * luyện tập nhận "0/3 ca đạt" cho một đoạn code đúng.
+   */
+  chayThu: (code: string, onDone: (data: RunResult) => void) => void;
   onStop: () => void;
   busy: boolean;
   setMessage: (text: string) => void;
