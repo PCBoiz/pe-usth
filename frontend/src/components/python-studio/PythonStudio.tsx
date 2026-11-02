@@ -1,6 +1,5 @@
 'use client';
 
-/* eslint-disable @next/next/no-img-element */
 // Full document navigation clears legacy per-page global styles on course pages.
 /* eslint-disable @next/next/no-html-link-for-pages, @next/next/no-page-custom-font */
 import { useEffect, useRef, useState } from 'react';

@@ -30,25 +30,17 @@ import { withAssetVersion } from '@/lib/assetVersion';
 
 /**
  * Thứ tự nạp toàn cục. Ràng buộc thật sự cần giữ:
- *   · theme/auth/style/dashboard/pages/dark-mode  TRƯỚC  edu-theme
+ *   · style/dashboard/pages/dark-mode  TRƯỚC  edu-theme
  *   · edu-theme  TRƯỚC  mọi file edu-* còn lại (chúng đè lên token của nó)
  *   · course_db_design, lesson_db_design  TRƯỚC  edu-db
  * Những file không liệt kê ở đây rơi vào hạng mặc định (giữa nhóm gốc và nhóm
  * edu-*), đủ an toàn vì chúng đều là CSS riêng của một trang.
  */
 const RANK: Record<string, number> = {
-  'theme.css': 10,
-  'auth.css': 11,
   'style.css': 12,
   'dashboard.css': 13,
   'pages.css': 14,
-  'ChangePassword.css': 15,
-  'skeleton.css': 16,
   'dark-mode.css': 17,
-  'roadmap.css': 18,
-  'login.css': 19,
-  'register.css': 20,
-  'questionaire.css': 21,
   'lesson.css': 22,
   'lesson_db_design.css': 23,
   'chatbot.css': 24,
@@ -60,12 +52,7 @@ const RANK: Record<string, number> = {
   'edu-course-detail.css': 42,
   'edu-db.css': 43,
   'edu-lesson.css': 44,
-  'edu-auth.css': 45,
-  'edu-forms.css': 46,
   'edu-card.css': 47,
-  'edu-landing.css': 48,
-  // hộp thoại bài ôn tập — sau edu-dashboard.css vì dùng lại token/nút của nó
-  'edu-review-quiz.css': 49,
   // token riêng của Python Studio — sau edu-theme, trước lớp co giãn
   'studio-tokens.css': 50,
   // lớp co giãn điện thoại/tablet — PHẢI cuối cùng, xem RESPONSIVE_CSS bên dưới

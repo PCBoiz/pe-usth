@@ -32,6 +32,7 @@ node scripts/check-perf.mjs            # kiểm BỘ ĐO ĐỘ HIỆU QUẢ tron
 node scripts/check-figures.mjs         # kiểm việc XUẤT HÌNH của studio-harness.py
 node scripts/check-duong-toi.mjs       # BẢN ĐỒ TÍNH NĂNG: tính năng nào có người đi qua
 node scripts/check-duong-toi.mjs --json  # bản máy đọc
+node scripts/check-tai-nguyen-chet.mjs  # TỆP/COMPONENT nào KHÔNG ai tới được
 
 # pe-v4 (48 bài, 427 ca chấm) — GIỮ LẠI nhưng KHÔNG còn xuất bản; xem mục dưới
 py scripts/pe-v4/build.py              # dựng lại 48 bài -> scripts/pe-v4/out/
@@ -56,7 +57,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend test | **33 bộ, 482 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
-| Frontend lint | 0 lỗi, 178 cảnh báo |
+| Frontend lint | 0 lỗi, **139 cảnh báo** |
 | Frontend unit test | `cd frontend && npm run test:unit` → **507 ca** / 39 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
@@ -67,6 +68,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **17 mục, 14 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
+| Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
 **pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 179
@@ -941,8 +943,10 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   trang công khai mời người học vào một phiên đã chết; `apiFetch` refresh không được, rơi xuống
   `ensureGuest()` và cấp một tài khoản khách MỚI — người học thấy như mất sạch tiến độ. Hai ca
   test canh đúng chỗ này (`session-marker.test.mjs`, `refresh-expires-contract.spec.ts`).
-  `login.inline.js` vẫn dùng hạn dự phòng vì nó chỉ dán lại cookie cho phiên đã có, không gọi
-  `/auth/*`; lần refresh kế tiếp (≤ 15 phút, bằng tuổi access token) ghi lại bằng số thật.
+  **Câu ở đây từng ghi "`login.inline.js` vẫn dùng hạn dự phòng…" — file đó KHÔNG trang nào
+  nạp, và nay đã xoá (03/11/2026).** Cùng họ bẫy `apiFetchSessionOnly`: đặt tên một cơ chế
+  không tồn tại thì nó không chặn được gì, mà người đọc lại tưởng đang có một lớp bảo vệ.
+  Luật về hạn dự phòng vẫn đúng nguyên vẹn cho `pe-bridge.js` — chỗ THẬT đang dán cookie mốc.
 - **`apiFetch` gặp 401 là TỰ TẠO tài khoản khách — đừng gọi nó ở trang công khai.**
   `apiFetch` (`frontend/src/lib/api.ts`) khi refresh không được sẽ rơi xuống `ensureGuest()`.
   Gọi nó trên một trang ai cũng vào được nghĩa là **mỗi bot quét web sinh một tài khoản khách**,
@@ -1665,6 +1669,42 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **Mỗi bài tối thiểu ba ca và `expected` của chúng phải KHÁC NHAU**, nếu không thì "trả hằng
   của ca 1" đạt hết; và tránh `expected` BẰNG `input` (biến thể "dội nguyên đầu vào ra").
   130 → 138 bài · 433 → 460 ca · 585 → 621 biến thể sai, tất cả vẫn trượt.
+
+- **417 KB TÀI NGUYÊN CHẾT đang được PHỤC VỤ RA INTERNET — đã xoá, và chỗ nó từng
+  đứng nay có một cổng.** Đo ngày 03/11/2026 bằng phép khả đạt từ điểm vào THẬT:
+  **13 tệp JS (234 KB) · 13 tệp CSS (164 KB) · 9 component React** không trang nào tới
+  được. Trong đó có `login.inline.js` và `register.inline.js` của một luồng đăng nhập ĐÃ
+  BỎ — `public/` được phục vụ nguyên, nên bất kỳ ai cũng tải được chúng.
+  **Và nó làm TÀI LIỆU NÓI SAI.** AGENTS.md khi đó viết *"`login.inline.js` vẫn dùng hạn
+  dự phòng…"* — mô tả một cơ chế mà không trang nào nạp, đúng họ bẫy `apiFetchSessionOnly`
+  (đặt tên một thứ không tồn tại thì nó không chặn được gì). Câu đó đã sửa.
+  **ĐẾM THAM CHIẾU THÔ LÀ SAI, và sai theo chiều NGUY HIỂM.** Bản quét đầu của tôi báo chỉ
+  4 tệp chết, vì hai lỗi: · nó quét cả `e2e/` và cả CHÚ THÍCH — `edu-dashboard.js` chỉ được
+  NHẮC TÊN trong một chú thích ở `assetVersion.ts`, còn `main.js` (còn sống) thì nhắc
+  `edu-chrome.js`/`course_detail.js` cũng chỉ trong chú thích; · một tệp được một tệp ĐÃ
+  CHẾT trỏ tới thì vẫn chết, nên phải lan truyền từ điểm vào chứ không đếm tổng số lần
+  xuất hiện.
+  **Hạt giống phải là ĐƯỜNG DẪN ĐẦY ĐỦ, không phải tên trần.** Bản thứ hai vẫn chỉ tìm ra
+  **5/13** tệp CSS chết, vì bảng `RANK` trong `PageStyles.tsx` liệt kê `'theme.css': 10`
+  làm khoá sắp thứ tự — mà một hàng trong bảng thứ tự KHÔNG phải một lời nạp. So bằng
+  `/static/css/theme.css` mới ra đủ 13. Xoá CSS thì phải xoá hàng `RANK` của nó cùng lúc.
+  **NGOẠI LỆ, phải KHAI chứ không xoá:** `dashboard.js` (105 KB) — `forum-xss.test.mjs`
+  ĐỌC file này từ đĩa để chứng minh `escHtml` trung hoà payload XSS. Chết với người dùng,
+  sống với một phép kiểm, y như pe-v4. Nói thẳng giới hạn: forum KHÔNG có trang nào nạp
+  `dashboard.js`, nên ca đó đang canh một đường **không ai đi qua** — nó chống hồi quy cho
+  ngày forum quay lại, không chứng minh hôm nay có ai được bảo vệ.
+  **Thứ bền không phải lần xoá mà là CỔNG:** `scripts/check-tai-nguyen-chet.mjs` tính lại
+  khả đạt mỗi lần chạy, có trong CI, và kiểm **hai chiều** — không ai tới được mà chưa khai
+  thì ĐỎ, khai "giữ dù chết" mà hoá ra đã sống cũng ĐỎ (thiếu chiều sau thì danh sách ngoại
+  lệ chỉ dài ra rồi thành chỗ giấu rác, đúng bài học `DAP_AN_MAU_KHONG_CHAY`).
+  Ablate: thêm một tệp `public/static/js` không ai nạp → **1 lỗi**; khai `js/main.js` là
+  "giữ dù chết" → **1 lỗi** kèm câu "ngoại lệ đã lỗi thời".
+  **Cổng này CỐ Ý dễ dãi một chỗ, và phải biết:** phép so component dùng `\b<Tên>\b` trên
+  văn bản đã bỏ chú thích, nên một `<title>Concept Card</title>` trong trang khác đủ làm
+  `Concept.tsx` trông như còn sống (tôi kiểm tay rồi mới xoá nó). Dễ dãi là chiều AN TOÀN
+  — cổng kêu oan sẽ bị tắt — nhưng đừng đọc "0 lỗi" thành "không còn gì chết".
+  **Và `app/` được MIỄN:** ở đó `page`/`layout`/`route` không ai import là quy ước định
+  tuyến của Next, không phải lỗi.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

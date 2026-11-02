@@ -364,6 +364,16 @@ jobs:
       # mà không đỏ dòng nào, và học viên lại mất hình như trước.
       - run: node scripts/check-figures.mjs
 
+      # CỔNG TÀI NGUYÊN CHẾT — câu hỏi NGƯỢC với check-duong-toi.mjs. Cái kia
+      # hỏi "tính năng này có ai đi qua không"; cái này hỏi "tệp này có ai tới
+      # được không". Cùng là lỗi IM LẶNG: một tệp trong public/ mà không trang
+      # nào nạp vẫn được PHỤC VỤ ra Internet và vẫn làm người đọc repo tưởng
+      # cụm chức năng đó còn sống. Đo lần đầu 03/11/2026: 34 mục / 417 KB,
+      # trong đó có login.inline.js + register.inline.js của một luồng đăng
+      # nhập ĐÃ BỎ — mà AGENTS.md khi đó vẫn mô tả login.inline.js như một cơ
+      # chế đang chạy. Xoá là việc MỘT LẦN; dòng này là thứ giữ cho nó đúng.
+      - run: node scripts/check-tai-nguyen-chet.mjs
+
       # 65 phép kiểm của BỘ GHI VẾT (nút "Xem từng bước" của /ide). Trước đây
       # chỉ chạy tay, nên một bản sửa làm tracer chạy SAI mà vẫn sinh lại đúng
       # thì không có gì đỏ: phép canh sha chỉ bắt được chuyện "sửa .py mà quên
