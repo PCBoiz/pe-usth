@@ -41,8 +41,10 @@ import LessonScreenView from './screens';
 import { ICON } from './screens/chrome';
 import { datBoiCanhBai, dayNgay, ghiSuKien } from '@/lib/learning-events';
 import { ketQuaLaCu } from '@/lib/run-freshness';
+import { layCauOn, themCauSai, xoaCauOn, type CauOn } from '@/lib/spaced-review';
 
 import ConsentBanner from './ConsentBanner';
+import OnGianCach from './OnGianCach';
 import {
   buildScreens,
   EMPTY_SCORE,
@@ -52,6 +54,8 @@ import {
   markDoneOnNext,
   maxReachedStep,
   nhomMan,
+  optionDetail,
+  optionText,
   quizPercent,
   screenVerdict,
   type LessonScreen,
@@ -120,6 +124,24 @@ export default function StudioLesson({
     };
   }, [loading]);
   const scr: LessonScreen | undefined = screens[d.step - 1];
+
+  /**
+   * ÔN GIÃN CÁCH — một câu đã trả lời SAI ở bài trước, hỏi lại ở ĐẦU bài này.
+   *
+   * Đọc một lần khi mở bài, không đọc lại mỗi lần render: hàng chờ chỉ đổi khi
+   * người học trả lời sai (ở bài này, tức sau khi ô đã qua) hoặc khi ô này xong.
+   * Đọc lại mỗi render thì một câu vừa sai ở màn 5 có thể nhảy ra giữa bài.
+   *
+   * `null` = chưa đọc; `undefined` = đọc rồi, không có câu nào.
+   */
+  const [cauOn, setCauOn] = useState<CauOn | null | undefined>(null);
+  useEffect(() => {
+    // HOÃN khỏi thân effect: React 19 chặn `setState` đồng bộ ở đây
+    // (`react-hooks/set-state-in-effect`). Cùng khuôn với `choLau` ngay trên.
+    const hen = setTimeout(() => setCauOn(layCauOn(courseId, lessonNo) ?? undefined), 0);
+    return () => clearTimeout(hen);
+    // Chỉ chạy lại khi ĐỔI BÀI. Thêm `d.step` vào đây là hỏi lại mỗi lần sang màn.
+  }, [courseId, lessonNo]);
 
   /**
    * NHỊP CÒN ĐANG MỞ BÀI + sự kiện BỎ DỞ.
@@ -344,6 +366,35 @@ export default function StudioLesson({
       if (v) {
         const misses = game?.type === 'match' ? (d.games?.[game.id]?.misses ?? 0) : 0;
         award(scr.key, v.correct, v.correct && !misses);
+        // ÔN GIÃN CÁCH: trả lời SAI ở LẦN ĐẦU thì câu vào hàng chờ, để hỏi lại
+        // ở đầu một bài SAU (Cepeda 2006). Chỉ lần đầu — `firstTry` chưa có
+        // nghĩa là chưa chấm lần nào; chấm lại sau khi đã biết đáp án không nói
+        // lên điều gì về việc họ nhớ hay không.
+        //
+        // Cất cả nội dung câu hỏi vì lúc mở bài 20 thì content của bài 3 không
+        // có trong tay, và đi lấy lại là một lượt API trên đường mở bài.
+        const mcq = scr.kind === 'mcq' ? lesson.step_2?.mcq?.[scr.index ?? 0] : null;
+        if (mcq && !v.correct && d.score?.firstTry?.[scr.key] === undefined)
+          themCauSai(courseId, {
+            // `StudioLesson` không mang mã bài. Tiêu đề có dạng
+            // "PD01 · Series: một cột dữ liệu có nhãn", nên lấy phần trước dấu
+            // chấm giữa; không có thì rơi về "bài <số>". Đừng thêm một trường
+            // vào content_json chỉ để có một chuỗi hiển thị.
+            maBai: (lesson.title?.split('·')[0] ?? '').trim() || `bài ${lessonNo}`,
+            lessonNo,
+            key: scr.key,
+            question: mcq.question,
+            // `McqOption` là `string | {…}` — dùng CHÍNH hai helper mà màn trắc
+            // nghiệm dùng, không đọc thẳng `.text`: dạng chuỗi sẽ ra undefined
+            // và ô ôn hiện ba nút trắng (đúng lỗi `normalizeQuestion` đã gặp).
+            options: mcq.options.map((o, i) => ({
+              text: optionText(o),
+              detail: optionDetail(o),
+              // Dạng object mang cờ `correct`; dạng chuỗi thì đáp án nằm ở
+              // `mcq.correct` (chỉ số).
+              correct: typeof o === 'string' ? mcq.correct === i : Boolean(o.correct),
+            })),
+          });
       }
       if (v?.correct) markDone(scr.key);
       // ĐÁP ÁN TRẮC NGHIỆM CHI TIẾT, không chỉ điểm.
@@ -493,6 +544,19 @@ export default function StudioLesson({
             ở backend. Và `consent === null` (chưa đọc xong) cũng không hiện, nên
             hộp không loé lên một nhịp ở mỗi lần mở bài. */}
         {consent?.shouldAsk ? <ConsentBanner onDecide={decideConsent} /> : null}
+        {/* Ô ÔN GIÃN CÁCH, chỉ ở MÀN ĐẦU của bài: hỏi giữa chừng là cắt ngang
+            mạch đang đọc. Đứng NGOÀI luồng màn (như ConsentBanner) nên nó không
+            vào tiến độ, không vào XP, không vào điểm bài — câu này thuộc một bài
+            khác, cộng nó vào bài đang mở là làm điểm nói về thứ không có ở đây. */}
+        {d.step === 1 && cauOn ? (
+          <OnGianCach
+            cau={cauOn}
+            onXong={() => {
+              xoaCauOn(courseId, cauOn.key);
+              setCauOn(undefined);
+            }}
+          />
+        ) : null}
         {children}
         <LessonOverlays
           pop={pop}

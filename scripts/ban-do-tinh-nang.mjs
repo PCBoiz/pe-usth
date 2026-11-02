@@ -159,6 +159,20 @@ export const BAN_DO = [
     toiThieu: 50,
   },
 
+  {
+    id: 'on-gian-cach',
+    ten: 'Ôn giãn cách — hỏi lại 1 câu ĐÃ SAI ở đầu một bài sau',
+    thucHien: 'frontend/src/lib/spaced-review.ts:layCauOn',
+    mount: 'frontend/src/components/python-studio/StudioLesson.tsx',
+    manHinh: 'màn đầu',
+    duLieu: 'cauOn',
+    // Nguồn câu hỏi là kho trắc nghiệm của chính khoá — mỗi câu người học trả
+    // lời sai là một ứng viên, nên "số chỗ tới được" là số câu trắc nghiệm.
+    dem: (ctx) =>
+      ctx.bai.reduce((n, l) => n + (l.content_json.step_2?.mcq?.length ?? 0), 0),
+    toiThieu: 400,
+  },
+
   // ---- ĐÃ DỰNG MÀ CHƯA CÓ ĐƯỜNG TỚI — khai ra, không để im lặng -----------
   {
     id: 'nut-thu-ide-man-brief',

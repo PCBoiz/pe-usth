@@ -1264,6 +1264,98 @@
 /* "Xem đáp án" là hành động CHÍNH của màn luyện tập (nút CTA dưới đáy chỉ đi
    tiếp), nên nó không dùng .resetLink — cỡ chữ 12px gạch chân mờ của .resetLink
    là dành cho hành động phụ như "Ẩn đi". */
+/* Ô ÔN GIÃN CÁCH — một câu đã sai ở bài trước, hỏi lại ở đầu bài này.
+   Đứng NGOÀI thẻ nội dung (như ConsentBanner) nên nó tự mang khung riêng. */
+.onGianCach {
+  max-width: 760px;
+  margin: 0 auto 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 14px;
+  background: var(--edu-panel-bg-solid);
+}
+
+.onGianCachNhan {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--edu-t3);
+}
+
+.onGianCachHoi {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--edu-t1);
+}
+
+.onGianCachDs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+}
+
+.onGianCachNut {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 10px;
+  background: var(--edu-card-bg);
+  color: var(--edu-t1);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.55;
+  cursor: pointer;
+}
+
+.onGianCachNut:disabled {
+  cursor: default;
+}
+
+.onGianCachDung {
+  border-color: var(--edu-ok, #1b8a5a);
+}
+
+.onGianCachSai {
+  border-color: var(--edu-err, #c2410c);
+}
+
+/* Lời giải thích của phương án KHÔNG được làm mờ: Van der Kleij 2015 đo phản
+   hồi CÓ GIẢI THÍCH ở d = 0,49 so với 0,05 cho chỉ đúng/sai — làm mờ nó là làm
+   mờ đúng phần có giá trị nhất. Màn trắc nghiệm chính đã vấp đúng chỗ này. */
+.onGianCachChiTiet {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--edu-t2);
+}
+
+.onGianCachKetLuan {
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--edu-t2);
+}
+
+.onGianCachTiep {
+  padding: 9px 18px;
+  border: none;
+  border-radius: 999px;
+  background: var(--edu-accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 /* Ô CHẠY THỬ của màn luyện tập — 63 câu có `answerCode`.
    Dùng lại hình dạng của .practiceReveal (nút bo tròn, cùng cỡ chữ) nhưng TÔ
    ĐẬM: đây là hành động CHÍNH của màn, còn "Xem đáp án" là đường thoát. Ngược
