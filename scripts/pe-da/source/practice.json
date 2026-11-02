@@ -7090,7 +7090,7 @@
           "id": "NP13-practice-4",
           "type": "code",
           "title": "Tự viết và chạy trong terminal",
-          "prompt": "Viết solve(data) nhận dãy nhiệt độ. Trả mask đánh dấu những số đo từ 30°C trở lên. Giữ đủ số vị trí và thứ tự đầu vào.",
+          "prompt": "Viết solve(data) nhận dãy số cốc bán được. Trả mask đánh dấu những món bán từ 30 cốc trở lên. Giữ đủ số vị trí và thứ tự đầu vào.",
           "mode": "function",
           "starter": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
           "referenceSolution": "import numpy as np\ndef solve(data):\n    return np.array(data) >= 30\n",
@@ -7135,7 +7135,7 @@
             }
           ],
           "hints": [
-            "Bài chỉ cần dãy True/False, chưa lấy các nhiệt độ được chọn.",
+            "Bài chỉ cần dãy True/False, chưa lấy các số đo được chọn.",
             "So array với >= 30 để nhận cả giá trị đúng ngưỡng."
           ],
           "explanation": "Đối chiếu giá trị trả về với yêu cầu của bài; một lần chạy đúng trên dữ liệu mẫu chưa đủ để biết quy tắc đã đúng.",
@@ -7147,7 +7147,7 @@
           "id": "NP13-practice-1",
           "type": "mcq",
           "title": "Dự đoán trước khi chạy",
-          "prompt": "temps=np.array([29,30,32]); temps > 30 cho gì?",
+          "prompt": "so_coc=np.array([29,30,32]); so_coc > 30 cho gì?",
           "options": [
             {
               "id": "a",
@@ -7206,7 +7206,7 @@
               "type": "mcq",
               "title": "Không nhận biên với >",
               "focus": "Không nhận biên với >",
-              "prompt": "Chỉ đánh dấu nhiệt độ vượt 30. Kết quả ở lệnh print cuối có giá trị nào?",
+              "prompt": "Chỉ đánh dấu số cốc vượt 30. Kết quả ở lệnh print cuối có giá trị nào?",
               "options": [
                 {
                   "id": "a",
@@ -7229,7 +7229,7 @@
                 "Thử điều kiện với một số nhỏ hơn, bằng và lớn hơn ngưỡng; chú ý phép so sánh có nhận điểm biên không."
               ],
               "explanation": "30 không lớn hơn chính nó, nên vị trí giữa là False.",
-              "code": "import numpy as np\ntemps = np.array([28, 30, 32])\nprint(temps > 30)"
+              "code": "import numpy as np\nso_coc = np.array([28, 30, 32])\nprint(so_coc > 30)"
             },
             {
               "id": "NP13-practice-1-v4",
@@ -7333,10 +7333,10 @@
           "id": "NP14-practice-4",
           "type": "code",
           "title": "Tự viết và chạy trong terminal",
-          "prompt": "Viết solve(data) nhận dãy nhiệt độ. Trả array các số từ 20 đến 35°C, nhận cả hai biên và giữ nguyên thứ tự.",
+          "prompt": "Viết solve(data) nhận dãy số cốc bán được. Trả array các số từ 20 đến 35 cốc, nhận cả hai biên và giữ nguyên thứ tự.",
           "mode": "function",
           "starter": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
-          "referenceSolution": "import numpy as np\ndef solve(data):\n    temps = np.array(data)\n    valid = (temps >= 20) & (temps <= 35)\n    return temps[valid]\n",
+          "referenceSolution": "import numpy as np\ndef solve(data):\n    so_coc = np.array(data)\n    valid = (so_coc >= 20) & (so_coc <= 35)\n    return so_coc[valid]\n",
           "tests": [
             {
               "name": "Có số ở hai biên",
@@ -7390,7 +7390,7 @@
           ],
           "hints": [
             "Hai điều kiện phải cùng đúng và phải giữ cả 20 lẫn 35.",
-            "Tạo (temps >= 20) & (temps <= 35), rồi dùng mask chọn từ temps."
+            "Tạo (so_coc >= 20) & (so_coc <= 35), rồi dùng mask chọn từ so_coc."
           ],
           "explanation": "Đối chiếu giá trị trả về với yêu cầu của bài; một lần chạy đúng trên dữ liệu mẫu chưa đủ để biết quy tắc đã đúng.",
           "transferNote": "Đầu vào mới thay đổi số lượng và giá trị. Viết quy tắc xử lý, không trả sẵn kết quả của ví dụ."
@@ -9853,7 +9853,7 @@
           "id": "PD01-code",
           "type": "code",
           "title": "Tự viết và chạy trong terminal",
-          "prompt": "Một rạp ghi số vé theo ca. data gồm values, labels và pick; nhãn là duy nhất và pick có trong labels. Tạo Series và trả dictionary có selected (số vé của nhãn pick), total (tổng vé), count (số ca).",
+          "prompt": "Một quán ghi số cốc bán theo ca. data gồm values, labels và pick; nhãn là duy nhất và pick có trong labels. Tạo Series và trả dictionary có selected (số cốc của nhãn pick), total (tổng cốc), count (số ca).",
           "starter": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
           "referenceSolution": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], index=data['labels'])\n     return {'selected': int(s.loc[data['pick']]), 'total': int(s.sum()), 'count': len(s)}\n",
           "tests": [
@@ -9898,7 +9898,7 @@
               }
             },
             {
-              "name": "ca chưa bán vé",
+              "name": "ca chưa bán được cốc nào",
               "input": {
                 "values": [
                   0

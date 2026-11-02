@@ -159,7 +159,7 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận dãy nhiệt độ. Trả array các số từ 20 đến 35°C, nhận cả hai biên và giữ nguyên thứ tự.",
+    "body": "Viết solve(data) nhận dãy số cốc bán được. Trả array các số từ 20 đến 35 cốc, nhận cả hai biên và giữ nguyên thứ tự.",
     "io": [
      {
       "label": "data =",
@@ -172,7 +172,7 @@
     ]
    },
    "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
-   "solutionCode": "import numpy as np\ndef solve(data):\n    temps = np.array(data)\n    valid = (temps >= 20) & (temps <= 35)\n    return temps[valid]\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    so_coc = np.array(data)\n    valid = (so_coc >= 20) & (so_coc <= 35)\n    return so_coc[valid]\n",
    "tests": [
     {
      "name": "Có số ở hai biên",
@@ -234,7 +234,7 @@
     },
     {
      "title": "Gợi ý 2",
-     "body": "Tạo (temps >= 20) & (temps <= 35), rồi dùng mask chọn từ temps."
+     "body": "Tạo (so_coc >= 20) & (so_coc <= 35), rồi dùng mask chọn từ so_coc."
     }
    ],
    "packages": [

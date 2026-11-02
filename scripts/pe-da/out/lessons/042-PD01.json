@@ -145,7 +145,7 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Một rạp ghi số vé theo ca. data gồm values, labels và pick; nhãn là duy nhất và pick có trong labels. Tạo Series và trả dictionary có selected (số vé của nhãn pick), total (tổng vé), count (số ca).",
+    "body": "Một quán ghi số cốc bán theo ca. data gồm values, labels và pick; nhãn là duy nhất và pick có trong labels. Tạo Series và trả dictionary có selected (số cốc của nhãn pick), total (tổng cốc), count (số ca).",
     "io": [
      {
       "label": "data =",
@@ -201,7 +201,7 @@
      }
     },
     {
-     "name": "ca chưa bán vé",
+     "name": "ca chưa bán được cốc nào",
      "input": {
       "values": [
        0

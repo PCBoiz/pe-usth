@@ -7137,7 +7137,7 @@
     "step_2": {
      "mcq": [
       {
-       "question": "temps=np.array([29,30,32]); temps > 30 cho gì?",
+       "question": "so_coc=np.array([29,30,32]); so_coc > 30 cho gì?",
        "options": [
         {
          "text": "[False,False,True]",
@@ -7175,7 +7175,7 @@
        "explanation": "Mỗi vị trí được thay bằng kết quả đúng/sai của cùng điều kiện."
       },
       {
-       "question": "Chỉ đánh dấu nhiệt độ vượt 30. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\ntemps = np.array([28, 30, 32])\nprint(temps > 30)",
+       "question": "Chỉ đánh dấu số cốc vượt 30. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nso_coc = np.array([28, 30, 32])\nprint(so_coc > 30)",
        "options": [
         {
          "text": "[False, True, True]",
@@ -7214,7 +7214,7 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận dãy nhiệt độ. Trả mask đánh dấu những số đo từ 30°C trở lên. Giữ đủ số vị trí và thứ tự đầu vào.",
+      "body": "Viết solve(data) nhận dãy số cốc bán được. Trả mask đánh dấu những món bán từ 30 cốc trở lên. Giữ đủ số vị trí và thứ tự đầu vào.",
       "io": [
        {
         "label": "data =",
@@ -7274,7 +7274,7 @@
      "hints": [
       {
        "title": "Gợi ý 1",
-       "body": "Bài chỉ cần dãy True/False, chưa lấy các nhiệt độ được chọn."
+       "body": "Bài chỉ cần dãy True/False, chưa lấy các số đo được chọn."
       },
       {
        "title": "Gợi ý 2",
@@ -7458,7 +7458,7 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Viết solve(data) nhận dãy nhiệt độ. Trả array các số từ 20 đến 35°C, nhận cả hai biên và giữ nguyên thứ tự.",
+      "body": "Viết solve(data) nhận dãy số cốc bán được. Trả array các số từ 20 đến 35 cốc, nhận cả hai biên và giữ nguyên thứ tự.",
       "io": [
        {
         "label": "data =",
@@ -7471,7 +7471,7 @@
       ]
      },
      "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
-     "solutionCode": "import numpy as np\ndef solve(data):\n    temps = np.array(data)\n    valid = (temps >= 20) & (temps <= 35)\n    return temps[valid]\n",
+     "solutionCode": "import numpy as np\ndef solve(data):\n    so_coc = np.array(data)\n    valid = (so_coc >= 20) & (so_coc <= 35)\n    return so_coc[valid]\n",
      "tests": [
       {
        "name": "Có số ở hai biên",
@@ -7533,7 +7533,7 @@
       },
       {
        "title": "Gợi ý 2",
-       "body": "Tạo (temps >= 20) & (temps <= 35), rồi dùng mask chọn từ temps."
+       "body": "Tạo (so_coc >= 20) & (so_coc <= 35), rồi dùng mask chọn từ so_coc."
       }
      ],
      "packages": [
@@ -9976,7 +9976,7 @@
     "step_4": {
      "task": {
       "title": "Tự viết và chạy trong terminal",
-      "body": "Một rạp ghi số vé theo ca. data gồm values, labels và pick; nhãn là duy nhất và pick có trong labels. Tạo Series và trả dictionary có selected (số vé của nhãn pick), total (tổng vé), count (số ca).",
+      "body": "Một quán ghi số cốc bán theo ca. data gồm values, labels và pick; nhãn là duy nhất và pick có trong labels. Tạo Series và trả dictionary có selected (số cốc của nhãn pick), total (tổng cốc), count (số ca).",
       "io": [
        {
         "label": "data =",
@@ -10032,7 +10032,7 @@
        }
       },
       {
-       "name": "ca chưa bán vé",
+       "name": "ca chưa bán được cốc nào",
        "input": {
         "values": [
          0

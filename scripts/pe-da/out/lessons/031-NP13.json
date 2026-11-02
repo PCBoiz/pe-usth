@@ -80,7 +80,7 @@
   "step_2": {
    "mcq": [
     {
-     "question": "temps=np.array([29,30,32]); temps > 30 cho gì?",
+     "question": "so_coc=np.array([29,30,32]); so_coc > 30 cho gì?",
      "options": [
       {
        "text": "[False,False,True]",
@@ -118,7 +118,7 @@
      "explanation": "Mỗi vị trí được thay bằng kết quả đúng/sai của cùng điều kiện."
     },
     {
-     "question": "Chỉ đánh dấu nhiệt độ vượt 30. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\ntemps = np.array([28, 30, 32])\nprint(temps > 30)",
+     "question": "Chỉ đánh dấu số cốc vượt 30. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nso_coc = np.array([28, 30, 32])\nprint(so_coc > 30)",
      "options": [
       {
        "text": "[False, True, True]",
@@ -157,7 +157,7 @@
   "step_4": {
    "task": {
     "title": "Tự viết và chạy trong terminal",
-    "body": "Viết solve(data) nhận dãy nhiệt độ. Trả mask đánh dấu những số đo từ 30°C trở lên. Giữ đủ số vị trí và thứ tự đầu vào.",
+    "body": "Viết solve(data) nhận dãy số cốc bán được. Trả mask đánh dấu những món bán từ 30 cốc trở lên. Giữ đủ số vị trí và thứ tự đầu vào.",
     "io": [
      {
       "label": "data =",
@@ -217,7 +217,7 @@
    "hints": [
     {
      "title": "Gợi ý 1",
-     "body": "Bài chỉ cần dãy True/False, chưa lấy các nhiệt độ được chọn."
+     "body": "Bài chỉ cần dãy True/False, chưa lấy các số đo được chọn."
     },
     {
      "title": "Gợi ý 2",

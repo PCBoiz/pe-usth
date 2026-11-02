@@ -1506,18 +1506,25 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **CHƯA TỚI NGƯỜI HỌC cho tới khi nạp DB** — nội dung bài đọc từ DB, không từ `out/`.
   `--all --offline` đã sạch: 179 bài, 0 từ chối.
 
-- **BA bài có màn ĐỌC ở quán cà phê nhưng ĐỀ BÀI TẬP vẫn ở miền cũ — chưa sửa, đã đo.**
+- **BA bài có màn ĐỌC ở quán cà phê nhưng ĐỀ BÀI TẬP ở miền cũ — ĐÃ sửa, 0 bài còn lệch.**
   Nhìn thấy khi xem ô ví dụ mới trên production: PD01 mở đầu bằng *"Một quán cà phê ghi số
   cốc bán được trong ba ngày"* rồi đề bài tập ngay dưới nói *"Một rạp ghi số vé theo ca"*.
-  Hai miền trong một bài, cách nhau vài màn. Đo trên bản dựng: đúng **3 bài** — PD01
-  (rạp/vé), NP13 và NP14 (nhiệt độ, trong khi màn đọc của chúng đã đổi sang lượng sữa).
-  **KHÔNG phải phát hiện mới về nguyên nhân:** mục bẫy ở trên đã ghi `source/practice.json`
-  vẫn dùng `region`/`qty`/`E`/`W` — bài TẬP đến từ gói practice, màn ĐỌC đến từ
-  `course.json`, và đợt đổi miền chỉ đi qua `course.json`. Đây là cùng một khe hở, lần này
-  đo được chính xác bao nhiêu bài lọt.
-  Chưa sửa vì nó là đổi NỘI DUNG ⇒ cần một lần nạp DB; để đi kèm lần nạp sau. Sửa thì phải
-  đổi cả `expected` nếu đổi con số — hoặc chỉ đổi DANH TỪ và giữ nguyên mọi con số, rẻ hơn
-  và không đụng ca chấm.
+  Hai miền trong một bài, cách nhau vài màn. Đo được đúng **3 bài** — PD01 (rạp/vé), NP13
+  và NP14 (nhiệt độ, trong khi màn đọc của chúng đã đổi sang lượng sữa).
+  **KHÔNG phải nguyên nhân mới:** mục bẫy ở trên đã ghi `source/practice.json` vẫn dùng
+  `region`/`qty`/`E`/`W` — bài TẬP đến từ gói practice, màn ĐỌC đến từ `course.json`, và
+  đợt đổi miền chỉ đi qua `course.json`. Cùng một khe hở, lần này đo được bao nhiêu bài lọt.
+  **Chỉ đổi DANH TỪ, KHÔNG đụng một con số nào** — mọi `expected` giữ nguyên, nên
+  `check-practice.mjs` chạy lời giải mẫu trên ca chấm THẬT là chứng minh được ngay (433 ca
+  vẫn đạt). Ngưỡng 30 và khoảng 20–35 đọc tự nhiên với "số cốc" đúng như với "°C", và chính
+  màn đọc của NP13 đã dùng ví dụ *"đánh dấu những món bán được từ 5 cốc trở lên"*.
+  **Phải đi cả phần TRẮC NGHIỆM, không chỉ đề bài tập:** MCQ của NP13 cũng hỏi về
+  `temps > 30`. Sửa mỗi đề thì bài vẫn lệch, chỉ là lệch ở màn khác — đúng kiểu bản sửa
+  nửa vời mà file này đã gặp ở PD06 (`'price'` đổi, `"price"` khoá JSON thì không).
+  **Và `temps` trong GỢI Ý phải đổi cùng lời giải mẫu:** gợi ý nói *"Tạo (temps >= 20) &
+  (temps <= 35)"* trong khi lời giải mẫu đặt tên biến khác là gợi ý trỏ vào một biến không
+  có trong đoạn mã người học vừa mở ra.
+  Phép đo để kiểm lại (màn đọc nói miền quán, đề bài tập nói miền khác): nay **0 bài**.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
