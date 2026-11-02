@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ26-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ26-1.png)"
+      "alt": "Biểu đồ cột ngang, tiêu đề \"Coffee contributes more revenue in this sample\", trục ngang \"Revenue (thousand VND)\", trục dọc \"Drink\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ26-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ26-2.png)"
+      "alt": "Biểu đồ cột, tiêu đề \"Coffee accounts for 62.5% of sample revenue\", trục dọc \"Revenue share (%)\"."
      }
     ],
     [

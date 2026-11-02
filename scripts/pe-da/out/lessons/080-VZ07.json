@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ07-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ07-1.png)"
+      "alt": "Biểu đồ hộp, tiêu đề \"Median and spread\", trục dọc \"Delivery (minutes)\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ07-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ07-2.png)"
+      "alt": "Biểu đồ điểm phân tán, tiêu đề \"Show individual observations too\", trục dọc \"Delivery (minutes)\"."
      }
     ],
     [
@@ -67,7 +67,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ07-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ07-3.png)"
+      "alt": "Biểu đồ điểm phân tán, tiêu đề \"A smoothed distribution estimate\", trục dọc \"Delivery (minutes)\"."
      }
     ]
    ],

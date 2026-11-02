@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ14-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ14-1.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"A 900 by 450 pixel PNG\", trục ngang \"Day\", trục dọc \"Cups\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ14-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ14-2.png)"
+      "alt": "Biểu đồ cột, tiêu đề \"Vector export\", trục dọc \"Cups\"."
      }
     ],
     [
@@ -67,7 +67,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ14-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ14-3.png)"
+      "alt": "Biểu đồ cột, tiêu đề \"Figure reused after clearing\", trục ngang \"Day\", trục dọc \"Cups\"."
      }
     ]
    ],

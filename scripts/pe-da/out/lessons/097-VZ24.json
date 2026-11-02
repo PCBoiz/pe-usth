@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ24-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ24-1.png)"
+      "alt": "Biểu đồ cột, tiêu đề \"Use the relevant denominator\", trục dọc \"Complaints (%)\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ24-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ24-2.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Separate units; shared time\", trục ngang \"Day\", trục dọc \"Revenue (million VND)\"."
      }
     ],
     [
@@ -67,7 +67,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ24-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ24-3.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Three days do not establish annual growth\", trục ngang \"Day\", trục dọc \"Sales (million VND)\"."
      }
     ]
    ],

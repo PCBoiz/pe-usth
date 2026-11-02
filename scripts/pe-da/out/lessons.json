@@ -18092,7 +18092,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ01-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ01-1.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Cups sold over three days\", trục ngang \"Day\", trục dọc \"Cups\"."
        }
       ],
       [
@@ -18109,7 +18109,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ01-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ01-2.png)"
+        "alt": "Biểu đồ cột, tiêu đề \"Coffee and tea sales\", trục dọc \"Cups\"."
        }
       ],
       [
@@ -18126,7 +18126,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ01-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ01-3.png)"
+        "alt": "Biểu đồ phân phối, tiêu đề \"Waiting time\", trục ngang \"Wait (minutes)\", trục dọc \"Orders\"."
        }
       ]
      ],
@@ -18355,7 +18355,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ02-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ02-1.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Daily sales\", trục ngang \"Day\", trục dọc \"Cups\"."
        }
       ],
       [
@@ -18372,7 +18372,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ02-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ02-2.png)"
+        "alt": "Biểu đồ cột, tiêu đề \"A subplot inside a Figure\", trục dọc \"Cups\"."
        },
        {
         "type": "code",
@@ -18383,7 +18383,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ02-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ02-3.png)"
+        "alt": "Biểu đồ điểm phân tán, tiêu đề \"Manually positioned Axes\", trục ngang \"Day\", trục dọc \"Cups\"."
        }
       ]
      ],
@@ -18642,7 +18642,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ03-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ03-1.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Three daily observations\", trục ngang \"Date\", trục dọc \"Sales (million VND)\"."
        }
       ],
       [
@@ -18659,7 +18659,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ03-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ03-2.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Sales by drink\", trục ngang \"Day\", trục dọc \"Sales (million VND)\"."
        },
        {
         "type": "code",
@@ -18721,7 +18721,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ03-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ03-3.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Day 2 was not recorded\", trục ngang \"Day\", trục dọc \"Sales (million VND)\"."
        }
       ]
      ],
@@ -18963,7 +18963,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ04-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ04-1.png)"
+        "alt": "Biểu đồ cột, tiêu đề \"Sales by drink\", trục dọc \"Cups\"."
        }
       ],
       [
@@ -19106,7 +19106,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ04-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ04-2.png)"
+        "alt": "Biểu đồ cột ngang, tiêu đề \"Largest seller is at the top\", trục ngang \"Cups\"."
        },
        {
         "type": "code",
@@ -19117,7 +19117,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ04-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ04-3.png)"
+        "alt": "Biểu đồ cột, tiêu đề \"Compare the same drink across weeks\", trục dọc \"Cups\"."
        }
       ]
      ],
@@ -19361,7 +19361,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ05-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ05-1.png)"
+        "alt": "Biểu đồ điểm phân tán, tiêu đề \"One point per order\", trục ngang \"Distance (km)\", trục dọc \"Delivery (minutes)\"."
        }
       ],
       [
@@ -19378,7 +19378,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ05-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ05-2.png)"
+        "alt": "Biểu đồ điểm phân tán, tiêu đề \"Marker area encodes order size\", trục ngang \"Distance (km)\", trục dọc \"Delivery (minutes)\"."
        },
        {
         "type": "code",
@@ -19389,7 +19389,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ05-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ05-3.png)"
+        "alt": "Biểu đồ điểm phân tán, tiêu đề \"Separate delivery methods\", trục ngang \"Distance (km)\", trục dọc \"Delivery (minutes)\"."
        }
       ]
      ],
@@ -19652,7 +19652,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ06-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ06-1.png)"
+        "alt": "Biểu đồ phân phối, tiêu đề \"Counts in fixed intervals\", trục ngang \"Wait (minutes)\", trục dọc \"Orders\"."
        }
       ],
       [
@@ -19669,7 +19669,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ06-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ06-2.png)"
+        "alt": "Biểu đồ phân phối, tiêu đề \"The same data, wider bins\", trục ngang \"Wait (minutes)\", trục dọc \"Orders\"."
        },
        {
         "type": "code",
@@ -19680,7 +19680,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ06-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ06-3.png)"
+        "alt": "Biểu đồ phân phối, tiêu đề \"Area, rather than height, sums to one\", trục ngang \"Wait (minutes)\", trục dọc \"Density\"."
        }
       ]
      ],
@@ -19913,7 +19913,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ07-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ07-1.png)"
+        "alt": "Biểu đồ hộp, tiêu đề \"Median and spread\", trục dọc \"Delivery (minutes)\"."
        }
       ],
       [
@@ -19930,7 +19930,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ07-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ07-2.png)"
+        "alt": "Biểu đồ điểm phân tán, tiêu đề \"Show individual observations too\", trục dọc \"Delivery (minutes)\"."
        }
       ],
       [
@@ -19947,7 +19947,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ07-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ07-3.png)"
+        "alt": "Biểu đồ điểm phân tán, tiêu đề \"A smoothed distribution estimate\", trục dọc \"Delivery (minutes)\"."
        }
       ]
      ],
@@ -20313,7 +20313,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ08-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ08-2.png)"
+        "alt": "Bản đồ nhiệt, tiêu đề \"Read the count in each cell\"."
        },
        {
         "type": "code",
@@ -20324,7 +20324,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ08-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ08-3.png)"
+        "alt": "Bản đồ nhiệt, tiêu đề \"Change relative to last week\"."
        }
       ]
      ],
@@ -20571,7 +20571,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ09-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ09-1.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Revenue peaked on day 2\", trục ngang \"Day in January\", trục dọc \"Revenue (million VND)\"."
        }
       ],
       [
@@ -20588,7 +20588,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ09-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ09-2.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Explain a point\", trục ngang \"Day\", trục dọc \"Revenue (million VND)\"."
        }
       ],
       [
@@ -20605,7 +20605,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ09-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ09-3.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Targets and annotations\", trục ngang \"Day\", trục dọc \"Revenue (million VND)\"."
        }
       ]
      ],
@@ -20814,7 +20814,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ10-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ10-1.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Use more than color to distinguish groups\", trục ngang \"Day\", trục dọc \"Cups\"."
        }
       ],
       [
@@ -20831,7 +20831,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ10-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ10-2.png)"
+        "alt": "Bản đồ nhiệt, tiêu đề \"A sequential numeric scale\"."
        }
       ],
       [
@@ -20848,7 +20848,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ10-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ10-3.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Coffee: 8 to 10, then down to 7\", trục ngang \"Day\", trục dọc \"Cups\"."
        }
       ]
      ],
@@ -21081,7 +21081,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ11-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ11-1.png)"
+        "alt": "Biểu đồ cột, tiêu đề \"Keep a meaningful bar baseline\", trục dọc \"Orders\"."
        }
       ],
       [
@@ -21098,7 +21098,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ11-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ11-2.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Equal distances represent equal ratios\", trục ngang \"Stage\", trục dọc \"Records (log scale)\"."
        }
       ],
       [
@@ -21115,7 +21115,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ11-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ11-3.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Equal units on both axes\", trục ngang \"x (km)\", trục dọc \"y (km)\"."
        }
       ]
      ],
@@ -21444,7 +21444,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ12-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ12-1.png)"
+        "alt": "Biểu đồ đường, trục ngang \"Day\"."
        }
       ],
       [
@@ -21461,7 +21461,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ12-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ12-2.png)"
+        "alt": "Biểu đồ cột, tiêu đề \"Wait\", trục ngang \"Minutes\", trục dọc \"Orders\"."
        },
        {
         "type": "code",
@@ -21472,7 +21472,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ12-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ12-3.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"A wide figure\", trục ngang \"Day\", trục dọc \"Cups\"."
        }
       ]
      ],
@@ -21762,7 +21762,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ13-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ13-3.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Label what the shaded interval means\", trục ngang \"Day\", trục dọc \"Orders\"."
        }
       ]
      ],
@@ -21986,7 +21986,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ14-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ14-1.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"A 900 by 450 pixel PNG\", trục ngang \"Day\", trục dọc \"Cups\"."
        }
       ],
       [
@@ -22003,7 +22003,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ14-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ14-2.png)"
+        "alt": "Biểu đồ cột, tiêu đề \"Vector export\", trục dọc \"Cups\"."
        }
       ],
       [
@@ -22020,7 +22020,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ14-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ14-3.png)"
+        "alt": "Biểu đồ cột, tiêu đề \"Figure reused after clearing\", trục ngang \"Day\", trục dọc \"Cups\"."
        }
       ]
      ],
@@ -22225,7 +22225,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ15-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ15-1.png)"
+        "alt": "Biểu đồ cột, tiêu đề \"Aggregate before comparing categories\", trục ngang \"Drink\", trục dọc \"Revenue (thousand VND)\"."
        }
       ],
       [
@@ -22242,7 +22242,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ15-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ15-2.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Sort dates before joining observations\", trục ngang \"Date\", trục dọc \"Cups\"."
        }
       ],
       [
@@ -22259,7 +22259,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ15-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ15-3.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"One missing observation\", trục ngang \"Order\", trục dọc \"Wait (minutes)\"."
        }
       ]
      ],
@@ -22714,7 +22714,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ17-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ17-3.png)"
+        "alt": "Biểu đồ hộp, tiêu đề \"Summary and observations together\", trục ngang \"Shift\", trục dọc \"Wait (minutes)\"."
        }
       ]
      ],
@@ -24014,7 +24014,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ24-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ24-1.png)"
+        "alt": "Biểu đồ cột, tiêu đề \"Use the relevant denominator\", trục dọc \"Complaints (%)\"."
        }
       ],
       [
@@ -24031,7 +24031,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ24-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ24-2.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Separate units; shared time\", trục ngang \"Day\", trục dọc \"Revenue (million VND)\"."
        }
       ],
       [
@@ -24048,7 +24048,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ24-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ24-3.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Three days do not establish annual growth\", trục ngang \"Day\", trục dọc \"Sales (million VND)\"."
        }
       ]
      ],
@@ -24285,7 +24285,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ25-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ25-1.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Reveal observations one at a time\", trục ngang \"Day\", trục dọc \"Cups\"."
        }
       ],
       [
@@ -24302,7 +24302,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ25-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ25-2.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"Three-frame teaching animation\", trục ngang \"Day\", trục dọc \"Cups\"."
        }
       ],
       [
@@ -24319,7 +24319,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ25-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ25-3.png)"
+        "alt": "Biểu đồ cột, tiêu đề \"Stable axes while the value changes\", trục dọc \"Cups\"."
        }
       ]
      ],
@@ -24557,7 +24557,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ26-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ26-1.png)"
+        "alt": "Biểu đồ cột ngang, tiêu đề \"Coffee contributes more revenue in this sample\", trục ngang \"Revenue (thousand VND)\", trục dọc \"Drink\"."
        }
       ],
       [
@@ -24574,7 +24574,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ26-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ26-2.png)"
+        "alt": "Biểu đồ cột, tiêu đề \"Coffee accounts for 62.5% of sample revenue\", trục dọc \"Revenue share (%)\"."
        }
       ],
       [
@@ -24833,7 +24833,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ27-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ27-1.png)"
+        "alt": "Biểu đồ cột, tiêu đề \"Parts of the same total\", trục dọc \"Share (%)\"."
        }
       ],
       [
@@ -24867,7 +24867,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ27-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ27-3.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"A polygon with a known area\", trục ngang \"Width (m)\", trục dọc \"Height (m)\"."
        }
       ]
      ],
@@ -25974,7 +25974,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ30-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ30-1.png)"
+        "alt": "Biểu đồ điểm phân tán, tiêu đề \"A click can be translated into data coordinates\", trục ngang \"Day\", trục dọc \"Cups\"."
        }
       ],
       [
@@ -25991,7 +25991,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ30-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ30-2.png)"
+        "alt": "Biểu đồ điểm phân tán, tiêu đề \"Only select an existing observation\", trục ngang \"Day\", trục dọc \"Cups\"."
        }
       ],
       [
@@ -26008,7 +26008,7 @@
        {
         "type": "figure",
         "src": "/static/da/VZ30-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ30-3.png)"
+        "alt": "Biểu đồ đường, tiêu đề \"A chart function reusable in a GUI\", trục ngang \"Day\", trục dọc \"Cups\"."
        },
        {
         "type": "paragraph",
@@ -45034,7 +45034,7 @@
        {
         "type": "figure",
         "src": "/static/da/RD01-1.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (RD01-1.png)"
+        "alt": "Biểu đồ đường, trục ngang \"Day\", trục dọc \"Revenue (million VND)\"."
        }
       ],
       [
@@ -45051,7 +45051,7 @@
        {
         "type": "figure",
         "src": "/static/da/RD01-2.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (RD01-2.png)"
+        "alt": "Biểu đồ đường, trục ngang \"Day\", trục dọc \"Revenue (million VND)\"."
        }
       ],
       [
@@ -45068,7 +45068,7 @@
        {
         "type": "figure",
         "src": "/static/da/RD01-3.png",
-        "alt": "Biểu đồ do đoạn code trên vẽ ra (RD01-3.png)"
+        "alt": "Biểu đồ đường, trục ngang \"Day\", trục dọc \"Revenue (million VND)\"."
        },
        {
         "type": "paragraph",

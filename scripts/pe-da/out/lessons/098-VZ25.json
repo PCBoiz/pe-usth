@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ25-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ25-1.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Reveal observations one at a time\", trục ngang \"Day\", trục dọc \"Cups\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ25-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ25-2.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Three-frame teaching animation\", trục ngang \"Day\", trục dọc \"Cups\"."
      }
     ],
     [
@@ -67,7 +67,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ25-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ25-3.png)"
+      "alt": "Biểu đồ cột, tiêu đề \"Stable axes while the value changes\", trục dọc \"Cups\"."
      }
     ]
    ],

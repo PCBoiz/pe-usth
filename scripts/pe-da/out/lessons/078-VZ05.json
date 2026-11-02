@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ05-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ05-1.png)"
+      "alt": "Biểu đồ điểm phân tán, tiêu đề \"One point per order\", trục ngang \"Distance (km)\", trục dọc \"Delivery (minutes)\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ05-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ05-2.png)"
+      "alt": "Biểu đồ điểm phân tán, tiêu đề \"Marker area encodes order size\", trục ngang \"Distance (km)\", trục dọc \"Delivery (minutes)\"."
      },
      {
       "type": "code",
@@ -61,7 +61,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ05-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ05-3.png)"
+      "alt": "Biểu đồ điểm phân tán, tiêu đề \"Separate delivery methods\", trục ngang \"Distance (km)\", trục dọc \"Delivery (minutes)\"."
      }
     ]
    ],

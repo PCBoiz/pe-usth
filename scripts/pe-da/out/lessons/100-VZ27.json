@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ27-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ27-1.png)"
+      "alt": "Biểu đồ cột, tiêu đề \"Parts of the same total\", trục dọc \"Share (%)\"."
      }
     ],
     [
@@ -67,7 +67,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ27-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ27-3.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"A polygon with a known area\", trục ngang \"Width (m)\", trục dọc \"Height (m)\"."
      }
     ]
    ],

@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ06-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ06-1.png)"
+      "alt": "Biểu đồ phân phối, tiêu đề \"Counts in fixed intervals\", trục ngang \"Wait (minutes)\", trục dọc \"Orders\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ06-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ06-2.png)"
+      "alt": "Biểu đồ phân phối, tiêu đề \"The same data, wider bins\", trục ngang \"Wait (minutes)\", trục dọc \"Orders\"."
      },
      {
       "type": "code",
@@ -61,7 +61,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ06-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ06-3.png)"
+      "alt": "Biểu đồ phân phối, tiêu đề \"Area, rather than height, sums to one\", trục ngang \"Wait (minutes)\", trục dọc \"Density\"."
      }
     ]
    ],

@@ -160,6 +160,30 @@ export const BAN_DO = [
   },
 
   {
+    id: 'alt-hinh',
+    ten: 'Alt text THẬT cho hình (trình đọc màn hình đọc được nội dung biểu đồ)',
+    thucHien: 'scripts/pe-da/build.py:alt_cua_hinh',
+    mount: 'frontend/src/components/python-studio/screens/ReadScreen.tsx',
+    manHinh: 'read',
+    duLieu: 'alt',
+    // Đếm hình có alt THẬT, không đếm hình mang chuỗi khuôn — 80/80 từng mang
+    // khuôn, tức con số đó không nói lên gì.
+    dem: (ctx) =>
+      ctx.bai.reduce(
+        (n, l) =>
+          n +
+          (l.content_json.step_1?.read ?? [])
+            .flat()
+            .filter(
+              (b) =>
+                b.type === 'figure' &&
+                !String(b.alt ?? '').startsWith('Biểu đồ do đoạn code'),
+            ).length,
+        0,
+      ),
+    toiThieu: 50,
+  },
+  {
     id: 'cong-du-doan-hinh',
     ten: 'Cổng dự đoán hình — che biểu đồ tới khi người học nói trước nó trông thế nào',
     thucHien: 'frontend/src/lib/studio-lesson.ts:doanDuocHinh',

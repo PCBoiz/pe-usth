@@ -132,7 +132,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ12-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ12-1.png)"
+      "alt": "Biểu đồ đường, trục ngang \"Day\"."
      }
     ],
     [
@@ -149,7 +149,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ12-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ12-2.png)"
+      "alt": "Biểu đồ cột, tiêu đề \"Wait\", trục ngang \"Minutes\", trục dọc \"Orders\"."
      },
      {
       "type": "code",
@@ -160,7 +160,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ12-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ12-3.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"A wide figure\", trục ngang \"Day\", trục dọc \"Cups\"."
      }
     ]
    ],

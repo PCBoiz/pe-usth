@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/RD01-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (RD01-1.png)"
+      "alt": "Biểu đồ đường, trục ngang \"Day\", trục dọc \"Revenue (million VND)\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/RD01-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (RD01-2.png)"
+      "alt": "Biểu đồ đường, trục ngang \"Day\", trục dọc \"Revenue (million VND)\"."
      }
     ],
     [
@@ -67,7 +67,7 @@
      {
       "type": "figure",
       "src": "/static/da/RD01-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (RD01-3.png)"
+      "alt": "Biểu đồ đường, trục ngang \"Day\", trục dọc \"Revenue (million VND)\"."
      },
      {
       "type": "paragraph",

@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ10-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ10-1.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Use more than color to distinguish groups\", trục ngang \"Day\", trục dọc \"Cups\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ10-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ10-2.png)"
+      "alt": "Bản đồ nhiệt, tiêu đề \"A sequential numeric scale\"."
      }
     ],
     [
@@ -67,7 +67,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ10-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ10-3.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Coffee: 8 to 10, then down to 7\", trục ngang \"Day\", trục dọc \"Cups\"."
      }
     ]
    ],

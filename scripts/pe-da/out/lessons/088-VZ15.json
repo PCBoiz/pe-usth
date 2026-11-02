@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ15-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ15-1.png)"
+      "alt": "Biểu đồ cột, tiêu đề \"Aggregate before comparing categories\", trục ngang \"Drink\", trục dọc \"Revenue (thousand VND)\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ15-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ15-2.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Sort dates before joining observations\", trục ngang \"Date\", trục dọc \"Cups\"."
      }
     ],
     [
@@ -67,7 +67,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ15-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ15-3.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"One missing observation\", trục ngang \"Order\", trục dọc \"Wait (minutes)\"."
      }
     ]
    ],

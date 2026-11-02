@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ11-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ11-1.png)"
+      "alt": "Biểu đồ cột, tiêu đề \"Keep a meaningful bar baseline\", trục dọc \"Orders\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ11-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ11-2.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Equal distances represent equal ratios\", trục ngang \"Stage\", trục dọc \"Records (log scale)\"."
      }
     ],
     [
@@ -67,7 +67,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ11-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ11-3.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Equal units on both axes\", trục ngang \"x (km)\", trục dọc \"y (km)\"."
      }
     ]
    ],

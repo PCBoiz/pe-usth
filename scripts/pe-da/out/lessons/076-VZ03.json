@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ03-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ03-1.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Three daily observations\", trục ngang \"Date\", trục dọc \"Sales (million VND)\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ03-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ03-2.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Sales by drink\", trục ngang \"Day\", trục dọc \"Sales (million VND)\"."
      },
      {
       "type": "code",
@@ -112,7 +112,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ03-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ03-3.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Day 2 was not recorded\", trục ngang \"Day\", trục dọc \"Sales (million VND)\"."
      }
     ]
    ],

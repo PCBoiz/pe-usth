@@ -1095,6 +1095,61 @@ def goi_can_tai(codes: list[str]) -> list[str]:
 # Chia bài đọc thành màn
 # ---------------------------------------------------------------------------
 
+# Loại biểu đồ, suy từ lời gọi matplotlib trong chính đoạn code vẽ ra hình.
+# Thứ tự QUAN TRỌNG: `.barh(` phải đứng trước `.bar(`, và `.plot(` đứng CUỐI vì
+# gần như bài nào cũng gọi nó ở đâu đó.
+LOAI_BIEU_DO = [
+    ('.barh(', 'Biểu đồ cột ngang'),
+    ('.bar(', 'Biểu đồ cột'),
+    ('.scatter(', 'Biểu đồ điểm phân tán'),
+    ('.hist(', 'Biểu đồ phân phối'),
+    ('.boxplot(', 'Biểu đồ hộp'),
+    ('.pie(', 'Biểu đồ tròn'),
+    ('.imshow(', 'Bản đồ nhiệt'),
+    ('.plot(', 'Biểu đồ đường'),
+]
+
+_NHAN = re.compile(r'(?<![\w.])(xlabel|ylabel|title)\s*=\s*[\'"]([^\'"]+)')
+
+
+def alt_cua_hinh(code: str, ten_file: str) -> str:
+    """Câu mô tả hình, dựng từ đoạn code đã vẽ ra nó.
+
+    VÌ SAO. Trước bản này cả **80/80** hình mang CÙNG MỘT chuỗi khuôn — "Biểu đồ
+    do đoạn code trên vẽ ra (VZ01-1.png)". Với người dùng trình đọc màn hình thì
+    toàn bộ module trực quan hoá (30 bài) KHÔNG CÓ NỘI DUNG; với bất kỳ ai gặp
+    lúc ảnh tải lỗi cũng vậy.
+
+    Số đã đo trên bản dựng 179 bài: **71/80 có `title=`, 71 có `ylabel=`, 58 có
+    `xlabel=`, 61 nhận ra được loại biểu đồ**, và **59/80** có đủ loại + ít nhất
+    một nhãn để dựng một câu nói được điều gì.
+
+    NHÃN GIỮ NGUYÊN VĂN, KHÔNG DỊCH — và đây là chỗ dễ làm sai nhất. Đo được:
+    **0/80 nhãn là tiếng Việt**; chúng là "Day", "Cups", "Cups sold over three
+    days". Nhãn đó nằm TRONG PIXEL của ảnh (ảnh xuất sẵn trong gói nguồn,
+    `chep_anh()` chỉ chép), nên dịch sang tiếng Việt trong alt là mô tả một cái
+    hình KHÔNG tồn tại: người dùng trình đọc màn hình nghe "trục ngang: Ngày"
+    rồi hỏi bạn cùng lớp thì trên màn hình ghi "Day". Alt phải nói đúng thứ có
+    trên ảnh. Việc nhãn còn tiếng Anh là một khiếm khuyết NỘI DUNG riêng, phải
+    sửa ở gói nguồn rồi xuất lại ảnh.
+
+    Không đủ dữ liệu thì trả chuỗi khuôn như cũ — một câu bịa còn tệ hơn một câu
+    chung chung, vì người đọc không có cách nào biết nó bịa.
+    """
+    loai = next((ten for dau, ten in LOAI_BIEU_DO if dau in code), None)
+    nhan = {k: v.strip() for k, v in _NHAN.findall(code)}
+    if not loai or not nhan:
+        return f'Biểu đồ do đoạn code trên vẽ ra ({ten_file})'
+    phan = [loai]
+    if nhan.get('title'):
+        phan.append(f'tiêu đề "{nhan["title"]}"')
+    if nhan.get('xlabel'):
+        phan.append(f'trục ngang "{nhan["xlabel"]}"')
+    if nhan.get('ylabel'):
+        phan.append(f'trục dọc "{nhan["ylabel"]}"')
+    return ', '.join(phan) + '.'
+
+
 def chia_man(reading: list[dict]) -> list[list[dict]]:
     """Một màn = một ý được một khối code chứng minh.
 
@@ -1200,7 +1255,7 @@ def khoi_doc(khoi: dict, thu_duoc: dict[int, bool] | None = None,
     if hinh and hinh.lower().endswith('.png'):
         ten = hinh.split('/')[-1]
         khoi_ra.append({'type': 'figure', 'src': f'{ANH_URL}{ten}',
-                        'alt': f'Biểu đồ do đoạn code trên vẽ ra ({ten})'})
+                        'alt': alt_cua_hinh(khoi.get('code') or '', ten)})
     # Sơ đồ đứng SAU cả code lẫn hình: nó gộp lại điều đoạn code vừa chứng
     # minh, nên đọc nó trước khi đọc code là đọc đáp án trước đề.
     sd = (so_do or {}).get(id(khoi))

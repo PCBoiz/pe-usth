@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ01-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ01-1.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Cups sold over three days\", trục ngang \"Day\", trục dọc \"Cups\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ01-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ01-2.png)"
+      "alt": "Biểu đồ cột, tiêu đề \"Coffee and tea sales\", trục dọc \"Cups\"."
      }
     ],
     [
@@ -67,7 +67,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ01-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ01-3.png)"
+      "alt": "Biểu đồ phân phối, tiêu đề \"Waiting time\", trục ngang \"Wait (minutes)\", trục dọc \"Orders\"."
      }
     ]
    ],

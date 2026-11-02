@@ -71,6 +71,7 @@ def main() -> int:
     kiem_anh(bai)
     kiem_so_do(bai, nguon_theo_id)
     kiem_vet(bai)
+    kiem_alt_hinh(bai)
     kiem_bai_tap_doi_nguon(bai)
     kiem_thu_trong_ide(bai)
     kiem_du_lieu(bai)
@@ -796,6 +797,58 @@ def kiem_vi_du_io(ma: str, bon: dict) -> None:
             if ten and not vd[hang]['label'].startswith(ten):
                 loi(f'{ma}: task.io hàng {hang + 1} ghi nhãn {vd[hang]["label"]!r} '
                     f'nhưng contract.{khoa} là {ten!r}')
+
+
+# Trần số hình còn mang alt KHUÔN. CHỈ ĐƯỢC HẠ.
+#
+# 21/80 hình không đủ dữ liệu để dựng một câu nói được điều gì (không nhận ra
+# loại biểu đồ, hoặc code không đặt nhãn nào). Chúng giữ chuỗi khuôn — một câu
+# BỊA còn tệ hơn một câu chung chung, vì người đọc không có cách nào biết nó bịa.
+# Con số này chỉ giảm khi người soạn thêm nhãn vào code của bài.
+TRAN_ALT_KHUON = 21
+
+ALT_KHUON = 'Biểu đồ do đoạn code trên vẽ ra'
+
+
+def kiem_alt_hinh(bai: list[dict]) -> None:
+    """Alt của hình phải NÓI THẬT về đoạn code vẽ ra nó.
+
+    Alt là chữ SINH RA từ dữ liệu, nên nó TRÔI ĐƯỢC — cùng họ với "sơ đồ đã trôi
+    khỏi bài", `codeHash` của bảng từng bước, và ô ví dụ đầu vào/đầu ra. Hình
+    dạng hỏng: nguồn đổi nhãn trục trong code, alt giữ nhãn cũ, và người dùng
+    trình đọc màn hình nghe một cái hình không còn tồn tại. Không exception nào
+    ném.
+
+    KHÔNG CHÉP `alt_cua_hinh` sang đây để tính lại. `_noi_nhu_build` phải chép
+    vì nó so hai phép NỐI, nhưng ở đây có cách chặt hơn mà không cần bản thứ
+    hai: mọi chuỗi alt đặt trong dấu nháy kép PHẢI có thật trong code ngay trên
+    nó. Nhãn đổi mà alt không đổi ⇒ đỏ, và luật không phụ thuộc vào cách sinh.
+    """
+    khuon = 0
+    for b in bai:
+        ma = b['lesson_code']
+        for man in (b['content_json'].get('step_1') or {}).get('read') or []:
+            code = ''
+            for k in man:
+                if k['type'] == 'code':
+                    code = k.get('code') or ''
+                if k['type'] != 'figure':
+                    continue
+                alt = (k.get('alt') or '').strip()
+                if not alt:
+                    loi(f'{ma}: khối figure không có alt — trình đọc màn hình không đọc được gì')
+                    continue
+                if alt.startswith(ALT_KHUON):
+                    khuon += 1
+                    continue
+                for trich in re.findall(r'"([^"]+)"', alt):
+                    if trich not in code:
+                        loi(f'{ma}: alt trích "{trich}" nhưng đoạn code không có chuỗi đó '
+                            f'— alt đã TRÔI khỏi code')
+    if khuon > TRAN_ALT_KHUON:
+        loi(f'{khuon} hình còn alt khuôn, trần là {TRAN_ALT_KHUON} — trần CHỈ ĐƯỢC HẠ')
+    elif khuon < TRAN_ALT_KHUON:
+        canh_bao(f'chỉ còn {khuon} hình mang alt khuôn (trần {TRAN_ALT_KHUON}) — hạ trần đi')
 
 
 def kiem_trac_nghiem(bai: list[dict]) -> None:

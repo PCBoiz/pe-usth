@@ -199,7 +199,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ30-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ30-1.png)"
+      "alt": "Biểu đồ điểm phân tán, tiêu đề \"A click can be translated into data coordinates\", trục ngang \"Day\", trục dọc \"Cups\"."
      }
     ],
     [
@@ -216,7 +216,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ30-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ30-2.png)"
+      "alt": "Biểu đồ điểm phân tán, tiêu đề \"Only select an existing observation\", trục ngang \"Day\", trục dọc \"Cups\"."
      }
     ],
     [
@@ -233,7 +233,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ30-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ30-3.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"A chart function reusable in a GUI\", trục ngang \"Day\", trục dọc \"Cups\"."
      },
      {
       "type": "paragraph",

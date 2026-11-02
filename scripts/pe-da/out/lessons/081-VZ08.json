@@ -179,7 +179,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ08-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ08-2.png)"
+      "alt": "Bản đồ nhiệt, tiêu đề \"Read the count in each cell\"."
      },
      {
       "type": "code",
@@ -190,7 +190,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ08-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ08-3.png)"
+      "alt": "Bản đồ nhiệt, tiêu đề \"Change relative to last week\"."
      }
     ]
    ],

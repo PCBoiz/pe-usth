@@ -33,7 +33,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ02-1.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ02-1.png)"
+      "alt": "Biểu đồ đường, tiêu đề \"Daily sales\", trục ngang \"Day\", trục dọc \"Cups\"."
      }
     ],
     [
@@ -50,7 +50,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ02-2.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ02-2.png)"
+      "alt": "Biểu đồ cột, tiêu đề \"A subplot inside a Figure\", trục dọc \"Cups\"."
      },
      {
       "type": "code",
@@ -61,7 +61,7 @@
      {
       "type": "figure",
       "src": "/static/da/VZ02-3.png",
-      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ02-3.png)"
+      "alt": "Biểu đồ điểm phân tán, tiêu đề \"Manually positioned Axes\", trục ngang \"Day\", trục dọc \"Cups\"."
      }
     ]
    ],
