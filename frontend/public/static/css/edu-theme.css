@@ -105,8 +105,16 @@
      vào chữ thông báo. Test cô lập (tô panel màu đỏ 100%) xác nhận: hễ còn
      alpha<1 dù chỉ 4% là còn lộ trên nền tương phản cao. */
   --edu-panel-bg-solid: #ffffff;
-  --edu-panel-border: rgba(255,255,255,.9);
-  --edu-panel-shadow: 0 20px 50px rgba(83,102,137,.24);
+  /* ĐƯỢC ĐO 04/11: rgba(255,255,255,.9) phủ lên thẻ #ffffff ra ĐÚNG
+     #ffffff — tương phản 1,000:1, tức thẻ trang chủ và trang khoá học
+     không có cạnh, y hệt lỗi đã sửa ở ShellB. Dùng chung đường kẻ với
+     thẻ bài học thay vì nuôi một màu thứ hai sẽ lệch. */
+  --edu-panel-border: var(--edu-card-line);
+  /* Bóng của mặt NỔI (dropdown, thẻ hover). Giữ hình dạng 20/50 — đây là
+     mặt nổi, không phải thẻ nằm trên giấy — nhưng đổi sang nâu ấm cho
+     cùng bảng lofi. Alpha hạ theo đúng tỉ lệ lần đổi --edu-card-shadow
+     (.10 -> .08), vì nâu đọc nặng hơn xanh xám ở cùng alpha. */
+  --edu-panel-shadow: 0 20px 50px rgba(42,32,23,.19);
   --edu-track-bg: rgba(133,148,178,.2);
   --edu-sidebar-bg: rgba(255,255,255,.5);
   --edu-sidebar-border: rgba(152,165,188,.28);
@@ -218,7 +226,10 @@ body.dark {
   --edu-t6: #a5acba;
   --edu-card-bg: rgba(255,255,255,.045);
   --edu-card-border: rgba(255,255,255,.09);
-  --edu-card-line: #233049;
+  /* Nâng #233049 -> #303c4e (1,195 -> 1,414 trên thẻ #1d232d): viền panel
+     ban đêm đang là rgba(255,255,255,.10) = 1,359, nên dùng chung token mà
+     giữ giá trị cũ là HẠ tương phản. Sàn chỉ được NÂNG. */
+  --edu-card-line: #303c4e;
   /* Ban đêm giữ bóng đen (nâu trên nền tối thì không thấy gì), nhưng bám sát
      theo cùng hình dạng để hai chế độ cùng một nhịp. */
   --edu-card-shadow: 0 6px 22px rgba(0,0,0,.45);
@@ -226,7 +237,7 @@ body.dark {
   --edu-pill-border: rgba(255,255,255,.09);
   --edu-panel-bg: rgba(29,35,45,.97);
   --edu-panel-bg-solid: #1d232d;
-  --edu-panel-border: rgba(255,255,255,.10);
+  --edu-panel-border: var(--edu-card-line);
   --edu-panel-shadow: 0 20px 50px rgba(0,0,0,.55);
   --edu-track-bg: rgba(255,255,255,.13);
   --edu-sidebar-bg: rgba(255,255,255,.03);

@@ -98,7 +98,7 @@
   text-decoration: none;
   background: var(--edu-panel-bg-solid);
   border: 1px solid var(--edu-panel-border);
-  border-radius: 20px;
+  border-radius: 16px;
   box-shadow: var(--edu-card-shadow);
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
@@ -143,9 +143,9 @@
 .icon {
   background: var(--edu-chip-bg);
   border: 1px solid var(--edu-chip-border);
-  border-radius: 20px;
+  border-radius: 16px;
 }
-.iconBare { border-radius: 20px; overflow: hidden; box-shadow: var(--edu-card-shadow); }
+.iconBare { border-radius: 16px; overflow: hidden; box-shadow: var(--edu-card-shadow); }
 
 .body {
   flex: 1;
@@ -216,7 +216,7 @@
   padding: 32px 44px;
   background: var(--edu-panel-bg-solid);
   border: 1px solid var(--edu-panel-border);
-  border-radius: 20px;
+  border-radius: 16px;
   box-shadow: var(--edu-card-shadow);
 }
 .feedbackBody { min-width: 0; max-width: 760px; }

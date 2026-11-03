@@ -290,3 +290,42 @@ test('thanh sticky của vỏ bài học phải có cạnh (nền trùng màu v�
     );
   }
 });
+
+/* --edu-panel-border là viền của thẻ TRANG CHỦ và TRANG KHOÁ HỌC (home.module
+ * .css 2 chỗ, ide.module.css, CodeVisualizer.module.css, edu-theme.css 3 chỗ).
+ *
+ * Đo 04/11/2026: ban ngày nó là rgba(255,255,255,.9) phủ lên thẻ #ffffff, tức
+ * ra ĐÚNG #ffffff — **1,000:1**, cùng MỘT màu. Đây là lần thứ HAI cùng một lỗi
+ * (ShellB .card là lần đầu), nên nó cần một cổng chứ không phải thêm một lần
+ * sửa tay.
+ *
+ * Ca này ghim CẤU TRÚC chứ không ghim mã màu: panel-border phải DÙNG CHUNG
+ * token với card-line. Phép chứng minh "đường kẻ đó có thấy được không" đã nằm
+ * ở ca trên và kiểm cả hai chiều ngày/đêm — nuôi một màu thứ hai ở đây là nuôi
+ * một thứ sẽ trôi khỏi nó. */
+test('viền thẻ trang công khai phải dùng chung --edu-card-line (trắng-trên-trắng là 1,000:1)', () => {
+  const hit = [...THEME.matchAll(/--edu-panel-border:\s*([^;]+);/g)].map((m) => m[1].trim());
+  assert.equal(hit.length, 2, 'phải có đúng 2 khai báo --edu-panel-border (ngày + Ban đêm)');
+  for (const [i, v] of hit.entries()) {
+    assert.equal(
+      v,
+      'var(--edu-card-line)',
+      `--edu-panel-border #${i + 1} là ${v} — phải là var(--edu-card-line). `
+        + 'Một màu riêng ở đây sẽ trôi khỏi đường kẻ của thẻ bài học, và bản cũ '
+        + 'rgba(255,255,255,.9) đo được ĐÚNG 1,000:1 trên thẻ trắng.',
+    );
+  }
+});
+
+/* Bóng của mặt NỔI. Khác --edu-card-shadow ở hình dạng (20/50 vì nó là mặt
+ * nổi, không phải thẻ nằm trên giấy) nên KHÔNG áp trần toả 24px ở đây — chỉ
+ * áp đúng cái quyết định của bảng lofi: ban ngày bóng phải ẤM. Ca cũ chỉ canh
+ * --edu-card-shadow, nên bóng này ở lại xanh lạnh suốt hai vòng. */
+test('bóng mặt nổi: ngày phải ẤM (R >= B), không phải xanh lạnh', () => {
+  const hit = [...THEME.matchAll(/--edu-panel-shadow:\s*([^;]+);/g)].map((m) => m[1].trim());
+  assert.equal(hit.length, 2, 'phải có đúng 2 khai báo --edu-panel-shadow');
+  const rgb = hit[0].match(/rgba?\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+  assert.ok(rgb, 'bóng ban ngày phải dùng rgba() để đọc được màu: ' + hit[0]);
+  const [r, , b] = rgb.slice(1).map(Number);
+  assert.ok(r >= b, `bóng mặt nổi ban ngày R(${r}) < B(${b}) — đã quay về bóng xanh lạnh`);
+});

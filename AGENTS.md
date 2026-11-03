@@ -76,7 +76,7 @@ học nó.
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **139 cảnh báo** |
-| Frontend unit test | `cd frontend && npm run test:unit` → **518 ca** / 41 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **520 ca** / 41 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **139 bài tập được chấm / 463 ca**, 2 441 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
@@ -112,8 +112,9 @@ mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 
 read-diagram 12 ·
 read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 33 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 8 · feedback-rank 3 = 518.
-Mốc trước là 515; thêm feedback-rank 3 (THỨ BẬC CỦA PHẢN HỒI).
+worker-csp 7 · ds-contrast 10 · feedback-rank 3 = 520.
+Mốc trước là 518; ds-contrast 8 → 10 (VIỀN THẺ TRANG CÔNG KHAI + BÓNG MẶT NỔI).
+Trước đó 515 → 518; thêm feedback-rank 3 (THỨ BẬC CỦA PHẢN HỒI).
 Trước đó 514 → 515; ds-contrast 7 → 8 (HAI THANH STICKY phải có cạnh).
 Trước đó 511 → 514; ds-contrast 4 → 7 (VIỀN THẺ: lớp lỗi "shorthand chỉ có màu",
 cộng hai chiều của đường kẻ ngày/đêm).
@@ -2308,6 +2309,37 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   khi CSS đã đúng. Viết regex THẲNG, đừng dựng từ chuỗi.
   **KHÔNG bump `ASSET_VERSION` cho vòng này:** `LessonChrome.module.css` nằm trong
   `src/` nên đi qua bundler, URL đã đổi theo nội dung. Luật bump chỉ áp cho `public/`.
+
+  **LẦN THỨ HAI CÙNG MỘT LỖI, ở TRANG CHỦ và TRANG KHOÁ HỌC — và nó là lý do chủ
+  dự án hỏi "sao vẫn giao diện cũ".** Production ĐANG chạy đúng HEAD (thẻ `pe-build`
+  khớp SHA, `check-da-deploy` xanh). Hai trang đó y nguyên vì **không commit nào đụng
+  vào chúng**: cả hai commit lofi trước chỉ chạm `studio-tokens.css` và bề mặt BÊN
+  TRONG `/lesson/*`. Đo trang chủ thì ra đúng lỗi đã sửa ở `ShellB`:
+  `--edu-panel-border: rgba(255,255,255,.9)` phủ lên thẻ `#ffffff` ra **ĐÚNG**
+  `#ffffff` — **1,000:1**, cùng MỘT màu, thẻ chỉ có bóng. 7 chỗ dùng token đó
+  (home.module.css 2 · ide.module.css · CodeVisualizer.module.css · edu-theme.css 3).
+  **CHIỀU ĐÊM ĐI NGƯỢC, và "dùng token mới ở mọi nơi" là HẠ tương phản.** Viền panel
+  ban đêm đang là `rgba(255,255,255,.10)` = **1,359** trên thẻ `#1d232d`, còn
+  `--edu-card-line` ban đêm là `#233049` = **1,195**. Gán thẳng token mới vào là làm
+  TỆ ĐI một bề mặt đang đúng. Nên `--edu-card-line` ban đêm NÂNG `#233049` → `#303c4e`
+  (**1,414**), rồi cả hai mới dùng chung. Đo trước khi gán, đừng gán rồi mới đo.
+  **Bóng MẶT NỔI bị bỏ sót hai vòng:** `--edu-panel-shadow` vẫn là
+  `rgba(83,102,137,.24)` xanh lạnh, vì ca cũ chỉ canh `--edu-card-shadow`. Nay
+  `rgba(42,32,23,.19)` — GIỮ hình dạng 20/50 (đây là mặt NỔI: dropdown, thẻ hover,
+  không phải thẻ nằm trên giấy, nên trần toả 24px KHÔNG áp ở đây), alpha hạ theo đúng
+  tỉ lệ lần đổi `--edu-card-shadow` (.10 → .08) vì nâu đọc nặng hơn xanh xám.
+  Bán kính `home.module.css` 20px → 16px, 4 chỗ (thang lofi là 4/8/12/16/pill).
+  Ca mới ghim CẤU TRÚC, không ghim mã màu: `--edu-panel-border` phải LÀ
+  `var(--edu-card-line)`. Phép chứng minh "đường kẻ có thấy được không" đã nằm ở ca
+  card-line và kiểm cả hai chiều ngày/đêm — nuôi một màu thứ hai ở đây là nuôi một
+  thứ sẽ trôi khỏi nó.
+  Ablate 4 chiều, mỗi chiều **1 đỏ**: viền ngày về trắng · viền đêm về `rgba` · bóng
+  nổi về xanh lạnh · hạ `--edu-card-line` đêm xuống dưới nền thẻ.
+  **GIỚI HẠN PHẢI NÓI RA:** ca card-line kiểm CHIỀU (sáng hơn / tối hơn nền), không
+  kiểm ĐỘ LỚN — nên bản nâng 1,195 → 1,414 KHÔNG được ghim bằng một sàn. Hạ ngược về
+  `#233049` vẫn xanh. Đặt sàn ở đây thì phải thêm một mục vào
+  `scripts/nguong-mot-chieu.json`; chưa làm, và đó là lựa chọn chứ không phải bỏ sót.
+  `ASSET_VERSION` bump theo (`2026-11-04d`) vì `edu-theme.css` nằm trong `public/`.
 
   **Còn lại của hệ `--ds-*`:** main mới chỉ lấy nhóm CODE. 58 token còn lại (giấy, thẻ,
   nút, tím/đỏ/lục, bán kính, bóng) vẫn ở nhánh `test`. Port tiếp thì theo đúng luật này:
