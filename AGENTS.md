@@ -59,7 +59,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **139 cảnh báo** |
-| Frontend unit test | `cd frontend && npm run test:unit` → **510 ca** / 40 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **511 ca** / 40 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **138 bài tập được chấm / 460 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
@@ -90,8 +90,9 @@ mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 
 read-diagram 12 ·
 read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 33 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 3 = 510.
-Mốc trước là 507; thêm ds-contrast 3 (TƯƠNG PHẢN KHỐI CODE — tính từ chính file CSS).
+worker-csp 7 · ds-contrast 4 = 511.
+Mốc trước là 510; ds-contrast 3 → 4 (BÓNG THẺ phải ấm và bám sát).
+Trước đó 507 → 510; thêm ds-contrast 3 (TƯƠNG PHẢN KHỐI CODE — tính từ chính file CSS).
 Trước đó 504 → 507; read-guess 16 → 19 (CỔNG DỰ ĐOÁN HÌNH cho 71 màn có biểu đồ).
 Trước đó 490 → 504; thêm spaced-review 14 (ÔN GIÃN CÁCH — hỏi lại câu đã sai).
 Trước đó 481 → 490; thêm practice-run 9 (Ô CHẠY THỬ ở màn luyện tập).
@@ -1790,6 +1791,20 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **`ASSET_VERSION` phải bump cùng commit** (nay `2026-11-04a`): file trong `public/` không
   qua bundler nên URL không đổi theo nội dung, không bump thì người đã mở trang giữ CSS cũ
   — tức bản đổi không tới được đúng những người đang dùng.
+  **BỀ MẶT THẺ: bảng MÀU đã trùng sẵn, chỉ còn ba chi tiết — đo rồi mới biết.**
+  Vòng hai định port màu bề mặt của `ShellB` và phép đo nói ĐỪNG: `--edu-bg-solid`
+  `#eaeff6` = `--ds-page`, `--edu-t1` `#0f1b33` = `--ds-ink`, `--edu-t2` `#3a4a66`
+  = `--ds-soft`, `--edu-panel-bg-solid` `#ffffff` = `--ds-card`. **Trùng từng mã màu.**
+  Thứ còn lệch thật chỉ là: BÓNG (`0 10px 30px rgba(113,132,167,.10)` xanh lạnh toả
+  rộng → `0 6px 22px rgba(42,32,23,.08)` nâu ấm bám sát, **31 chỗ dùng**), BÁN KÍNH
+  (`--st-card-radius` 22 → 16, thang lofi là 4/8/12/16/pill, 3 chỗ dùng), và VIỀN THẺ.
+  **Viền CỐ Ý không đụng:** `--edu-card-border: rgba(255,255,255,.85)` dùng ở **61
+  chỗ**, và viền trắng là viền SÁNG có chủ đích trên nền không-trắng — đổi mù 61 chỗ
+  sang `#CFD9E8` là liều, phải xem từng chỗ.
+  Cổng cho bóng ghim TÍNH CHẤT chứ không ghim chuỗi CSS: ngày thì R ≥ B (ấm), và cả
+  hai chế độ toả ≤ 24px (bám sát). Ghim nguyên chuỗi thì đổi 6px thành 7px là đỏ oan.
+  Ablate: bóng về xanh → 1 đỏ; bóng toả rộng lại → 1 đỏ.
+
   **Còn lại của hệ `--ds-*`:** main mới chỉ lấy nhóm CODE. 58 token còn lại (giấy, thẻ,
   nút, tím/đỏ/lục, bán kính, bóng) vẫn ở nhánh `test`. Port tiếp thì theo đúng luật này:
   **mỗi vòng token + nối ít nhất một bề mặt THẬT**, không thêm token suông — thêm token mà

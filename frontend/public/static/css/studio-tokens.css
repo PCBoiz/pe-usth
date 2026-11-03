@@ -71,7 +71,8 @@
      hoạ của bài vẽ ở khổ 1280×640; ở cột 680 nó hiện chưa tới một nửa nên chữ
      trong sơ đồ xuống còn 6–7px, không đọc nổi. */
   --st-col-wide:    1328px;
-  --st-card-radius: 22px;
+  --st-card-radius: 16px;   /* --ds-r-lg. 22px đọc ra bong bóng; 16 là thang
+                               bán kính của bảng lofi (4/8/12/16/pill). */
 
   /* ── khung bài học PE v3 (Figma "B01–B20 bản một màn") ────── */
   --st-page-bg:     #f3f5fa;   /* nền phẳng của màn học */

@@ -100,3 +100,37 @@ test('bảng code là NÂU ẤM, không phải xanh lạnh — kênh đỏ ≥ k
     assert.ok(r >= b, `${che}: nền code #${nen} có B(${b}) > R(${r}) — đã quay về bảng lạnh`);
   }
 });
+
+/**
+ * BÓNG THẺ phải ẤM và BÁM SÁT — ghim QUYẾT ĐỊNH, không ghim chuỗi CSS.
+ *
+ * Bóng là thứ không có tương phản để đo, nên mọi phép kiểm ở trên mù với nó.
+ * Mà nó lại là một trong ba thứ còn lệch thật giữa main và bảng lofi (bảng
+ * MÀU bề mặt thì đã trùng nhau từng mã: #eaeff6 · #0f1b33 · #3a4a66 · #ffffff).
+ * Bản cũ `0 10px 30px rgba(113,132,167,.10)` là bóng XANH LẠNH toả rộng — thẻ
+ * nổi lên như hộp thoại; bóng nâu bám sát thì thẻ nằm TRÊN giấy.
+ *
+ * Hai tính chất, không phải một chuỗi: (1) ở chế độ NGÀY màu bóng phải ấm
+ * (R >= B); (2) độ toả không được vượt 24px ở cả hai chế độ. Ghim nguyên chuỗi
+ * thì đổi 6px thành 7px là đỏ oan; ghim tính chất thì "làm mềm lại cho giống
+ * bản cũ" mới đỏ.
+ */
+const THEME = readFileSync(
+  join(__dirname, '..', '..', 'public', 'static', 'css', 'edu-theme.css'),
+  'utf8',
+);
+
+test('bóng thẻ: ngày phải ẤM, và cả hai chế độ phải BÁM SÁT (toả <= 24px)', () => {
+  const hit = [...THEME.matchAll(/--edu-card-shadow:\s*([^;]+);/g)].map((m) => m[1].trim());
+  assert.equal(hit.length, 2, 'phải có đúng 2 khai báo --edu-card-shadow (ngày + Ban đêm)');
+
+  const [ngay, dem] = hit;
+  const toa = (css) => Number(css.match(/\d+px\s+(\d+)px/)[1]);
+  assert.ok(toa(ngay) <= 24, 'bóng ban ngày toả ' + toa(ngay) + 'px — đã quay về bóng toả rộng');
+  assert.ok(toa(dem) <= 24, 'bóng Ban đêm toả ' + toa(dem) + 'px');
+
+  const rgb = ngay.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+  assert.ok(rgb, 'bóng ban ngày phải dùng rgba() để đọc được màu');
+  const [r, , b] = [rgb[1], rgb[2], rgb[3]].map(Number);
+  assert.ok(r >= b, 'bóng ban ngày R(' + r + ') < B(' + b + ') — đã quay về bóng xanh lạnh');
+});

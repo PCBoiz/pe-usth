@@ -78,7 +78,15 @@
   --edu-t6: #4d5d7a;
   --edu-card-bg: rgba(255,255,255,.55);
   --edu-card-border: rgba(255,255,255,.85);
-  --edu-card-shadow: 0 10px 30px rgba(113,132,167,.10);
+  /* BÓNG ẤM, BÁM SÁT — lấy từ --ds-shadow-open của nhánh test (theme lofi
+     chill nhóm đã chốt). Bản cũ 0 10px 30px rgba(113,132,167,.10) là bóng
+     XANH LẠNH toả rộng: nó đẩy thẻ nổi hẳn lên khỏi trang như một hộp thoại.
+     Bóng nâu bám sát thì thẻ nằm TRÊN giấy, không lơ lửng — đó là khác biệt
+     giữa "giao diện phần mềm" và "trang giấy", và nó dùng ở 31 chỗ.
+     Đo trước khi đổi: bảng bề mặt của main và của --ds-* đã TRÙNG NHAU từng mã
+     màu (#eaeff6 · #0f1b33 · #3a4a66 · #ffffff), nên bóng là một trong ba thứ
+     còn lệch thật — hai thứ kia là bán kính (22 -> 16) và viền thẻ. */
+  --edu-card-shadow: 0 6px 22px rgba(42,32,23,.08);
   --edu-pill-bg: rgba(255,255,255,.55);
   --edu-pill-border: rgba(255,255,255,.85);
   --edu-panel-bg: rgba(255,255,255,.96);
@@ -202,7 +210,9 @@ body.dark {
   --edu-t6: #a5acba;
   --edu-card-bg: rgba(255,255,255,.045);
   --edu-card-border: rgba(255,255,255,.09);
-  --edu-card-shadow: 0 10px 30px rgba(0,0,0,.42);
+  /* Ban đêm giữ bóng đen (nâu trên nền tối thì không thấy gì), nhưng bám sát
+     theo cùng hình dạng để hai chế độ cùng một nhịp. */
+  --edu-card-shadow: 0 6px 22px rgba(0,0,0,.45);
   --edu-pill-bg: rgba(255,255,255,.045);
   --edu-pill-border: rgba(255,255,255,.09);
   --edu-panel-bg: rgba(29,35,45,.97);
