@@ -145,6 +145,14 @@
       "chieu": "nang",
       "moc": 5,
       "vi": "Ngưỡng ô tối thiểu của phễu tiến độ. Hạ nó là nới chính phép che mà nó sinh ra để làm: một tỉ lệ tính từ vài tài khoản không phải một tỉ lệ, nó là vài quan sát."
+    },
+    {
+      "ten": "tran-lech-kenh-nen",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "TRAN_LECH_KENH_NEN = (\\d+);",
+      "chieu": "ha",
+      "moc": 24,
+      "vi": "Trần |R-B| cho mọi màu của --edu-bg-image. Giấy lofi lệch 6-16; đỏ brand lệch 145, xanh brand lệch 176. Ablate đã đo: nới nó lên 200 rồi trả mesh đỏ vào nền thì 0 ca đỏ — tức đây đúng là con số một vòng lặp sẽ nới để được xanh."
     }
   ]
 }

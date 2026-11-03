@@ -329,3 +329,47 @@ test('bóng mặt nổi: ngày phải ẤM (R >= B), không phải xanh lạnh',
   const [r, , b] = rgb.slice(1).map(Number);
   assert.ok(r >= b, `bóng mặt nổi ban ngày R(${r}) < B(${b}) — đã quay về bóng xanh lạnh`);
 });
+
+/* NỀN TRANG là bề mặt LỚN NHẤT, nên nó quyết định trang đọc ra "lofi" hay
+ * "bố cục xanh–đỏ cũ" hơn mọi thẻ cộng lại.
+ *
+ * Đo trên production 04/11/2026, SAU khi viền thẻ đã sửa: `body` vẫn vẽ
+ * rgba(255,90,110,.20) đỏ góc trên-phải + rgba(79,141,255,.30) xanh góc
+ * dưới-trái đè lên #eaeff6 — tức chủ dự án nhìn vào vẫn thấy hồng/tím.
+ *
+ * Ca này ghim TÍNH CHẤT: mọi màu trong --edu-bg-image phải TRUNG TÍNH, đo
+ * bằng |R - B|. Giấy lofi lệch 6–16; đỏ brand lệch 145, xanh brand lệch 176.
+ * Ghim nguyên chuỗi CSS thì đổi một mốc dốc là đỏ oan. */
+const TRAN_LECH_KENH_NEN = 24; // CHỈ ĐƯỢC HẠ — nới là mời mesh brand quay lại
+
+test('nền trang phải TRUNG TÍNH, không mang quầng xanh–đỏ của bảng cũ', () => {
+  const hit = [...THEME.matchAll(/--edu-bg-image:\s*([^;]+);/g)].map((m) => m[1].trim());
+  assert.equal(hit.length, 2, 'phải có đúng 2 khai báo --edu-bg-image (ngày + Ban đêm)');
+  for (const [i, v] of hit.entries()) {
+    const che = i === 0 ? 'ngày' : 'Ban đêm';
+    const mau = [
+      ...[...v.matchAll(/#([0-9a-f]{6})/gi)].map((m) => [0, 2, 4].map((k) => parseInt(m[1].slice(k, k + 2), 16))),
+      ...[...v.matchAll(/rgba?\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)/g)].map((m) => m.slice(1, 4).map(Number)),
+    ];
+    assert.ok(mau.length >= 2, `--edu-bg-image ${che} không đọc được màu nào: ${v.slice(0, 60)}`);
+    for (const [r, , b] of mau) {
+      assert.ok(
+        Math.abs(r - b) <= TRAN_LECH_KENH_NEN,
+        `nền ${che} có màu rgb(${r}, _, ${b}) lệch kênh ${Math.abs(r - b)} `
+          + `> ${TRAN_LECH_KENH_NEN} — đó là quầng brand, không phải giấy lofi.`,
+      );
+    }
+  }
+});
+
+/* Nửa còn lại của cùng một lỗi: hai quầng bám chuột cũng tô xanh–đỏ lên MỌI
+ * trang. Sửa mỗi nền thì chúng vẫn chạy theo con trỏ, tức bản sửa trông như
+ * xong mà trang vẫn không phải lofi. Đã xoá hẳn — tô lại bằng màu trung tính
+ * trên giấy sáng chỉ thành một vệt mờ bẩn. */
+test('không còn quầng sáng bám chuột vẽ trên <html>', () => {
+  assert.ok(
+    !/html\.edu-fx\s*::?(before|after)/.test(THEME),
+    'html.edu-fx::before/::after đã quay lại — hai quầng brand bám con trỏ '
+      + 'là nửa còn lại của mesh xanh–đỏ, xem chú thích trong edu-theme.css.',
+  );
+});

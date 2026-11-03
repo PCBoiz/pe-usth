@@ -63,12 +63,17 @@
     radial-gradient(90% 80% at 100% 100%, rgba(37,99,235,.06) 0%, rgba(37,99,235,0) 60%),
     radial-gradient(60% 50% at 0% 100%, rgba(229,51,75,.04) 0%, rgba(229,51,75,0) 70%);
 
-  /* light theme (default) — mesh: quầng xanh dưới-trái, đỏ trên-phải, xanh nhạt giữa */
+  /* GIẤY LOFI, KHÔNG CÒN MESH XANH–ĐỎ. Bản cũ vẽ ba radial đè lên nền:
+     rgba(255,90,110,.20) đỏ góc trên-phải + rgba(79,141,255,.30) xanh góc
+     dưới-trái + một đốm xanh nhạt giữa. Đó là bảng xanh–đỏ của bố cục TRƯỚC
+     việc thiết kế (xem commit 070886a), không phải lofi chill — và vì nó là
+     bề mặt LỚN NHẤT trang nên nó quyết định trang đọc ra "cũ" hay không,
+     hơn mọi thẻ cộng lại. Đo trên production 04/11: chủ dự án nhìn ảnh chụp
+     và vẫn thấy hồng/tím sau khi viền thẻ đã sửa xong.
+     Giữ NGUYÊN hình dạng dốc 160deg để không đổi nhịp bố cục; chỉ bỏ ba
+     radial và đưa ba mốc về giấy trung tính. */
   --edu-bg-image:
-    radial-gradient(48% 42% at 92% 4%, rgba(255,90,110,.20) 0%, rgba(255,90,110,0) 66%),
-    radial-gradient(60% 52% at 4% 96%, rgba(79,141,255,.30) 0%, rgba(79,141,255,0) 68%),
-    radial-gradient(50% 40% at 52% 48%, rgba(190,214,255,.45) 0%, rgba(190,214,255,0) 72%),
-    linear-gradient(160deg, #f1f5fb 0%, #eaeff6 55%, #e4ecf8 100%);
+    linear-gradient(160deg, #f7fafd 0%, #eaeff6 55%, #e4eaf4 100%);
   --edu-bg-solid: #eaeff6;
   --edu-t1: #0f1b33;
   --edu-t2: #3a4a66;
@@ -212,11 +217,9 @@ body.dark {
     linear-gradient(135deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,0) 42%),
     radial-gradient(90% 80% at 100% 100%, rgba(79,141,255,.08) 0%, rgba(79,141,255,0) 60%),
     radial-gradient(60% 50% at 0% 100%, rgba(255,90,110,.05) 0%, rgba(255,90,110,0) 70%);
+  /* Ban đêm cùng phép bỏ mesh. Dốc giữ nguyên ba mốc cũ, chỉ hạ ám xanh. */
   --edu-bg-image:
-    radial-gradient(48% 42% at 92% 4%, rgba(229,51,75,.20) 0%, rgba(229,51,75,0) 66%),
-    radial-gradient(60% 52% at 4% 96%, rgba(37,99,235,.30) 0%, rgba(37,99,235,0) 68%),
-    radial-gradient(50% 40% at 52% 50%, rgba(79,141,255,.10) 0%, rgba(79,141,255,0) 72%),
-    linear-gradient(160deg, #0a0f1c 0%, #080c15 55%, #070b14 100%);
+    linear-gradient(160deg, #0d1118 0%, #080c15 55%, #070b14 100%);
   --edu-bg-solid: #080c15;
   --edu-t1: #e8eefb;
   --edu-t2: #c4cad5;
@@ -766,32 +769,14 @@ html { scrollbar-color: var(--edu-accent) transparent; }
 }
 .sk-set, .un-card, .cp-modal, .streak-card { border-radius: 16px !important; }
 
-/* Đèn xanh/đỏ bám theo chuột — vẽ bằng pseudo-element của <html> (không chèn DOM,
-   tránh lỗi hydration). edu-fx.js chỉ cập nhật --ax --ay --bx --by. */
-html.edu-fx::before, html.edu-fx::after {
-  content: '';
-  position: fixed;
-  top: 0; left: 0;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity .5s ease;
-  will-change: transform;
-}
-html.edu-fx.edu-fx-on::before, html.edu-fx.edu-fx-on::after { opacity: 1; }
-html.edu-fx::before {
-  width: 440px; height: 440px;
-  background: radial-gradient(circle, rgba(37,99,235,.22) 0%, rgba(37,99,235,0) 68%);
-  transform: translate3d(calc(var(--ax, -999px) - 220px), calc(var(--ay, -999px) - 220px), 0);
-}
-html.edu-fx::after {
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(229,51,75,.17) 0%, rgba(229,51,75,0) 68%);
-  transform: translate3d(calc(var(--bx, -999px) - 40px), calc(var(--by, -999px) - 30px), 0);
-}
-html.edu-fx:has(body.dark)::before { background: radial-gradient(circle, rgba(79,141,255,.26) 0%, rgba(79,141,255,0) 68%); }
-html.edu-fx:has(body.dark)::after { background: radial-gradient(circle, rgba(255,90,110,.20) 0%, rgba(255,90,110,0) 68%); }
+/* HAI QUẦNG XANH–ĐỎ BÁM CHUỘT ĐÃ XOÁ (04/11/2026). Chúng vẽ
+   rgba(37,99,235,.22) + rgba(229,51,75,.17) lên mọi trang — cùng bảng
+   xanh–đỏ với mesh nền vừa bỏ ở trên, và là nửa còn lại của cùng một lỗi:
+   sửa mỗi nền thì hai đốm brand vẫn chạy theo con trỏ, tức bản sửa trông
+   như xong mà vẫn không phải lofi. Tô lại bằng màu trung tính KHÔNG cứu
+   được: trên giấy sáng #EAEFF6 một quầng trung tính là một vệt mờ bẩn.
+   `edu-fx.js` vẫn nạp và vẫn chạy — nó còn làm đốm sáng cho THẺ (data-fx),
+   và nó chỉ ghi --ax/--ay/--bx/--by nên không có lời gọi nào hỏng. */
 
 /* Ô/card có data-fx hoặc nằm trong danh sách của edu-fx.js: đốm sáng bám con trỏ */
 .edu-fx-card { position: relative; }
@@ -831,7 +816,6 @@ html.edu-fx:has(body.dark)::after { background: radial-gradient(circle, rgba(255
 .edu-fx-btn:active { transform: translate(var(--mx, 0px), var(--my, 0px)) scale(.97); }
 
 @media (prefers-reduced-motion: reduce) {
-  html.edu-fx::before, html.edu-fx::after { display: none; }
   .edu-fx-tilt, .edu-fx-btn { transform: none !important; transition: none; }
   .edu-cd-progress-fill, .progress-fill, .dash-progress-fill, .cd-block, .cd-card { animation: none; }
 }

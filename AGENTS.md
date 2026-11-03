@@ -76,7 +76,7 @@ học nó.
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **139 cảnh báo** |
-| Frontend unit test | `cd frontend && npm run test:unit` → **520 ca** / 41 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **522 ca** / 41 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **139 bài tập được chấm / 463 ca**, 2 441 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
@@ -89,7 +89,7 @@ học nó.
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **15 CSS module trong `src/`** |
 | Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **179/179 bài khớp bản dựng**, 0 lỗi (biên nhận 04/11/2026) |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
-| Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **17 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
+| Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **18 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
 | Wheel vendored | `node scripts/check-wheel.mjs` → **16 wheel · 5 gói bài khai · 16 sau đóng bao phụ thuộc**, 0 lỗi |
 | Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **17 mục đối chiếu được**, 0 lỗi; 2 nhóm khai NGOÀI TẦM |
@@ -112,8 +112,9 @@ mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 
 read-diagram 12 ·
 read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 33 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 10 · feedback-rank 3 = 520.
-Mốc trước là 518; ds-contrast 8 → 10 (VIỀN THẺ TRANG CÔNG KHAI + BÓNG MẶT NỔI).
+worker-csp 7 · ds-contrast 12 · feedback-rank 3 = 522.
+Mốc trước là 520; ds-contrast 10 → 12 (NỀN TRANG bỏ mesh xanh–đỏ + quầng bám chuột).
+Trước đó 518 → 520; ds-contrast 8 → 10 (VIỀN THẺ TRANG CÔNG KHAI + BÓNG MẶT NỔI).
 Trước đó 515 → 518; thêm feedback-rank 3 (THỨ BẬC CỦA PHẢN HỒI).
 Trước đó 514 → 515; ds-contrast 7 → 8 (HAI THANH STICKY phải có cạnh).
 Trước đó 511 → 514; ds-contrast 4 → 7 (VIỀN THẺ: lớp lỗi "shorthand chỉ có màu",
@@ -2340,6 +2341,35 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `#233049` vẫn xanh. Đặt sàn ở đây thì phải thêm một mục vào
   `scripts/nguong-mot-chieu.json`; chưa làm, và đó là lựa chọn chứ không phải bỏ sót.
   `ASSET_VERSION` bump theo (`2026-11-04d`) vì `edu-theme.css` nằm trong `public/`.
+
+  **NỀN TRANG CÒN VẼ MESH XANH–ĐỎ — bề mặt LỚN NHẤT, và là thứ chủ dự án thật sự
+  đang nhìn thấy.** Sau khi viền thẻ xong, tôi mở production bằng Chrome (đúng cái
+  tôi đã khai là "chưa làm" vòng trước) và chụp ảnh: thẻ CÓ cạnh, nhưng trang vẫn
+  hồng/tím. Đo ra ngay: `body` vẽ `rgba(255,90,110,.20)` đỏ góc trên-phải +
+  `rgba(79,141,255,.30)` xanh góc dưới-trái + một đốm xanh nhạt giữa, ĐÈ lên
+  `#eaeff6`. Đó là bảng xanh–đỏ của bố cục TRƯỚC việc thiết kế (commit `070886a`).
+  **BÀI HỌC VỀ PHÉP ĐO, không phải về CSS:** hai vòng trước tôi chứng minh bằng công
+  thức WCAG tính từ chính file CSS — đúng từng số, và cả hai lần đều BỎ SÓT thứ to
+  nhất, vì tôi chỉ tính những token mình đang sửa. Một ảnh chụp 30 giây trả lời câu
+  "trang đọc ra cái gì" mà không phép tính nào trong repo trả lời được.
+  **NỬA CÒN LẠI của cùng lỗi, và bỏ sót nó là bản sửa trông như xong:** hai QUẦNG
+  SÁNG BÁM CHUỘT (`html.edu-fx::before/::after`) tô `rgba(37,99,235,.22)` +
+  `rgba(229,51,75,.17)` lên MỌI trang — `edu-fx.js` nạp ở layout gốc nên chúng
+  đang sống. Sửa mỗi nền thì hai đốm brand vẫn chạy theo con trỏ.
+  **XOÁ, không tô lại:** trên giấy sáng `#EAEFF6` một quầng trung tính là một vệt mờ
+  bẩn, và một đốm sáng chạy theo con trỏ ngược hẳn với "chill". `edu-fx.js` vẫn nạp và
+  vẫn làm đốm sáng cho THẺ (`data-fx`); nó chỉ ghi `--ax/--ay/--bx/--by` nên không
+  lời gọi nào hỏng.
+  Giữ NGUYÊN dốc `160deg` ba mốc để không đổi nhịp bố cục; chỉ bỏ ba radial và đưa
+  màu về giấy trung tính (ngày `#f7fafd → #eaeff6 → #e4eaf4`).
+  **Cổng ghim TÍNH CHẤT bằng |R − B|:** giấy lofi lệch 6–16, đỏ brand lệch **145**,
+  xanh brand lệch **176**. Ghim nguyên chuỗi CSS thì đổi một mốc dốc là đỏ oan.
+  Ablate 4 chiều: trả mesh đỏ vào nền ngày → **1 đỏ** · trả mesh xanh vào nền đêm →
+  1 · dựng lại quầng bám chuột → 1 · **nới trần `TRAN_LECH_KENH_NEN` 24 → 200 rồi
+  trả mesh đỏ vào → 0 đỏ**. Chiều thứ tư đúng là "nới phép kiểm cho xanh" mà LOOP.md
+  gọi tên, nên con số ấy nay có một mục trong `scripts/nguong-mot-chieu.json`
+  (17 → 18 ngưỡng); ablate lại qua sổ: nới 24 → 200 thì `check-nguong` **1 lỗi**.
+  `ASSET_VERSION` → `2026-11-04e`.
 
   **Còn lại của hệ `--ds-*`:** main mới chỉ lấy nhóm CODE. 58 token còn lại (giấy, thẻ,
   nút, tím/đỏ/lục, bán kính, bóng) vẫn ở nhánh `test`. Port tiếp thì theo đúng luật này:
