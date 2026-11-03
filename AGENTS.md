@@ -285,6 +285,19 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   Cổng làm việc nới trở nên TO TIẾNG (một dòng diff trong sổ, kèm câu hỏi "vì sao"),
   KHÔNG làm nó bất khả — cùng mức trung thực với `check-da-nap` ("chống QUÊN NẠP,
   không chống DB trôi").
+  **`--ghi-so` TỪNG LÀM BẨN CHÍNH CÁI SỔ NÓ CANH — và tôi giao nó mà chưa chạy lần
+  nào.** Lần chạy ĐẦU TIÊN của cờ này (một vòng SAU khi commit): nó in "0 ngưỡng cập
+  nhật" rồi vẫn **sửa 4 dòng**, vì `JSON.stringify` chuẩn hoá `12.0` thành `12`.
+  Vô hại về SỐ, có hại về TÍN HIỆU: cả giá trị của sổ nằm ở chỗ "một dòng diff ở đây
+  là một câu hỏi to tiếng", nên một lần ghi vô ích làm hỏng đúng thứ đó. Nay `doi === 0`
+  thì in "Sổ đã đúng — không ghi gì" và KHÔNG chạm file.
+  Ba nhánh của cờ nay đều đã chạy thật: không có gì đổi → file SẠCH · siết thật một
+  ngưỡng (5 → 8) → ghi đúng 1 mục rồi xanh lại · ĐANG CÓ LỖI → từ chối ghi, **exit 1**,
+  sổ không bị chạm (nếu không thì `--ghi-so` là cái nút TẮT cổng).
+  **Bài học rộng hơn:** một CỜ chưa ai chạy cũng là "dựng xong mà không có đường tới",
+  chỉ khác là đường đó dành cho người bảo trì chứ không cho người học. Giao một cờ thì
+  phải chạy cả ba nhánh của nó TRONG CÙNG vòng.
+
   **MỘT REGEX MƠ HỒ LÀ MỘT CỔNG HỎNG, và nó hỏng theo CẢ HAI chiều.** Lần chạy đầu,
   `san-mau-chu-giai-thich` dùng `ts >= (\d+)` và khớp trúng dòng AA `ts >= 4.5`
   đứng TRƯỚC — bắt được 4, **báo oan một ngưỡng đang đúng**. Cùng lỗi ấy mà khớp nhầm

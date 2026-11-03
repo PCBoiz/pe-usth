@@ -106,6 +106,16 @@ if (process.argv.includes('--ghi-so')) {
       doi += 1;
     }
   }
+  // KHÔNG GHI KHI KHÔNG CÓ GÌ ĐỔI. Cả giá trị của sổ này nằm ở chỗ "một dòng
+  // diff ở đây là một câu hỏi to tiếng" — nên một lần ghi vô ích làm hỏng đúng
+  // tín hiệu đó. Đo được ngay lần chạy ĐẦU TIÊN của cờ này (tôi giao nó ở vòng
+  // trước mà chưa chạy lần nào): nó in "0 ngưỡng cập nhật" rồi vẫn sửa 4 dòng,
+  // vì `JSON.stringify` chuẩn hoá `12.0` thành `12`. Vô hại về SỐ, có hại về
+  // TÍN HIỆU.
+  if (doi === 0) {
+    console.log('Sổ đã đúng — không ghi gì.');
+    process.exit(0);
+  }
   writeFileSync(SO, `${JSON.stringify(so, null, 2)}\n`, 'utf8');
   console.log(`Đã ghi sổ: ${doi} ngưỡng cập nhật.`);
   process.exit(0);
