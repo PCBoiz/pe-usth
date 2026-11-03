@@ -69,7 +69,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **17 mục, 14 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
-| Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi |
+| Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **16 CSS module trong `src/`** |
 | Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **179/179 bài khớp bản dựng**, 0 lỗi (biên nhận 04/11/2026) |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
@@ -1707,6 +1707,22 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   văn bản đã bỏ chú thích, nên một `<title>Concept Card</title>` trong trang khác đủ làm
   `Concept.tsx` trông như còn sống (tôi kiểm tay rồi mới xoá nó). Dễ dãi là chiều AN TOÀN
   — cổng kêu oan sẽ bị tắt — nhưng đừng đọc "0 lỗi" thành "không còn gì chết".
+  **ĐIỂM MÙ ĐÃ ĐỂ LỌT CHÍNH SAI SÓT CỦA CỔNG NÀY — CSS module trong `src/`.**
+  Mục 1 của cổng chỉ quét `public/static/{js,css}`, mục 2 chỉ quét `.tsx`.
+  Nên khi chính đợt dọn 03/11 xoá `ShellA.tsx`, file `ShellA.module.css`
+  (74 dòng, 1 349 byte) ở lại — không ai import, không cổng nào thấy, và **commit mang
+  tên "xoá tài nguyên chết" để nó lại**. Thấy nó bằng tay khi liệt kê 61 chỗ dùng
+  `--edu-card-border` cho việc khác, không phải nhờ bộ kiểm nào.
+  Mục 2b nay quét `.module.css` và so bằng TÊN FILE — import CSS module luôn viết
+  nguyên tên file nên phép so không phải đoán, khác hẳn phép so `\b<Tên>\b` dễ dãi
+  của mục 2. Đo được: **16 CSS module trong `src/`, đúng 1 mồ côi**.
+  Ablate: thêm một `.module.css` không ai import → **1 lỗi**; 15 module còn lại
+  không mục nào kêu oan (chính lần chạy xanh là phép kiểm chiều đó).
+  **Bài học rộng hơn con số:** một cổng chống "dựng xong mà không ai tới" cũng có
+  vùng không quét, và vùng đó im lặng đúng như thứ nó ra đời để bắt. Thêm một LOẠI
+  tệp vào `src/` (hôm nay là `.module.css`; ngày mai có thể là `.worker.ts`,
+  `.json` dữ liệu) thì phải hỏi NGAY: mục nào của cổng này quét nó?
+
   **Và `app/` được MIỄN:** ở đó `page`/`layout`/`route` không ai import là quy ước định
   tuyến của Next, không phải lỗi.
 

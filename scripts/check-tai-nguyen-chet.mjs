@@ -141,6 +141,24 @@ for (const p of comp) {
   }
 }
 
+// ---------- 2b. CSS module trong src/ không ai import ----------------------
+// ĐIỂM MÙ ĐÃ ĐỂ LỌT MỘT LẦN, và lọt đúng sai sót của chính cổng này.
+// Mục 1 chỉ quét `public/static/{js,css}`; mục 2 chỉ quét `.tsx`.
+// Nên khi đợt dọn 03/11 xoá `ShellA.tsx`, file `ShellA.module.css` (74
+// dòng) ở lại — không ai import, không cổng nào thấy, và chính commit
+// "xoá tài nguyên chết" để nó lại. Một CSS module mồ côi còn tệ hơn một
+// file tĩnh mồ côi: nó ĐI VÀO BUNDLE nếu có ai lỡ import lại, và nó làm
+// người đọc tưởng component tương ứng vẫn còn.
+//
+// So bằng TÊN FILE (`X.module.css`), không bằng tên lớp: import CSS
+// module luôn viết nguyên tên file, nên phép so này không cần đoán.
+const cssMod = liet(join(FE, "src"), [".module.css"]);
+for (const p of cssMod) {
+  const ten = p.split(sep).pop();
+  const ai = nguon.some((q) => doc(q).includes(ten));
+  if (!ai) chet.push([`css-module/${ten}`, statSync(p).size]);
+}
+
 // ---------- 3. đối chiếu hai chiều với danh sách ngoại lệ ------------------
 const tenChet = new Set(chet.map(([t]) => t));
 const chuaKhai = chet.filter(([t]) => !(t in GIU_DU_CHET));
