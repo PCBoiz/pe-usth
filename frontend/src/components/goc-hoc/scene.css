@@ -541,7 +541,16 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
   #side{top:auto;left:0;right:0;bottom:0;width:auto;max-height:52%;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));border-radius:24px 24px 0 0;background:rgba(22,15,32,.86);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--line)}
   #side .pills .pill.xpp,#side .pills .sp{display:none}
   .pill.st.mob{display:flex}
-  .menu{flex-direction:row;overflow-x:auto;scrollbar-width:none;gap:8px}
+  /* #side là flex cột có max-height:52%, mà .hero mang overflow:hidden ⇒ cỡ
+     tối thiểu tự động của nó về 0 và flex-shrink:1 BÓP nó: đo ở 390×844 thì
+     231 → 126px, nút ▶ (lời mời chính của cả trang trên điện thoại) bị cắt
+     35px và thanh tiến độ mất hẳn. Không co ba khối đầu; #side đã có
+     overflow-y:auto nên phần thừa thành cuộn chứ không thành cắt. */
+  #side>.pills,#side>.hero,#side>.menu{flex-shrink:0}
+  /* Hàng nút tràn ~400px mà không có dấu hiệu nào ngoài một nút bị cắt dở —
+     mờ mép phải để nó đọc ra là "còn nữa, vuốt sang". */
+  .menu{flex-direction:row;overflow-x:auto;scrollbar-width:none;gap:8px;
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
   .mi{flex:none;width:auto;padding:8px 12px}.mi small,.mi .chev{display:none}
   .mi .ic{width:30px;height:30px}
   .today .q{display:none}.today h3{margin:0}

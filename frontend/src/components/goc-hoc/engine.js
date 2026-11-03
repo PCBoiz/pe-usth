@@ -664,7 +664,7 @@ function body(r){
       than = `<div class="trophy" id="trophy">${rows.map(row=>`<div class="plank">${row.map(b=>`<div class="bdg${b.unlocked?'':' soon'}" title="${esc(b.name)}"><div class="med bronze">${esc((b.code||'?').slice(0,4))}</div><span>${esc(b.name)}</span></div>`).join('')}</div>`).join('')}<div class="sweep" id="sweep"></div></div>`;
     }
     const mo = list ? list.filter(b=>b.unlocked).length : null;
-    return `<div class="pg"><div class="pghead"><div><h1>Thành tựu</h1><p>${list == null ? 'chưa đọc được' : `${mo}/${list.length} huy hiệu đã mở`}</p></div></div>${than}</div>`;
+    return `<div class="pg"><div class="pghead"><div><h1>Thành tựu</h1><p>${list == null ? (USER.signedIn ? 'chưa đọc được' : 'chưa có phiên học') : `${mo}/${list.length} huy hiệu đã mở`}</p></div></div>${than}</div>`;
   }
 
   if (r==='phone'){
@@ -1123,8 +1123,12 @@ function apDungSo(){
   T('navRoadmap', `${MODULES.length} học phần · ${TOTAL} bài`);
   T('navCourses', 'Mỗi cuốn sách trên kệ là một bài');
   T('navPractice', USER.lessonsDone == null ? 'Câu hỏi lấy từ bài đã xong' : `Kho câu từ ${USER.lessonsDone} bài đã xong`);
-  T('navAchv', USER.badges ? `${USER.badges.done}/${USER.badges.total} huy hiệu` : 'chưa đọc được');
-  T('navRank', USER.rank ? `Hạng ${USER.rank.rank} theo XP` : 'chưa đọc được');
+  // "Chưa có phiên" KHÁC "có phiên mà đọc hỏng": người mở trang lần đầu từng
+  // thấy "chưa đọc được" ở hai ô này — đọc ra là trang hỏng, trong khi máy chủ
+  // chưa hề được hỏi (laySo() trả sớm khi không có phiên).
+  const chuaDoc = USER.signedIn ? 'chưa đọc được' : 'chưa có phiên học';
+  T('navAchv', USER.badges ? `${USER.badges.done}/${USER.badges.total} huy hiệu` : chuaDoc);
+  T('navRank', USER.rank ? `Hạng ${USER.rank.rank} theo XP` : chuaDoc);
 
   T('courseDone', USER.lessonsDone == null ? '—' : `${USER.lessonsDone}/${TOTAL} bài`);
   const cp = $('#courseProg'); if (cp) cp.style.width = (USER.lessonsDone == null ? 0 : PCT) + '%';
