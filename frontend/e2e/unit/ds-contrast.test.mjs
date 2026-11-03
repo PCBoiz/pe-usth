@@ -475,3 +475,31 @@ test('chip trang chủ: nền ĐỤC và cặp màu vượt AA (nền alpha làm
     );
   }
 });
+
+/* TRANG CHỦ KHÔNG ĐƯỢC DÙNG BẢNG BRAND XANH–ĐỎ NỮA.
+ *
+ * Màu TĨNH của trang đã sang lofi từ mấy vòng trước, nhưng lớp TƯƠNG TÁC thì
+ * không: rê chuột lên thẻ khoá học là một viền gradient xanh→đỏ (`--edu-g-brand`)
+ * cộng quầng `--edu-brand-glow` = rgba(37,99,235,.34) + rgba(229,51,75,.22) loé
+ * lên; nút "Viết đánh giá" thì nền gradient brand. Thứ loé ở MỌI lần rê chuột
+ * quyết định trang "đọc ra" bảng nào mạnh hơn cả màu tĩnh — và đó đúng là lý do
+ * chủ dự án vẫn thấy giao diện cũ sau ba vòng sửa màu nền.
+ *
+ * Ca này cấm bốn token brand trong KHAI BÁO của home.module.css. Chú thích thì
+ * được: chúng ghi lại cái đã bỏ và vì sao, mà một cổng cấm cả chú thích sẽ bắt
+ * người ta xoá đúng phần giải thích.
+ */
+test('trang chủ: lớp tương tác không còn token brand xanh–đỏ', () => {
+  const CAM = ['--edu-g-brand', '--edu-brand-glow', '--edu-accent-grad', '--edu-accent'];
+  // Bỏ chú thích /* … */ trước khi quét, để chỉ còn KHAI BÁO.
+  const sach = HOME.replace(/\/\*[\s\S]*?\*\//g, '');
+  for (const t of CAM) {
+    const n = sach.split(`var(${t})`).length - 1;
+    assert.equal(
+      n, 0,
+      `home.module.css còn ${n} chỗ dùng var(${t}) — đó là bảng xanh–đỏ của bố `
+        + 'cục TRƯỚC việc thiết kế. Bảng lofi có token đúng vai: --ds-action (nền '
+        + 'nút chính), --ds-violet (vị trí/lựa chọn), --ds-mark-ochre (nhấn ấm).',
+    );
+  }
+});

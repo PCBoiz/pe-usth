@@ -61,9 +61,9 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--edu-accent-text);
-  background: var(--edu-accent-soft);
-  border: 1px solid var(--edu-accent-soft-strong);
+  color: var(--ds-violet);
+  background: var(--ds-violet-tint);
+  border: 1px solid var(--edu-card-line);
   border-radius: 999px;
 }
 
@@ -102,24 +102,36 @@
   box-shadow: var(--edu-card-shadow);
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
+/* NÂNG ẤM, không phải quầng brand.
+   Bản cũ: `--edu-brand-glow` = 0 8px 22px rgba(37,99,235,.34) + rgba(229,51,75,.22),
+   tức một quầng XANH + ĐỎ — bảng brand của bố cục trước việc thiết kế. Nó là thứ
+   loé lên ở MỌI lần rê chuột, nên nó quyết định trang "đọc ra" bảng nào mạnh hơn cả
+   màu tĩnh. Nay cùng họ nâu ấm với --edu-card-shadow (rgba(42,32,23,…)): thẻ nhấc
+   lên khỏi GIẤY, không phát sáng như một nút neon. */
 .card:hover,
 .card:focus-visible {
   transform: translateY(-3px);
-  box-shadow: var(--edu-panel-shadow), var(--edu-brand-glow);
+  box-shadow: 0 14px 34px rgba(42, 32, 23, 0.16);
 }
+/* Viền lấy nét phải vượt 3:1 (WCAG 1.4.11 — đây là ranh giới một thành phần
+   giao diện, không phải trang trí). --ds-violet = 6,70:1 trên thẻ trắng. */
 .card:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: 2px solid var(--ds-violet);
   outline-offset: 3px;
 }
 
-/* Viền gradient xanh→đỏ chỉ lộ ra khi hover (mặt nạ khoét phần ruột). */
+/* Vòng hover: ẤM, và đây là chỗ mượn của "Góc học" — thứ làm cảnh phòng học ấm
+   là hổ phách, không phải xanh. Bản cũ vẽ gradient xanh→đỏ (`--edu-g-brand`).
+   `--ds-mark-ochre` đạt 1,99:1 trên thẻ: đủ cho TRANG TRÍ, và hover không phải
+   tín hiệu duy nhất (con trỏ + cú nhấc đã nói rồi) nên 1.4.11 không áp ở đây —
+   khác hẳn `:focus-visible` ở trên, nơi nó CÓ áp. */
 .card::before {
   content: '';
   position: absolute;
   inset: -1px;
   padding: 1.5px;
   border-radius: inherit;
-  background: var(--edu-g-brand);
+  background: var(--ds-mark-ochre);
   -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(black 0 0) content-box exclude, linear-gradient(black 0 0);
@@ -163,7 +175,7 @@
   letter-spacing: -0.01em;
   color: var(--edu-t1);
 }
-.card:hover .label { color: var(--edu-accent-text); }
+.card:hover .label { color: var(--ds-violet); }
 
 .desc {
   font-size: 15px;
@@ -224,7 +236,7 @@
   border-radius: 50%;
   transition: color 0.15s ease, background 0.15s ease, transform 0.18s ease;
 }
-.card:hover .go { color: white; background: var(--edu-accent); transform: translateX(2px); }
+.card:hover .go { color: var(--ds-on-action); background: var(--ds-action); transform: translateX(2px); }
 
 /* ── Thẻ góp ý — chỉ hiện khi đã đặt NEXT_PUBLIC_FEEDBACK_URL (xem page.tsx). ── */
 .feedback {
@@ -257,8 +269,8 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  color: var(--edu-accent-text);
-  background: var(--edu-accent-soft);
+  color: var(--ds-violet);
+  background: var(--ds-violet-tint);
   border-radius: 12px;
 }
 
@@ -282,14 +294,14 @@
   font-weight: 600;
   color: white;
   text-decoration: none;
-  background: var(--edu-accent-grad);
+  background: var(--ds-action);
   border-radius: 14px;
-  box-shadow: var(--edu-brand-glow);
+  box-shadow: 0 10px 24px rgba(42, 32, 23, 0.18);
   transition: transform 0.15s ease, filter 0.15s ease;
 }
 .feedbackButton:hover { transform: translateY(-1px); filter: brightness(1.06); }
 .feedbackButton:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: 2px solid var(--ds-violet);
   outline-offset: 3px;
 }
 

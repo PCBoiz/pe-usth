@@ -76,7 +76,7 @@ học nó.
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **139 cảnh báo** |
-| Frontend unit test | `cd frontend && npm run test:unit` → **523 ca** / 41 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **524 ca** / 41 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **139 bài tập được chấm / 463 ca**, 2 441 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
@@ -112,8 +112,9 @@ mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 
 read-diagram 12 ·
 read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 33 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 13 · feedback-rank 3 = 523.
-Mốc trước là 522; ds-contrast 12 → 13 (CHIP TRANG CHỦ: nền alpha làm chữ chìm).
+worker-csp 7 · ds-contrast 14 · feedback-rank 3 = 524.
+Mốc trước là 523; ds-contrast 13 → 14 (TRANG CHỦ bỏ token brand xanh–đỏ).
+Trước đó 522 → 523; ds-contrast 12 → 13 (CHIP TRANG CHỦ: nền alpha làm chữ chìm).
 Trước đó 520 → 522; ds-contrast 10 → 12 (NỀN TRANG bỏ mesh xanh–đỏ + quầng bám chuột).
 Trước đó 518 → 520; ds-contrast 8 → 10 (VIỀN THẺ TRANG CÔNG KHAI + BÓNG MẶT NỔI).
 Trước đó 515 → 518; thêm feedback-rank 3 (THỨ BẬC CỦA PHẢN HỒI).
