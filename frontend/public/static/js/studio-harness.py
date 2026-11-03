@@ -4447,8 +4447,11 @@ def _anh_figure(figures):
                     goc = getattr(type(fig).savefig, '_studio_original', None)
                     if goc is None:
                         goc = type(fig).savefig
-                    # dpi 96 cho figsize nguyên: tránh tự sinh thêm cảnh báo
-                    # "kích thước điểm ảnh là số thực".
+                    # dpi 96: giữ ảnh nhẹ. LÝ DO CŨ GHI Ở ĐÂY LÀ SAI và đã
+                    # xoá — nó viết "cho figsize nguyên, tránh tự sinh cảnh
+                    # báo kích thước điểm ảnh là số thực". Đo lại: dpi 96/100/
+                    # 120/130 và figsize (6,3)/(6,3.5) đều cho ĐÚNG 36 cảnh
+                    # báo. dpi không liên quan; xem bộ lọc ở `_install()`.
                     goc(fig, buf, format='png', dpi=96, bbox_inches='tight')
                     data = buf.getvalue()
                     if len(data) > _ANH_BYTE_MOI_HINH:
@@ -4529,6 +4532,28 @@ def _install():
         sys.modules['concurrent.futures.thread'].ThreadPoolExecutor = SimThreadPoolExecutor
     # Backend không cần màn hình; đặt trước khi matplotlib được import.
     os.environ['MPLBACKEND'] = 'Agg'
+    # ── MỘT cảnh báo của RUỘT matplotlib, và chỉ một ────────────────────
+    # `redirect_stderr(ctx.out)` là CỐ Ý: console của học viên phải hiện cảnh
+    # báo thư viện, vì phần lớn chúng nói về code họ vừa viết. Cái này thì
+    # KHÔNG: nó đến từ khâu raster hoá của backend Agg trong matplotlib 3.10,
+    # và không có dòng nào của người học gây ra nó.
+    # ĐÃ ĐO (Pyodide 314.0.7, cùng runtime trong repo), và phép đo bác đúng
+    # cái lý do từng được viết ngay dưới đây:
+    #   · figsize=(6,3.5)/dpi=130 · (6,3.5)/100 · (6,3)/130 · (6,3)/100 ·
+    #     (6,3.5)/120  →  ĐỀU 36 cảnh báo. figsize và dpi KHÔNG đổi một con số;
+    #   · chỉ vẽ, không render → 0 · `canvas.draw()` → 24 · `savefig` PNG → 24 ·
+    #     `savefig` SVG → 0. Thủ phạm là khâu RASTER HOÁ, không phải kích thước.
+    # Nên `dpi=96` ở `_anh_figure` KHÔNG hề tránh được nó, và AGENTS.md từng
+    # giao việc này cho NGƯỜI SOẠN GIÁO TRÌNH — một việc họ không làm được.
+    # Lọc theo ĐÚNG thông điệp, không theo category: `MatplotlibDeprecationWarning`
+    # còn mang cả những cảnh báo về API mà bài HỌC gọi sai, và nuốt chúng là
+    # giấu đi thứ người học cần đọc. Đã đo: với bộ lọc này, đường xuất hình đi
+    # từ 24 cảnh báo xuống 0, còn một `RuntimeWarning` do người học tự ném thì
+    # VẪN hiện.
+    warnings.filterwarnings(
+        'ignore',
+        message=r'The [xy] parameter as float was deprecated',
+    )
     if _FINDER not in sys.meta_path:
         sys.meta_path.insert(0, _FINDER)
         # CPython (lúc dựng bài) có tkinter/multiprocessing thật: bỏ bản đã nạp

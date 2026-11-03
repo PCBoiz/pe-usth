@@ -79,7 +79,7 @@ học nó.
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **138 bài tập được chấm / 460 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
-| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 153 bài, 417 đoạn code, **0 hỏng**, 14 cảnh báo, ~55 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
+| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 153 bài, 417 đoạn code, **0 hỏng**, **0 cảnh báo**, ~28 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 138 bài, **460 ca đạt**, 621 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, ~15 s |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 356 khối đủ điều kiện** (300 bỏ qua, phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
@@ -1059,8 +1059,23 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `redirect_stderr(ctx.out)` để console của học viên hiện cả hai. Hệ quả: một
   `MatplotlibDeprecationWarning` chen vào giữa và làm mọi phép so với `expected` trượt dù bài
   in đúng từng chữ. `check-pyodide.mjs` tách chúng ra và BÁO riêng (`tachCanhBao`) thay vì
-  bỏ qua — hiện có 14 cảnh báo ở VZ14/VZ25/VZ30 do `figsize=(6, 3.5)` sinh kích thước điểm
-  ảnh là số thực; đó là việc người soạn giáo trình phải sửa, không phải lỗi nền tảng.
+  bỏ qua.
+  **14 cảnh báo ở VZ14/VZ25/VZ30 TỪNG bị quy cho `figsize=(6, 3.5)` và giao cho NGƯỜI
+  SOẠN GIÁO TRÌNH — quy kết SAI cả hai vế, nay đã đo lại và sửa.** Thử
+  `(6,3.5)/130 · (6,3.5)/100 · (6,3)/130 · (6,3)/100 · (6,3.5)/120` → **đều 36 cảnh
+  báo**, `figsize` và `dpi` không đổi một con số. Tách tiếp: chỉ vẽ không render → **0**
+  · `canvas.draw()` → **24** · `savefig` PNG → **24** · `savefig` SVG → **0**. Thủ phạm
+  là khâu RASTER HOÁ của backend Agg trong matplotlib 3.10 — ruột thư viện, không dòng
+  nào của người học gây ra, và **không sửa được bằng cách đổi figsize**.
+  **Và nó KHÔNG chỉ ở 3 bài:** đường xuất hình của chính `_anh_figure` sinh 24 cảnh
+  báo, tức MỌI bài biểu đồ dính; ba bài kia chỉ là nơi nó lọt qua phép dedupe.
+  Nay `_install()` lọc theo ĐÚNG THÔNG ĐIỆP (`The [xy] parameter as float was
+  deprecated`), **không theo category** — lọc theo `MatplotlibDeprecationWarning` sẽ
+  nuốt luôn cảnh báo về API mà BÀI HỌC gọi sai, tức giấu đi thứ người học cần đọc.
+  Đã đo bộ lọc: cảnh báo nội bộ **24 → 0**, trong khi một `RuntimeWarning`, một
+  `DeprecationWarning` và **một `MatplotlibDeprecationWarning` KHÁC** đều VẪN hiện.
+  Chú thích `dpi=96` trong `_anh_figure` cũng mang đúng niềm tin sai đó và đã viết lại.
+  Ablate: gỡ bộ lọc → cảnh báo quay lại ngay ở VZ14/VZ25/VZ30.
 - **Câu ôn tập nằm ở trường RIÊNG, đếm thiếu là tưởng mất 21% bài tập.** `course.json` có
   `drills` (516) VÀ `reviewExercises` (139) = 655 câu. Một lượt audit từng báo động "gói chỉ
   giữ 3 câu/bài, mất 139 câu" vì chỉ đếm `drills`. Bản dựng ra đúng 655, và `check.py` so
