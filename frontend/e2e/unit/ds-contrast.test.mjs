@@ -19,7 +19,7 @@
  * một chút. Ghim đúng số đo thật thì đổi một màu là đỏ oan; không ghim gì thì
  * tụt dần tới 4,51:1 mà không ai thấy. Sàn ở giữa: chỉ được NÂNG.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
@@ -133,4 +133,108 @@ test('bóng thẻ: ngày phải ẤM, và cả hai chế độ phải BÁM SÁT 
   assert.ok(rgb, 'bóng ban ngày phải dùng rgba() để đọc được màu');
   const [r, , b] = [rgb[1], rgb[2], rgb[3]].map(Number);
   assert.ok(r >= b, 'bóng ban ngày R(' + r + ') < B(' + b + ') — đã quay về bóng xanh lạnh');
+});
+
+/**
+ * VIỀN THẺ — và trước hết là một LỚP LỖI, không phải một mã màu.
+ *
+ * `ShellB.module.css` viết `border: var(--edu-card-border)`. Token đó là một
+ * MÀU, còn shorthand `border` đặt lại mọi longhand bị bỏ về giá trị đầu, tức
+ * `border-style: none`. Đo trong Chrome: `border-top-width` **0px**,
+ * `border-top-style` **none**. Vỏ của MỌI màn bài học (179 bài) chỉ có bóng,
+ * không có cạnh — và không một phép kiểm nào thấy, vì CSS sai cú pháp không
+ * ném gì, nó chỉ bị DROP.
+ *
+ * Nên ca đầu quét CẢ cây CSS tìm lớp lỗi ấy, không chỉ canh ShellB. Phải loại
+ * các dòng ĐỊNH NGHĨA biến (`--border: var(--x)`) — ở đó gán một màu vào một
+ * custom property là chuyện bình thường, chỉ `border:` thật mới hỏng.
+ *
+ * Ca thứ hai canh MÀU: `--edu-card-border` (trắng .85) là viền SÁNG có chủ
+ * đích trên nền KHÔNG-trắng của các trang di sản, nhưng thẻ bài học có nền
+ * `--edu-panel-bg` rgba(255,255,255,.96) ⇒ trắng-trên-trắng, vẽ ra cũng không
+ * ai thấy. Nên đường kẻ của thẻ phải TỐI HƠN nền thẻ. Đó là tính chất, không
+ * phải mã màu: đổi #CFD9E8 sang một xám khác vẫn xanh, "sửa lại cho hợp tông
+ * sáng" mới đỏ.
+ *
+ * KHÔNG đòi 3:1 cho đường kẻ này. Chú thích gốc của `--ds-line` trong bảng
+ * lofi nói rõ 1,36:1 trên thẻ và dặn KHÔNG dùng nó làm viền của thứ bấm được;
+ * WCAG 1.4.11 đòi 3:1 cho thành phần giao diện, còn đường bao một thẻ nội dung
+ * là TRANG TRÍ. Đòi 3:1 ở đây là biến một cổng đúng thành một cổng kêu oan.
+ */
+const liet = (d, ra = []) => {
+  for (const m of readdirSync(d, { withFileTypes: true })) {
+    const p = join(d, m.name);
+    if (m.isDirectory()) liet(p, ra);
+    else if (m.name.endsWith('.css')) ra.push(p);
+  }
+  return ra;
+};
+const CSS_CAY = [
+  ...liet(join(__dirname, '..', '..', 'src')),
+  ...liet(join(__dirname, '..', '..', 'public', 'static', 'css')),
+];
+
+test('border/outline shorthand KHÔNG được chỉ có một var MÀU (trình duyệt DROP nó)', () => {
+  // QUÉT THEO KHAI BÁO, KHÔNG THEO DÒNG. Bản đầu của tôi neo regex vào cả
+  // dòng đã trim — và ablate cho thấy nó RỖNG: gieo
+  // `.ablate-x { outline: var(--edu-card-border); }` vào edu-lesson.css thì
+  // 0 ca đỏ, vì CSS của repo này viết một rule MỘT DÒNG
+  // (`.cal-day { border-radius: 14px !important; }`) nên khai báo gần như
+  // không bao giờ đứng riêng một dòng. Cắt theo `;` sau khi bỏ chú thích mới
+  // chạm tới mọi khai báo, bất kể tác giả xuống dòng thế nào.
+  const xau = [];
+  for (const p of CSS_CAY) {
+    const v = readFileSync(p, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+    const ten = p.split(/[\\/]/).pop();
+    for (const raw of v.split(';')) {
+      // bỏ phần selector / dấu ngoặc đứng TRƯỚC khai báo trên cùng một dòng
+      const t = raw.slice(Math.max(raw.lastIndexOf('{'), raw.lastIndexOf('}')) + 1).trim();
+      // ĐỊNH NGHĨA biến thì bỏ qua: `--border: var(--x)` là gán một màu vào
+      // custom property, hoàn toàn hợp lệ — có 5 chỗ trong repo làm vậy.
+      if (t.startsWith('--')) continue;
+      if (/^(border|outline)(-(top|right|bottom|left))?:\s*var\(--[a-z0-9-]+\)$/i.test(t)) {
+        xau.push(`${ten}  ${t}`);
+      }
+    }
+  }
+  assert.deepEqual(
+    xau,
+    [],
+    'shorthand chỉ có màu ⇒ border-style: none ⇒ KHÔNG VẼ GÌ. Ghi đủ width + style:\n  ' +
+      xau.join('\n  '),
+  );
+});
+
+test('đường kẻ của thẻ bài học phải TỐI HƠN nền thẻ (trắng-trên-trắng là vô hình)', () => {
+  const hit = [...THEME.matchAll(/--edu-card-line:\s*([^;]+);/g)].map((m) => m[1].trim());
+  assert.equal(hit.length, 2, 'phải có đúng 2 khai báo --edu-card-line (ngày + Ban đêm)');
+
+  // Ban ngày: nền thẻ là trắng (--edu-panel-bg rgba(255,255,255,.96) trên
+  // --edu-bg-solid #eaeff6), nên đường kẻ phải sáng THẤP HƠN hẳn.
+  const L = (hex) => sang(hex);
+  assert.ok(
+    L(hit[0]) < L('#ffffff') - 0.1,
+    'đường kẻ ban ngày ' + hit[0] + ' sáng gần bằng nền thẻ trắng — lại vô hình',
+  );
+
+  // Ban đêm thì NGƯỢC: nền thẻ tối (--edu-panel-bg-solid #1d232d), đường kẻ
+  // phải sáng hơn nó. Hai chiều khác nhau, nên phải kiểm riêng từng chế độ —
+  // một phép kiểm "khác nền" chung sẽ cho qua một đường kẻ tối hơn cả nền tối.
+  assert.ok(
+    L(hit[1]) > L('#1d232d'),
+    'đường kẻ Ban đêm ' + hit[1] + ' tối hơn nền thẻ #1d232d — không thấy được',
+  );
+});
+
+test('ShellB .card phải vẽ viền bằng --edu-card-line, không bằng --edu-card-border', () => {
+  const v = readFileSync(
+    join(__dirname, '..', '..', 'src', 'components', 'lesson-chrome', 'ShellB.module.css'),
+    'utf8',
+  );
+  const khoi = v.slice(v.indexOf('.card {'), v.indexOf('}', v.indexOf('.card {')));
+  assert.match(
+    khoi,
+    /border:\s*1px\s+solid\s+var\(--edu-card-line\)/,
+    '.card của vỏ bài học phải có width + style + --edu-card-line',
+  );
 });

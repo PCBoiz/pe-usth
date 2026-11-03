@@ -78,6 +78,14 @@
   --edu-t6: #4d5d7a;
   --edu-card-bg: rgba(255,255,255,.55);
   --edu-card-border: rgba(255,255,255,.85);
+  /* ĐƯỜNG KẺ của thẻ, KHÁC --edu-card-border ở trên.
+     --edu-card-border là viền SÁNG (trắng .85) có chủ đích trên nền
+     KHÔNG-trắng của các trang di sản. Trên thẻ bài học thì nền là
+     --edu-panel-bg rgba(255,255,255,.96), tức trắng-trên-trắng: viền
+     có vẽ ra cũng không ai thấy. Token này là --ds-line của bảng lofi,
+     và chú thích gốc của nó nói rõ 1,36:1 trên thẻ ⇒ TRANG TRÍ, KHÔNG
+     dùng làm viền của thứ bấm được (WCAG 1.4.11 đòi 3:1 cho cái đó). */
+  --edu-card-line: #CFD9E8;
   /* BÓNG ẤM, BÁM SÁT — lấy từ --ds-shadow-open của nhánh test (theme lofi
      chill nhóm đã chốt). Bản cũ 0 10px 30px rgba(113,132,167,.10) là bóng
      XANH LẠNH toả rộng: nó đẩy thẻ nổi hẳn lên khỏi trang như một hộp thoại.
@@ -210,6 +218,7 @@ body.dark {
   --edu-t6: #a5acba;
   --edu-card-bg: rgba(255,255,255,.045);
   --edu-card-border: rgba(255,255,255,.09);
+  --edu-card-line: #233049;
   /* Ban đêm giữ bóng đen (nâu trên nền tối thì không thấy gì), nhưng bám sát
      theo cùng hình dạng để hai chế độ cùng một nhịp. */
   --edu-card-shadow: 0 6px 22px rgba(0,0,0,.45);

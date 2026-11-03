@@ -59,7 +59,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **139 cảnh báo** |
-| Frontend unit test | `cd frontend && npm run test:unit` → **511 ca** / 40 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **514 ca** / 40 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **138 bài tập được chấm / 460 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
@@ -90,8 +90,10 @@ mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 
 read-diagram 12 ·
 read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 33 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 4 = 511.
-Mốc trước là 510; ds-contrast 3 → 4 (BÓNG THẺ phải ấm và bám sát).
+worker-csp 7 · ds-contrast 7 = 514.
+Mốc trước là 511; ds-contrast 4 → 7 (VIỀN THẺ: lớp lỗi "shorthand chỉ có màu",
+cộng hai chiều của đường kẻ ngày/đêm).
+Trước đó 510 → 511; ds-contrast 3 → 4 (BÓNG THẺ phải ấm và bám sát).
 Trước đó 507 → 510; thêm ds-contrast 3 (TƯƠNG PHẢN KHỐI CODE — tính từ chính file CSS).
 Trước đó 504 → 507; read-guess 16 → 19 (CỔNG DỰ ĐOÁN HÌNH cho 71 màn có biểu đồ).
 Trước đó 490 → 504; thêm spaced-review 14 (ÔN GIÃN CÁCH — hỏi lại câu đã sai).
@@ -1820,6 +1822,45 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   Cổng cho bóng ghim TÍNH CHẤT chứ không ghim chuỗi CSS: ngày thì R ≥ B (ấm), và cả
   hai chế độ toả ≤ 24px (bám sát). Ghim nguyên chuỗi thì đổi 6px thành 7px là đỏ oan.
   Ablate: bóng về xanh → 1 đỏ; bóng toả rộng lại → 1 đỏ.
+
+  **VIỀN THẺ: khai báo CSS SAI CÚ PHÁP bị trình duyệt DROP, và không gì ném ra.**
+  `ShellB.module.css` — vỏ của MỌI màn bài học, 179 bài — viết
+  `border: var(--edu-card-border)`. Token đó là một MÀU, còn shorthand `border`
+  đặt lại mọi longhand bị bỏ về giá trị đầu, tức `border-style: none`. **Đo trong
+  Chrome: `border-top-width` 0px, `border-top-style` none** — thẻ chỉ có bóng,
+  không có cạnh. Không exception, không cảnh báo lint: CSS sai cú pháp chỉ bị bỏ.
+  **VÀ MÀU CŨNG VÔ HÌNH, kể cả khi khai báo đúng:** `--edu-card-border` là
+  `rgba(255,255,255,.85)` — viền SÁNG có chủ đích trên nền KHÔNG-trắng của các
+  trang di sản — mà nền thẻ bài học là `--edu-panel-bg` `rgba(255,255,255,.96)`.
+  Trắng trên trắng. Nên bản sửa là token MỚI `--edu-card-line` (`--ds-line` của
+  bảng lofi: `#CFD9E8` ngày / `#233049` đêm), KHÔNG sửa `--edu-card-border`.
+  **VÌ SAO KHÔNG ĐỔI 61 CHỖ: phép đo nói chỉ có 1 chỗ đáng đổi.** Trang bài học nạp
+  đúng HAI file CSS (`edu-theme.css` + `studio-tokens.css`), và trong 16 chỗ dùng
+  ở `edu-theme.css` thì **đúng 1 lớp (`.cd-block`) có component React phát ra** — 15
+  lớp còn lại (`.dash-hero`, `.lb-card`, `.forum-post-card`, `.sk-set`,
+  `.rmv-toolbar`…) là selector của dashboard/leaderboard/forum/roadmap di sản
+  Django, không trang nào render. 44 chỗ còn lại nằm trên các trang `(standalone)`
+  ngoài khoá 179 bài. **"61 chỗ" là con số của grep, không phải con số của người học.**
+  **CỔNG — và nó RỖNG ở bản đầu, ablate mới lộ ra.** Ca quét neo regex vào cả DÒNG
+  đã trim; gieo `.ablate-x { outline: var(--edu-card-border); }` vào `edu-lesson.css`
+  thì **0 ca đỏ**, vì CSS repo này viết một rule MỘT DÒNG
+  (`.cal-day { border-radius: 14px !important; }`) nên khai báo gần như không bao giờ
+  đứng riêng một dòng. Nay cắt theo `;` sau khi bỏ chú thích, và bỏ phần selector
+  đứng trước `{`/`}` trên cùng dòng.
+  Ablate 6 chiều: trả `.card` về khai báo hỏng → **2 đỏ** · gieo lớp lỗi inline ở một
+  file CSS tĩnh khác → 1 · gieo inline trong một CSS module → 1 · gieo trên nhiều dòng
+  → 1 · đường kẻ ngày sáng gần bằng nền thẻ → 1 · đường kẻ đêm tối hơn nền thẻ → 1.
+  Chiều NGƯỢC cũng đo: `:root { --ablate-vien: var(--edu-card-line); }` → **0 đỏ**, vì
+  gán màu vào một custom property là hợp lệ và repo có 5 chỗ làm vậy.
+  **Hai chiều ngày/đêm phải kiểm RIÊNG:** ngày thì đường kẻ phải TỐI hơn nền thẻ
+  trắng, đêm thì phải SÁNG hơn nền thẻ `#1d232d`. Một phép kiểm "khác nền" gộp
+  chung sẽ cho qua một đường kẻ còn tối hơn cả nền tối.
+  **KHÔNG đòi 3:1 cho đường kẻ này:** chú thích gốc của `--ds-line` ghi 1,36:1 trên
+  thẻ và dặn KHÔNG dùng nó làm viền của thứ bấm được. WCAG 1.4.11 đòi 3:1 cho thành
+  phần giao diện, còn đường bao một thẻ nội dung là TRANG TRÍ — đòi 3:1 ở đây là biến
+  một cổng đúng thành một cổng kêu oan.
+  **ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC:** thẻ của mọi màn bài học nay CÓ cạnh.
+  `ASSET_VERSION` bump theo (`2026-11-04b`).
 
   **Còn lại của hệ `--ds-*`:** main mới chỉ lấy nhóm CODE. 58 token còn lại (giấy, thẻ,
   nút, tím/đỏ/lục, bán kính, bóng) vẫn ở nhánh `test`. Port tiếp thì theo đúng luật này:

@@ -1,6 +1,11 @@
 .card {
   background: var(--edu-panel-bg);
-  border: var(--edu-card-border);
+  /* TỪNG LÀ `border: var(--edu-card-border)`, và nó KHÔNG VẼ GÌ CẢ:
+     token đó là một MÀU, còn shorthand `border` thì đặt lại mọi longhand
+     bị bỏ về giá trị đầu — `border-style: none`. Đo trong Chrome:
+     border-top-width `0px`, border-top-style `none`. Nên vỏ của MỌI màn
+     bài học chỉ có bóng, không có cạnh. Phải ghi đủ width + style. */
+  border: 1px solid var(--edu-card-line);
   border-radius: var(--st-card-radius);
   box-shadow: var(--edu-card-shadow);
   backdrop-filter: blur(14px);
