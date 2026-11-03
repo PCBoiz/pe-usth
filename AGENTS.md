@@ -38,6 +38,7 @@ node scripts/check-moc-nen.mjs          # BẢNG MỐC NỀN dưới đây có n
 node scripts/check-doi-hoi.mjs          # KHỐI CODE màn đọc nào chưa có lời đòi
 node scripts/check-nguong.mjs           # NGƯỠNG một chiều có ai nới ngược không
 npx ts-node scripts/pheu-tien-do.ts    # PHỄU tiến độ theo sort_order (CHỈ ĐỌC, cần DATABASE_URL)
+node scripts/check-da-deploy.mjs       # bản trên main ĐÃ LÊN production chưa (cần mạng)
 
 # pe-v4 (48 bài, 427 ca chấm) — GIỮ LẠI nhưng KHÔNG còn xuất bản; xem mục dưới
 py scripts/pe-v4/build.py              # dựng lại 48 bài -> scripts/pe-v4/out/
@@ -88,6 +89,7 @@ học nó.
 | Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **179/179 bài khớp bản dựng**, 0 lỗi (biên nhận 04/11/2026) |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
 | Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **17 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
+| Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
 | Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **17 mục đối chiếu được**, 0 lỗi; 2 nhóm khai NGOÀI TẦM |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
@@ -336,6 +338,39 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   → **1 lỗi** · thêm một ca thật mà không sửa bảng → **1 lỗi** · nhưng gỡ phép đếm
   `soCa` đi (công cụ thôi in số) → **0 lỗi**. Phần được canh là CON SỐ, phần in ra
   là tiện cho người đọc.
+
+- **LỖI THỐNG TRỊ Ở LỚP NGOÀI CÙNG: push xong, CI xanh, và KHÔNG LÊN production.**
+  Sự cố 04/11/2026 — chủ dự án nhìn ra bằng mắt, không bộ kiểm nào báo: production
+  chạy build **29/10**, **sau lưng `main` 66 commit**, suốt sáu ngày. Bốn bề mặt lofi
+  và bản sửa thứ bậc phản hồi nằm im trên `main`. Repo đã có cổng cho hai lớp trong
+  (`check-duong-toi`: có màn nào MOUNT không · `check-da-nap`: bài vào DB chưa) và
+  KHÔNG có gì cho lớp ngoài cùng.
+  **`ASSET_VERSION` KHÔNG dùng làm dấu được — đã đo.** Luật bump chỉ áp cho `public/`:
+  trên đúng khoảng lệch ấy có 67 commit, **28 chạm `frontend/src/`**, mà `ASSET_VERSION`
+  đổi **2 lần**. Lấy nó làm cổng là cho XANH GIẢ khi production thiếu hàng chục commit
+  chỉ-src. Build id của Next cũng không xài được: HTML production không phơi ra
+  (app router không nhúng `__NEXT_DATA__`, URL chunk chỉ là `/_next/static/chunks/`).
+  Nên dấu là COMMIT SHA ở `<meta name="pe-build">` (layout gốc, đọc
+  `VERCEL_GIT_COMMIT_SHA` — Vercel đặt sẵn, không phải biến ta khai).
+  **CẢNH BÁO, KHÔNG ĐỎ:** deploy là việc của chủ dự án, và một commit vừa push thì
+  ĐÚNG RA là chưa live — bắt đỏ ở đây là dạy người ta quen với màu đỏ. Chỉ
+  `--doi-hoi-moi-nhat` mới đỏ, tức khi người chạy nói "tôi vừa deploy xong".
+  **HAI LỖI CỦA CHÍNH CỔNG NÀY, cả hai chỉ lộ khi CHẠY THẬT:**
+  · `process.exit()` đua với pool keep-alive của `fetch` ⇒ Node trên Windows ném
+    `Assertion failed: !(handle->flags & UV_HANDLE_CLOSING)` rồi thoát **127** — một mã
+    thoát không nói gì về kết quả kiểm, tức cổng vô dụng đúng ở chỗ CI đọc nó. Dùng
+    `process.exitCode`;
+  · thiếu header `connection: close` ⇒ undici giữ socket trong pool và tiến trình
+    không thoát ngay; gọi cổng từ một script khác bằng `execFileSync` thì nó **TREO**.
+    Một cổng treo là một cổng sẽ bị gỡ khỏi CI.
+  Ablate bằng máy chủ giả, 3 chiều: SHA trùng `tester/main` → nói "ĐANG chạy đúng" ·
+  SHA lùi 5 commit → đếm **đúng 5** · không có thẻ meta → nói thẳng "bản dựng CŨ HƠN
+  commit thêm thẻ này", không im lặng.
+  **GIỚI HẠN:** cổng so SHA trên dây với một NHÁNH; nó không chứng minh bản dựng đó
+  khớp cây mã (ai build tay từ chỗ khác thì nó mù), và nó cần MẠNG.
+  **Chẩn đoán đã làm sẵn cho lần sau:** `f447d1e` (bản đang live) LÀ tổ tiên của
+  `tester/main` và không nhánh nào đứng ở đó ⇒ Vercel nối ĐÚNG repo/nhánh, nó chỉ
+  thôi chạy. Nên lần sau đừng đi tìm "nối nhầm repo" — xem deployment trong dashboard.
 
 - **BẢNG MỐC NỀN LÀ TÍN HIỆU DỪNG, và nó đã nói sai HAI LẦN mà không gì bắt.**
   LOOP.md dùng bảng ở trên làm thước đo máy-đọc-được cho "đã xong chưa". Nhưng

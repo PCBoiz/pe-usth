@@ -26,6 +26,21 @@ export const metadata: Metadata = {
 
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
+/**
+ * Commit đang được build. Đọc ở TẦM MODULE nên nó bị đóng băng vào bản dựng —
+ * đúng điều cần: thẻ meta phải nói về BẢN ĐANG CHẠY, không phải về lúc ai đó
+ * mở trang.
+ *
+ * `VERCEL_GIT_COMMIT_SHA` do Vercel đặt sẵn, không phải biến ta phải khai.
+ * Thiếu cả hai (chạy `npm run dev` ở máy) thì để `'dev'` — một chuỗi KHÔNG
+ * giống SHA, để cổng phân biệt được "chưa deploy" với "đang xem bản dev".
+ */
+const BUILD_SHA = (
+  process.env.VERCEL_GIT_COMMIT_SHA
+  || process.env.BUILD_SHA
+  || 'dev'
+).slice(0, 7);
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi" suppressHydrationWarning>
@@ -34,6 +49,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Template gốc nào cũng có meta csrf-token; course_detail.js/course_db_design.js
             đọc .content KHÔNG guard → meta phải tồn tại (rỗng — auth giờ là JWT). */}
         <meta name="csrf-token" content="" />
+        {/* ── DẤU BUILD — thứ DUY NHẤT nói production đang chạy commit nào ──
+            Sự cố 04/11/2026: production chạy build 29/10, **sau lưng main 66
+            commit**, trong khi CI xanh và push thành công. Không ai thấy suốt
+            sáu ngày, vì không có cách nào hỏi "bản trên dây là bản nào".
+            VÌ SAO KHÔNG DÙNG `ASSET_VERSION`: nó chỉ được bump khi `public/`
+            đổi. Đo trên đúng khoảng lệch đó: 67 commit, **28 chạm
+            `frontend/src/`**, mà `ASSET_VERSION` chỉ đổi **2 lần**. Lấy nó làm
+            cổng là cho XANH GIẢ khi production thiếu hàng chục commit chỉ-src
+            — đúng chiều nguy hiểm.
+            VÌ SAO KHÔNG DÙNG build id của Next: đã đo trên HTML production,
+            nó không phơi ra (app router không nhúng `__NEXT_DATA__`, và URL
+            chunk chỉ là `/_next/static/chunks/`).
+            Vercel đặt sẵn `VERCEL_GIT_COMMIT_SHA`; ở máy thì `BUILD_SHA` hoặc
+            để trống. SHA là thông tin đã công khai trong repo, không phải bí
+            mật. `scripts/check-da-deploy.mjs` đọc đúng thẻ này. */}
+        <meta name="pe-build" content={BUILD_SHA} />
         {/* ── RÚT NGẮN ĐƯỜNG TẢI FONT ──────────────────────────────────────
             edu-theme.css dòng 14 nạp Montserrat bằng `@import url(fonts.
             googleapis.com/...&display=swap)`. @import nằm BÊN TRONG một file
