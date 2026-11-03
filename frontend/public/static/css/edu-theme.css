@@ -11,7 +11,7 @@
    working unchanged.
    ══════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
 
 :root {
   /* MONTSERRAT, không phải Poppins. Đổi ngày 29/10/2026 sau đợt thử nghiệm.
@@ -35,6 +35,11 @@
      Windows — ở đó nó rơi về Arial, tức hai máy hiện hai font khác nhau.
      Montserrat tải từ Google Fonts nên mọi máy thấy một thứ. */
   --edu-font: 'Montserrat', system-ui, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /* FONT TIÊU ĐỀ — lấy của bản thiết kế "Góc học" (--f-display ở đó cũng là
+     Baloo 2). Montserrat là font THÂN BÀI và PHẢI giữ: nó là bản sửa theo
+     phản hồi "chữ quá nhỏ" của người thử. Baloo 2 chỉ áp cho tiêu đề — chữ
+     tròn, nét dày, đó là thứ làm trang đọc ra "ấm" thay vì "bảng điều khiển". */
+  --edu-font-display: 'Baloo 2', 'Montserrat', system-ui, sans-serif;
 
   /* accent — identical in light & dark */
   --edu-accent: #2563eb;
@@ -75,11 +80,18 @@
      và vẫn thấy hồng/tím sau khi viền thẻ đã sửa xong.
      Giữ NGUYÊN hình dạng dốc 160deg để không đổi nhịp bố cục; chỉ bỏ ba
      radial và đưa ba mốc về giấy trung tính. */
+  /* GIẤY ẤM (04/11/2026). Bản trước là #f7fafd → #eaeff6 → #e4eaf4 — trung
+     tính nhưng LẠNH (lệch kênh R−B chỉ +12 về phía xanh), nên trang vẫn đọc ra
+     "bảng điều khiển" chứ không phải "trang giấy". Chủ dự án nhìn ba vòng liền
+     và vẫn nói "chưa thấy một tí lofi chill nào".
+     Nay giấy kem: #F4EEE3 lệch **+17 về phía ĐỎ**. Mực #2A2018 trên nó đo được
+     14,85:1 — ĐÚNG BẰNG mức cũ, nên không mất một chút đọc được nào. Thẻ trắng
+     trên giấy này là 1,15:1, tức thẻ vẫn nổi lên khỏi nền. */
   --edu-bg-image:
-    linear-gradient(160deg, #f7fafd 0%, #eaeff6 55%, #e4eaf4 100%);
-  --edu-bg-solid: #eaeff6;
-  --edu-t1: #0f1b33;
-  --edu-t2: #3a4a66;
+    linear-gradient(160deg, #FAF6EF 0%, #F4EEE3 55%, #EFE7DA 100%);
+  --edu-bg-solid: #F4EEE3;
+  --edu-t1: #2A2018;   /* mực nâu đen · 13,80:1 trên giấy, 15,93:1 trên thẻ */
+  --edu-t2: #4A3B2E;   /* 8,52:1 trên thẻ */
   --edu-t3: #5b6a85;
   --edu-t4: #5a6883;
   --edu-t5: #62718c;
@@ -93,7 +105,11 @@
      có vẽ ra cũng không ai thấy. Token này là --ds-line của bảng lofi,
      và chú thích gốc của nó nói rõ 1,36:1 trên thẻ ⇒ TRANG TRÍ, KHÔNG
      dùng làm viền của thứ bấm được (WCAG 1.4.11 đòi 3:1 cho cái đó). */
-  --edu-card-line: #CFD9E8;
+  --edu-card-line: #E3D9C8;   /* đường kẻ ấm, hợp giấy kem */
+  /* Hổ phách của "Góc học" (#ffc97a) quá nhạt để làm CHỮ — đo được 1,51:1
+     trên trắng. Bản đậm đủ AA: 5,77:1 trên thẻ, 5,00:1 trên giấy. */
+  --edu-amber: #8F5A12;
+  --edu-amber-soft: #F6E8CE;
   /* BÓNG ẤM, BÁM SÁT — lấy từ --ds-shadow-open của nhánh test (theme lofi
      chill nhóm đã chốt). Bản cũ 0 10px 30px rgba(113,132,167,.10) là bóng
      XANH LẠNH toả rộng: nó đẩy thẻ nổi hẳn lên khỏi trang như một hộp thoại.

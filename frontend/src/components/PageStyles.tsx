@@ -69,6 +69,28 @@ const DEFAULT_RANK = 30;
  */
 const RESPONSIVE_CSS = '/static/css/edu-responsive.css';
 
+/**
+ * BẢNG TOKEN dùng chung, cũng tự thêm vào MỌI trang — và lý do là một lỗi THẬT
+ * đã lên production ngày 04/11/2026.
+ *
+ * `studio-tokens.css` CHỈ KHAI BIẾN (`--ds-*` và bí danh `--st-*`), không một
+ * quy tắc nào áp lên phần tử, nên nạp ở trang chưa chuyển cũng không đổi gì ở
+ * đó. Nhưng nó từng phải khai TAY trong `hrefs`, và chỉ **3/13** chỗ gọi
+ * PageStyles có khai.
+ *
+ * Hệ quả đã xảy ra: vòng trước tôi đổi nút "Bắt đầu học" của trang khoá học
+ * sang `background: var(--ds-action)` trong `edu-course-detail.css`. Trang đó
+ * KHÔNG khai bảng token ⇒ biến rỗng ⇒ trình duyệt BỎ cả khai báo ⇒ nút chính
+ * thành TRẮNG TRÊN TRẮNG, không phân biệt được với nút phụ. Không exception,
+ * không cảnh báo lint, và cổng `DA_SANG_LOFI` vẫn XANH vì nó chỉ kiểm TÊN
+ * token chứ không kiểm token có GIẢI RA được trên trang nạp file ấy không.
+ * Nhìn ảnh chụp production mới thấy.
+ *
+ * Cùng lý lẽ đã đưa `edu-responsive.css` về đây: bỏ sót một trang là trang đó
+ * vỡ, mà 13 chỗ gọi thì rất dễ sót. Gom về một chỗ để không thể quên.
+ */
+const TOKENS_CSS = '/static/css/studio-tokens.css';
+
 /** Tên nhóm precedence — React xếp <head> theo thứ tự nhóm được đăng ký. */
 export function cssPrecedence(href: string): string {
   const file = href.split('/').pop() || href;
@@ -85,7 +107,8 @@ export const ALL_PRECEDENCES: string[] = Array.from(
 
 export default function PageStyles({ hrefs }: { hrefs: string[] }) {
   // Lọc trùng phòng khi một trang đã tự liệt kê file co giãn.
-  const all = hrefs.includes(RESPONSIVE_CSS) ? hrefs : [...hrefs, RESPONSIVE_CSS];
+  const co = (f: string, ds: string[]) => (ds.includes(f) ? ds : [...ds, f]);
+  const all = co(RESPONSIVE_CSS, co(TOKENS_CSS, hrefs));
   return (
     <>
       {all.map((href) => (

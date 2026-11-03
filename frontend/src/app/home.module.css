@@ -19,8 +19,11 @@
 
 .title {
   margin: 0 0 6px;
-  font-size: 40px;
-  font-weight: 800;
+  /* Font tiêu đề của bản thiết kế "Góc học". Chữ tròn nét dày — đó là thứ
+     làm trang đọc ra "ấm" chứ không phải một bảng điều khiển. */
+  font-family: var(--edu-font-display);
+  font-size: 44px;
+  font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--edu-t1);
 }
@@ -70,8 +73,9 @@
 /* Tiêu đề cột phụ (Công cụ) */
 .sectionTitle {
   margin: 0;
-  font-size: 28px;
-  font-weight: 800;
+  font-family: var(--edu-font-display);
+  font-size: 30px;
+  font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--edu-t1);
 }
