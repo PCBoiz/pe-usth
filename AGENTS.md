@@ -59,7 +59,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **139 cảnh báo** |
-| Frontend unit test | `cd frontend && npm run test:unit` → **507 ca** / 39 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **510 ca** / 40 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **138 bài tập được chấm / 460 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
@@ -70,7 +70,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **17 mục, 14 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi |
-| Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **chưa có biên nhận** (cảnh báo, không đỏ) — biên nhận ra đời ở lần `--apply` đầu tiên |
+| Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **179/179 bài khớp bản dựng**, 0 lỗi (biên nhận 04/11/2026) |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
 **pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 179
@@ -90,8 +90,9 @@ mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 
 read-diagram 12 ·
 read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 33 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 = 507.
-Mốc trước là 504; read-guess 16 → 19 (CỔNG DỰ ĐOÁN HÌNH cho 71 màn có biểu đồ).
+worker-csp 7 · ds-contrast 3 = 510.
+Mốc trước là 507; thêm ds-contrast 3 (TƯƠNG PHẢN KHỐI CODE — tính từ chính file CSS).
+Trước đó 504 → 507; read-guess 16 → 19 (CỔNG DỰ ĐOÁN HÌNH cho 71 màn có biểu đồ).
 Trước đó 490 → 504; thêm spaced-review 14 (ÔN GIÃN CÁCH — hỏi lại câu đã sai).
 Trước đó 481 → 490; thêm practice-run 9 (Ô CHẠY THỬ ở màn luyện tập).
 Trước đó 474 → 481; thêm recap-recall 7 (CỔNG HỒI TƯỞNG ở màn tổng kết).
@@ -1750,6 +1751,49 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   Bẫy nhỏ khi trích: phải phân biệt thân KHỐI với thân BIỂU THỨC — `sapKhoa` có
   `return v.map(sapKhoa);` nên dấu `;` ĐẦU TIÊN nằm giữa thân, cắt ở đó là `new Function`
   ném SyntaxError (đã xảy ra).
+
+- **KHỐI CODE ĐỔI SANG BẢNG NÂU ẤM — theme lofi chill, và production từng bị lùi khỏi
+  nó có chủ đích.** Đọc commit `070886a` trước khi đụng vào giao diện: *"main đang mang
+  bản đồ sao + bản đồ thế giới + tiền cảnh bàn quan trắc làm trang chủ, trong khi **nhóm
+  đã chốt đi theo theme lofi chill**. Hai hướng thiết kế nằm chung một nhánh thì không ai
+  test được hướng nào cho ra hồn."* Cách sửa khi đó là MỘT commit đưa main về `2c12049` —
+  **bản trước toàn bộ việc thiết kế**, bố cục xanh–đỏ hai cột — và 95 commit thiết kế bị
+  gỡ theo (bản chiêm tinh giữ ở nhánh `chiem-tinh`). Nên production "không đẹp" KHÔNG phải
+  chuyện bỏ quên, và lofi chill KHÔNG phải một hướng mới: nó là hướng đã chốt, chưa ai
+  dựng lại sau lần lùi.
+  **Thứ đáng port nằm ở nhánh `test`, và nó không phải một cảm giác:** 65 token `--ds-*`
+  trong `studio-tokens.css`, **mỗi token ghi kèm tỉ số tương phản**. Đã TÍNH LẠI năm con
+  số của nhóm code bằng công thức WCAG 2.1 §1.4.3: **5/5 khớp từng số**. Đừng chép một con
+  số vì nó được viết cạnh màu — nhưng lần này nó đúng, và điều đó nói lên chất lượng bảng.
+  **LOFI Ở ĐÂY LÀ SÁNG, KHÔNG PHẢI TỐI** — chỗ dễ hiểu nhầm nhất. Trang là giấy xanh xám
+  `#EAEFF6` + thẻ trắng; thứ tạo ra cảm giác là **khối code NÂU ẤM** `#221a13` với chữ kem
+  `#efe6d2` và cú pháp ĐẤT (hổ phách `#f2b880` 9,75:1 · xanh rêu `#c8dda0` 11,68:1) thay
+  cho neon. Nền lạnh + cú pháp neon đọc ra "công cụ"; nền nâu + chữ kem đọc ra "trang
+  giấy". Khối code có ở **508 chỗ / 145 bài**, nên nó quyết định cảm giác của cả khoá hơn
+  bất cứ bề mặt nào khác.
+  **Màu SỐ phải tự đo:** bảng `--ds-*` không có token cho số. Chọn `#e8a0a0` (**8,14:1**,
+  đất nung) để số không lẫn với từ khoá (hổ phách) lẫn chuỗi (xanh rêu) — đo rồi mới chọn,
+  không chọn rồi mới biện minh.
+  **Và `body.dark` phải đi theo CÙNG bảng.** Bỏ sót nó là ban ngày nâu còn ban đêm vẫn
+  xanh — đúng họ lỗi "`--st-*` kẹt bảng ngày" đã ghi ở trên, chỉ khác chiều. Ban đêm hạ nền
+  một nấc xuống `#1a130d` (chữ kem ở đó: 15,55:1).
+  **Cổng: `ds-contrast.test.mjs` TÍNH tương phản từ chính file CSS, không giữ bảng giá trị
+  thứ hai** — bài học vừa học ở `da-nap-hash-sync.spec.ts`, nơi bản đầu tự chép hàm băm
+  vào spec rồi ablate vẫn xanh cả ba ca. Ngưỡng là AA 4,5:1 CỘNG một SÀN riêng thấp hơn số
+  đo thật một chút: ghim đúng số thật thì đổi một màu là đỏ oan, không ghim gì thì nó tụt
+  dần tới 4,51:1 mà không ai thấy. **Sàn chỉ được NÂNG.**
+  Ca thứ ba ghim chính QUYẾT ĐỊNH chứ không ghim mã màu: nền code phải có kênh **đỏ ≥ xanh
+  dương**. Một bản "chỉnh lại cho hợp tông xanh của trang" sẽ qua hết mọi phép kiểm tương
+  phản mà vẫn phá đúng thứ theme này mang lại.
+  Ablate 3 chiều, mỗi chiều **2 ca đỏ**: chú thích nhạt xuống dưới AA · chuỗi vẫn trên AA
+  nhưng dưới sàn · nền quay về xanh `#1c2536`.
+  **`ASSET_VERSION` phải bump cùng commit** (nay `2026-11-04a`): file trong `public/` không
+  qua bundler nên URL không đổi theo nội dung, không bump thì người đã mở trang giữ CSS cũ
+  — tức bản đổi không tới được đúng những người đang dùng.
+  **Còn lại của hệ `--ds-*`:** main mới chỉ lấy nhóm CODE. 58 token còn lại (giấy, thẻ,
+  nút, tím/đỏ/lục, bán kính, bóng) vẫn ở nhánh `test`. Port tiếp thì theo đúng luật này:
+  **mỗi vòng token + nối ít nhất một bề mặt THẬT**, không thêm token suông — thêm token mà
+  chưa mặt nào dùng là đúng lỗi thống trị của repo, lần thứ mười ba.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

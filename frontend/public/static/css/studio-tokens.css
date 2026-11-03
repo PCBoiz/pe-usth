@@ -23,15 +23,33 @@
   --st-info-text:   #0284c7;
   --st-info-line:   rgba(2,132,199,.40);
 
-  /* ── khối code (tối ở cả hai chế độ) ──────────────────────── */
-  --st-code-bg:     #1c2536;
+  /* ── khối code (tối ở cả hai chế độ) ──────────────────────────────────
+     BẢNG NÂU ẤM, không phải xanh lạnh. Đây là mảnh dễ nhận ra nhất của theme
+     lofi chill mà nhóm đã chốt (xem commit 070886a: main từng bị đưa về bản
+     TRƯỚC toàn bộ việc thiết kế vì hai hướng nằm chung một nhánh). Màu lấy từ
+     bảng `--ds-code-*` của nhánh `test` — và năm tỉ số tương phản ghi trong
+     chú thích của họ đã được TÍNH LẠI bằng công thức WCAG 2.1 §1.4.3, khớp
+     từng số, không phải chép theo niềm tin.
+
+     Vì sao nâu ấm thay vì xanh: nền lạnh + cú pháp neon là bảng màu của IDE,
+     nó đọc ra "công cụ". Nền `#221A13` với chữ kem và cú pháp ĐẤT (hổ phách ·
+     xanh rêu · đất nung) đọc ra "trang giấy" — và khối code xuất hiện ở 508
+     chỗ trong 145 bài, nên nó quyết định cảm giác của cả khoá hơn bất cứ bề
+     mặt nào khác.
+
+     Mọi màu ≥ 6:1 trên nền của chính nó, tức vượt AA (4,5:1) với biên rộng.
+     Đổi một màu thì ĐO LẠI — `ds-contrast.test.mjs` tính từ chính file này. */
+  --st-code-bg:     #221a13;   /* nền khối code — nâu ấm */
   --st-code-radius: 16px;
-  --st-code-gutter: rgba(255,255,255,.28);
-  --st-syn-keyword: #92b1ea;
-  --st-syn-string:  #ecc48d;
-  --st-syn-number:  #f78c6c;
-  --st-syn-comment: #69717f;
-  --st-syn-plain:   #e3e8f0;
+  --st-code-gutter: #3d3127;   /* đường kẻ trong khung, không còn alpha trắng */
+  --st-syn-keyword: #f2b880;   /*  9,75:1 — hổ phách */
+  --st-syn-string:  #c8dda0;   /* 11,68:1 — xanh rêu */
+  --st-syn-number:  #e8a0a0;   /*  8,14:1 — đất nung. Bảng --ds-* KHÔNG có màu
+                                  cho số; đo và chọn tại đây để số không lẫn
+                                  với từ khoá (hổ phách) lẫn chuỗi (xanh rêu). */
+  --st-syn-comment: #a8977f;   /*  6,04:1 — nhạt nhất, đúng ý: chú thích phải
+                                  lùi lại sau mã, nhưng vẫn vượt AA. */
+  --st-syn-plain:   #efe6d2;   /* 13,81:1 — kem */
 
   /* ── kéo thả — dẫn xuất từ tầng 1, không viết lại hex ─────── */
   --st-chip-bg:     var(--edu-pill-bg);
@@ -60,8 +78,9 @@
   --st-track:       #d8dee8;   /* rãnh thanh tiến độ */
   --st-streak-bg:   #e6eefd;
   --st-predict-bg:  #e8effb;   /* thẻ DỰ ĐOÁN */
-  --st-code-bar:    #293141;   /* thanh tên file trên khối code */
-  --st-code-meta:   #bfc8d9;   /* chữ main.py / PYTHON 3 */
+  --st-code-bar:    #2b2118;   /* thanh tên file trên khối code — nâu, nhạt
+                                  hơn nền code một nấc để phân tầng */
+  --st-code-meta:   #c9b48c;   /* chữ main.py / PYTHON 3 ·  8,48:1 */
   --st-reflect-bg:  #e9f7f0;   /* thẻ GIẢI THÍCH TRƯỚC KHI XEM ĐÁP ÁN */
   --st-reflect-text:#314a3a;
   --st-code-edge:   transparent; /* viền khối code, chỉ cần ở chế độ tối */
@@ -72,8 +91,11 @@ body.dark {
   --st-err-bg:      rgba(240,82,107,.18);
   --st-warn-bg:     rgba(245,158,11,.18);
   --st-info-bg:     rgba(2,132,199,.18);
-  --st-code-bg:     #13171e;
-  --st-syn-plain:   #ccd2dc;
+  /* Ban đêm dùng CÙNG bảng nâu, chỉ hạ nền một nấc cho bớt chói trên nền tối.
+     Bỏ sót chỗ này là ban ngày nâu còn ban đêm vẫn xanh — đúng họ lỗi "--st-*
+     kẹt bảng ngày" đã ghi trong AGENTS.md, chỉ khác chiều. */
+  --st-code-bg:     #1a130d;   /* chữ kem #efe6d2 trên nền này: 15,55:1 */
+  --st-syn-plain:   #efe6d2;
   --st-shadow-sm:   0 2px 6px rgba(0,0,0,.40);
   --st-shadow-md:   0 6px 18px rgba(0,0,0,.45);
 
@@ -81,8 +103,8 @@ body.dark {
   --st-track:       rgba(255,255,255,.12);
   --st-streak-bg:   rgba(63,125,240,.20);
   --st-predict-bg:  rgba(63,125,240,.14);
-  --st-code-bar:    #1a2231;
-  --st-code-meta:   #a1aabc;
+  --st-code-bar:    #2b2118;   /* thanh tên file, ban đêm */
+  --st-code-meta:   #c9b48c;   /*  8,48:1 trên nền khối code */
   --st-reflect-bg:  rgba(34,197,94,.14);
   --st-reflect-text:#bfe6cc;
   --st-code-edge:   rgba(255,255,255,.10);

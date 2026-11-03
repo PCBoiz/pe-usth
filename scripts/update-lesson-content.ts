@@ -253,7 +253,15 @@ async function main() {
     const bienNhan: Record<string, string> = existsSync(DA_NAP)
       ? (JSON.parse(readFileSync(DA_NAP, 'utf8')) as { bai: Record<string, string> }).bai
       : {};
-    for (const item of changed) bienNhan[item.code] = fingerprint(item.content).sha256;
+    // GHI CẢ `plan.items`, KHÔNG chỉ `changed` — và đây là một khiếm khuyết
+    // đã cắn ngay lần chạy đầu. `--apply` chỉ ghi những bài KHÁC với DB,
+    // nên lần nạp 04/11/2026 chỉ đụng 10/179 bài (169 bài kia đã khớp sẵn).
+    // Biên nhận chỉ chép `changed` thì nó khai đúng 10 bài, và cổng sẽ hét
+    // lên "169 bài CHƯA BAO GIỜ NẠP" — sai, và sai to đến mức người ta tắt cổng.
+    // Thứ lần chạy này THẬT SỰ chứng minh là: cả 179 bài nay khớp bản dựng —
+    // 10 bài vì vừa ghi, 169 bài vì phép so nói chúng đã khớp. Biên nhận phải
+    // nói đúng điều đó.
+    for (const item of plan.items) bienNhan[item.code] = fingerprint(item.content).sha256;
     writeFileSync(
       DA_NAP,
       JSON.stringify(
