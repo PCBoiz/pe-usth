@@ -75,8 +75,10 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 20px;
-  padding: 0;
+  /* Đệm dọc 8px để vùng bấm cao 34px thay cho 18px (WCAG 2.5.8 đòi ≥ 24);
+     margin âm bù lại để chữ đứng y chỗ cũ, khoảng cách tới thẻ dưới không đổi. */
+  margin: -8px 0 12px;
+  padding: 8px 0;
   font: inherit;
   /* 14 → 15px: sàn nhãn của bản thiết kế (không có chữ nào < 15px). */
   font-size: 15px;
@@ -499,6 +501,11 @@
 
 @media (max-width: 639.98px) {
   .content { padding: 0 16px 56px; }
+  /* Ở 390px nút phụ "Góp ý cho nhóm làm khoá" (≈230px chữ + 56px đệm) rộng
+     hơn chỗ có ~2px nên gãy làm HAI DÒNG CANH TRÁI trong một viên thuốc — đọc
+     ra là vỡ. Trên điện thoại hai nút xếp chồng, mỗi nút trọn bề ngang, đệm
+     ngang 20px để nhãn nằm một dòng; canh giữa phòng khi nhãn dài hơn. */
+  .heroCta .btn { flex: 1 1 100%; padding: 0 20px; text-align: center; }
 }
 
 /* Người bật "giảm chuyển động": bỏ mọi chuyển cảnh, giữ nguyên màu/viền —

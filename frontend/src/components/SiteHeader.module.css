@@ -79,6 +79,12 @@
   border-radius: var(--ds-r-pill);
   cursor: pointer;
   transition: color 0.15s ease, background 0.15s ease;
+  /* `width` chỉ là cỡ GỢI Ý trong flex: nội dung duy nhất là một icon 20px nên
+     cỡ tối thiểu tự động gần như bằng 0, và khi hàng hẹp (390px) flex-shrink
+     bóp nút còn 23 × 48 — hình tròn thành một viên thuốc dựng đứng, dưới vùng
+     chạm 44px mà chính chú thích trên đã chốt. Nav có overflow-x:auto, nên để
+     NAV co chứ không để nút co. */
+  flex: none;
 }
 .theme:hover { color: var(--ds-violet-deep); background: var(--ds-violet-tint); }
 .theme:focus-visible { outline: 3px solid var(--ds-violet); outline-offset: 3px; }
@@ -133,4 +139,18 @@
 .navCurrent {
   color: var(--ds-violet-deep);
   background: var(--ds-violet-tint);
+}
+
+/* Khổ điện thoại cho nav — đặt CUỐI file có chủ đích: `.navLink` khai ở trên
+   cùng độ đặc hiệu, nên một khối @media đứng TRƯỚC nó sẽ bị chính nó đè.
+
+   Ở 390px, sau tên sản phẩm (~195px) và nút sáng/tối, nav chỉ còn ~83px cho
+   ba mục: "Ôn tập" và "Bàn thí nghiệm" nằm sau một thanh cuộn ngang KHÔNG dấu
+   hiệu, và mục đầu bị chém giữa chữ ("Khoá họ"). Xuống dòng riêng, trọn bề
+   ngang: đo được 358/358px — vừa khít cả ba mục, không còn cuộn. Màn hẹp hơn
+   390 thì overflow-x:auto ở `.nav` vẫn là lưới an toàn. */
+@media (max-width: 639.98px) {
+  .bar { flex-wrap: wrap; row-gap: 10px; }
+  .nav { order: 3; flex: 1 1 100%; }
+  .navLink { padding: 8px 10px; }
 }
