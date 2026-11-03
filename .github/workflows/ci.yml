@@ -386,6 +386,16 @@ jobs:
       # với màu đỏ. Có biên nhận rồi thì mọi lệch là đỏ cứng.
       - run: node scripts/check-da-nap.mjs
 
+      # CỔNG MỐC NỀN — bảng trong AGENTS.md phải nói đúng cây mã. Bảng đó là
+      # TÍN HIỆU DỪNG mà LOOP.md dùng, và nó đã nói sai hai lần: từng ghi 204
+      # ca test frontend khi cây mã chỉ có 134 (70 ca tưởng có mà không có),
+      # và ngày 04/11/2026 ghi 16 CSS module khi có 15 — con số đo TRƯỚC khi
+      # xoá một file mồ côi, cả hai vào cùng một commit, hai vòng lặp không ai
+      # thấy. Cổng chỉ đối chiếu các con số DẪN XUẤT ĐƯỢC rẻ (bản dựng pe-da +
+      # cây tệp) và IN RA những mục nó không với tới, vì một danh sách im lặng
+      # về chỗ nó bỏ sót sẽ bị đọc thành "đã phủ hết" — đúng cách 204 sống sót.
+      - run: node scripts/check-moc-nen.mjs
+
       # 65 phép kiểm của BỘ GHI VẾT (nút "Xem từng bước" của /ide). Trước đây
       # chỉ chạy tay, nên một bản sửa làm tracer chạy SAI mà vẫn sinh lại đúng
       # thì không có gì đỏ: phép canh sha chỉ bắt được chuyện "sửa .py mà quên

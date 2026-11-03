@@ -34,6 +34,7 @@ node scripts/check-duong-toi.mjs       # BẢN ĐỒ TÍNH NĂNG: tính năng n�
 node scripts/check-duong-toi.mjs --json  # bản máy đọc
 node scripts/check-tai-nguyen-chet.mjs  # TỆP/COMPONENT nào KHÔNG ai tới được
 node scripts/check-da-nap.mjs           # BÀI nào đã dựng mà CHƯA nạp vào DB
+node scripts/check-moc-nen.mjs          # BẢNG MỐC NỀN dưới đây có nói đúng không
 
 # pe-v4 (48 bài, 427 ca chấm) — GIỮ LẠI nhưng KHÔNG còn xuất bản; xem mục dưới
 py scripts/pe-v4/build.py              # dựng lại 48 bài -> scripts/pe-v4/out/
@@ -69,8 +70,9 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **17 mục, 14 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
-| Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **16 CSS module trong `src/`** |
+| Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **15 CSS module trong `src/`** |
 | Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **179/179 bài khớp bản dựng**, 0 lỗi (biên nhận 04/11/2026) |
+| Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **13 mục đối chiếu được**, 0 lỗi; 2 nhóm khai NGOÀI TẦM |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
 **pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 179
@@ -183,6 +185,32 @@ tiêu là chạy tới xanh rồi mới bàn giao, không hỏi giữa chừng.
 ## Những cái bẫy đã gặp
 
 Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đã sửa hoặc còn mở.
+
+- **BẢNG MỐC NỀN LÀ TÍN HIỆU DỪNG, và nó đã nói sai HAI LẦN mà không gì bắt.**
+  LOOP.md dùng bảng ở trên làm thước đo máy-đọc-được cho "đã xong chưa". Nhưng
+  bảng là CHỮ, và chữ thì trôi:
+  · nó từng ghi **204** ca test frontend trong khi cây mã chỉ có **134** — 70 ca
+    tưởng có mà không có, sống sót vì phép đếm bằng `grep -E "^. pass"` trả RỖNG
+    mà không báo lỗi (bẫy multibyte ghi ở mục đếm phân rã);
+  · và **04/11/2026**: bảng ghi **16** CSS module trong `src/` trong khi có **15**.
+    Con số được đo TRƯỚC khi xoá `ShellA.module.css`, rồi cả hai vào CÙNG commit
+    828d33b. **Hai vòng lặp trôi qua, không bộ kiểm nào thấy** — và chính commit đó
+    là commit dựng cổng chống tài nguyên chết.
+  Nay `node scripts/check-moc-nen.mjs` (có trong CI) tính lại **13 mục** từ
+  `out/lessons.json` và cây tệp rồi đối chiếu với bảng. Nó bắt được con số 15/16
+  **ngay lần chạy đầu tiên**.
+  **PHẢI KHAI CHỖ NÓ KHÔNG VỚI TỚI, và đó là nửa quan trọng hơn.** 518 ca frontend,
+  485 ca backend, 104 lỗi lint, 65 phép kiểm tracer đều cần CHẠY một bộ mới biết, nên
+  cổng in ra hai dòng "NGOÀI TẦM". Im lặng ở đó thì danh sách 13 mục bị đọc thành
+  "bảng đã được kiểm hết" — mà đó đúng là cách con số 204 sống sót.
+  **Regex phải neo vào ĐỦ CHỮ xung quanh:** tìm trần `179` thì cũng khớp "179/179
+  bài" ở hàng "Đã nạp DB chưa", và khi đó cổng xanh vì lý do sai. Và số trong bảng
+  viết kiểu Việt — dấu cách ngăn nhóm nghìn ("2 441"), có chỗ là U+00A0 — nên bóc
+  xong phải bỏ mọi khoảng trắng trước khi so.
+  Ablate 4 chiều: đổi một con số trong bảng → **1 lỗi** · đổi con số có dấu cách
+  nhóm nghìn → 1 · đổi CHỮ của một hàng → 1 (cổng kêu "KHÔNG CÒN DÒNG" thay vì im
+  lặng xanh — thiếu chiều này thì đổi tên một hàng là vô hiệu hoá nó) · thêm một tệp
+  test thật mà không sửa bảng → 1.
 
 - **Nền tảng phải đuổi kịp thư viện mà giáo trình được kiểm trên đó — ĐÃ nâng, giữ thế.**
   `requirements-tested.txt` của gói gốc ghi matplotlib **3.11.2**, numpy **2.5.4**, pandas
