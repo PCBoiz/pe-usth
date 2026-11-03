@@ -33,6 +33,7 @@ node scripts/check-figures.mjs         # kiểm việc XUẤT HÌNH của studio
 node scripts/check-duong-toi.mjs       # BẢN ĐỒ TÍNH NĂNG: tính năng nào có người đi qua
 node scripts/check-duong-toi.mjs --json  # bản máy đọc
 node scripts/check-tai-nguyen-chet.mjs  # TỆP/COMPONENT nào KHÔNG ai tới được
+node scripts/check-da-nap.mjs           # BÀI nào đã dựng mà CHƯA nạp vào DB
 
 # pe-v4 (48 bài, 427 ca chấm) — GIỮ LẠI nhưng KHÔNG còn xuất bản; xem mục dưới
 py scripts/pe-v4/build.py              # dựng lại 48 bài -> scripts/pe-v4/out/
@@ -54,7 +55,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | **33 bộ, 482 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
+| Backend test | **34 bộ, 485 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **139 cảnh báo** |
@@ -69,6 +70,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **17 mục, 14 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi |
+| Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **chưa có biên nhận** (cảnh báo, không đỏ) — biên nhận ra đời ở lần `--apply` đầu tiên |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
 **pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 179
@@ -1705,6 +1707,49 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   — cổng kêu oan sẽ bị tắt — nhưng đừng đọc "0 lỗi" thành "không còn gì chết".
   **Và `app/` được MIỄN:** ở đó `page`/`layout`/`route` không ai import là quy ước định
   tuyến của Next, không phải lỗi.
+
+- **LẦN THỨ MƯỜI HAI của lỗi thống trị, và lần này cổ chai KHÔNG ở code: 153 bài dựng
+  xong mà chưa ai nạp.** `check-duong-toi.mjs` chứng minh được "có một màn MOUNT tính
+  năng này". Nhưng NỘI DUNG BÀI đọc từ **DB**, không từ `out/` — nên một bài có thể dựng
+  xong, kiểm xong, CI xanh, và vẫn không ai đọc được. Đo ngày 04/11/2026: 153 bài đã đổi
+  qua 10 commit nội dung (ô ví dụ đầu vào/đầu ra 130 bài · alt text 59/80 hình · 8 bài tập
+  mới được chấm · 2 sơ đồ · 3 bài sửa lệch miền), `--all --offline` sạch (179 bài, 0 từ
+  chối), và **không chỗ nào trong CI nói ra rằng chúng chưa tới ai**.
+  **BIÊN NHẬN, KHÔNG PHẢI FILE SAO LƯU.** `--apply` nay ghi `scripts/pe-da/da-nap.json`
+  (mã bài → sha256) **SAU khi transaction commit**. Phân biệt này là cả vấn đề: file sao
+  lưu được ghi **TRƯỚC** bước ghi DB, nên sự tồn tại của nó không chứng minh gì — đúng sự
+  cố 29/10/2026, khi transaction rollback mà thư mục backup vẫn đầy đủ và người chạy kết
+  luận là đã nạp. Biên nhận chỉ ra đời khi DB đã nhận thật. **Commit nó.**
+  **Cổng KHÔNG đọc DB, và đó là cố ý:** CI không có (và không nên có) thông tin đăng nhập
+  production; phép so chạy được trên máy bất kỳ. Giới hạn phải nói ra: biên nhận nói "lần
+  nạp đó ĐÃ xảy ra", **không** nói "DB hiện giờ vẫn đang giữ đúng bản đó" — ai ghi đè bằng
+  đường khác thì cổng này mù. Đây là cổng chống QUÊN NẠP, không phải chống DB trôi.
+  **Chưa có biên nhận thì CẢNH BÁO, không đỏ.** Đỏ vĩnh viễn vì một việc chỉ chủ dự án làm
+  được là dạy người ta quen với màu đỏ — cùng bài học `DAP_AN_MAU_KHONG_CHAY`. Có biên nhận
+  rồi thì lệch là đỏ cứng, và mục MỒ CÔI (có trong biên nhận mà gói không còn) cũng đỏ, để
+  nó không lớn dần thành chỗ giấu rác.
+  **BIỆN MINH ĐÃ ĐỔI, có chủ đích — đừng viết lại lý lẽ cũ.** KHÔNG dùng "lỗi phát hiện
+  muộn đắt gấp 100 lần": truy nguồn cho thấy con số đó không đứng (Bossavit), và Menzies
+  cùng cộng sự trên **171 dự án** không tìm thấy hiệu ứng nào. Lý do đúng là **ĐIỀU KHIỂN**
+  — một tín hiệu dừng máy đọc được — cho một vòng lặp mà người chạy nó tự tin sai: RCT duy
+  nhất về năng suất (METR, 16 lập trình viên, 246 issue thật) đo được **chậm hơn 19%** khi
+  có AI trong khi chính họ tin là nhanh hơn 20%, lệch **39 điểm**.
+  **Và nó thuộc lớp hiếm, không trùng lint/typecheck/review:** Wagner và Mehrpour cho thấy
+  ba kỹ thuật đó bắt các lớp lỗi khác nhau nhưng **cả ba đều mù** với tính chất toàn hệ
+  thống; Eder (ICSE 2012) đo được ~1/4 tính năng không ai dùng trong hai năm, **>70% trong
+  số đó làm chính người làm ra bất ngờ**; và **không kỹ thuật công bố nào chứng minh được
+  một tính năng TỚI ĐƯỢC NGƯỜI DÙNG**. Phép thử trước khi dựng cổng thứ chín: cùng lớp với
+  lint/typecheck thì TRÙNG, đừng dựng; tính chất toàn hệ thống thì đáng.
+  **CA TEST CỦA CHÍNH CỔNG NÀY TỪNG KHÔNG CÓ RĂNG, và đó là phần đáng nhớ nhất.** Bản đầu
+  của `da-nap-hash-sync.spec.ts` tự CHÉP `sapKhoa`/`dauVan` vào trong spec rồi so với
+  `fingerprint()`. Ablate (sửa cổng về `JSON.stringify` trần) → **cả 3 ca VẪN XANH**, vì nó
+  không đụng tới file cổng lần nào. Nay spec ĐỌC `scripts/check-da-nap.mjs`, trích đúng hai
+  hàm và `new Function` chúng — cùng khuôn `forum-xss.test.mjs` lôi `escHtml` ra khỏi
+  `dashboard.js`. Ablate lại: `JSON.stringify` trần → **2 đỏ**; đổi tên hàm trong cổng → bộ
+  **không nạp được**, ném đúng câu chỉ tên.
+  Bẫy nhỏ khi trích: phải phân biệt thân KHỐI với thân BIỂU THỨC — `sapKhoa` có
+  `return v.map(sapKhoa);` nên dấu `;` ĐẦU TIÊN nằm giữa thân, cắt ở đó là `new Function`
+  ném SyntaxError (đã xảy ra).
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

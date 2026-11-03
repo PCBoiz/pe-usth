@@ -36,7 +36,7 @@
  *   npx ts-node scripts/update-lesson-content.ts --all --apply --backup=bak.json
  */
 import 'dotenv/config';
-import { readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { PrismaClient } from '../src/generated/prisma';
 import { PrismaNeon } from '@prisma/adapter-neon';
@@ -66,6 +66,9 @@ const ALL = ARGV.includes('--all');
 const BUNDLE =
   process.argv.find((a) => a.startsWith('--bundle='))?.slice('--bundle='.length) ??
   join(__dirname, 'pe-da', 'out', 'lessons.json');
+
+/** Biên nhận lần nạp gần nhất — xem khối "BIÊN NHẬN NẠP" ở dưới. */
+const DA_NAP = join(__dirname, 'pe-da', 'da-nap.json');
 
 const short = (f: Fingerprint) => `${f.bytes} B, sha256 ${f.sha256.slice(0, 12)}`;
 
@@ -231,6 +234,37 @@ async function main() {
     }
     console.log(`\n✓ Đã cập nhật content_json của ${changed.length} bài: `
       + `${changed.map((c) => c.code).join(', ')}.`);
+
+    // ── BIÊN NHẬN NẠP ─────────────────────────────────────────────────────
+    // Vì sao có file này: nội dung bài đọc từ DB, không từ `out/`. Nên một
+    // bài có thể dựng xong, kiểm xong, CI xanh — và vẫn KHÔNG tới người học
+    // vì chưa ai chạy `--apply`. Chuyện đó đã xảy ra: 153 bài đứng chờ qua 10
+    // commit nội dung, và không chỗ nào trong CI nói ra. Đây là lần thứ MƯỜI
+    // HAI của lỗi "dựng xong mà không có đường tới", chỉ khác là cổ chai nằm
+    // ở một bước deploy chứ không ở code.
+    //
+    // Ghi SAU khi transaction commit, có chủ đích: file sao lưu được ghi
+    // TRƯỚC bước ghi DB nên sự tồn tại của nó không chứng minh gì (bài học
+    // 29/10/2026, ngay ở nhánh catch bên trên). Biên nhận thì ngược lại —
+    // nó chỉ ra đời khi DB đã nhận thật.
+    //
+    // Chỉ ghi sha256, KHÔNG ghi nội dung: đây là một biên nhận, không phải
+    // bản sao thứ hai của giáo trình phải giữ đồng bộ.
+    const bienNhan: Record<string, string> = existsSync(DA_NAP)
+      ? (JSON.parse(readFileSync(DA_NAP, 'utf8')) as { bai: Record<string, string> }).bai
+      : {};
+    for (const item of changed) bienNhan[item.code] = fingerprint(item.content).sha256;
+    writeFileSync(
+      DA_NAP,
+      JSON.stringify(
+        { napLuc: new Date().toISOString(), goi: BUNDLE, bai: bienNhan },
+        null,
+        2,
+      ) + '\n',
+      'utf8',
+    );
+    console.log(`✓ Biên nhận: ${DA_NAP} (${Object.keys(bienNhan).length} bài). `
+      + 'COMMIT file này — `node scripts/check-da-nap.mjs` đọc nó để biết bài nào CHƯA tới người học.');
   } finally {
     await prisma.$disconnect();
   }

@@ -47,3 +47,7 @@ NHAT-KY-SUA.md
 /backup-*.json
 /bak-*.json
 /*-backup.json
+
+# Ghi chú nghiên cứu của agent — không thuộc cây mã sản phẩm
+research_notes/
+reports/

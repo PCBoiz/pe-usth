@@ -374,6 +374,18 @@ jobs:
       # chế đang chạy. Xoá là việc MỘT LẦN; dòng này là thứ giữ cho nó đúng.
       - run: node scripts/check-tai-nguyen-chet.mjs
 
+      # CỔNG "ĐÃ NẠP DB CHƯA". check-duong-toi.mjs chứng minh được một màn có
+      # MOUNT tính năng; nhưng nội dung bài đọc từ DB, không từ out/. Nên một
+      # bài dựng xong, kiểm xong, CI xanh vẫn có thể KHÔNG tới người học vì
+      # chưa ai chạy update-lesson-content.ts --apply. Đo 04/11/2026: 153 bài
+      # đứng chờ qua 10 commit nội dung, không chỗ nào nói ra. Cổng đọc BIÊN
+      # NHẬN mà --apply ghi sau khi transaction commit (file sao lưu thì ghi
+      # TRƯỚC nên không chứng minh gì — sự cố 29/10/2026), nên nó KHÔNG cần
+      # thông tin đăng nhập DB. Chưa có biên nhận thì CẢNH BÁO chứ không đỏ:
+      # đỏ vĩnh viễn vì một việc chỉ chủ dự án làm được sẽ dạy người ta quen
+      # với màu đỏ. Có biên nhận rồi thì mọi lệch là đỏ cứng.
+      - run: node scripts/check-da-nap.mjs
+
       # 65 phép kiểm của BỘ GHI VẾT (nút "Xem từng bước" của /ide). Trước đây
       # chỉ chạy tay, nên một bản sửa làm tracer chạy SAI mà vẫn sinh lại đúng
       # thì không có gì đỏ: phép canh sha chỉ bắt được chuyện "sửa .py mà quên
