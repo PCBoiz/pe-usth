@@ -1028,9 +1028,15 @@ def bai_tap_cua(bai_tap: dict, mode: str = 'pyodide',
 
     Chạy không được thì trả (None, lý do) và bài giữ ô chạy thử như trước. 11
     bài rơi vào đây: seaborn (VZ16-19), plotly (VZ20-22), ipywidgets (VZ23),
-    openpyxl (PD13), h5py (SY23), sqlalchemy (SY24) — Pyodide 314 không có
-    wheel cho chúng, nên chấm trong trình duyệt là không thể, không phải chưa
-    làm.
+    openpyxl (PD13), h5py (SY23), sqlalchemy (SY24).
+
+    NÓI CHO ĐÚNG, vì câu cũ ở đây sai: bốn gói đầu Pyodide 314 KHÔNG CÓ thật —
+    với chúng, chấm trong trình duyệt là không thể. Nhưng `h5py` 3.13.0 và
+    `sqlalchemy` 2.0.48 CÓ trong `pyodide-lock.json` và đã chạy thật dưới WASM
+    (h5py ghi/đọc lại một dataset; sqlalchemy tạo bảng, chèn, truy vấn). SY23
+    và SY24 vì vậy là "CHƯA VENDOR wheel + chưa ai soạn ca chấm", không phải
+    "không thể". SY23 còn cần `scipy` (cũng có trong lock). Xem mục bẫy
+    "Pyodide 314 không có wheel — SAI với 10/21 gói" trong AGENTS.md.
 
     `cho_mo_phong=True` mới là chỗ cổng này KHÁC cổng bài đọc, và khác có lý:
     bản dựng đầu dùng cổng nghiêm của bài đọc rồi chặn thêm 9 bài

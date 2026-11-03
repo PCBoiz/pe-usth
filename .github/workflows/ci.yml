@@ -414,6 +414,16 @@ jobs:
       # ta thôi siết.
       - run: node scripts/check-nguong.mjs
 
+      # CỔNG WHEEL, hai chiều. (1) Wheel vendored mà không bài nào với tới là
+      # MEGABYTE CHẾT — và nó lọt dễ hơn tưởng: gọi `loadPackage` với indexURL
+      # trỏ vào chính thư mục vendored thì Pyodide TỰ GHI wheel vào đó (đã xảy
+      # ra: 3,5 MB từ một phép thử). (2) Gói bài CẦN mà thiếu wheel thì
+      # `loadPackage` KHÔNG ném — nó lặng lẽ tải từ cdn.jsdelivr.net nên CI vẫn
+      # xanh, còn trong trình duyệt thì CSP `connect-src 'self'` chặn, tức hỏng
+      # cứng với học viên. Phải ĐÓNG BAO phụ thuộc: bài chỉ khai 4 gói nhưng
+      # chúng kéo theo đúng 14.
+      - run: node scripts/check-wheel.mjs
+
       # 65 phép kiểm của BỘ GHI VẾT (nút "Xem từng bước" của /ide). Trước đây
       # chỉ chạy tay, nên một bản sửa làm tracer chạy SAI mà vẫn sinh lại đúng
       # thì không có gì đỏ: phép canh sha chỉ bắt được chuyện "sửa .py mà quên

@@ -37,6 +37,7 @@ node scripts/check-da-nap.mjs           # BÀI nào đã dựng mà CHƯA nạp 
 node scripts/check-moc-nen.mjs          # BẢNG MỐC NỀN dưới đây có nói đúng không
 node scripts/check-doi-hoi.mjs          # KHỐI CODE màn đọc nào chưa có lời đòi
 node scripts/check-nguong.mjs           # NGƯỠNG một chiều có ai nới ngược không
+node scripts/check-wheel.mjs            # WHEEL vendored: thừa megabyte chết / thiếu gói bài cần
 npx ts-node scripts/pheu-tien-do.ts    # PHỄU tiến độ theo sort_order (CHỈ ĐỌC, cần DATABASE_URL)
 node scripts/check-da-deploy.mjs       # bản trên main ĐÃ LÊN production chưa (cần mạng)
 
@@ -90,6 +91,7 @@ học nó.
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
 | Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **17 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
+| Wheel vendored | `node scripts/check-wheel.mjs` → **14 wheel · 4 gói bài khai · 14 sau đóng bao phụ thuộc**, 0 lỗi |
 | Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **17 mục đối chiếu được**, 0 lỗi; 2 nhóm khai NGOÀI TẦM |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
@@ -420,6 +422,39 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   phải thứ nó TÔ MÀU. **Trước khi bàn giao một việc cho người khác, chạy đúng cái cổng
   canh việc đó và đọc CÂU, không đọc màu.**
 
+- **"Pyodide 314 không có wheel" — SAI với 10/21 gói, và một phép ĐO đã tự thả 3,5 MB
+  vào repo.** Hằng `THIEU_WHEEL` trong `build.py` tự ghi đúng ("không có wheel TRONG
+  REPO"), nhưng AGENTS.md diễn lại thành "Pyodide 314 không có". Đo trên chính
+  `pyodide-lock.json` trong repo (357 gói): **10 gói CÓ** — scipy 1.18.0 · sklearn 1.8.0 ·
+  statsmodels 0.14.6 · requests 2.33.1 · bs4 4.14.3 · xlrd 2.0.2 · pyarrow 22.0.0 ·
+  IPython 9.12.0 · sqlalchemy 2.0.48 · h5py 3.13.0 — và **11 không có thật** (seaborn,
+  plotly, openpyxl, dash, ipywidgets, notebook, jupyter, sas7bdat, pandasql, psutil,
+  PySimpleGUI). Đã chạy thật dưới WASM: `h5py` ghi/đọc lại một dataset, `sqlalchemy`
+  tạo bảng/chèn/truy vấn — **cả hai chạy được**.
+  **Nhưng cơ hội chỉ là 2 BÀI, không phải 10.** Đọc `_blocked` của bản dựng (chính xác
+  hơn tự quét `import` — SY23 viết `import tempfile, h5py` nên regex một-gói-một-dòng
+  trượt): chỉ **SY23** (h5py + scipy) và **SY24** (sqlalchemy) bị chặn vì gói CÓ sẵn.
+  Tám gói còn lại không bài nào dùng. Mở khoá chúng còn cần SOẠN ca chấm (gói nguồn có
+  0 bài tập cho cả hai) và vendor thêm scipy — một vòng riêng, chưa làm.
+  **BẪY NẶNG CÂN: `loadPackage` GHI WHEEL VÀO THƯ MỤC VENDORED.** Một phép thử gọi
+  `loadPackage('h5py')` với `indexURL` trỏ vào `frontend/public/pyodide/v314.0.7/`
+  đã thả **3,5 MB** (h5py · sqlalchemy · pkgconfig · typing-extensions) vào đó. Dòng log
+  nói *"caching the wheel in node_modules"* — **nó nói thiếu**. Một `git add -A` là
+  megabyte vào repo mà không ai quyết.
+  Nay `node scripts/check-wheel.mjs` (có trong CI) canh **hai chiều**:
+  · wheel không ai với tới → ĐỎ (bắt đúng tai nạn trên);
+  · gói bài CẦN mà thiếu wheel → ĐỎ, vì `loadPackage` KHÔNG ném mà lặng lẽ tải từ
+    CDN — CI xanh, còn trong trình duyệt thì CSP `connect-src 'self'` chặn, tức hỏng
+    cứng với học viên.
+  **PHẢI ĐÓNG BAO PHỤ THUỘC, không so theo danh sách khai.** Bài chỉ khai `numpy,
+  pandas, tzdata, matplotlib` — bốn cái — nhưng chúng kéo theo Pillow, contourpy,
+  cycler, fonttools, kiwisolver, packaging, pyparsing, python-dateutil, pytz, six:
+  **đúng 14**, khớp 14 wheel đang có. So theo danh sách khai thì 10 wheel hợp lệ bị kêu
+  oan, mà cổng kêu oan sẽ bị tắt.
+  Ablate 3 chiều: thả một wheel không ai dùng → **1 lỗi** · giấu wheel `pandas` (bài có
+  khai) → 1 · giấu `pillow` (PHỤ THUỘC, không bài nào khai trực tiếp) → 1 — chiều
+  thứ ba là thứ chứng minh phép đóng bao không thừa.
+
 - **Một dữ kiện ĐÚNG mà im lặng về giới hạn của nó thì MỜI người đọc suy sai.**
   Khi production chưa có thẻ `pe-build`, `check-da-deploy.mjs` chỉ in hai chuỗi
   `ASSET_VERSION` rồi dừng. Không sai một chữ — và người đọc (là tôi) đã suy:
@@ -734,8 +769,8 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   hỏi GIÁ TRỊ TRẢ VỀ. Bài đọc phải nghiêm hơn vì nó so đầu ra với dòng "Kết quả:" tác giả
   ghi, mà mô phỏng in khác bản thật ở PID và thứ tự thread. Nới quá tay thì
   `check-practice.mjs` đỏ — nó chạy đúng những bài tập build phát ra.
-  **14 bài không chấm được và đó KHÔNG phải lỗi:** openpyxl (PD13), seaborn (VZ16-19), plotly
-  (VZ20-22), ipywidgets (VZ23), h5py (SY23), sqlalchemy (SY24) — Pyodide 314 không có wheel;
+  **14 bài không chấm được:** openpyxl (PD13), seaborn (VZ16-19), plotly (VZ20-22),
+  ipywidgets (VZ23), h5py (SY23), sqlalchemy (SY24) — chưa vendor wheel;
   CT07/CT08/EX04 vì `sys.executable` (bẫy "thuộc tính phơi ra máy thật" ở trên). Chúng giữ ô
   chạy thử như cũ. CT10/CT11 thì ngược: code bài đọc phải chạy trên máy nhưng bài tập chấm
   được tại đây, nên chúng PHẢI mang `env` nói rõ — không thì mất hẳn hướng dẫn "chạy trên
