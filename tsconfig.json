@@ -22,6 +22,11 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false
   },
-  "include": ["src/**/*", "test/**/*"],
+  // `scripts/**/*.ts` thêm 04/11/2026. Trước đó 10 script TypeScript — GỒM CẢ
+  // `update-lesson-content.ts`, thứ AGENTS.md gọi là "đường nạp AN TOÀN" vào
+  // DB production — chưa bao giờ đi qua `npm run typecheck`. Đo trước khi thêm:
+  // **0 lỗi**, nên việc này miễn phí. Gieo thử một lỗi kiểu vào một script thì
+  // typecheck phải ĐỎ; trước bản này nó im lặng xanh.
+  "include": ["src/**/*", "test/**/*", "scripts/**/*.ts"],
   "exclude": ["node_modules", "dist", "frontend"]
 }

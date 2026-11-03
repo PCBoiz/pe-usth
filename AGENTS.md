@@ -37,6 +37,7 @@ node scripts/check-da-nap.mjs           # BÀI nào đã dựng mà CHƯA nạp 
 node scripts/check-moc-nen.mjs          # BẢNG MỐC NỀN dưới đây có nói đúng không
 node scripts/check-doi-hoi.mjs          # KHỐI CODE màn đọc nào chưa có lời đòi
 node scripts/check-nguong.mjs           # NGƯỠNG một chiều có ai nới ngược không
+npx ts-node scripts/pheu-tien-do.ts    # PHỄU tiến độ theo sort_order (CHỈ ĐỌC, cần DATABASE_URL)
 
 # pe-v4 (48 bài, 427 ca chấm) — GIỮ LẠI nhưng KHÔNG còn xuất bản; xem mục dưới
 py scripts/pe-v4/build.py              # dựng lại 48 bài -> scripts/pe-v4/out/
@@ -57,8 +58,8 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 
 | Hạng mục | Mốc |
 |---|---|
-| Backend typecheck | sạch |
-| Backend test | **34 bộ, 485 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
+| Backend typecheck | sạch — nay phủ **cả `scripts/**/*.ts`** (10 script, 0 lỗi) |
+| Backend test | **35 bộ, 501 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **139 cảnh báo** |
@@ -75,7 +76,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **15 CSS module trong `src/`** |
 | Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **179/179 bài khớp bản dựng**, 0 lỗi (biên nhận 04/11/2026) |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
-| Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **16 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
+| Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **17 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **15 mục đối chiếu được**, 0 lỗi; 2 nhóm khai NGOÀI TẦM |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
@@ -222,6 +223,47 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   một đoạn") nói về SỐ KÝ TỰ PHẢI GÕ, mà trần dòng không đo thứ đó. KHÔNG tự đổi:
   file này ghi trần "chỉ được HẠ", và +41 cổng là thêm ma sát cho người học —
   Hundhausen đo được một cổng không đáng bấm là đúng điều kiện KHÔNG có tác dụng.
+
+- **PHỄU TIẾN ĐỘ: `lesson_progress` KHÔNG phải mẫu số, và `scripts/` chưa bao giờ
+  được typecheck.** Mục 2 của báo cáo xếp hạng đặc tả *"`lesson_progress` tra theo
+  (course_id, sort_order) là đủ"*. **Đo trước khi dựng thì nó KHÔNG đủ:**
+  · `lesson_progress` chỉ được ghi trong `completeLesson`
+    (`src/lessons/lessons.service.ts`) ⇒ nó đo HOÀN THÀNH, không đo MỞ. Người mở
+    bài 1 rồi bỏ KHÔNG để lại hàng nào;
+  · nhưng mở bài là TỰ GHI DANH (`useLessonData.ts`) ⇒ `enrollments` mới là dấu
+    "đã đến".
+  Lấy `lesson_progress` làm mẫu số thì **ô 1 luôn = 100% THEO CẤU TẠO**, tức giấu
+  đúng ô rơi lớn nhất. Ablate: đổi mẫu số về `lesson_progress` → **3 ca đỏ**.
+  **ĐƠN VỊ LÀ "TÀI KHOẢN KHÁCH", và cổng từ chối mọi tên khác.** Refresh token khách
+  sống 30 ngày, hết hạn là cấp tài khoản MỚI ⇒ một người quay lại đếm thành HAI tài
+  khoản, nên mọi tỉ lệ "còn lại" là GIỚI HẠN DƯỚI. `kiemTenChiSo` cấm "người dùng" /
+  "user" / "học viên" trong tên chỉ số và đòi chữ "tài khoản".
+  **LUẬT BẮT ĐÚNG TÁC GIẢ CỦA NÓ:** một trong bốn chỉ số tôi khai trước là *"tỉ lệ còn
+  lại ở bài thứ N so với số đã ghi danh"* — không có chữ "tài khoản" ⇒ **9/14 ca đỏ**
+  ngay lần chạy đầu. Sửa TÊN, không nới luật.
+  **CA TEST CỦA CHÍNH LUẬT ẤY TỪNG KHÔNG CÓ RĂNG:** nó assert
+  `expect(loi).toContain("người dùng")`, mà thông điệp "không nói ra đơn vị" NHẮC LẠI
+  chính tên bị kiểm — nên phép so đạt vì LẶP LẠI ĐẦU VÀO. Ablate làm rỗng danh sách từ
+  cấm → **0 đỏ**. Nay so với câu nói ra LÝ DO, và tên mẫu đều CÓ chữ "tài khoản" để
+  nhánh "thiếu đơn vị" không che mất nhánh "từ cấm" → **4 đỏ**.
+  **GIỚI HẠN in CÙNG bảng, không để ở file khác** — một bảng số đi một mình sẽ bị
+  trích một mình. Năm câu, và một ca test đòi chúng có mặt (ablate bỏ một câu → 1 đỏ).
+  Ablate 7 chiều: mẫu số sai → 3 · đếm HÀNG thay vì TÀI KHOẢN → 1 · in % cho ô đã che
+  → 1 · bỏ ngưỡng che → 2 · bỏ lọc khách → 1 · bỏ một câu giới hạn → 1 · nới từ cấm → 4.
+  **VÀ ĐÂY LÀ PHÁT HIỆN KÈM, lớn hơn chính việc đang làm:** `tsconfig.json` chỉ
+  `include` `src/**/*` và `test/**/*` — **10 script TypeScript chưa bao giờ đi qua
+  `npm run typecheck`**, GỒM CẢ `update-lesson-content.ts`, thứ chính file này gọi là
+  "đường nạp AN TOÀN" vào DB production. Đo trước khi thêm: **0 lỗi**, nên việc này
+  miễn phí. Ablate: gieo một lỗi kiểu vào `update-lesson-content.ts` → typecheck **1
+  lỗi**; trước bản này nó im lặng xanh.
+  **Và nó bắt được ngay một lỗi chí tử trong script tôi vừa viết:** Prisma 7 ĐÒI một
+  driver adapter — `new PrismaClient()` trần ném `PrismaClientInitializationError`
+  ở dòng đầu, tức script **không chạy được lần nào**. Dùng cùng `PrismaNeon` với
+  `update-lesson-content.ts`, đừng nghĩ ra cách thứ hai.
+  **GIỚI HẠN PHẢI NÓI RA:** đường DB **chưa chạy với dữ liệu thật** — không có
+  `DATABASE_URL` trong vòng lặp. Thứ ĐÃ được chứng minh là phép tính (16 ca Jest) và
+  hình dạng truy vấn Prisma (tsc, nhờ chính thay đổi tsconfig này). Thứ CHƯA: hành vi
+  trên hàng thật. Chủ dự án chạy `npx ts-node scripts/pheu-tien-do.ts` là biết.
 
 - **16 NGƯỠNG MỘT CHIỀU chỉ được khai bằng VĂN XUÔI — nay có cổng canh chiều.**
   Repo có 16 con số đã quyết "chỉ được hạ" (trần) hoặc "chỉ được nâng" (sàn), rải

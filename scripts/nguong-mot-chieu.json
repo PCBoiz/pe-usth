@@ -137,6 +137,14 @@
       "chieu": "nang",
       "moc": 7.5,
       "vi": "Sàn tương phản chữ phụ của khối code (số dòng, nhãn)."
+    },
+    {
+      "ten": "o-toi-thieu-pheu",
+      "tep": "src/course-admin/pheu-tien-do.ts",
+      "re": "export const O_TOI_THIEU = (\\d+);",
+      "chieu": "nang",
+      "moc": 5,
+      "vi": "Ngưỡng ô tối thiểu của phễu tiến độ. Hạ nó là nới chính phép che mà nó sinh ra để làm: một tỉ lệ tính từ vài tài khoản không phải một tỉ lệ, nó là vài quan sát."
     }
   ]
 }
