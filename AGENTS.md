@@ -35,6 +35,7 @@ node scripts/check-duong-toi.mjs --json  # bản máy đọc
 node scripts/check-tai-nguyen-chet.mjs  # TỆP/COMPONENT nào KHÔNG ai tới được
 node scripts/check-da-nap.mjs           # BÀI nào đã dựng mà CHƯA nạp vào DB
 node scripts/check-moc-nen.mjs          # BẢNG MỐC NỀN dưới đây có nói đúng không
+node scripts/check-doi-hoi.mjs          # KHỐI CODE màn đọc nào chưa có lời đòi
 
 # pe-v4 (48 bài, 427 ca chấm) — GIỮ LẠI nhưng KHÔNG còn xuất bản; xem mục dưới
 py scripts/pe-v4/build.py              # dựng lại 48 bài -> scripts/pe-v4/out/
@@ -72,7 +73,8 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **17 mục, 14 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **15 CSS module trong `src/`** |
 | Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **179/179 bài khớp bản dựng**, 0 lỗi (biên nhận 04/11/2026) |
-| Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **13 mục đối chiếu được**, 0 lỗi; 2 nhóm khai NGOÀI TẦM |
+| Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
+| Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **15 mục đối chiếu được**, 0 lỗi; 2 nhóm khai NGOÀI TẦM |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
 **pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 179
@@ -185,6 +187,39 @@ tiêu là chạy tới xanh rồi mới bàn giao, không hỏi giữa chừng.
 ## Những cái bẫy đã gặp
 
 Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đã sửa hoặc còn mở.
+
+- **508 khối code màn đọc chia vào nhóm nào — nay KHAI RA, và bộ bắt-tất từng làm
+  cổng RỖNG.** `read-guess.test.mjs` đã ghim trần 2/40, sàn phủ, phép loại vẽ hình
+  và luật không lộ đáp án. Thứ nó KHÔNG nói: 508 khối chia hết vào NHỮNG NHÓM NÀO —
+  nên một hình dạng thứ bảy (gói nguồn đổi, build phát thêm trường) rơi vào khoảng
+  trống đó và im lặng. `node scripts/check-doi-hoi.mjs` (có trong CI) chia hết 508
+  khối: **392 có một lời đòi (77,2%)** — 262 cổng dự đoán output · 56 bảng từng bước ·
+  74 cổng dự đoán HÌNH — và **116 im lặng, mỗi nhóm kèm lý do**.
+  **Con số 74/7 là một phép so chéo tự xác nhận:** 81 khối gọi thư viện vẽ hình, 74
+  có khối `figure` trên cùng màn (nên `doanDuocHinh` dựng cổng) và 7 thì không —
+  khớp đúng ghi chép độc lập "7 khối dựng Figure mà bài không xuất ảnh" ở mục cổng
+  dự đoán. Báo cáo xếp hạng ghi 399 vì đếm cả 81; **392 mới đúng**.
+  **CỔNG NÀY RỖNG BA LẦN TRƯỚC KHI CÓ RĂNG, và cả ba chỉ lộ ra nhờ ablate:**
+  · nhóm cuối viết `hop: () => true` (bắt-tất) ⇒ gỡ nhóm `qua-dong` ra thì 54 khối
+    lẽ ra RƠI RA ngoài lại bị nuốt và dán nhãn "CÓ cổng" — cổng **tự khai khống độ
+    phủ**, và luật "rơi ra ngoài là LỖI" không bao giờ chạy tới. Đo: **0 đỏ**;
+  · sửa thành điều kiện dương nhưng THIẾU nhánh "lộ đáp án" ⇒ gỡ `lo-dap-an` vẫn
+    **0 đỏ**; thiếu tiếp `!trace` và hai nhánh vẽ hình ⇒ gỡ ba nhóm đó đều 0 đỏ.
+    Nhóm "có cổng" phải là PHẦN BÙ CHÍNH XÁC của `doanDuocOutput`, đủ cả sáu nhánh;
+  · và phân nhóm MỘT MÌNH vẫn không bắt được khối TRÔI từ nhóm có-lời-đòi sang nhóm
+    im lặng: gỡ `ve-hinh-co-figure` thì 74 khối rơi sang nhóm vẽ-hình kia, độ phủ
+    tụt **392 → 318** mà mọi khối vẫn "thuộc một nhóm đã khai" ⇒ 0 đỏ. Phải thêm
+    `SAN_CO_DOI` (380, CHỈ ĐƯỢC NÂNG). Ablate lại: 8/8 chiều đều đỏ.
+  **PHÁT HIỆN CHƯA LÀM, và nó là quyết định của CHỦ DỰ ÁN chứ không của vòng lặp:**
+  trần DÒNG là một PROXY, và nó mis-fire. `khopDapAn` bỏ HẾT khoảng trắng, nên thứ
+  người học thật sự gõ là chuỗi gõ liền. Đo trên bản dựng: khối ĐANG có cổng dài
+  **trung vị 9 ký tự, max 34**; 41 khối bị trần dòng từ chối dài **trung vị 20, max
+  40** — TẤT CẢ nằm trong trần 40 ký tự hiện hành, và ngắn nhất là `"1\n2\n3"` tức
+  **3 ký tự**. Bỏ trần dòng mà giữ nguyên trần ký tự → **303 khối / 133 bài** thay vì
+  262/127. Lý lẽ viết trong `studio-lesson.ts` ("từ 3 dòng trở lên thì chép lại cả
+  một đoạn") nói về SỐ KÝ TỰ PHẢI GÕ, mà trần dòng không đo thứ đó. KHÔNG tự đổi:
+  file này ghi trần "chỉ được HẠ", và +41 cổng là thêm ma sát cho người học —
+  Hundhausen đo được một cổng không đáng bấm là đúng điều kiện KHÔNG có tác dụng.
 
 - **BẢNG MỐC NỀN LÀ TÍN HIỆU DỪNG, và nó đã nói sai HAI LẦN mà không gì bắt.**
   LOOP.md dùng bảng ở trên làm thước đo máy-đọc-được cho "đã xong chưa". Nhưng

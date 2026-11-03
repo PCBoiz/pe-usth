@@ -31,6 +31,7 @@
  * Chạy:  node scripts/check-moc-nen.mjs  [--json]
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -99,6 +100,25 @@ const doDuoc = {
 };
 
 /**
+ * Hai con số của hàng "Lời đòi ở màn đọc" KHONG tinh lai o day — goi thang
+ * `check-doi-hoi.mjs --json`. Tinh lai la ban CHEP THU BA cua mot luat da co
+ * hai ban (ham that trong studio-lesson.ts, va ban chep trong check-doi-hoi),
+ * va ban thu ba se troi khoi ca hai ma khong ai so.
+ */
+try {
+  const ra = JSON.parse(
+    execFileSync(process.execPath, [join(GOC, 'scripts', 'check-doi-hoi.mjs'), '--json'], {
+      encoding: 'utf8',
+    }),
+  );
+  doDuoc.coDoi = ra.coDoi;
+  doDuoc.tongKhoi = ra.tong;
+} catch {
+  doDuoc.coDoi = NaN;
+  doDuoc.tongKhoi = NaN;
+}
+
+/**
  * Mỗi mục: một BIỂU THỨC CHÍNH QUY bắt đúng con số trong bảng, và khoá của số
  * đo tương ứng. Regex phải neo vào ĐỦ chữ xung quanh để không bắt nhầm một số
  * khác trong cùng dòng — `bai` mà chỉ tìm `179` thì cũng khớp "179/179 bài" ở
@@ -122,6 +142,8 @@ const DOI_CHIEU = [
   ['tenMayBoQua', /(\d+) trên máy/, 'số bài chạy trên máy'],
   ['tepTest', /\*\*\d+ ca\*\* \/ (\d+) tệp, tất cả đạt/, 'số tệp test frontend'],
   ['cssModule', /\*\*(\d+) CSS module trong `src\/`\*\*/, 'số CSS module trong src/'],
+  ['coDoi', /\*\*(\d+)\/\d+ khối \(\d+,\d+%\) có một lời đòi\*\*/, 'số khối có lời đòi'],
+  ['tongKhoi', /\*\*\d+\/(\d+) khối \(\d+,\d+%\) có một lời đòi\*\*/, 'tổng khối code màn đọc'],
 ];
 // `tenMayBoQua` dùng khoá khác để regex không đụng nhau; ánh xạ lại ở đây.
 const ANH_XA = { tenMayBoQua: 'tenMay' };

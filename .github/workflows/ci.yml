@@ -396,6 +396,14 @@ jobs:
       # về chỗ nó bỏ sót sẽ bị đọc thành "đã phủ hết" — đúng cách 204 sống sót.
       - run: node scripts/check-moc-nen.mjs
 
+      # CỔNG LỜI ĐÒI — mỗi khối code ở màn đọc hoặc CÓ một lời đòi (bảng từng
+      # bước · cổng dự đoán output · cổng dự đoán hình), hoặc im lặng CÓ KHAI
+      # LÝ DO. read-guess.test.mjs đã ghim trần và sàn phủ, nhưng không chỗ nào
+      # nói 508 khối chia hết vào những nhóm nào — một hình dạng thứ bảy sẽ rơi
+      # vào khoảng trống đó và im lặng. Cổng có cả SÀN ĐỘ PHỦ, vì phân nhóm một
+      # mình không bắt được khối TRÔI từ nhóm có-lời-đòi sang nhóm im lặng.
+      - run: node scripts/check-doi-hoi.mjs
+
       # 65 phép kiểm của BỘ GHI VẾT (nút "Xem từng bước" của /ide). Trước đây
       # chỉ chạy tay, nên một bản sửa làm tracer chạy SAI mà vẫn sinh lại đúng
       # thì không có gì đỏ: phép canh sha chỉ bắt được chuyện "sửa .py mà quên
