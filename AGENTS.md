@@ -2371,6 +2371,51 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   (17 → 18 ngưỡng); ablate lại qua sổ: nới 24 → 200 thì `check-nguong` **1 lỗi**.
   `ASSET_VERSION` → `2026-11-04e`.
 
+- **BẢNG 74 TOKEN `--ds-*` LẤY NGUYÊN TỪ NHÁNH `test` — và câu "bê cả nhánh" là câu
+  tôi đóng khung SAI.** Chủ dự án hỏi *"cần gì bê nhánh, chỉ lấy phần frontend thôi"*,
+  và đúng: tôi phản đối việc MERGE, mà không ai đề xuất merge. Số đo cho cả hai vế:
+  · `main` đi TRƯỚC `tester/test` **170 commit**; `test` đi trước main **10**; commit
+    cuối của `test` là **22/10**. Merge cả nhánh thì **45 file** main đã xoá sống lại
+    (417 KB tài nguyên chết + font Be Vietnam Pro đã bỏ), và **7/10 commit** là
+    dashboard / Góc học / minigame — thứ chủ dự án đã loại khỏi phạm vi;
+  · nhưng `studio-tokens.css` của `test` là một file **CHỈ KHAI BIẾN, không một quy
+    tắc nào áp lên phần tử** (chính đầu file nói vậy), nên lấy nguyên là an toàn và
+    rẻ. Đó là cách port đúng, và tôi đã port TAY từng token suốt bốn vòng trước.
+  **ĐO TRƯỚC KHI LẤY, và phép đo quyết định cách làm:** 40/41 `--st-*` trùng tên; đúng
+  **MỘT** token mất — `--st-streak-bg`, có **đúng một** chỗ dùng
+  (`LessonChrome.module.css:177`). Trả nó về trỏ `--ds-violet-tint`. Thiếu bước này là
+  một bề mặt MẤT NỀN mà không gì ném ra: CSS chỉ lặng lẽ bỏ qua một `var` không có.
+  **CỔNG BẮT ĐƯỢC THỨ ĐÁNG GIÁ NHẤT — nhưng vì lý do SAI, và đó là bài học.**
+  Vừa thay file thì `ds-contrast` **3 ca ĐỎ**: *":root không có --st-code-bg"*. Đọc
+  như "bảng mới xoá mất bảng code NÂU". Đo lại: `--ds-code-bg` của `test` là
+  **`#221A13`**, trùng TỪNG KÝ TỰ với bảng đang chạy. Bảng v2 chia HAI TẦNG — `:root`
+  giữ mã màu `--ds-*`, `body` giữ `--st-*` làm BÍ DANH — còn cổng chỉ đọc `:root` và
+  chỉ nhận mã màu TRỰC TIẾP. Tức **cổng BÁO OAN**, và lối thoát trông hợp lý nhất lúc
+  đó là bỏ bảng mới đi. Sửa CỔNG, đừng bỏ bảng.
+  **MỘT NẤC bí danh, cố ý** — hai nấc là bảng tự vòng vo và cổng phải ĐỎ chứ không
+  đoán tiếp. **Và bản đầu của luật ấy KHÔNG CÓ RĂNG:** `token()` trả `null`, chỗ gọi
+  nuốt bằng `??`, ablate bí danh hai nấc ra **0 đỏ** — cổng im lặng đúng lúc nó không
+  đọc nổi bảng. Nay "chưa khai" vẫn trả null (chỗ gọi cần rơi về bảng ngày) nhưng "ĐÃ
+  KHAI mà không giải ra mã màu" thì `assert.match` ĐỎ. Ablate lại: **2 đỏ**.
+  **HAI PHÉP ABLATE ĐẦU CỦA TÔI TRƯỢT, và "0 đỏ" của chúng vô nghĩa** — một cái lệch
+  escaping, một cái đếm thiếu dấu cách (`--ds-code-str:` có BỐN space). Đúng bẫy
+  `NP02#1` đã ghi ở trên: bịa khoá sai là tự lừa mình rằng bộ kiểm hỏng. Nay mỗi phép
+  ablate kiểm chuỗi ĐÃ vào file rồi mới chạy.
+  Ablate 4 chiều: trả cổng về chỉ-đọc-`:root` → **3 đỏ** · cổng thôi giải bí danh → 3 ·
+  đổi `--ds-code-bg` sang xanh `#1c2536` → 3 · hạ `--ds-code-str` xuống dưới sàn → 2.
+  **ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC, và đây là phần đắt:** bảng v2 **KHÔNG có màu xanh
+  lá**. `--st-ok-*` nay là **ochre**, `--st-err-*` là **sanguine** — tức "đúng / chưa
+  đúng" ở **6 file component** (bảng ca chấm, phản hồi trắc nghiệm, màn brief) đổi từ
+  xanh-lá/đỏ sang hổ phách/đỏ đất. Chính đầu bảng khai lý do: màu KHÔNG được là thứ
+  duy nhất phân biệt đúng/sai (WCAG 1.4.1), nên mọi chỗ chấm phải kèm icon + chữ. Điều
+  kiện đó ĐÃ đạt và vừa được pha 4 đo lại: **2 288 ca trượt / 0 ca im lặng**.
+  `ASSET_VERSION` → `2026-11-04f`.
+  **CÒN LẠI, nói cho đúng:** 74 token nay CÓ MẶT trên main, nhưng mới `--st-*` (41 bí
+  danh) là có người dùng. Nhóm `violet/sanguine/ochre/action` và thang bán kính vẫn
+  chưa bề mặt nào gọi tới — **đó là token suông, đúng thứ luật dưới đây cấm**, và nó
+  được chấp nhận ĐÚNG MỘT VÒNG này vì file là một khối không tách được. Vòng sau phải
+  nối bề mặt, không thêm token.
+
   **Còn lại của hệ `--ds-*`:** main mới chỉ lấy nhóm CODE. 58 token còn lại (giấy, thẻ,
   nút, tím/đỏ/lục, bán kính, bóng) vẫn ở nhánh `test`. Port tiếp thì theo đúng luật này:
   **mỗi vòng token + nối ít nhất một bề mặt THẬT**, không thêm token suông — thêm token mà

@@ -46,19 +46,65 @@ const tiSo = (a, b) => {
   return (x + 0.05) / (y + 0.05);
 };
 
-/**
- * Giá trị CUỐI CÙNG của một token trong một khối selector.
- * Lấy lần khai SAU CÙNG: CSS sau đè CSS trước, và `body.dark` khai lại một số
- * token của `:root` — đọc lần đầu là đọc bảng ngày rồi tưởng đó là ban đêm.
- */
-function token(selector, ten) {
+/** Thân của một khối selector trong studio-tokens.css, hoặc null. */
+function khoi(selector) {
   const i = CSS.indexOf(selector + ' {') >= 0
     ? CSS.indexOf(selector + ' {')
     : CSS.indexOf(selector + '{');
-  assert.ok(i >= 0, `không tìm thấy khối ${selector} trong studio-tokens.css`);
-  const than = CSS.slice(i, CSS.indexOf('\n}', i));
-  const hit = [...than.matchAll(new RegExp(`${ten}\\s*:\\s*(#[0-9a-fA-F]{6})`, 'g'))];
-  return hit.length ? hit[hit.length - 1][1] : null;
+  return i >= 0 ? CSS.slice(i, CSS.indexOf('\n}', i)) : null;
+}
+
+/** Khai báo CUỐI CÙNG của một token trong một thân khối (CSS sau đè CSS trước). */
+function khai(than, ten) {
+  if (!than) return null;
+  const hit = [...than.matchAll(new RegExp(`${ten}\\s*:\\s*([^;]+);`, 'g'))];
+  return hit.length ? hit[hit.length - 1][1].trim() : null;
+}
+
+/**
+ * Giá trị CUỐI CÙNG của một token, SAU khi giải bí danh.
+ *
+ * Bảng v2 chia HAI TẦNG: `:root` giữ mã màu `--ds-*`, `body` giữ `--st-*` làm
+ * BÍ DANH trỏ vào chúng. Bản đầu của hàm này chỉ đọc `:root` và chỉ nhận mã màu
+ * TRỰC TIẾP, nên lúc bảng chuyển sang hai tầng thì **3 ca ĐỎ với ":root không có
+ * --st-code-bg"** trong khi màu vẫn đúng y nguyên (`--ds-code-bg` = `#221A13`,
+ * trùng từng ký tự với bảng cũ). Một cổng BÁO OAN là một cổng sẽ bị tắt, nên nó
+ * phải biết đi tiếp qua `var(--ds-…)`.
+ *
+ * ĐÚNG MỘT NẤC, cố ý: bí danh trỏ vào bí danh là bảng đang tự vòng vo, và lúc đó
+ * cổng phải ĐỎ chứ không đoán tiếp — đoán tiếp là cách một cổng tự khai khống
+ * rằng nó hiểu bảng.
+ */
+function token(selector, ten) {
+  // `:root` KHÔNG chứa `--st-*` ở bảng hai tầng, nên phần NGÀY đọc cả `body`.
+  // Chỉ `:root` mới gộp: `body.dark` vẫn là khối riêng, gộp nó là trộn hai chế độ.
+  const than = selector === ':root'
+    ? [khoi(':root'), khoi('body')].filter(Boolean).join('\n')
+    : khoi(selector);
+  assert.ok(than, `không tìm thấy khối ${selector} trong studio-tokens.css`);
+  let v = khai(than, ten);
+  const biDanh = v && v.match(/^var\((--[a-z0-9-]+)\)$/);
+  if (biDanh) {
+    // Ban đêm: `body.dark` khai lại `--ds-*`, nên tra ở đó TRƯỚC rồi mới về `:root`.
+    v = selector === 'body.dark'
+      ? khai(khoi('body.dark'), biDanh[1]) ?? khai(khoi(':root'), biDanh[1])
+      : khai(khoi(':root'), biDanh[1]);
+  }
+  // Token KHÔNG được khai ở khối này → null, và đó là câu trả lời hợp lệ: chỗ gọi
+  // dùng `?? token(':root', …)` để rơi về bảng ngày.
+  if (v === null) return null;
+  // Nhưng ĐÃ KHAI mà giải ra không phải mã màu thì cổng đang MÙ, không phải
+  // "không có". Ablate đã đo: trỏ `--ds-code-kw` vào `var(--ds-code-fg)` (bí danh
+  // hai nấc) → bản trước trả null, chỗ gọi `??` nuốt mất, **0 ca đỏ**. Một cổng
+  // im lặng khi nó không đọc được bảng là cổng tự khai khống rằng nó hiểu bảng.
+  assert.match(
+    v,
+    /^#[0-9a-fA-F]{6}$/,
+    `${ten} ở ${selector} khai "${v}" — cổng không giải được thành mã màu. `
+      + 'Bí danh chỉ được đi MỘT nấc (--st-* → --ds-*); hai nấc thì sửa bảng, '
+      + 'đừng dạy cổng đoán tiếp.',
+  );
+  return v;
 }
 
 /** Màu cú pháp + SÀN riêng. Chỉ được NÂNG, không được hạ. */
