@@ -54,7 +54,18 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 
 ## Mốc nền
 
-Đo lại ngày 28/10/2026, bằng cách tự chạy từng lệnh. Đừng để tụt xuống dưới mức này:
+**Đo lại ngày 04/11/2026 — MỌI hàng, bằng cách tự chạy từng lệnh.** Đừng để tụt xuống
+dưới mức này.
+
+Ngày ở đây là thứ DUY NHẤT trong bảng mà `check-moc-nen.mjs` không kiểm được: nó đối
+chiếu CON SỐ với cây mã, còn "lệnh này chạy lúc nào" thì không có dấu vết nào trong
+cây mã để đối chiếu. Nên nó trôi được, và đã trôi — tiêu đề giữ 28/10 suốt một tuần
+trong khi các hàng bên dưới đổi nhiều lần. Đổi một con số thì sửa luôn ngày.
+
+Hai hàng KHÔNG xác minh được bằng cách chạy lệnh, và phải đọc đúng như thế:
+"Đã nạp DB chưa" đọc một BIÊN NHẬN (nó nói lần nạp ĐÃ xảy ra, không nói DB hiện giờ
+còn giữ đúng bản đó), và "Giáo trình pe-v4" là gói đã ẩn — chạy được nhưng không ai
+học nó.
 
 | Hạng mục | Mốc |
 |---|---|
