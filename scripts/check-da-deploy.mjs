@@ -37,7 +37,15 @@ const GOC = join(fileURLToPath(new URL('.', import.meta.url)), '..');
 const TRANG = process.env.PE_PROD_URL || 'https://www.programmingedu.io.vn/';
 const NHANH = process.env.PE_PROD_BRANCH || 'tester/main';
 
-const git = (...a) => execFileSync('git', a, { cwd: GOC, encoding: 'utf8' }).trim();
+// `stdio` phải chặn stderr: `git show` trên một commit chưa có tệp thì in
+// `fatal: …` ra stderr, và dù ta `catch` thì dòng đó vẫn hiện trên màn hình —
+// một cổng nhổ 14 dòng `fatal` ra rồi báo 0 lỗi thì không ai tin nó nữa.
+const git = (...a) =>
+  execFileSync('git', a, {
+    cwd: GOC,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'ignore'],
+  }).trim();
 
 /** `main` cục bộ chỉ là ý kiến của máy này; nhánh mà production theo mới là mốc. */
 function mocSo() {
@@ -65,12 +73,71 @@ async function docLive() {
   };
 }
 
+// DẤU GẠCH XUÔI, không `join()`: `git show <sha>:<đường dẫn>` đòi đúng dạng
+// đường dẫn của GIT, mà `join()` trên Windows sinh `\`. Hệ quả: 14/14 lời gọi
+// ném `fatal: path ... exists on disk, but not in <sha>` và khoảng ra rỗng.
+const TEP_ASSET = 'frontend/src/lib/assetVersion.ts';
+
 const assetCucBo = (() => {
-  const v = readFileSync(join(GOC, 'frontend', 'src', 'lib', 'assetVersion.ts'), 'utf8');
+  const v = readFileSync(join(GOC, ...TEP_ASSET.split('/')), 'utf8');
   return (v.match(/ASSET_VERSION = '([^']+)'/) ?? [])[1] ?? null;
 })();
 
+/**
+ * KHOẢNG commit mà một giá trị `ASSET_VERSION` trên dây có thể thuộc về.
+ *
+ * VÌ SAO HÀM NÀY TỒN TẠI — nó chữa một sai lầm CÓ THẬT của chính cổng này.
+ * Trước đây, khi production chưa có thẻ `pe-build`, cổng chỉ in "ASSET_VERSION
+ * live 2026-10-29a so với 2026-11-04b ở cây mã" — đúng dữ kiện, nhưng im lặng
+ * về giới hạn của nó. Và người đọc (là tôi) đã suy: *"2026-10-29a được đưa vào
+ * ở `f447d1e` ⇒ production đang chạy `f447d1e` ⇒ sau lưng 66 commit"* rồi ghi
+ * con số đó vào AGENTS.md như một SỐ ĐO. Số thật là `9567490`, **sau lưng 15**.
+ * `ASSET_VERSION` chỉ bump khi `public/` đổi, nên nó nói được đúng một điều:
+ * production nằm ĐÂU ĐÓ giữa commit ĐƯA VÀO giá trị ấy và commit ĐỔI nó lần kế.
+ * In ra cái KHOẢNG đó là cách duy nhất để dữ kiện này thôi mời người ta suy sai.
+ *
+ * BẪY KHI TÍNH, đã cắn: lịch sử KHÔNG đơn điệu theo giá trị — `070886a` (22/10)
+ * đặt `ASSET_VERSION` LÙI về `2026-10-13g` vì nó là commit revert. Nên phải đi
+ * theo THỨ TỰ GIT (`--reverse`) và lấy LẦN CUỐI một giá trị được đặt, không sắp
+ * theo chuỗi ngày trong chính giá trị.
+ */
+function khoangTuAsset(gia_tri) {
+  if (!gia_tri) return null;
+  let shas;
+  try {
+    shas = git('log', '--reverse', '--format=%H', '--', TEP_ASSET).split('\n').filter(Boolean);
+  } catch {
+    return null;
+  }
+  const moc = [];
+  for (const sha of shas) {
+    let v;
+    try {
+      v = git('show', `${sha}:${TEP_ASSET}`);
+    } catch {
+      continue;
+    }
+    const m = v.match(/ASSET_VERSION = '([^']+)'/);
+    if (m) moc.push({ sha: sha.slice(0, 7), gia_tri: m[1] });
+  }
+  // LẦN CUỐI giá trị này được đặt — xem bẫy revert ở chú thích trên.
+  let i = -1;
+  for (let k = 0; k < moc.length; k += 1) if (moc[k].gia_tri === gia_tri) i = k;
+  if (i < 0) return null;
+
+  const duoi = moc[i].sha;
+  const tren = i + 1 < moc.length ? moc[i + 1].sha : null;
+  let soCommit = null;
+  try {
+    soCommit = Number(git('rev-list', '--count', `${duoi}..${tren ?? NHANH}`));
+  } catch {
+    soCommit = null;
+  }
+  return { duoi, tren, soCommit };
+}
+
 const doiHoi = process.argv.includes('--doi-hoi-moi-nhat');
+let khoang = null;
 const moc = mocSo();
 const loi = [];
 const nhac = [];
@@ -99,17 +166,30 @@ if (live?.sha && /^[0-9a-f]{7}$/.test(live.sha)) {
     (doiHoi ? loi : nhac).push(cau);
   }
 } else if (live) {
-  // Bản dựng cũ hơn thẻ meta này thì không có gì để so — nói thẳng, đừng im.
+  // Bản dựng cũ hơn thẻ meta này thì không có gì để so CHÍNH XÁC — nhưng phải
+  // nói ra được bao nhiêu thì nói, và nói kèm GIỚI HẠN. Bản trước chỉ in hai
+  // chuỗi ASSET_VERSION và để người đọc tự suy; người đọc đó là tôi, và tôi đã
+  // suy sai (xem chú thích của `khoangTuAsset`).
+  khoang = khoangTuAsset(live.asset);
   nhac.push(
     `Production KHÔNG có thẻ <meta name="pe-build"> — nó đang chạy một bản dựng CŨ HƠN ` +
       `commit thêm thẻ này. Dấu phụ: ASSET_VERSION live ${live.asset ?? '(không đọc được)'} ` +
       `so với ${assetCucBo} ở cây mã.`,
   );
+  if (khoang) {
+    nhac.push(
+      `KHOẢNG suy ra được: production nằm ĐÂU ĐÓ trong ${khoang.soCommit ?? '?'} commit của ` +
+        `[${khoang.duoi} … ${khoang.tren ?? NHANH}). ` +
+        `${khoang.duoi} chỉ là CẬN DƯỚI — commit ĐƯA VÀO chuỗi đó — KHÔNG phải bản đang chạy. ` +
+        `Muốn biết chính xác: xem dashboard, hoặc gọi HEAD một tệp mà một commit đã XOÁ cùng ` +
+        `một tệp chính commit đó GIỮ (dấu NỘI DUNG, không ai phải nhớ bump nó).`,
+    );
+  }
   if (doiHoi) loi.push('Chưa thấy dấu build trên production — chưa deploy bản có thẻ meta.');
 }
 
 if (process.argv.includes('--json')) {
-  console.log(JSON.stringify({ moc, live, assetCucBo, sauLung, loi, nhac }, null, 2));
+  console.log(JSON.stringify({ moc, live, assetCucBo, khoang, sauLung, loi, nhac }, null, 2));
 } else {
   console.log('ĐÃ DEPLOY CHƯA');
   console.log(`   mốc so     : ${moc.ref} = ${moc.sha}`);

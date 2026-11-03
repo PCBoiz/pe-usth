@@ -391,8 +391,55 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   · `9567490` LÀ tổ tiên của `tester/main`, không nhánh nào đứng ở đó ⇒ nối ĐÚNG repo/nhánh;
   · cả 15 commit chưa deploy cùng tác giả `sonkh <sonthaiha07@gmail.com>` với commit ĐÃ
     deploy ⇒ không phải bộ lọc Author trong giao diện che đi.
-  Còn lại: integration GitHub ngừng gửi webhook, hoặc project chạm hạn mức / bị tạm dừng.
-  Cả hai chỉ xem được trong dashboard Vercel — **đừng đi tìm "nối nhầm repo" nữa**.
+  **NGUYÊN NHÂN THẬT, chủ dự án nói ra: repo ĐÃ CHUYỂN sang một GitHub org mới.**
+  `PCBoiz/pe-usth` nay trả **HTTP 301** về `ProgrammingEdu-USTH/pe-usth`. Git push vẫn
+  chạy qua redirect nên không ai thấy gì lạ, nhưng GitHub App của Vercel cài theo TỪNG
+  ORG — org mới chưa có nó, nên **webhook không tới Vercel và không deployment nào được
+  TẠO**. Khớp mọi mảnh bằng chứng: đúng nhánh, đúng tác giả, không có bản Error nào, và
+  ranh giới là một NGÀY chứ không phải một commit hỏng.
+  **VÀ BẰNG CHỨNG ĐÃ IN RA NGAY LẦN PUSH ĐẦU TIÊN của phiên — tôi nhìn mà không đọc:**
+
+      remote:   https://github.com/ProgrammingEdu-USTH/pe-usth.git
+      To https://github.com/PCBoiz/pe-usth.git
+         6fb8264..828d33b  main -> main
+
+  GitHub in dòng `remote:` đó để báo repo đã dời. Tôi đọc nó như tiếng ồn của lệnh push,
+  rồi hai vòng sau đi dựng cả một cổng để trả lời câu hỏi mà dòng ấy đã trả lời.
+  **Luật rút ra: đầu ra của `git push` là một PHÉP ĐO, không phải tiếng ồn.** Dòng
+  `remote:` chỉ xuất hiện khi máy chủ có điều muốn nói.
+  Việc còn lại là của chủ dự án: trỏ Vercel sang org mới (và `git remote set-url tester https://github.com/ProgrammingEdu-USTH/pe-usth.git` ở máy).
+
+- **"153 bài chưa nạp DB" là một câu tôi LẶP LẠI trong khi cổng của chính mình đã trả
+  lời ngược.** Suốt nhiều vòng tôi bàn giao câu *"còn 153 bài đã dựng xong chưa nạp"*.
+  Nhưng `node scripts/check-da-nap.mjs` — mà tôi chạy gần như MỖI vòng — in nguyên văn:
+  *"Biên nhận nạp lúc 2026-11-03T18:48 · gói 179 bài / 0 lỗi — mọi bài trong gói đều đã
+  nạp đúng bản đang dựng."* Chủ dự án chạy `update-lesson-content.ts --all` và bản chạy
+  khô xác nhận: **0/179 bài sẽ đổi `content_json`**.
+  Tôi đã đọc dòng "0 lỗi" như "cổng này PASS" chứ không như "đây là CÂU TRẢ LỜI cho
+  việc tôi đang bàn giao". Một cổng chỉ hữu ích bằng mức người ta đọc thứ nó NÓI, không
+  phải thứ nó TÔ MÀU. **Trước khi bàn giao một việc cho người khác, chạy đúng cái cổng
+  canh việc đó và đọc CÂU, không đọc màu.**
+
+- **Một dữ kiện ĐÚNG mà im lặng về giới hạn của nó thì MỜI người đọc suy sai.**
+  Khi production chưa có thẻ `pe-build`, `check-da-deploy.mjs` chỉ in hai chuỗi
+  `ASSET_VERSION` rồi dừng. Không sai một chữ — và người đọc (là tôi) đã suy:
+  *"2026-10-29a được đưa vào ở `f447d1e` ⇒ production đang chạy `f447d1e`"*, rồi ghi
+  "sau lưng 66 commit" vào chính file này như một SỐ ĐO. Số thật: `9567490`, **sau
+  lưng 15**.
+  Nay cổng in ra cái KHOẢNG: *"production nằm ĐÂU ĐÓ trong 55 commit của
+  [`f447d1e` … `bf44293`); `f447d1e` chỉ là CẬN DƯỚI, KHÔNG phải bản đang chạy."*
+  Đó đúng là câu sẽ chặn tôi lại.
+  **BẪY KHI TÍNH KHOẢNG — lịch sử KHÔNG đơn điệu theo giá trị.** `070886a` (22/10, commit
+  revert) đặt `ASSET_VERSION` **LÙI** về `2026-10-13g`. Nên phải đi theo THỨ TỰ GIT
+  (`--reverse`) và lấy **LẦN CUỐI** một giá trị được đặt; sắp theo ngày trong chuỗi là
+  ra sai. Ablate 5 chiều: giá trị đang live → `[f447d1e … bf44293)` 55 commit (CÓ chứa
+  `9567490`) · giá trị mới nhất → cận trên là `main` · `2026-10-13g` → `[070886a …`
+  (ĐÚNG commit revert, không phải `79c0aaf` ngày 13/10) · `2026-10-13a` → một khoảng
+  KHÁC hẳn · giá trị không có trong lịch sử → nói thẳng "không tính được".
+  **Hai lỗi Windows của chính hàm đó, chỉ lộ khi chạy thật:** `join()` sinh `\` mà
+  `git show <sha>:<đường dẫn>` đòi `/` ⇒ **14/14 lời gọi ném `fatal:`** và khoảng ra
+  rỗng; và `execFileSync` không chặn stderr ⇒ 14 dòng `fatal:` nhổ thẳng ra màn hình
+  trong khi cổng vẫn báo 0 lỗi — một cổng như thế thì không ai tin nữa.
 
 - **BẢNG MỐC NỀN LÀ TÍN HIỆU DỪNG, và nó đã nói sai HAI LẦN mà không gì bắt.**
   LOOP.md dùng bảng ở trên làm thước đo máy-đọc-được cho "đã xong chưa". Nhưng
