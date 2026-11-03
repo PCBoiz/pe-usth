@@ -489,17 +489,33 @@ test('chip trang chủ: nền ĐỤC và cặp màu vượt AA (nền alpha làm
  * được: chúng ghi lại cái đã bỏ và vì sao, mà một cổng cấm cả chú thích sẽ bắt
  * người ta xoá đúng phần giải thích.
  */
-test('trang chủ: lớp tương tác không còn token brand xanh–đỏ', () => {
+/* Mặt nào ĐÃ chuyển sang lofi thì không được lùi. Danh sách này CHỈ ĐƯỢC DÀI
+ * THÊM: mỗi vòng chuyển xong một bề mặt là thêm một dòng, không bao giờ bớt.
+ * Đo trên production trước khi thêm — quét MỌI phần tử đang VẼ RA màu brand,
+ * không đếm grep: trang khoá học có **22 chỗ thật**, còn grep trên 8 file CSS
+ * nó nạp thì ra 128, vì phần lớn selector là dashboard/forum di sản không
+ * trang nào render. */
+const DA_SANG_LOFI = [
+  ['src/app/home.module.css', HOME],
+  ['public/static/css/edu-course-detail.css',
+    readFileSync(join(__dirname, '..', '..', 'public', 'static', 'css', 'edu-course-detail.css'), 'utf8')],
+  ['src/components/CourseShell.module.css',
+    readFileSync(join(__dirname, '..', '..', 'src', 'components', 'CourseShell.module.css'), 'utf8')],
+];
+
+test('bề mặt đã sang lofi: lớp tương tác không còn token brand xanh–đỏ', () => {
   const CAM = ['--edu-g-brand', '--edu-brand-glow', '--edu-accent-grad', '--edu-accent'];
+  for (const [ten, noiDung] of DA_SANG_LOFI) {
   // Bỏ chú thích /* … */ trước khi quét, để chỉ còn KHAI BÁO.
-  const sach = HOME.replace(/\/\*[\s\S]*?\*\//g, '');
+  const sach = noiDung.replace(/\/\*[\s\S]*?\*\//g, '');
   for (const t of CAM) {
     const n = sach.split(`var(${t})`).length - 1;
     assert.equal(
       n, 0,
-      `home.module.css còn ${n} chỗ dùng var(${t}) — đó là bảng xanh–đỏ của bố `
+      `${ten} còn ${n} chỗ dùng var(${t}) — đó là bảng xanh–đỏ của bố `
         + 'cục TRƯỚC việc thiết kế. Bảng lofi có token đúng vai: --ds-action (nền '
         + 'nút chính), --ds-violet (vị trí/lựa chọn), --ds-mark-ochre (nhấn ấm).',
     );
+  }
   }
 });

@@ -1,3 +1,10 @@
+/* BẢNG LOFI, không còn brand xanh–đỏ (04/11/2026).
+   Đo trên production bằng cách quét MỌI phần tử đang vẽ ra màu brand: trang
+   khoá học có 22 chỗ, không phải 128 như grep nói — phần lớn selector trong
+   edu-theme/edu-dashboard là của dashboard/forum di sản, không trang nào render.
+   22 chỗ đó: nút "Bắt đầu học" (gradient #1f5fe0→#4f8dff) · 5 biểu tượng #2563eb ·
+   8 chấm mục tiêu · 4 thẻ dính lớp bóng --edu-sheen · 3 chữ logo (GIỮ: logo là
+   bản sắc, không phải bảng giao diện). */
 /* ══════════════════════════════════════════════════════════════
    EDU-COURSE-DETAIL — màn "isCourse" của Programming EDU.dc.html
    (khối hero + "Nội dung khóa học" + sidebar "Tiến độ của bạn" /
@@ -21,8 +28,8 @@
   color: var(--edu-t3);
   transition: color .15s ease, gap .15s ease;
 }
-.edu-cd-back:hover { color: var(--edu-accent-text); gap: 11px; }
-.edu-cd-back:focus-visible { outline: 2px solid var(--edu-accent); outline-offset: 3px; border-radius: 6px; }
+.edu-cd-back:hover { color: var(--ds-violet); gap: 11px; }
+.edu-cd-back:focus-visible { outline: 2px solid var(--ds-violet); outline-offset: 3px; border-radius: 6px; }
 .edu-cd-back svg { flex: none; }
 
 .edu-cd-grid {
@@ -50,7 +57,7 @@
 .edu-cd-hero-info { flex: 1; min-width: 0; }
 .edu-cd-tag {
   font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--edu-accent);
+  color: var(--ds-violet);
 }
 .edu-cd-title {
   margin: 10px 0 0; font-size: 30px; font-weight: 800; letter-spacing: -.03em;
@@ -69,10 +76,10 @@
   transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
 }
 .edu-cd-btn.primary {
-  background: var(--edu-accent-grad); color: #fff;
-  box-shadow: 0 10px 24px rgba(63,125,240,.3);
+  background: var(--ds-action); color: var(--ds-on-action);
+  box-shadow: 0 10px 24px rgba(42, 32, 23, 0.18);
 }
-.edu-cd-btn.primary:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 14px 30px rgba(63,125,240,.4); }
+.edu-cd-btn.primary:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 14px 34px rgba(42, 32, 23, 0.22); }
 .edu-cd-btn.primary:disabled { opacity: .65; cursor: default; transform: none; }
 .edu-cd-hero-art {
   width: 220px; height: 158px; flex: none; border-radius: 16px; overflow: hidden;
@@ -122,7 +129,7 @@
   font-size: 13px; font-weight: 700;
 }
 .edu-cd-lesson.done .edu-cd-lesson-icon { background: #22c55e; color: #fff; }
-.edu-cd-lesson.current .edu-cd-lesson-icon { background: var(--edu-accent-grad); color: #fff; }
+.edu-cd-lesson.current .edu-cd-lesson-icon { background: var(--ds-action); color: var(--ds-on-action); }
 .edu-cd-lesson.locked .edu-cd-lesson-icon { background: var(--edu-track-bg); color: var(--edu-t5); }
 .edu-cd-lesson-body { flex: 1; min-width: 0; }
 .edu-cd-lesson-title { font-size: 16px; font-weight: 600; color: var(--edu-t1); }
@@ -132,7 +139,7 @@
 .edu-cd-lesson-mins { font-size: 13px; color: var(--edu-t4); flex: none; }
 .edu-cd-lesson-badge {
   font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 999px; flex: none;
-  background: var(--edu-accent-soft); color: var(--edu-accent-text); white-space: nowrap;
+  background: var(--ds-violet-tint); color: var(--ds-violet); white-space: nowrap;
 }
 
 /* ── Sidebar: Tiến độ của bạn / đăng ký ── */
@@ -152,7 +159,7 @@
 .edu-cd-progress-pct { font-size: 36px; font-weight: 800; letter-spacing: -.03em; color: var(--edu-t1); }
 .edu-cd-progress-frac { font-size: 14px; color: var(--edu-t4); }
 .edu-cd-progress-bar { height: 9px; border-radius: 99px; background: var(--edu-track-bg); margin-top: 12px; overflow: hidden; }
-.edu-cd-progress-fill { height: 100%; border-radius: 99px; background: var(--edu-accent-grad); transition: width .4s ease; }
+.edu-cd-progress-fill { height: 100%; border-radius: 99px; background: var(--ds-action); transition: width .4s ease; }
 
 .edu-cd-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
 .edu-cd-stat { padding: 12px 14px; border-radius: 14px; background: var(--edu-input-bg); }
@@ -169,12 +176,12 @@
 .edu-cd-includes { margin-top: 20px; border-top: 1px solid var(--edu-card-border); padding-top: 16px; }
 .edu-cd-includes-title { font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--edu-t4); margin-bottom: 10px; }
 .edu-cd-inc-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--edu-t3); padding: 4px 0; }
-.edu-cd-inc-item i { width: 16px; color: var(--edu-accent); }
+.edu-cd-inc-item i { width: 16px; color: var(--ds-violet); }
 
 /* ── Sidebar: Bạn sẽ học được ── */
 .edu-cd-outcomes { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
 .edu-cd-outcome { display: flex; gap: 10px; align-items: flex-start; }
-.edu-cd-outcome-dot { width: 7px; height: 7px; border-radius: 99px; background: var(--edu-accent); margin-top: 7px; flex: none; }
+.edu-cd-outcome-dot { width: 7px; height: 7px; border-radius: 99px; background: var(--ds-violet); margin-top: 7px; flex: none; }
 .edu-cd-outcome span { font-size: 14px; color: var(--edu-t2); line-height: 1.55; text-wrap: pretty; }
 
 @media (max-width: 900px) {

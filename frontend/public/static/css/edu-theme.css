@@ -58,10 +58,13 @@
   --edu-brand-glow: 0 8px 22px rgba(37,99,235,.34), 0 2px 8px rgba(229,51,75,.22);
 
   /* lớp bóng của card: vệt sáng góc trên-trái + ám xanh/đỏ rất nhạt góc dưới-phải */
+  /* 04/11: hai radial xanh/đỏ ở đây là brand NHẠT, và brand nhạt vẫn là
+     brand — nó phủ lên 4 thẻ LỚN của trang khoá học (thẻ cao nhất 2 296px).
+     Giữ vệt sáng trắng góc trên-trái (nó tạo chiều sâu, không mang màu),
+     đổi hai radial sang nâu ấm cùng họ --edu-card-shadow. */
   --edu-sheen:
     linear-gradient(135deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 42%),
-    radial-gradient(90% 80% at 100% 100%, rgba(37,99,235,.06) 0%, rgba(37,99,235,0) 60%),
-    radial-gradient(60% 50% at 0% 100%, rgba(229,51,75,.04) 0%, rgba(229,51,75,0) 70%);
+    radial-gradient(90% 80% at 100% 100%, rgba(42,32,23,.05) 0%, rgba(42,32,23,0) 60%);
 
   /* GIẤY LOFI, KHÔNG CÒN MESH XANH–ĐỎ. Bản cũ vẽ ba radial đè lên nền:
      rgba(255,90,110,.20) đỏ góc trên-phải + rgba(79,141,255,.30) xanh góc

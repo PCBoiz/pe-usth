@@ -2456,6 +2456,34 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   ablate trượt mà vẫn đọc "0 đỏ" như một kết quả.
   **GIỚI HẠN:** ca đọc CSS TĨNH, nên nó mù với chip tô màu bằng `style={{…}}` trong TSX.
 
+- **TRANG KHOÁ HỌC: grep nói 128 chỗ brand, trình duyệt nói 22 — và chỉ 22 mới đáng sửa.**
+  Trang này nạp **8 file CSS tĩnh** cộng `CourseShell.module.css`. Đếm bằng grep các
+  token brand ra **128** (edu-theme 84 · edu-dashboard 29 · edu-course-detail 10 ·
+  course_detail 3 · CourseShell 2). Quét MỌI phần tử đang **VẼ RA** màu brand trong
+  trình duyệt thì chỉ **22**, vì phần lớn selector của edu-theme/edu-dashboard là
+  dashboard/forum/roadmap di sản Django mà không trang nào render — đúng bài học
+  "61 chỗ là con số của grep, không phải con số của người học", lần này tỉ lệ là 6:1.
+  22 chỗ đó: nút **"Bắt đầu học"** (gradient `#1f5fe0→#4f8dff` + bóng xanh) · 5 biểu
+  tượng `#2563eb` · 8 chấm mục tiêu · 4 thẻ dính `--edu-sheen` · 3 chữ logo.
+  **CHỮ LOGO GIỮ NGUYÊN, có chủ đích:** đó là BẢN SẮC, không phải bảng giao diện. Đổi
+  nó là đổi thương hiệu, một quyết định của chủ dự án chứ không của vòng lặp.
+  **Và nó KHÔNG trượt AA như phép đo đầu của tôi báo:** 20px **bold** là chữ LỚN
+  (≥18,66px + bold ⇒ ngưỡng 3:1), đo được 4,47 và 3,70 — đạt.
+  `--edu-sheen` thì brand NHẠT vẫn là brand: hai radial `rgba(37,99,235,.06)` +
+  `rgba(229,51,75,.04)` phủ lên 4 thẻ LỚN (thẻ cao nhất **2 296px**). Giữ vệt sáng
+  trắng góc trên-trái (nó tạo chiều sâu, không mang màu), bỏ hai radial màu.
+  **MỘT THỨ ĐÃ ĐO VÀ BÁC, đừng đi tìm lại:** nhìn ảnh chụp thì trang như còn một dải
+  hồng/xanh. Quét mọi mảng > 40 000 px² và cả pseudo-element: **không có mesh nào** —
+  `body` đã là dốc trung tính `#f7fafd → #eaeff6 → #e4eaf4`. Cái mắt thấy là vệt
+  sáng của `--edu-sheen` trên bốn thẻ cộng thanh đầu trang, không phải nền.
+  **Cổng nay là một DANH SÁCH CHỈ ĐƯỢC DÀI THÊM** (`DA_SANG_LOFI`): mỗi vòng chuyển
+  xong một bề mặt thì thêm một dòng, không bao giờ bớt. Ca cũ chỉ canh trang chủ, nên
+  nó im lặng với đúng trang mà người học bấm vào tiếp theo.
+  Ablate 3 chiều, mỗi chiều **1 đỏ**: trả gradient brand vào nút "Bắt đầu học" · trả
+  chấm mục tiêu về `--edu-accent` · trả outline của `CourseShell` về `--edu-accent`.
+  Số ca KHÔNG đổi (524) vì đây là mở rộng ca sẵn có, không phải ca mới — một vòng
+  thêm phạm vi mà không thêm con số là chuyện bình thường, đừng bịa một ca để bảng đẹp.
+
   **Còn lại của hệ `--ds-*`:** main mới chỉ lấy nhóm CODE. 58 token còn lại (giấy, thẻ,
   nút, tím/đỏ/lục, bán kính, bóng) vẫn ở nhánh `test`. Port tiếp thì theo đúng luật này:
   **mỗi vòng token + nối ít nhất một bề mặt THẬT**, không thêm token suông — thêm token mà

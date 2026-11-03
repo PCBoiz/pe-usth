@@ -22,9 +22,9 @@
   text-decoration: none;
   transition: color 0.15s ease, gap 0.15s ease;
 }
-.back:hover { color: var(--edu-accent-text); gap: 11px; }
+.back:hover { color: var(--ds-violet); gap: 11px; }
 .back:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: 2px solid var(--ds-violet);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -76,7 +76,7 @@
 
 .feedbackBtn:hover {
   transform: translateY(-2px);
-  border-color: var(--edu-accent-3);
+  border-color: var(--ds-violet);
 }
 
 /* Người bật giảm chuyển động: giữ phản hồi bằng viền, bỏ phần nhấc lên. */
