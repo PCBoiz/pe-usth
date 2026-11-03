@@ -404,6 +404,16 @@ jobs:
       # mình không bắt được khối TRÔI từ nhóm có-lời-đòi sang nhóm im lặng.
       - run: node scripts/check-doi-hoi.mjs
 
+      # CỔNG NGƯỠNG MỘT CHIỀU. Repo có 16 con số đã quyết "chỉ được hạ" / "chỉ
+      # được nâng", rải khắp 7 file, mỗi cái khai bằng MỘT CÂU trong chú thích
+      # — không gì canh chiều. Một vòng lặp muốn xanh chỉ cần hạ con số rồi sửa
+      # câu bên cạnh: hai dòng, không bộ kiểm nào đỏ. LOOP.md gọi đó là cách
+      # thứ nhất một vòng lặp nói dối, và ImpossibleBench đo được các mô hình
+      # Claude >79% số lần là SỬA TEST khi nhiệm vụ không làm được.
+      # Siết đúng chiều thì KHÔNG đỏ, chỉ nhắc ghi sổ — bắt nó đỏ là dạy người
+      # ta thôi siết.
+      - run: node scripts/check-nguong.mjs
+
       # 65 phép kiểm của BỘ GHI VẾT (nút "Xem từng bước" của /ide). Trước đây
       # chỉ chạy tay, nên một bản sửa làm tracer chạy SAI mà vẫn sinh lại đúng
       # thì không có gì đỏ: phép canh sha chỉ bắt được chuyện "sửa .py mà quên

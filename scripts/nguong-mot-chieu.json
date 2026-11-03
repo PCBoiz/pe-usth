@@ -1,0 +1,142 @@
+{
+  "_doc": [
+    "SỔ NGƯỠNG MỘT CHIỀU. Mỗi mục là một con số mà repo đã quyết định chỉ được đi",
+    "MỘT HƯỚNG. `chieu: 'ha'` = trần, chỉ được nhỏ đi. `chieu: 'nang'` = sàn, chỉ",
+    "được lớn lên. `moc` là giá trị tại lần ghi sổ gần nhất.",
+    "",
+    "GIỚI HẠN PHẢI NÓI RA: sổ này được commit, nên ai cố tình nới một ngưỡng vẫn có",
+    "thể sửa cả hai. Cổng làm cho việc nới trở nên TO TIẾNG (một dòng diff ở đây,",
+    "kèm câu hỏi 'vì sao'), KHÔNG làm nó bất khả. Cùng mức trung thực với",
+    "check-da-nap: nó chống QUÊN NẠP, không chống DB trôi."
+  ],
+  "nguong": [
+    {
+      "ten": "ci-lint-backend",
+      "tep": ".github/workflows/ci.yml",
+      "re": "const TRAN = (\\d+);",
+      "chieu": "ha",
+      "moc": 115,
+      "vi": "Trần lỗi lint backend trong CI. Dọn `any` từng module rồi hạ dần. Nới nó là cho `any` chảy ngược vào code."
+    },
+    {
+      "ten": "alt-khuon",
+      "tep": "scripts/pe-da/check.py",
+      "re": "TRAN_ALT_KHUON = (\\d+)",
+      "chieu": "ha",
+      "moc": 21,
+      "vi": "Số hình còn mang alt KHUÔN (chữ máy sinh thay cho mô tả thật). Khiếm khuyết NỘI DUNG, chỉ hạ được bằng cách viết alt thật."
+    },
+    {
+      "ten": "lech-do-dai-dap-an",
+      "tep": "scripts/pe-da/check.py",
+      "re": "TRAN_LECH_DO_DAI = (\\d+)",
+      "chieu": "ha",
+      "moc": 21,
+      "vi": "Số câu trắc nghiệm có đáp án dài hơn hẳn mọi nhiễu — một manh mối hình thức. Phép trộn vị trí không chữa được, phải sửa chữ."
+    },
+    {
+      "ten": "doan-output-max-dong",
+      "tep": "frontend/src/lib/studio-lesson.ts",
+      "re": "DOAN_OUTPUT_MAX_DONG = (\\d+)",
+      "chieu": "ha",
+      "moc": 2,
+      "vi": "Trần số dòng của cổng dự đoán output. Nới là nới đúng rủi ro 'người đoán ĐÚNG vẫn nhận chưa khớp vì gõ thiếu một dấu'. Xem phát hiện đã đo ở mục bẫy: trần DÒNG là proxy sai, nhưng đổi nó là quyết định của chủ dự án."
+    },
+    {
+      "ten": "doan-output-max-ky-tu",
+      "tep": "frontend/src/lib/studio-lesson.ts",
+      "re": "DOAN_OUTPUT_MAX_KY_TU = (\\d+)",
+      "chieu": "ha",
+      "moc": 40,
+      "vi": "Trần số ký tự của cổng dự đoán output. Cùng lý lẽ với trần dòng."
+    },
+    {
+      "ten": "san-co-doi",
+      "tep": "scripts/check-doi-hoi.mjs",
+      "re": "const SAN_CO_DOI = (\\d+);",
+      "chieu": "nang",
+      "moc": 380,
+      "vi": "Sàn số khối code màn đọc CÓ một lời đòi. Hạ nó là cho độ phủ tụt trong im lặng — đúng kiểu hỏng mà ablate đã đo (392 → 318 vẫn xanh)."
+    },
+    {
+      "ten": "san-khoi-du-dieu-kien",
+      "tep": "frontend/e2e/unit/read-guess.test.mjs",
+      "re": "DU_DIEU_KIEN\\.length >= (\\d+)",
+      "chieu": "nang",
+      "moc": 200,
+      "vi": "Sàn số khối đủ điều kiện dựng cổng dự đoán. Tụt dưới đây phải là quyết định có người đọc, không phải tác dụng phụ của một phép lọc siết lại."
+    },
+    {
+      "ten": "san-bai-co-cong",
+      "tep": "frontend/e2e/unit/read-guess.test.mjs",
+      "re": "bai\\.size >= (\\d+)",
+      "chieu": "nang",
+      "moc": 110,
+      "vi": "Sàn số BÀI có ít nhất một cổng dự đoán. Khác sàn khối: 200 khối dồn vào 40 bài thì khoá vẫn im lặng ở phần lớn bài."
+    },
+    {
+      "ten": "san-mau-chu-giai-thich",
+      "tep": "frontend/e2e/unit/feedback-rank.test.mjs",
+      "re": "assert\\.ok\\(ts >= (\\d+),",
+      "chieu": "nang",
+      "moc": 8,
+      "vi": "Sàn tương phản của câu nói VÌ SAO ca chấm trượt. Van der Kleij: phần giải thích là d = 0,49; làm nó nhạt đi là biến nó thành d = 0,05. REGEX phải neo đủ chữ: bản đầu dùng `ts >= (\\d+)` và nó khớp trúng dòng AA `ts >= 4.5` đứng TRƯỚC, bắt được 4 — cổng báo oan. Cùng lỗi đó khớp nhầm một con số KHÔNG BAO GIỜ đổi thì cổng xanh vĩnh viễn."
+    },
+    {
+      "ten": "advanced-lesson-min",
+      "tep": "src/course-admin/lesson-content-update.ts",
+      "re": "ADVANCED_LESSON_MIN = (\\d+)",
+      "chieu": "nang",
+      "moc": 172,
+      "vi": "Sàn số bài mà gói nạp phải có. Từng là một con số GHI CỨNG (48, rồi 172) và mỗi lần khoá đổi số bài là nó từ chối MỌI gói — mất hẳn đường nạp an toàn."
+    },
+    {
+      "ten": "san-tuong-phan-plain",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--st-syn-plain', ([\\d.]+)\\]",
+      "chieu": "nang",
+      "moc": 12.0,
+      "vi": "Sàn tương phản chữ thường trong khối code. Đặt dưới số đo thật một chút; hạ nó là cho bảng màu tụt dần tới 4,51:1 mà không ai thấy."
+    },
+    {
+      "ten": "san-tuong-phan-keyword",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--st-syn-keyword', ([\\d.]+)\\]",
+      "chieu": "nang",
+      "moc": 8.0,
+      "vi": "Sàn tương phản từ khoá."
+    },
+    {
+      "ten": "san-tuong-phan-string",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--st-syn-string', ([\\d.]+)\\]",
+      "chieu": "nang",
+      "moc": 10.0,
+      "vi": "Sàn tương phản chuỗi."
+    },
+    {
+      "ten": "san-tuong-phan-number",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--st-syn-number', ([\\d.]+)\\]",
+      "chieu": "nang",
+      "moc": 7.0,
+      "vi": "Sàn tương phản số. Màu này tự đo chứ bảng --ds-* không có token cho nó."
+    },
+    {
+      "ten": "san-tuong-phan-comment",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--st-syn-comment', ([\\d.]+)\\]",
+      "chieu": "nang",
+      "moc": 5.5,
+      "vi": "Sàn tương phản chú thích — màu nhạt nhất của bảng, nên là chỗ dễ tụt dưới AA nhất."
+    },
+    {
+      "ten": "san-tuong-phan-meta",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--st-code-meta', ([\\d.]+)\\]",
+      "chieu": "nang",
+      "moc": 7.5,
+      "vi": "Sàn tương phản chữ phụ của khối code (số dòng, nhãn)."
+    }
+  ]
+}

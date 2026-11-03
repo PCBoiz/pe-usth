@@ -36,6 +36,7 @@ node scripts/check-tai-nguyen-chet.mjs  # TỆP/COMPONENT nào KHÔNG ai tới �
 node scripts/check-da-nap.mjs           # BÀI nào đã dựng mà CHƯA nạp vào DB
 node scripts/check-moc-nen.mjs          # BẢNG MỐC NỀN dưới đây có nói đúng không
 node scripts/check-doi-hoi.mjs          # KHỐI CODE màn đọc nào chưa có lời đòi
+node scripts/check-nguong.mjs           # NGƯỠNG một chiều có ai nới ngược không
 
 # pe-v4 (48 bài, 427 ca chấm) — GIỮ LẠI nhưng KHÔNG còn xuất bản; xem mục dưới
 py scripts/pe-v4/build.py              # dựng lại 48 bài -> scripts/pe-v4/out/
@@ -74,6 +75,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **15 CSS module trong `src/`** |
 | Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **179/179 bài khớp bản dựng**, 0 lỗi (biên nhận 04/11/2026) |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
+| Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **16 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **15 mục đối chiếu được**, 0 lỗi; 2 nhóm khai NGOÀI TẦM |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
@@ -220,6 +222,41 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   một đoạn") nói về SỐ KÝ TỰ PHẢI GÕ, mà trần dòng không đo thứ đó. KHÔNG tự đổi:
   file này ghi trần "chỉ được HẠ", và +41 cổng là thêm ma sát cho người học —
   Hundhausen đo được một cổng không đáng bấm là đúng điều kiện KHÔNG có tác dụng.
+
+- **16 NGƯỠNG MỘT CHIỀU chỉ được khai bằng VĂN XUÔI — nay có cổng canh chiều.**
+  Repo có 16 con số đã quyết "chỉ được hạ" (trần) hoặc "chỉ được nâng" (sàn), rải
+  khắp **7 file**: trần lint CI 115 · `TRAN_ALT_KHUON` 21 · `TRAN_LECH_DO_DAI` 21 ·
+  `DOAN_OUTPUT_MAX_DONG/KY_TU` 2/40 · `SAN_CO_DOI` 380 · hai sàn của
+  `read-guess` (200/110) · sàn màu của `feedback-rank` (8) ·
+  `ADVANCED_LESSON_MIN` 172 · sáu sàn tương phản của `ds-contrast`. Mỗi cái
+  khai bằng MỘT CÂU trong chú thích bên cạnh, và **không gì canh chiều** — một vòng
+  lặp muốn xanh chỉ cần hạ con số rồi sửa câu chú thích: hai dòng, không bộ kiểm nào đỏ.
+  Đây không phải lo xa: LOOP.md đã đặt tên nó là cách THỨ NHẤT một vòng lặp nói dối
+  ("nới phép kiểm cho xanh"), và ImpossibleBench đo được các mô hình Claude **>79% số
+  lần là SỬA TEST** khi nhiệm vụ không làm được.
+  Nay `node scripts/check-nguong.mjs` (có trong CI) đọc sổ `scripts/nguong-mot-chieu.json`
+  và so từng con số với cây mã.
+  **SIẾT ĐÚNG CHIỀU THÌ KHÔNG ĐỎ**, chỉ in một dòng `GHI SỔ` nhắc chạy `--ghi-so`.
+  Bắt nó đỏ là dạy người ta THÔI SIẾT — mà siết là việc tốt. Và `--ghi-so` từ chối
+  chạy khi đang có lỗi, nếu không nó thành cái nút TẮT cổng.
+  **GIỚI HẠN PHẢI NÓI RA:** sổ được COMMIT, nên ai cố tình nới vẫn sửa được cả hai.
+  Cổng làm việc nới trở nên TO TIẾNG (một dòng diff trong sổ, kèm câu hỏi "vì sao"),
+  KHÔNG làm nó bất khả — cùng mức trung thực với `check-da-nap` ("chống QUÊN NẠP,
+  không chống DB trôi").
+  **MỘT REGEX MƠ HỒ LÀ MỘT CỔNG HỎNG, và nó hỏng theo CẢ HAI chiều.** Lần chạy đầu,
+  `san-mau-chu-giai-thich` dùng `ts >= (\d+)` và khớp trúng dòng AA `ts >= 4.5`
+  đứng TRƯỚC — bắt được 4, **báo oan một ngưỡng đang đúng**. Cùng lỗi ấy mà khớp nhầm
+  một con số KHÔNG BAO GIỜ đổi thì cổng XANH vĩnh viễn trong khi ngưỡng thật đã bị nới.
+  Nên cổng nay đòi mỗi regex khớp **ĐÚNG MỘT LẦN** trong tệp của nó; "nhiều chỗ khớp"
+  là LỖI, không phải lấy chỗ đầu tiên.
+  Ablate 7 chiều: nới trần lint CI 115 → 150 → **1 lỗi** · hạ `SAN_CO_DOI` 380 → 300
+  → 1 · nới trần dự đoán 2 → 3 dòng → 1 · hạ sàn tương phản chú thích 5,5 → 4,6 → 1 ·
+  đổi TÊN hằng (regex hết khớp) → 1 · trả regex về bản lỏng → 1 (REGEX MƠ HỒ).
+  Chiều NGƯỢC: siết trần lint 115 → 104 → **0 đỏ**, kèm dòng `GHI SỔ`.
+  **Và phép đo bắt được một trích dẫn cũ:** `scripts/pe-da/VAN-PHONG.md` trích
+  AGENTS.md là *"mốc trần trong CI là 245"* trong khi trần thật là **115** — đã hạ qua
+  bốn đợt dọn `any`. `check-moc-nen` chỉ đọc AGENTS.md nên nó mù với chỗ này; đã sửa
+  bằng tay, và đó là một nhắc nhở rằng con số CÒN SỐNG Ở NHIỀU FILE hơn bảng mốc nền.
 
 - **BẢNG MỐC NỀN LÀ TÍN HIỆU DỪNG, và nó đã nói sai HAI LẦN mà không gì bắt.**
   LOOP.md dùng bảng ở trên làm thước đo máy-đọc-được cho "đã xong chưa". Nhưng

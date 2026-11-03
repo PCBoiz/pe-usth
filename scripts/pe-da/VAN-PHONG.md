@@ -432,5 +432,5 @@ VnCoreNLP (F1 ~97%, nhiễu ~3%), và mọi ngưỡng ở trên đã hiệu chu�
 làm CI đỏ ngay, và một CI đỏ thường trực thì không ai đọc nữa.
 
 Dùng đúng khuôn mà repo đã có cho lint backend: **một mốc trần, CHỈ ĐƯỢC HẠ**
-(AGENTS.md: "mốc trần trong CI là 245, chỉ được hạ"). Đặt trần ở 227, hạ dần theo
+(AGENTS.md: "mốc trần trong CI là **115**, chỉ được hạ" — con số đó đã hạ từ 245 xuống 115 qua bốn đợt dọn `any`; trích dẫn ở đây từng ghi 245 suốt nhiều tháng, đúng họ bẫy "một con số cũ không phải chú thích lỗi thời vô hại"). Đặt trần ở 227, hạ dần theo
 từng đợt sửa.
