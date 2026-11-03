@@ -119,6 +119,52 @@ try {
 }
 
 /**
+ * `check-perf` và `check-figures` in `N ca · M hỏng` ở dòng cuối. Bóc con số ra
+ * thay vì chạy lại chúng: cả hai nạp Pyodide (~10 s mỗi bộ), mà cổng này phải
+ * rẻ để chạy được ở mọi lần commit.
+ *
+ * `check-figures` TỪNG KHÔNG IN con số nào — chỉ một câu văn xuôi — nên "16 ca"
+ * trong bảng không gì sinh ra được, và hàng đó nằm ngoài tầm cổng này. Sửa ở
+ * chính file đó (đếm lời gọi `dat()`), không phải ở đây.
+ */
+const demCa = (tep) => {
+  const v = readFileSync(join(GOC, 'scripts', tep), 'utf8');
+
+  // check-figures: mỗi ca là một lời gọi `dat(...)` ở đầu dòng.
+  const soDat = (v.match(/^\s*dat\(/gm) ?? []).length;
+  if (soDat) return soDat;
+
+  // check-perf: nó in `CA.length + CA_IM_LANG.length + <hằng>`, nên đếm số
+  // phần tử của hai mảng đó rồi cộng đúng cái hằng nó dùng.
+  const cong = v.match(/CA\.length \+ CA_IM_LANG\.length \+ (\d+)/);
+  if (!cong) return NaN;
+  const demMang = (ten) => {
+    const i = v.indexOf(`const ${ten} = [`);
+    if (i < 0) return 0;
+    let sau = 1;
+    let soMuc = 0;
+    let dangTrongMuc = false;
+    for (let j = v.indexOf('[', i) + 1; j < v.length && sau > 0; j += 1) {
+      const c = v[j];
+      if (c === '[' || c === '{') {
+        sau += 1;
+        if (sau === 2) dangTrongMuc = true;
+      } else if (c === ']' || c === '}') {
+        sau -= 1;
+        if (sau === 1 && dangTrongMuc) {
+          soMuc += 1;
+          dangTrongMuc = false;
+        }
+      }
+    }
+    return soMuc;
+  };
+  return demMang('CA') + demMang('CA_IM_LANG') + Number(cong[1]);
+};
+doDuoc.caPerf = demCa('check-perf.mjs');
+doDuoc.caFigures = demCa('check-figures.mjs');
+
+/**
  * Mỗi mục: một BIỂU THỨC CHÍNH QUY bắt đúng con số trong bảng, và khoá của số
  * đo tương ứng. Regex phải neo vào ĐỦ chữ xung quanh để không bắt nhầm một số
  * khác trong cùng dòng — `bai` mà chỉ tìm `179` thì cũng khớp "179/179 bài" ở
@@ -144,6 +190,8 @@ const DOI_CHIEU = [
   ['cssModule', /\*\*(\d+) CSS module trong `src\/`\*\*/, 'số CSS module trong src/'],
   ['coDoi', /\*\*(\d+)\/\d+ khối \(\d+,\d+%\) có một lời đòi\*\*/, 'số khối có lời đòi'],
   ['tongKhoi', /\*\*\d+\/(\d+) khối \(\d+,\d+%\) có một lời đòi\*\*/, 'tổng khối code màn đọc'],
+  ['caPerf', /check-perf\.mjs` → (\d+) ca/, 'số ca của bộ đo độ hiệu quả'],
+  ['caFigures', /check-figures\.mjs` → (\d+) ca/, 'số ca của bộ xuất hình'],
 ];
 // `tenMayBoQua` dùng khoá khác để regex không đụng nhau; ánh xạ lại ở đây.
 const ANH_XA = { tenMayBoQua: 'tenMay' };

@@ -88,7 +88,7 @@ học nó.
 | Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **179/179 bài khớp bản dựng**, 0 lỗi (biên nhận 04/11/2026) |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
 | Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **17 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
-| Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **15 mục đối chiếu được**, 0 lỗi; 2 nhóm khai NGOÀI TẦM |
+| Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **17 mục đối chiếu được**, 0 lỗi; 2 nhóm khai NGOÀI TẦM |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
 **pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 179
@@ -323,6 +323,19 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   AGENTS.md là *"mốc trần trong CI là 245"* trong khi trần thật là **115** — đã hạ qua
   bốn đợt dọn `any`. `check-moc-nen` chỉ đọc AGENTS.md nên nó mù với chỗ này; đã sửa
   bằng tay, và đó là một nhắc nhở rằng con số CÒN SỐNG Ở NHIỀU FILE hơn bảng mốc nền.
+
+- **`check-figures.mjs` KHÔNG in số ca — nên "16 ca" trong bảng không gì sinh ra được.**
+  `check-perf.mjs` cạnh nó in `9 ca · 0 hỏng` từ đầu; `check-figures.mjs` chỉ in
+  một câu văn xuôi ("mọi ca đạt"). Con số 16 ĐÚNG — đếm tay ra đúng 16 lời gọi
+  `dat(` — nhưng nó chỉ xác nhận được bằng cách đọc mã nguồn, và `check-moc-nen`
+  không có gì để đối chiếu. Một con số trong bảng mà không công cụ nào phát ra là
+  một con số sẽ trôi. Nay `dat()` tự đếm và in `N ca · M hỏng`, và
+  `check-moc-nen` canh CẢ HAI hàng (15 → 17 mục).
+  **GIỚI HẠN, phải nói ra:** cổng đối chiếu con số với MÃ NGUỒN (đếm lời gọi
+  `dat(`), không đối chiếu với thứ công cụ IN RA. Ablate: đổi "16 ca" trong bảng
+  → **1 lỗi** · thêm một ca thật mà không sửa bảng → **1 lỗi** · nhưng gỡ phép đếm
+  `soCa` đi (công cụ thôi in số) → **0 lỗi**. Phần được canh là CON SỐ, phần in ra
+  là tiện cho người đọc.
 
 - **BẢNG MỐC NỀN LÀ TÍN HIỆU DỪNG, và nó đã nói sai HAI LẦN mà không gì bắt.**
   LOOP.md dùng bảng ở trên làm thước đo máy-đọc-được cho "đã xong chưa". Nhưng

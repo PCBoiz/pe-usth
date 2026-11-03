@@ -70,7 +70,15 @@ const grade = py.globals.get('_studio_main');
 const chay = (code, cham = '[]') => JSON.parse(grade(code, cham, '[]', '[]', 'null'));
 
 const hong = [];
+// ĐẾM CA, và IN RA. Trước đây file này chỉ in một câu văn xuôi ("mọi ca đạt"),
+// nên con số "16 ca" trong bảng mốc nền của AGENTS.md KHÔNG GÌ SINH RA ĐƯỢC —
+// muốn xác nhận thì phải đếm tay số lời gọi `dat(` trong mã nguồn, và
+// `check-moc-nen.mjs` thì không có gì để đối chiếu. Một con số trong bảng mà
+// không công cụ nào phát ra là một con số sẽ trôi; `check-perf.mjs` cạnh đây
+// đã in `9 ca · 0 hỏng` từ đầu, nên đây chỉ là làm cho nhất quán.
+let soCa = 0;
 const dat = (ten, dieu, chiTiet = '') => {
+  soCa += 1;
   if (dieu) {
     if (verbose) console.log(`  ✓ ${ten}`);
   } else {
@@ -218,6 +226,8 @@ function laPng(b64) {
 if (hong.length) {
   console.log(`\n${hong.length} vấn đề:`);
   hong.forEach((h) => console.log('  ✗ ' + h));
+  console.log(`\n${soCa} ca · ${hong.length} hỏng`);
   process.exit(1);
 }
 console.log('\nxuất hình: mọi ca đạt (hình thật, hình trống bị bỏ, trần 6, không bẩn _studio.saved)');
+console.log(`\n${soCa} ca · ${hong.length} hỏng`);
