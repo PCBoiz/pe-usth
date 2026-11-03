@@ -297,8 +297,19 @@ export default function SandboxEditor({
                         {style.label}
                       </span>
                     </div>
+                    {/* THỨ BẬC, không phải thẩm mỹ. Nhãn ở trên chỉ GỌI TÊN đầu
+                        vào ("Mã ngắn"); dòng này mới nói VÌ SAO ca trượt ("Cần
+                        có 3 nhưng nhận 0"). Nó từng ở 12px/--edu-t3 (5,46:1)
+                        trong khi nhãn ở 13px/--edu-t1 (17,14:1) — tức phần
+                        mang thông tin bị làm NHỎ NHẤT và NHẠT NHẤT trong cả
+                        bảng, ở 460 ca / 138 bài. Van der Kleij: phản hồi CÓ
+                        GIẢI THÍCH d = 0,49, chỉ đúng/sai d = 0,05 — đây đúng
+                        là phần 0,49. Cùng lỗi đã ghi cho lời giải thích phương
+                        án trắc nghiệm (từng bị opacity .55).
+                        --edu-t2 (8,93:1) chứ không --edu-t1: nó vẫn là hàng
+                        phụ của nhãn, chỉ không được là hàng mờ nhất. */}
                     {t.detail && t.status !== 'pending' && (
-                      <div style={{ fontSize: 12, color: 'var(--edu-t3)', marginTop: 4 }}>{t.detail}</div>
+                      <div style={{ fontSize: 13, color: 'var(--edu-t2)', marginTop: 4 }}>{t.detail}</div>
                     )}
                   </li>
                 );

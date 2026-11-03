@@ -59,7 +59,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **139 cảnh báo** |
-| Frontend unit test | `cd frontend && npm run test:unit` → **515 ca** / 40 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **518 ca** / 41 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **138 bài tập được chấm / 460 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
@@ -90,8 +90,9 @@ mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 
 read-diagram 12 ·
 read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 33 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 8 = 515.
-Mốc trước là 514; ds-contrast 7 → 8 (HAI THANH STICKY phải có cạnh).
+worker-csp 7 · ds-contrast 8 · feedback-rank 3 = 518.
+Mốc trước là 515; thêm feedback-rank 3 (THỨ BẬC CỦA PHẢN HỒI).
+Trước đó 514 → 515; ds-contrast 7 → 8 (HAI THANH STICKY phải có cạnh).
 Trước đó 511 → 514; ds-contrast 4 → 7 (VIỀN THẺ: lớp lỗi "shorthand chỉ có màu",
 cộng hai chiều của đường kẻ ngày/đêm).
 Trước đó 510 → 511; ds-contrast 3 → 4 (BÓNG THẺ phải ấm và bám sát).
@@ -975,6 +976,35 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   vô hại"). Ngày nào một trang công khai THẬT SỰ cần gọi API thì ĐÓ là lúc phải viết
   `apiFetchSessionOnly` (chỉ gửi kèm phiên đang có; 401 thì trả 401 và để UI hiện "chưa đăng
   nhập"; KHÔNG gọi `ensureGuest()`) — đừng cho rằng nó đã có.
+
+- **Câu nói VÌ SAO một ca chấm trượt từng là hàng NHỎ NHẤT và NHẠT NHẤT của bảng.**
+  Bảng ca chấm có hai hàng mỗi ca: NHÃN chỉ gọi tên đầu vào ("Mã ngắn", "hai tháng"
+  — đo trên bản dựng: 460 nhãn, dài trung bình 14,3 ký tự, **không nhãn nào nói kết
+  quả**), và DETAIL là câu duy nhất nói vì sao ("Cần có 3 nhưng nhận 0"). Nhãn ở
+  13px/`--edu-t1` (17,14:1), detail ở **12px/`--edu-t3` (5,46:1)** — phần MANG
+  THÔNG TIN nhỏ hơn VÀ nhạt hơn phần chỉ đặt tên, ở **460 ca / 138 bài**.
+  Van der Kleij (con số đã có sẵn trong file này): phản hồi CÓ GIẢI THÍCH **d = 0,49**,
+  chỉ nói đúng/sai **0,05**. Phần 0,49 đang được trình bày như phần 0,05.
+  **LẦN THỨ HAI cùng một lỗi** — lời giải thích phương án trắc nghiệm từng bị
+  `opacity: 0.55` (mục ở dưới). Lỗi lặp ở chỗ thứ hai thì cần một CỔNG, không
+  phải thêm một lần sửa tay. Nay `feedback-rank.test.mjs` (3 ca) ghim QUAN HỆ:
+  detail không được nhỏ hơn nhãn, không được tụt quá MỘT bậc `--edu-t*`, và màu đó
+  phải vượt AA cộng một sàn 8:1 tính từ chính `edu-theme.css`.
+  **CHỨC NĂNG thì KHÔNG thiếu — đã kiểm trước khi sửa:** `studio-harness.py` phát
+  detail ở MỌI nhánh thất bại (so sánh, ngoại lệ, thiếu `solve`, mô phỏng dừng) và
+  `SandboxEditor` CÓ dựng nó ra. Mục 5 của báo cáo xếp hạng ("phản hồi có giải
+  thích") vì vậy đã xong phần nội dung; thứ sai chỉ là thứ bậc trình bày.
+  **ĐÃ ĐO VÀ BÁC, đừng dựng lại:** giả thuyết "detail dài tới 289 ký tự, JSON không
+  khoảng trắng nên tràn ngang, cần `overflow-wrap: anywhere`" là SAI. Đo trong
+  Chrome trên đúng bộ style của hàng đó, khung 360px: bản CÓ và bản KHÔNG có
+  `overflow-wrap` **cùng ra 3 dòng**, mép phải chữ còn cách mép ô 32px. Chrome ngắt
+  được sau dấu phẩy của JSON. 60/459 ca sinh câu > 120 ký tự và không ca nào tràn.
+  **Bẫy khi viết ca:** nhãn KHÔNG tự khai `fontSize`, nó KẾ THỪA từ `<li>` của hàng;
+  và `{t.detail}` nằm ở CUỐI thẻ div nên neo mốc vào đó rồi cắt xuôi sẽ vượt qua
+  `fontSize`. Cả hai làm ca ĐỎ OAN ở bản đầu — một cổng báo oan còn tệ hơn không có,
+  vì nó sẽ bị tắt. Ablate 6 chiều: trả về 12px/t3 → **3 đỏ** · chỉ hạ cỡ → 1 · chỉ làm
+  nhạt → 2 · hạ `--edu-t2` xuống dưới sàn 8:1 → 1 · xoá span nhãn → 1 (ca nói thẳng
+  "đổi cấu trúc thì sửa ca này"). Chiều NGƯỢC: nâng lên 14px/t1 → **0 đỏ**.
 
 - **NĂM người thử cùng báo "không có nút back" — mà cơ chế quay lại ĐÃ CÓ.** Đợt thử
   nghiệm 27/10/2026: "không có nút back", "chưa có nút return", "sao không cho quay lại
