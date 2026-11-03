@@ -341,8 +341,9 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
 
 - **LỖI THỐNG TRỊ Ở LỚP NGOÀI CÙNG: push xong, CI xanh, và KHÔNG LÊN production.**
   Sự cố 04/11/2026 — chủ dự án nhìn ra bằng mắt, không bộ kiểm nào báo: production
-  chạy build **29/10**, **sau lưng `main` 66 commit**, suốt sáu ngày. Bốn bề mặt lofi
-  và bản sửa thứ bậc phản hồi nằm im trên `main`. Repo đã có cổng cho hai lớp trong
+  chạy bản dựng từ **03/11** (`9567490`), **sau lưng `main` 15 commit**. Bốn bề mặt lofi
+  và bản sửa thứ bậc phản hồi nằm im trên `main`. (Con số này TỪNG bị tôi ghi sai thành
+  "29/10, 66 commit" — xem đoạn đính chính ở cuối mục.) Repo đã có cổng cho hai lớp trong
   (`check-duong-toi`: có màn nào MOUNT không · `check-da-nap`: bài vào DB chưa) và
   KHÔNG có gì cho lớp ngoài cùng.
   **`ASSET_VERSION` KHÔNG dùng làm dấu được — đã đo.** Luật bump chỉ áp cho `public/`:
@@ -368,9 +369,30 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   commit thêm thẻ này", không im lặng.
   **GIỚI HẠN:** cổng so SHA trên dây với một NHÁNH; nó không chứng minh bản dựng đó
   khớp cây mã (ai build tay từ chỗ khác thì nó mù), và nó cần MẠNG.
-  **Chẩn đoán đã làm sẵn cho lần sau:** `f447d1e` (bản đang live) LÀ tổ tiên của
-  `tester/main` và không nhánh nào đứng ở đó ⇒ Vercel nối ĐÚNG repo/nhánh, nó chỉ
-  thôi chạy. Nên lần sau đừng đi tìm "nối nhầm repo" — xem deployment trong dashboard.
+  **SỬA LẠI MỘT CON SỐ TÔI ĐÃ KHẲNG ĐỊNH SAI — và cách tôi sai là bài học chính.**
+  Tôi viết "production chạy build **29/10**, sau lưng `main` **66 commit**" như một số ĐO.
+  Nó là một SUY LUẬN từ `ASSET_VERSION=2026-10-29a`: tôi lấy commit đã ĐƯA VÀO chuỗi đó
+  (`f447d1e`) rồi gọi nó là bản đang chạy. Mà chính đoạn trên vừa chứng minh
+  `ASSET_VERSION` là tín hiệu YẾU — nó chỉ đổi khi `public/` đổi, nên nó chỉ nói
+  "production MỚI BẰNG HOẶC MỚI HƠN `f447d1e`", không nói nó ở đâu.
+  **Số đúng, lấy từ dashboard Vercel: `9567490`, 03/11/2026 04:53, sau lưng 15 commit.**
+  `ASSET_VERSION` của `9567490` ĐÚNG LÀ `2026-10-29a` (lần bump kế tiếp ở `bf44293`), nên
+  phép đo không sai — chỉ có cách tôi đọc nó mới sai.
+  **PHÉP THỬ ĐỘC LẬP, rẻ và dùng lại được, không cần dashboard:** chọn một tệp mà một
+  commit đã XOÁ và một tệp cùng commit đó cố ý GIỮ, rồi gọi HEAD cả hai. Đo được:
+  `/static/js/login.inline.js` → **404** (xoá ở `9567490`), `/static/js/dashboard.js` →
+  **200** (giữ ở chính commit đó). Hai chiều cùng khớp ⇒ production ở `9567490` trở lên.
+  Một dấu NỘI DUNG như vậy mạnh hơn bất kỳ chuỗi phiên bản nào, vì không ai phải nhớ bump nó.
+  **VÌ SAO NÓ DỪNG — bằng chứng loại trừ, không phải phỏng đoán:**
+  · **16/16 commit ngày 03/11 đều deploy**, `9567490` là cái cuối; **15/15 commit ngày
+    04/11 KHÔNG cái nào** được tạo. Ranh giới là NGÀY, không phải một commit hỏng;
+  · danh sách deployment **không có mục Error nào** sau `9567490` ⇒ Vercel chưa từng TẠO
+    chúng ⇒ **không phải lỗi build** (và `npm run build` ở máy vẫn sạch);
+  · `9567490` LÀ tổ tiên của `tester/main`, không nhánh nào đứng ở đó ⇒ nối ĐÚNG repo/nhánh;
+  · cả 15 commit chưa deploy cùng tác giả `sonkh <sonthaiha07@gmail.com>` với commit ĐÃ
+    deploy ⇒ không phải bộ lọc Author trong giao diện che đi.
+  Còn lại: integration GitHub ngừng gửi webhook, hoặc project chạm hạn mức / bị tạm dừng.
+  Cả hai chỉ xem được trong dashboard Vercel — **đừng đi tìm "nối nhầm repo" nữa**.
 
 - **BẢNG MỐC NỀN LÀ TÍN HIỆU DỪNG, và nó đã nói sai HAI LẦN mà không gì bắt.**
   LOOP.md dùng bảng ở trên làm thước đo máy-đọc-được cho "đã xong chưa". Nhưng
