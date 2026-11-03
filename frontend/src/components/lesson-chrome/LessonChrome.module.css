@@ -32,6 +32,15 @@
   z-index: 50;
   background: var(--edu-panel-bg-solid);
   flex-shrink: 0;
+  /* ĐƯỜNG KẺ, không phải trang trí: thanh này STICKY và nội dung cuộn LỌT
+     xuống dưới nó. Nền thanh là --edu-panel-bg-solid #ffffff, mà thẻ nội
+     dung cũng #ffffff — đo được tương phản **1,000:1**, tức cùng một màu.
+     Không cạnh, không bóng ⇒ chữ trôi vào thanh rồi biến mất, không có gì
+     nói ranh giới ở đâu.
+     ĐÃ ĐO VÀ BỎ một cách sửa khác: chuyển thanh sang tầng "paper" #F7FAFD
+     của bảng lofi chỉ cho 1,048:1 so với thẻ — vẫn không ai thấy. Màu nền
+     không tách được hai mặt phẳng ở khoảng này; chỉ một đường kẻ mới tách. */
+  border-bottom: 1px solid var(--edu-card-line);
 }
 /* Frame 1440: nút × ở x=56, pill streak kết thúc ở x=1350. */
 .topBarInner {
@@ -261,6 +270,10 @@ button.segment::after {
   z-index: 50;
   background: var(--edu-panel-bg-solid);
   flex-shrink: 0;
+  /* Cùng lý do như .topBar ở trên, chỉ ngược chiều: nội dung cuộn lên khỏi
+     thanh dưới. Phần ghi đè ở @media (max-width: 560px) chỉ đổi chiều cao
+     nên không cần nhắc lại cạnh ở đó. */
+  border-top: 1px solid var(--edu-card-line);
 }
 /* Ba cột: trạng thái lưu | nút chính 480px đúng giữa (x=480–960 ở frame 1440) | nút phụ. */
 .bottomBarInner {

@@ -238,3 +238,55 @@ test('ShellB .card phải vẽ viền bằng --edu-card-line, không bằng --ed
     '.card của vỏ bài học phải có width + style + --edu-card-line',
   );
 });
+
+/**
+ * HAI THANH STICKY của vỏ bài học phải có CẠNH.
+ *
+ * `.topBar` và `.bottomBar` của `LessonChrome` — vỏ mà `StudioLesson` dựng cho
+ * MỌI màn của 179 bài — dùng nền `--edu-panel-bg-solid` #ffffff, mà thẻ nội
+ * dung cũng #ffffff. Đo: tương phản **1,000:1**, tức CÙNG MỘT MÀU. Cả hai
+ * sticky, nội dung cuộn LỌT xuống dưới chúng, và không thanh nào có border
+ * hay box-shadow ⇒ chữ trôi vào thanh rồi biến mất, không gì nói ranh giới.
+ *
+ * ĐÃ ĐO VÀ BỎ một cách sửa khác, nên đừng dựng lại: chuyển thanh sang tầng
+ * "paper" #F7FAFD của bảng lofi chỉ cho **1,048:1** so với thẻ — vẫn không ai
+ * thấy. Màu nền không tách được hai mặt phẳng ở khoảng này.
+ *
+ * Ca này ghim TÍNH CHẤT, không ghim mã màu hay chuỗi CSS: một mặt phẳng
+ * sticky mà nền trùng với mặt dưới nó thì PHẢI có cạnh hoặc bóng. "Bỏ cạnh
+ * cho phẳng, cho gọn" là việc rất dễ làm.
+ */
+const CHROME = readFileSync(
+  join(__dirname, '..', '..', 'src', 'components', 'lesson-chrome', 'LessonChrome.module.css'),
+  'utf8',
+);
+
+test('thanh sticky của vỏ bài học phải có cạnh (nền trùng màu với thẻ: 1,000:1)', () => {
+  const khoi = (ten) => {
+    const i = CHROME.indexOf(`.${ten} {`);
+    assert.ok(i >= 0, `không còn quy tắc .${ten} — đổi tên thì sửa ca này`);
+    return CHROME.slice(i, CHROME.indexOf('}', i));
+  };
+
+  // Regex viết THẲNG, không dựng từ chuỗi: `new RegExp(\`${canh}:\\s*…\`)` là
+  // một lớp thoát nữa phải đếm đúng, và lần đầu tôi đếm sai — pattern thành
+  // `border-bottom:s*1px…`, ca ĐỎ trong khi CSS đã đúng.
+  for (const [ten, canh, re] of [
+    ['topBar', 'border-bottom', /border-bottom:\s*1px\s+solid\s+var\(--edu-card-line\)/],
+    ['bottomBar', 'border-top', /border-top:\s*1px\s+solid\s+var\(--edu-card-line\)/],
+  ]) {
+    const k = khoi(ten);
+    // Nếu một ngày thanh đổi sang nền KHÁC hẳn thẻ thì cạnh mới là tuỳ chọn —
+    // nhưng chừng nào còn dùng chung --edu-panel-bg-solid thì nó là bắt buộc.
+    assert.match(
+      k,
+      /background:\s*var\(--edu-panel-bg-solid\)/,
+      `.${ten} đổi nền rồi — đo lại tương phản với thẻ trước khi sửa ca này`,
+    );
+    assert.ok(
+      re.test(k) || /box-shadow:\s*[^;]*\S/.test(k),
+      `.${ten} trùng màu với thẻ (1,000:1) mà không có ${canh} lẫn box-shadow — ` +
+        'nội dung cuộn vào nó sẽ biến mất không dấu vết',
+    );
+  }
+});

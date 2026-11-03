@@ -59,7 +59,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **139 cảnh báo** |
-| Frontend unit test | `cd frontend && npm run test:unit` → **514 ca** / 40 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **515 ca** / 40 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **138 bài tập được chấm / 460 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
@@ -90,8 +90,9 @@ mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 
 read-diagram 12 ·
 read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 33 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 7 = 514.
-Mốc trước là 511; ds-contrast 4 → 7 (VIỀN THẺ: lớp lỗi "shorthand chỉ có màu",
+worker-csp 7 · ds-contrast 8 = 515.
+Mốc trước là 514; ds-contrast 7 → 8 (HAI THANH STICKY phải có cạnh).
+Trước đó 511 → 514; ds-contrast 4 → 7 (VIỀN THẺ: lớp lỗi "shorthand chỉ có màu",
 cộng hai chiều của đường kẻ ngày/đêm).
 Trước đó 510 → 511; ds-contrast 3 → 4 (BÓNG THẺ phải ấm và bám sát).
 Trước đó 507 → 510; thêm ds-contrast 3 (TƯƠNG PHẢN KHỐI CODE — tính từ chính file CSS).
@@ -1861,6 +1862,28 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   một cổng đúng thành một cổng kêu oan.
   **ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC:** thẻ của mọi màn bài học nay CÓ cạnh.
   `ASSET_VERSION` bump theo (`2026-11-04b`).
+
+  **HAI THANH STICKY của vỏ bài học không có cạnh — và tầng "paper" KHÔNG chữa được.**
+  `.topBar` / `.bottomBar` của `LessonChrome` (vỏ mà `StudioLesson` dựng cho MỌI
+  màn của 179 bài) dùng nền `--edu-panel-bg-solid` `#ffffff`, mà thẻ nội dung cũng
+  `#ffffff` — đo được **1,000:1**, tức CÙNG MỘT MÀU. Cả hai sticky, nội dung cuộn LỌT
+  xuống dưới chúng, và không thanh nào có `border` lẫn `box-shadow`: chữ trôi vào
+  thanh rồi biến mất, không gì nói ranh giới ở đâu.
+  **ĐÃ ĐO VÀ BỎ cách sửa hiển nhiên, đừng dựng lại:** chuyển thanh sang tầng
+  `--ds-paper` `#F7FAFD` của bảng lofi chỉ cho **1,048:1** so với thẻ — vẫn không ai
+  thấy. Ở khoảng sáng này MÀU NỀN không tách được hai mặt phẳng; chỉ ĐƯỜNG KẺ mới
+  tách. Nay hai thanh dùng `--edu-card-line` (1,42:1 trên nền trắng — mức của một
+  đường chia quiet, không phải của một viền nhấn).
+  Cổng ghim TÍNH CHẤT: một mặt phẳng STICKY mà nền trùng với mặt dưới nó thì PHẢI có
+  cạnh HOẶC bóng. Ablate 5 chiều: bỏ cạnh thanh trên → **1 đỏ** · bỏ cạnh thanh dưới
+  → 1 · bỏ cả hai → 1 · đổi tên `.topBar` → 1 (ca nói thẳng "đổi tên thì sửa ca này",
+  không im lặng xanh). Chiều NGƯỢC: thay cạnh bằng `box-shadow: 0 1px 0 …` →
+  **0 đỏ**, vì đó cũng là một cách tách hợp lệ — cổng không ép một mã CSS cụ thể.
+  **Bẫy khi viết chính ca đó:** `new RegExp(`${canh}:\\s*1px…`)` là một lớp thoát nữa
+  phải đếm đúng, và tôi đếm sai — pattern thành `border-bottom:s*1px…`, ca ĐỎ trong
+  khi CSS đã đúng. Viết regex THẲNG, đừng dựng từ chuỗi.
+  **KHÔNG bump `ASSET_VERSION` cho vòng này:** `LessonChrome.module.css` nằm trong
+  `src/` nên đi qua bundler, URL đã đổi theo nội dung. Luật bump chỉ áp cho `public/`.
 
   **Còn lại của hệ `--ds-*`:** main mới chỉ lấy nhóm CODE. 58 token còn lại (giấy, thẻ,
   nút, tím/đỏ/lục, bán kính, bóng) vẫn ở nhánh `test`. Port tiếp thì theo đúng luật này:
