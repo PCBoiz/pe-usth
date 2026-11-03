@@ -76,7 +76,7 @@ học nó.
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **139 cảnh báo** |
-| Frontend unit test | `cd frontend && npm run test:unit` → **522 ca** / 41 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **523 ca** / 41 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **139 bài tập được chấm / 463 ca**, 2 441 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
@@ -112,8 +112,9 @@ mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 
 read-diagram 12 ·
 read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 33 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 12 · feedback-rank 3 = 522.
-Mốc trước là 520; ds-contrast 10 → 12 (NỀN TRANG bỏ mesh xanh–đỏ + quầng bám chuột).
+worker-csp 7 · ds-contrast 13 · feedback-rank 3 = 523.
+Mốc trước là 522; ds-contrast 12 → 13 (CHIP TRANG CHỦ: nền alpha làm chữ chìm).
+Trước đó 520 → 522; ds-contrast 10 → 12 (NỀN TRANG bỏ mesh xanh–đỏ + quầng bám chuột).
 Trước đó 518 → 520; ds-contrast 8 → 10 (VIỀN THẺ TRANG CÔNG KHAI + BÓNG MẶT NỔI).
 Trước đó 515 → 518; thêm feedback-rank 3 (THỨ BẬC CỦA PHẢN HỒI).
 Trước đó 514 → 515; ds-contrast 7 → 8 (HAI THANH STICKY phải có cạnh).
@@ -2403,18 +2404,56 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   ablate kiểm chuỗi ĐÃ vào file rồi mới chạy.
   Ablate 4 chiều: trả cổng về chỉ-đọc-`:root` → **3 đỏ** · cổng thôi giải bí danh → 3 ·
   đổi `--ds-code-bg` sang xanh `#1c2536` → 3 · hạ `--ds-code-str` xuống dưới sàn → 2.
-  **ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC, và đây là phần đắt:** bảng v2 **KHÔNG có màu xanh
-  lá**. `--st-ok-*` nay là **ochre**, `--st-err-*` là **sanguine** — tức "đúng / chưa
-  đúng" ở **6 file component** (bảng ca chấm, phản hồi trắc nghiệm, màn brief) đổi từ
-  xanh-lá/đỏ sang hổ phách/đỏ đất. Chính đầu bảng khai lý do: màu KHÔNG được là thứ
-  duy nhất phân biệt đúng/sai (WCAG 1.4.1), nên mọi chỗ chấm phải kèm icon + chữ. Điều
-  kiện đó ĐÃ đạt và vừa được pha 4 đo lại: **2 288 ca trượt / 0 ca im lặng**.
+  **~~ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC~~ — CÂU NÀY TÔI VIẾT SAI, xem mục đính chính
+  ngay dưới.** Tôi ghi "bảng v2 KHÔNG có màu xanh lá, `--st-ok-*` nay là hổ phách" vì
+  chép CHÚ THÍCH đầu file. Đo giá trị thật thì `--ds-ochre` = `#047857`, **một màu
+  XANH LÁ**. Thay đổi thật nhỏ hơn hẳn: ok `#1f9d59` → `#047857`, err `#d0344b` →
+  `#CF2338`. Điều kiện WCAG 1.4.1 (icon + chữ kèm màu) vẫn đạt và pha 4 đã đo:
+  **2 288 ca trượt / 0 ca im lặng**.
   `ASSET_VERSION` → `2026-11-04f`.
   **CÒN LẠI, nói cho đúng:** 74 token nay CÓ MẶT trên main, nhưng mới `--st-*` (41 bí
   danh) là có người dùng. Nhóm `violet/sanguine/ochre/action` và thang bán kính vẫn
   chưa bề mặt nào gọi tới — **đó là token suông, đúng thứ luật dưới đây cấm**, và nó
   được chấp nhận ĐÚNG MỘT VÒNG này vì file là một khối không tách được. Vòng sau phải
   nối bề mặt, không thêm token.
+
+- **TÔI CHÉP MỘT CÂU THAY VÌ ĐỌC MỘT GIÁ TRỊ — và câu đó sai với chính file chứa nó.**
+  Chú thích đầu `studio-tokens.css` khai *"Bảng v2 không có màu xanh lá… `--st-ok-*` nay
+  là ochre… chứ không còn là xanh lá"*. Tôi đưa nguyên câu ấy vào mô tả commit và vào
+  file này như một phần "ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC". Đo trong trình duyệt ở vòng
+  sau: `--ds-ochre` = **`#047857`**, một màu **XANH LÁ** đậm — chỉ `--ds-mark-ochre`
+  `#E0B062` mới là hổ phách. Token mang TÊN ochre nhưng GIÁ TRỊ là xanh lá, và chú
+  thích không ai sửa theo. Thay đổi thật: ok `#1f9d59` → `#047857` (xanh đậm hơn),
+  err `#d0344b` → `#CF2338` (đỏ, gần như cũ) — nhỏ hơn hẳn câu tôi viết.
+  Đúng họ lỗi file này đã gọi tên hai lần ("đọc CÂU, không đọc MÀU"; "đừng chép một con
+  số vì nó được viết cạnh màu"), lần này tôi là người vấp. **Một chú thích là lời KHAI,
+  giá trị mới là sự THẬT** — và khi hai cái lệch nhau thì chú thích luôn là cái sai.
+  Đã sửa cả hai chỗ; chú thích trong file nay mang đoạn đính chính để không ai chép lại.
+
+- **HAI CHIP CỦA TRANG CHỦ TRƯỢT AA, và nguyên nhân là một KHUÔN chứ không phải hai
+  dòng CSS.** Đo trên production 04/11 bằng phép hợp thành alpha THẬT (đi ngược cây tổ
+  tiên, KHÔNG lấy nền `body`): "Cơ bản" `#e5334b` trên `rgba(229,51,75,.10)` =
+  **3,20:1**, "Sẵn sàng sử dụng" `#059669` trên `rgba(5,150,105,.20)` = **2,95:1**.
+  Cả hai 13px/500, tức chữ THƯỜNG, ngưỡng 4,5.
+  Khuôn gây lỗi: **tô 10–20% CHÍNH màu chữ lên nền rồi đặt màu đó lên trên**. Nền càng
+  đậm thì chữ càng chìm, mà nó vẫn "hợp tông" nên không ai nghi. Bảng lofi có sẵn cặp
+  tint ĐỤC cho đúng hai vai này: `#CF2338` trên `#FFF1F3` = **4,84** · `#047857`
+  trên `#E7F6F0` = **4,92**. Đây cũng là lần đầu nhóm sanguine/ochre có bề mặt dùng.
+  **PHÉP ĐO ĐẦU CỦA TÔI BÁO OAN BA CHỖ, và cả ba vì cùng một thiếu sót:** nó lấy nền
+  `body` thay vì nền tổ tiên đã hợp thành, nên một chip `rgba(x,.1)` ra tương phản
+  **1,00** (màu chữ so với chính nó). Và nó không xét CỠ/ĐỘ ĐẬM: chữ logo 20px **bold**
+  là chữ LỚN (≥18,66px + bold), ngưỡng **3:1**, đo được 4,47 và 3,70 ⇒ **ĐẠT**. Tôi suýt
+  báo cáo ba lỗi không có thật. Phép đo tương phản phải hợp thành alpha VÀ đọc
+  `fontSize`/`fontWeight`, nếu không nó vừa báo oan vừa bỏ sót.
+  **CA TEST CỦA CHÍNH NÓ ĐỎ OAN NGAY LẦN ĐẦU:** regex dựng từ template literal —
+  ``\.${ten}\s*\{`` trong template là escape của ký tự thường, ra `.tagReds*{`. Đúng
+  bẫy "viết regex THẲNG, đừng dựng từ chuỗi" đã ghi ở ca thanh sticky. Nay dùng
+  `indexOf` + `split`, không regex.
+  Ablate 4 chiều, mỗi chiều **1 đỏ**: trả `.tagRed` về nền alpha · trả `.tagOk` về cặp
+  cũ · đổi TÊN lớp (ca nói thẳng "đổi tên thì sửa ca này") · hạ `--ds-ochre` xuống dưới
+  AA. **Cả bốn đều kiểm chuỗi ĐÃ vào file rồi mới chạy** — hai vòng trước tôi có hai phép
+  ablate trượt mà vẫn đọc "0 đỏ" như một kết quả.
+  **GIỚI HẠN:** ca đọc CSS TĨNH, nên nó mù với chip tô màu bằng `style={{…}}` trong TSX.
 
   **Còn lại của hệ `--ds-*`:** main mới chỉ lấy nhóm CODE. 58 token còn lại (giấy, thẻ,
   nút, tím/đỏ/lục, bán kính, bóng) vẫn ở nhánh `test`. Port tiếp thì theo đúng luật này:

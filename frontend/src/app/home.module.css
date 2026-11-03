@@ -184,8 +184,28 @@
   border: 1px solid var(--edu-chip-border);
   border-radius: 9px;
 }
-.tagRed { color: var(--edu-red); background: rgba(229, 51, 75, 0.1); border-color: rgba(229, 51, 75, 0.14); }
-.tagOk { color: var(--edu-ok); background: var(--edu-ok-soft); border-color: transparent; }
+/* HAI CHIP NÀY TRƯỢT AA, đo trên production 04/11 bằng phép hợp thành alpha
+   THẬT (đi ngược cây tổ tiên, không lấy nền body):
+     "Cơ bản"           #e5334b trên rgba(229,51,75,.10)/trắng = 3,20:1
+     "Sẵn sàng sử dụng" #059669 trên rgba(5,150,105,.20)/trắng = 2,95:1
+   13px/500 là chữ THƯỜNG, ngưỡng 4,5:1. (Chữ logo 20px ĐẬM thì KHÔNG trượt —
+   ≥18,66px + bold là chữ LỚN, ngưỡng 3:1, và nó đạt 4,47 / 3,70. Phép đo đầu
+   của tôi báo oan hai chỗ đó vì chưa xét cỡ/độ đậm.)
+
+   Nền alpha là nguyên nhân: tô 10–20% màu chữ lên nền rồi đặt CHÍNH màu đó lên
+   trên thì tương phản tự co lại. Bảng lofi có sẵn cặp tint ĐỤC cho đúng hai vai
+   này — `sanguine` = chú ý, `ochre` = đã có — nên dùng chúng thay vì tự pha:
+     #CF2338 trên #FFF1F3 = 4,84:1 · #047857 trên #E7F6F0 = 4,92:1. */
+.tagRed {
+  color: var(--ds-sanguine);
+  background: var(--ds-sanguine-tint);
+  border-color: var(--edu-card-line);
+}
+.tagOk {
+  color: var(--ds-ochre);
+  background: var(--ds-ochre-tint);
+  border-color: var(--edu-card-line);
+}
 .dot { width: 7px; height: 7px; background: currentColor; border-radius: 50%; }
 
 /* Nút tròn góc phải thẻ: mũi tên / mở ra */
