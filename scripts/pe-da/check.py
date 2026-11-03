@@ -403,7 +403,7 @@ def kiem_bai_tap_doi_nguon(bai: list[dict]) -> None:
     Vì sao cần luật này. Một lượt audit ngày 27/10 báo "14 bài tập và 80 ca chấm
     còn sót, chi phí soạn bằng 0, chỉ là nối" — và cả hai nửa đều sai. Đo lại
     ngày 28/10: 14 bài đó **không nối được** (openpyxl/seaborn/plotly/ipywidgets/
-    h5py/sqlalchemy thiếu wheel trong Pyodide 314, và CT07/CT08/EX04 vì
+    h5py chưa vendor wheel — sqlalchemy đã vendor 04/11, xem SY24 — và CT07/CT08/EX04 vì
     `sys.executable` trong trình duyệt không trỏ tới file thật), mỗi bài 3 ca =
     **42 ca**, không phải 80. Con số 80 là 457−377, trong đó 38 ca là ca mới
     được THÊM VÀO NGUỒN ngày 28/10 để lời giải tầm thường trượt.
@@ -651,7 +651,18 @@ def kiem_sandbox(bai: list[dict]) -> None:
     Đổi lại, bài như thế PHẢI mang `env` nói rõ chuyện đó, không thì học viên
     mất hẳn hướng dẫn "chạy trên máy" mà bản cũ có.
     """
-    hop_le = {'numpy', 'pandas', 'matplotlib', 'tzdata'}
+    # ĐỌC TỪ ĐĨA, không gõ lại danh sách. Đây là chỗ thứ TƯ cùng một danh
+    # sách wheel từng sống: `THIEU_WHEEL`/`VENDORED` trong build.py,
+    # `check-wheel.mjs`, và ở đây. Vendor thêm một wheel (sqlalchemy, 04/11)
+    # mà quên chỗ này thì check.py đỏ với một LỖI GIẢ — đã xảy ra, và lối
+    # thoát trông hợp lý nhất khi đó là gỡ gói ra khỏi bài, tức sửa NỘI DUNG
+    # để chiều một phép kiểm sai (xem bẫy "Luật 6 của cổng INSERT").
+    hop_le = {
+        p.name.split('-')[0].lower().replace('_', '-')
+        for p in (HERE.parent.parent / 'frontend' / 'public' / 'pyodide' / 'v314.0.7').glob('*.whl')
+    }
+    if not hop_le:
+        loi('không thấy wheel nào trong /pyodide/v314.0.7/ — luật gói sẽ RỖNG')
     for b in bai:
         bon = b['content_json'].get('step_4') or {}
         mode = b['_mode']

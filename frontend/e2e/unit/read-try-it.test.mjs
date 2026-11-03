@@ -180,7 +180,7 @@ test('bản dựng: KHÔNG bài nào phát `tryIt: false`', boQua, () => {
   assert.deepEqual(sai, []);
 });
 
-test('bản dựng: 408 nút trên 146 bài — khớp số đoạn check-pyodide.mjs chạy thật', boQua, () => {
+test('bản dựng: 411 nút trên 147 bài — khớp số đoạn check-pyodide.mjs chạy thật', boQua, () => {
   // 408 KHÔNG phải một con số tự chọn: đó đúng là số đoạn mà
   // `node scripts/pe-da/check-pyodide.mjs` chạy trong Pyodide rồi so với
   // `expected` của bài (mốc trong AGENTS.md: "146 bài, 408 đoạn code, 0 hỏng").
@@ -198,8 +198,10 @@ test('bản dựng: 408 nút trên 146 bài — khớp số đoạn check-pyodid
       for (const k of lat) if (k.tryIt) { nut += 1; coNut.add(b.lesson_code); }
     }
   }
-  assert.equal(nut, 408);
-  assert.equal(coNut.size, 146);
+  // 4/11/2026: 408/146 -> 411/147. Ba đoạn mới đến từ SY24, bài được mở khoá
+  // sau khi vendor wheel sqlalchemy.
+  assert.equal(nut, 411);
+  assert.equal(coNut.size, 147);
 });
 
 test('bản dựng: bài phải chạy trên máy thì KHÔNG có nút nào', boQua, () => {

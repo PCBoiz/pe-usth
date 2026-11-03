@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "from sqlalchemy import create_engine, text, inspect\nengine = create_engine(\"sqlite:///:memory:\")\nwith engine.begin() as connection:\n    connection.execute(text(\"CREATE TABLE scores (id TEXT, score REAL)\"))\n    connection.execute(text(\"INSERT INTO scores VALUES ('A',8),('B',6)\"))\nprint(inspect(engine).get_table_names())\nengine.dispose()",
-      "expected": "['scores']"
+      "expected": "['scores']",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "from sqlalchemy import create_engine, text\nengine = create_engine(\"sqlite:///:memory:\")\nwith engine.connect() as connection:\n    result = connection.execute(text(\"SELECT 'A' AS id, 8 AS score UNION ALL SELECT 'B', 6\"))\n    print(list(result.keys()))\n    print([tuple(row) for row in result.fetchmany(size=1)])\n    print([tuple(row) for row in result.fetchall()])\nengine.dispose()",
-      "expected": "['id', 'score']\n[('A', 8)]\n[('B', 6)]"
+      "expected": "['id', 'score']\n[('A', 8)]\n[('B', 6)]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nfrom sqlalchemy import create_engine, text\nengine = create_engine(\"sqlite:///:memory:\")\nwith engine.connect() as connection:\n    frame = pd.read_sql_query(text(\"SELECT :sid AS id, :score AS score\"), connection, params={\"sid\": \"A\", \"score\": 8})\nprint(frame.to_dict(\"records\"))\nengine.dispose()",
-      "expected": "[{'id': 'A', 'score': 8}]"
+      "expected": "[{'id': 'A', 'score': 8}]",
+      "tryIt": true
      },
      {
       "type": "paragraph",
@@ -143,38 +146,108 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy trên máy của bạn",
-    "body": "Bài này không chạy được trong trình duyệt: sqlalchemy chưa có wheel trong /pyodide/v314.0.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+    "title": "Tự viết rồi chạy Python",
+    "body": "solve(data) nhận {\"rows\": [{\"name\": str,\"score\": số}], \"limit\": số}. Dùng SQLAlchemy với SQLite trong bộ nhớ: tạo bảng students, insert bằng tham số, SELECT các dòng score>=limit ORDER BY name. Trả list {name,score}; không lọc toàn bộ bằng Python thay SQL.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'rows': [{'name': 'Zoe', 'score': 8}, {'name': 'An', 'score': 9}, {'name': 'Binh', 'score': 4}], 'limit': 8}"
+     },
+     {
+      "label": "trả về",
+      "value": "[{'name': 'An', 'score': 9.0}, {'name': 'Zoe', 'score': 8.0}]"
+     }
+    ]
    },
-   "procedure": [
-    "Mở terminal tại thư mục làm việc của bạn.",
-    "Tạo môi trường: py -m venv .venv",
-    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
-    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "from sqlalchemy import create_engine, text\ndef solve(data):\n    engine = create_engine('sqlite:///:memory:')\n    try:\n        with engine.begin() as conn:\n            conn.execute(text('CREATE TABLE students (name TEXT, score REAL)'))\n            for row in data['rows']:\n                conn.execute(text('INSERT INTO students (name, score) VALUES (:name, :score)'), row)\n            result = conn.execute(text('SELECT name, score FROM students WHERE score >= :limit ORDER BY name'), {'limit':data['limit']})\n            return [{'name':r[0], 'score':r[1]} for r in result.fetchall()]\n    finally: engine.dispose()\n",
+   "tests": [
+    {
+     "name": "lọc và sắp",
+     "input": {
+      "rows": [
+       {
+        "name": "Zoe",
+        "score": 8
+       },
+       {
+        "name": "An",
+        "score": 9
+       },
+       {
+        "name": "Binh",
+        "score": 4
+       }
+      ],
+      "limit": 8
+     },
+     "expected": [
+      {
+       "name": "An",
+       "score": 9.0
+      },
+      {
+       "name": "Zoe",
+       "score": 8.0
+      }
+     ]
+    },
+    {
+     "name": "bằng ngưỡng",
+     "input": {
+      "rows": [
+       {
+        "name": "O'Neil",
+        "score": 7
+       }
+      ],
+      "limit": 7
+     },
+     "expected": [
+      {
+       "name": "O'Neil",
+       "score": 7.0
+      }
+     ]
+    },
+    {
+     "name": "không đạt",
+     "input": {
+      "rows": [
+       {
+        "name": "A",
+        "score": 2
+       }
+      ],
+      "limit": 3
+     },
+     "expected": []
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ],
+   "packages": [
+    "pandas",
+    "sqlalchemy"
    ]
   }
  },
- "_mode": "local",
- "_blocked": [
-  {
-   "block": 0,
-   "reason": "sqlalchemy chưa có wheel trong /pyodide/v314.0.7/"
-  },
-  {
-   "block": 1,
-   "reason": "sqlalchemy chưa có wheel trong /pyodide/v314.0.7/"
-  },
-  {
-   "block": 2,
-   "reason": "sqlalchemy chưa có wheel trong /pyodide/v314.0.7/"
-  }
- ],
+ "_mode": "pyodide",
+ "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong: sqlalchemy chưa có wheel trong /pyodide/v314.0.7/",
+ "_bai_tap": "cham",
  "_vet": {
-  "can": 0,
+  "can": 3,
   "co": 0,
-  "bo": 0,
+  "bo": 3,
   "loi": []
  }
 }

@@ -1082,6 +1082,9 @@
      "title": "Gợi ý 2",
      "body": "List rỗng vẫn phải trả dict đủ hai khoá — chỉ `mean` là None."
     }
+   ],
+   "packages": [
+    "numpy"
    ]
   }
  },

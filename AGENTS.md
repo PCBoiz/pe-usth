@@ -79,9 +79,9 @@ học nó.
 | Frontend unit test | `cd frontend && npm run test:unit` → **518 ca** / 41 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
-| Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **138 bài tập được chấm / 460 ca**, 2 441 phút; 138 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
-| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 153 bài, 417 đoạn code, **0 hỏng**, **0 cảnh báo**, ~28 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
-| pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 138 bài, **460 ca đạt**, 621 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, ~15 s |
+| Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **139 bài tập được chấm / 463 ca**, 2 441 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
+| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 154 bài, 420 đoạn code, **0 hỏng**, **0 cảnh báo**, ~32 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
+| pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 139 bài, **463 ca đạt**, 625 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, ~12 s |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 356 khối đủ điều kiện** (300 bỏ qua, phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
@@ -91,7 +91,7 @@ học nó.
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
 | Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **17 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
-| Wheel vendored | `node scripts/check-wheel.mjs` → **14 wheel · 4 gói bài khai · 14 sau đóng bao phụ thuộc**, 0 lỗi |
+| Wheel vendored | `node scripts/check-wheel.mjs` → **16 wheel · 5 gói bài khai · 16 sau đóng bao phụ thuộc**, 0 lỗi |
 | Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **17 mục đối chiếu được**, 0 lỗi; 2 nhóm khai NGOÀI TẦM |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
@@ -434,8 +434,11 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **Nhưng cơ hội chỉ là 2 BÀI, không phải 10.** Đọc `_blocked` của bản dựng (chính xác
   hơn tự quét `import` — SY23 viết `import tempfile, h5py` nên regex một-gói-một-dòng
   trượt): chỉ **SY23** (h5py + scipy) và **SY24** (sqlalchemy) bị chặn vì gói CÓ sẵn.
-  Tám gói còn lại không bài nào dùng. Mở khoá chúng còn cần SOẠN ca chấm (gói nguồn có
-  0 bài tập cho cả hai) và vendor thêm scipy — một vòng riêng, chưa làm.
+  Tám gói còn lại không bài nào dùng. **SY24 đã mở khoá 04/11** — chỉ cần vendor sqlalchemy
+  1 937 KB + typing-extensions 43 KB, vì **3 ca chấm đã nằm sẵn trong gói nguồn**
+  và bị chính cổng `THIEU_WHEEL` vứt đi; **SY23 thì KHÔNG đáng** — h5py kéo
+  theo scipy **13,7 MB**, tức +46% kích thước runtime cho ĐÚNG MỘT bài. Đó là quyết định
+  của chủ dự án, không của vòng lặp.
   **BẪY NẶNG CÂN: `loadPackage` GHI WHEEL VÀO THƯ MỤC VENDORED.** Một phép thử gọi
   `loadPackage('h5py')` với `indexURL` trỏ vào `frontend/public/pyodide/v314.0.7/`
   đã thả **3,5 MB** (h5py · sqlalchemy · pkgconfig · typing-extensions) vào đó. Dòng log
@@ -454,6 +457,31 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   Ablate 3 chiều: thả một wheel không ai dùng → **1 lỗi** · giấu wheel `pandas` (bài có
   khai) → 1 · giấu `pillow` (PHỤ THUỘC, không bài nào khai trực tiếp) → 1 — chiều
   thứ ba là thứ chứng minh phép đóng bao không thừa.
+
+- **CÙNG MỘT DANH SÁCH WHEEL sống ở BỐN chỗ, và chỗ thứ tư làm cổng BÁO OAN.**
+  Mở khoá SY24 (vendor `sqlalchemy`) phải sửa `THIEU_WHEEL` và `VENDORED` trong
+  `build.py`, và `check-wheel.mjs` thì tự đọc đĩa nên không phải sửa. Chỗ thứ TƯ —
+  `hop_le = {'numpy', 'pandas', 'matplotlib', 'tzdata'}` trong `kiem_sandbox()` của
+  `check.py` — không ai nhớ, nên `check.py --strict` đỏ với *"SY24: khai gói không có
+  wheel"* trong khi wheel ĐANG nằm trên đĩa. Một lỗi GIẢ, và lối thoát trông hợp lý nhất
+  lúc đó là gỡ gói ra khỏi bài — tức sửa NỘI DUNG để chiều một phép kiểm sai, đúng bệnh
+  đã ghi ở "Luật 6 của cổng INSERT".
+  Nay `hop_le` ĐỌC TỪ ĐĨA (`glob('*.whl')` trên chính thư mục vendored), và RỖNG là
+  LỖI — một tập rỗng làm luật im lặng cho qua mọi gói, tức cổng tự tắt mình.
+  Ablate: giấu wheel `sqlalchemy` → **1 lỗi**, đúng tên bài và đúng tên gói.
+  **Và cơ hội chỉ là MỘT bài, không phải hai:** SY23 cần h5py, mà h5py kéo theo scipy
+  **13,7 MB** — +46% runtime cho một bài. Đo rồi mới bỏ, đừng dựng lại phép tính này.
+  **MỘT KHẲNG ĐỊNH NỮA CỦA TÔI SAI, và nó sai theo chiều tự khen:** tôi viết "soạn 3 ca
+  chấm tại repo" rồi mới đi đọc gói nguồn — "SY24" ở đó CÓ ĐỦ 3 ca, `referenceSolution`,
+  `hints`, `starter`. Thứ chặn nó suốt từ đầu chỉ là MỘT dòng trong `THIEU_WHEEL`.
+  Chú thích ở `bai_tap_cua` (build.py) cũng mang đúng niềm tin sai đó ("chưa ai soạn ca
+  chấm") và đã viết lại. Đọc gói nguồn TRƯỚC khi nói ai phải soạn gì.
+  **VÀ MỘT LỖI THẬT ĐI KÈM, lớn hơn chính việc mở khoá:** `goi_can_tai` trước đây chỉ
+  quét LỜI GIẢI + KHUNG của bài tập, không quét mã BÀI ĐỌC — mà ô "Chạy thử" nối mọi
+  khối đọc thành một chương trình. Đo được **4 bài khai thiếu**: VZ24 và EX01 đọc
+  `pandas` mà chỉ khai `numpy`; SY26 và EX08 không khai gói nào. Nay `bai_tap_cua` nhận
+  thêm `code_doc`. Thiếu khai thì `loadPackage` KHÔNG ném — nó rơi về CDN, và CSP
+  `connect-src 'self'` chặn đường đó trong trình duyệt.
 
 - **Một dữ kiện ĐÚNG mà im lặng về giới hạn của nó thì MỜI người đọc suy sai.**
   Khi production chưa có thẻ `pe-build`, `check-da-deploy.mjs` chỉ in hai chuỗi
@@ -769,8 +797,8 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   hỏi GIÁ TRỊ TRẢ VỀ. Bài đọc phải nghiêm hơn vì nó so đầu ra với dòng "Kết quả:" tác giả
   ghi, mà mô phỏng in khác bản thật ở PID và thứ tự thread. Nới quá tay thì
   `check-practice.mjs` đỏ — nó chạy đúng những bài tập build phát ra.
-  **14 bài không chấm được:** openpyxl (PD13), seaborn (VZ16-19), plotly (VZ20-22),
-  ipywidgets (VZ23), h5py (SY23), sqlalchemy (SY24) — chưa vendor wheel;
+  **13 bài không chấm được:** openpyxl (PD13), seaborn (VZ16-19), plotly (VZ20-22),
+  ipywidgets (VZ23), h5py (SY23) — chưa vendor wheel (SY24 đã mở khoá 04/11);
   CT07/CT08/EX04 vì `sys.executable` (bẫy "thuộc tính phơi ra máy thật" ở trên). Chúng giữ ô
   chạy thử như cũ. CT10/CT11 thì ngược: code bài đọc phải chạy trên máy nhưng bài tập chấm
   được tại đây, nên chúng PHẢI mang `env` nói rõ — không thì mất hẳn hướng dẫn "chạy trên

@@ -391,9 +391,14 @@ KHOI_DU_LIEU: dict[str, dict] = {
 # ném "No known package" rồi giết cả lần chạy. `zoneinfo` thì ngược lại — là
 # stdlib nhưng rỗng dữ liệu múi giờ, phải tải gói `tzdata` mới tra được
 # "Asia/Ho_Chi_Minh" (PD23 phát hiện ra chuyện này).
+# Tên IMPORT -> tên GÓI của Pyodide, cho `step_4.packages`. Gỡ một gói khỏi
+# `THIEU_WHEEL` là CHƯA ĐỦ: thiếu dòng ở đây thì bài đổi sang `pyodide` nhưng
+# `packages` rỗng, worker không nạp gói, và học viên bấm Chạy nhận
+# `ModuleNotFoundError`. Đã suýt lọt với sqlalchemy; `check-wheel.mjs` bắt
+# được vì wheel vendored khi đó không ai khai.
 VENDORED = {'numpy': 'numpy', 'pandas': 'pandas', 'matplotlib': 'matplotlib',
             'mpl_toolkits': 'matplotlib', 'PIL': None, 'sqlite3': None,
-            'zoneinfo': 'tzdata'}
+            'zoneinfo': 'tzdata', 'sqlalchemy': 'sqlalchemy'}
 
 # WASM không có: không phải thiếu wheel mà là nền tảng không hỗ trợ.
 WASM_KHONG_CO = {
@@ -454,7 +459,17 @@ CHUOI_GOI_THU_VIEN = {
 THIEU_WHEEL = {
     'seaborn', 'plotly', 'scipy', 'sklearn', 'statsmodels', 'requests',
     'bs4', 'openpyxl', 'xlrd', 'pyarrow', 'dash', 'ipywidgets', 'IPython',
-    'sqlalchemy', 'h5py',
+    # 'sqlalchemy' ĐÃ GỠ 04/11/2026: Pyodide 314 có wheel 2.0.48 và nó chạy
+    # thật dưới WASM (tạo bảng, chèn, truy vấn trên sqlite in-memory). Wheel
+    # nay vendored trong repo (1,9 MB + typing-extensions 43 KB), nên SY24 đổi
+    # từ `local` sang chạy trong trình duyệt.
+    # 'h5py' Ở LẠI dù Pyodide CÓ wheel 3.13.0 và nó cũng chạy được: SY23 còn
+    # cần `scipy`, mà wheel scipy nặng **13,7 MB** — tức 15,3 MB cho MỘT bài, và
+    # học viên mở đúng bài đó phải tải chừng ấy. Đó là quyết định của chủ dự án,
+    # không phải của vòng lặp. Đừng gỡ 'h5py' mà quên scipy: build sẽ phát
+    # `packages: ['h5py']` rồi `check-wheel` đỏ vì thiếu scipy, còn nếu vendor cả
+    # hai thì repo 34 → 49 MB.
+    'h5py',
     'notebook', 'jupyter', 'sas7bdat', 'pandasql', 'psutil', 'PySimpleGUI',
 }
 
@@ -1016,7 +1031,8 @@ def vi_du_io(bai_tap: dict, hop_dong: dict) -> tuple[list[dict] | None, str]:
 
 
 def bai_tap_cua(bai_tap: dict, mode: str = 'pyodide',
-                ly_do_doc: str = '') -> tuple[dict | None, str]:
+                ly_do_doc: str = '',
+                code_doc: tuple[str, ...] = ()) -> tuple[dict | None, str]:
     """(step_4 cho bài tập được chấm, lý do nếu không chấm được).
 
     Hai thứ quyết định chấm được hay không, và CHỈ hai thứ này:
@@ -1028,14 +1044,17 @@ def bai_tap_cua(bai_tap: dict, mode: str = 'pyodide',
 
     Chạy không được thì trả (None, lý do) và bài giữ ô chạy thử như trước. 11
     bài rơi vào đây: seaborn (VZ16-19), plotly (VZ20-22), ipywidgets (VZ23),
-    openpyxl (PD13), h5py (SY23), sqlalchemy (SY24).
+    openpyxl (PD13), h5py (SY23).
 
     NÓI CHO ĐÚNG, vì câu cũ ở đây sai: bốn gói đầu Pyodide 314 KHÔNG CÓ thật —
     với chúng, chấm trong trình duyệt là không thể. Nhưng `h5py` 3.13.0 và
     `sqlalchemy` 2.0.48 CÓ trong `pyodide-lock.json` và đã chạy thật dưới WASM
     (h5py ghi/đọc lại một dataset; sqlalchemy tạo bảng, chèn, truy vấn). SY23
-    và SY24 vì vậy là "CHƯA VENDOR wheel + chưa ai soạn ca chấm", không phải
-    "không thể". SY23 còn cần `scipy` (cũng có trong lock). Xem mục bẫy
+    và SY24 vì vậy là "CHƯA VENDOR wheel", không phải "không thể" — và gói
+    nguồn ĐÃ có sẵn 3 ca chấm cho cả hai, nên chính dòng trong `THIEU_WHEEL`
+    là thứ duy nhất vứt chúng đi. SY24 đã vendor 04/11. SY23 thì không:
+    `h5py` kéo theo `scipy` **13,7 MB**, +46% runtime cho ĐÚNG MỘT bài —
+    quyết định của chủ dự án, không của vòng lặp. Xem mục bẫy
     "Pyodide 314 không có wheel — SAI với 10/21 gói" trong AGENTS.md.
 
     `cho_mo_phong=True` mới là chỗ cổng này KHÁC cổng bài đọc, và khác có lý:
@@ -1104,7 +1123,13 @@ def bai_tap_cua(bai_tap: dict, mode: str = 'pyodide',
     if goi_y:
         ra['hints'] = [{'title': f'Gợi ý {i + 1}', 'body': g}
                        for i, g in enumerate(goi_y)]
-    goi = goi_can_tai([loi_giai, khung])
+    # GỘP CẢ MÃ BÀI ĐỌC, không chỉ bài tập. `packages` là thứ worker dùng để
+    # `loadPackage`, mà ô "Chạy thử"/nút tryIt chạy chính mã BÀI ĐỌC — nên suy
+    # gói từ riêng bài tập là để sót. SY24 lộ ra chuyện này: lời giải chỉ dùng
+    # `sqlalchemy`, còn khối đọc thứ 3 `import pandas as pd` ⇒ học viên bấm Chạy
+    # nhận `ModuleNotFoundError: No module named 'pandas'`. 138 bài trước đó
+    # không vỡ chỉ vì gói của bài tập TÌNH CỜ phủ hết gói của bài đọc.
+    goi = goi_can_tai([loi_giai, khung, *code_doc])
     if goi:
         ra['packages'] = goi
     if mode != 'pyodide' and ly_do_doc:
@@ -1584,7 +1609,7 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
     # số liệu rồi chạy lại"; đó là trao đổi có chủ đích, không phải bỏ sót.
     ly_do_bt = ''
     if bai_tap:
-        s4, ly_do_bt = bai_tap_cua(bai_tap, mode, ly_do_bai)
+        s4, ly_do_bt = bai_tap_cua(bai_tap, mode, ly_do_bai, tuple(chay_duoc))
         if s4:
             noi_dung['step_4'] = s4
     if 'step_4' not in noi_dung:

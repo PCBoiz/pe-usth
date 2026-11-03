@@ -5739,6 +5739,20 @@
     }
    }
   },
+  "SY24": {
+   "codeHash": "09558d1da1e89242",
+   "blocks": {
+    "0": {
+     "skip": "không có câu dự đoán nào bảng trả lời được"
+    },
+    "1": {
+     "skip": "không có câu dự đoán nào bảng trả lời được"
+    },
+    "2": {
+     "skip": "không có câu dự đoán nào bảng trả lời được"
+    }
+   }
+  },
   "SY25": {
    "codeHash": "910fc7703f6a96d1",
    "blocks": {
