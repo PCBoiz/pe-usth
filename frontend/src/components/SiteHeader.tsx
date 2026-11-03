@@ -1,5 +1,9 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+
+import { isCurrent, navItems } from '@/lib/site-nav';
+
 import styles from './SiteHeader.module.css';
 
 /**
@@ -7,8 +11,12 @@ import styles from './SiteHeader.module.css';
  *
  * Thay cho cặp Sidebar + HeaderBar cũ: hai component đó dẫn tới Bảng điều khiển,
  * Diễn đàn, Xếp hạng, Cá nhân và "Đăng xuất" — tất cả đã bị gỡ — và còn gọi
- * main.js/edu-chrome.js để chạy. Ở đây chỉ còn đúng hai việc: về trang chủ
- * và đổi giao diện sáng/tối.
+ * main.js/edu-chrome.js để chạy.
+ *
+ * 15/10/2026 — thêm lại BA mục điều hướng, vì thanh chỉ-có-tên-và-nút-sáng-tối
+ * đã làm hai màn thành trang mồ côi: `/practice` và `/practice/challenge` dựng
+ * xong, kiểm kỹ, mà không trang nào dẫn tới (xem lý lẽ đầy đủ ở đầu
+ * `lib/site-nav.ts`). Danh sách mục nằm ở file đó để `node --test` kiểm được.
  *
  * Giao diện sáng/tối dùng cùng hợp đồng với script chống nháy ở layout gốc:
  * khóa localStorage `theme` và cặp class `dark`/`light` trên <body>.
@@ -25,6 +33,11 @@ function toggleTheme() {
 }
 
 export default function SiteHeader({ wide = false }: { wide?: boolean }) {
+  const pathname = usePathname() ?? '/';
+  // Cùng cờ với `catalog.TOOLS`: ẩn thẻ công cụ mà vẫn để lối đi trên thanh
+  // trên thì thanh dẫn tới một trang trang chủ bảo là không có.
+  const items = navItems(process.env.NEXT_PUBLIC_IDE_ENABLED !== 'off');
+
   const bar = (
     <header className={wide ? `${styles.bar} ${styles.barWide}` : styles.bar}>
       {/* <a> thường (tải lại trang): về trang chủ từ trang chi tiết khóa CSDL
@@ -35,6 +48,23 @@ export default function SiteHeader({ wide = false }: { wide?: boolean }) {
         <span className={styles.brandName}>Programming</span>
         <span className={styles.brandAccent}>EDU</span>
       </a>
+      <nav className={styles.nav} aria-label="Khu vực chính">
+        {items.map((item) => {
+          const current = isCurrent(item, pathname);
+          return (
+            <a
+              key={item.href}
+              className={current ? `${styles.navLink} ${styles.navCurrent}` : styles.navLink}
+              href={item.href}
+              // `aria-current` là cách DUY NHẤT trình đọc màn hình biết mục nào
+              // đang mở; tô đậm bằng CSS chỉ nói cho người nhìn thấy.
+              aria-current={current ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          );
+        })}
+      </nav>
       <button
         type="button"
         className={styles.theme}

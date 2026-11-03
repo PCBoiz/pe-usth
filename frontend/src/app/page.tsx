@@ -1,141 +1,62 @@
-// Trang chủ: hai cột — "Chương trình đào tạo" (khóa học) và "Công cụ" — rồi thẻ góp ý.
-// Dữ liệu từ danh mục tĩnh (src/lib/catalog.ts) — không gọi API vì mọi route
-// /api/courses* đều đòi đăng nhập mà frontend không còn trang đăng nhập.
+// Trang chủ `/` — cảnh "GÓC HỌC": một căn phòng lofi, mỗi vật trong phòng là
+// một lối vào (laptop → bài học, kệ sách → khoá học, bảng ghim → lộ trình,
+// cuốn sổ → ôn tập, kệ cúp → thành tựu, điện thoại → hồ sơ và xếp hạng).
 //
-// Từ 13/10/2026 danh mục chỉ còn Python Advanced: buổi dùng thử chỉ xoay quanh
-// khóa đó, các thẻ khác dẫn vào khóa dựng nửa vời (xem catalog.ts).
+// Port từ artifact "Góc học PE" (một app Next 15 đứng riêng). Cảnh là DOM ra
+// lệnh, không phải React — xem src/components/goc-hoc/StudyRoom.tsx để biết vì
+// sao không viết lại thành React, và engine.js để biết nó làm gì.
+//
+// Bản dashboard theo Figma trước đây ở đúng đường dẫn này còn nguyên, đã dọn
+// sang `/dashboard` để nhóm đối chiếu hai bản.
+//
+// BA ĐIỀU CHỐT Ở ĐÂY, đừng gỡ mà không đọc hết:
+//
+//  1. GIÁO TRÌNH DỰNG Ở SERVER, TĨNH. Tám học phần và 48 bài đọc từ
+//     `curricula.json` ngay trong component server này rồi truyền xuống, nên
+//     khách vãng lai thấy đủ phòng, đủ sách, đủ tên bài mà KHÔNG một lời gọi
+//     mạng nào. Cùng nguồn với trang khoá học — xem bẫy "Hai nguồn danh sách
+//     bài" trong AGENTS.md: đừng viết cứng số 48 ở đây.
+//  2. SỐ CỦA NGƯỜI HỌC LẤY Ở CLIENT, QUA `apiFetchSessionOnly`. Trang này công
+//     khai; `apiFetch` gặp 401 là tự tạo tài khoản khách, tức mỗi con bot một
+//     tài khoản. StudyRoom.tsx giữ luật đó, đừng gọi API ở đây.
+//  3. KHÔNG `PageStyles hrefs={[...]}` NÀO KHÁC RỖNG. Cảnh có CSS riêng
+//     (scene.css, import trong StudyRoom.tsx). `PageStyles` ở đây chỉ để lấy
+//     @font-face tự lưu trữ của Be Vietnam Pro + JetBrains Mono (PageStyles tự
+//     thêm edu-fonts.css vào mọi trang) — thêm edu-theme.css vào thì nó đặt
+//     lại nền, phông và `.page` của cả trang và cảnh sẽ lệch.
 import type { Metadata } from 'next';
 
+import StudyRoom from '@/components/goc-hoc/StudyRoom';
 import PageStyles from '@/components/PageStyles';
-import SiteHeader from '@/components/SiteHeader';
-import { COURSES, LEVEL_LABEL, TOOLS } from '@/lib/catalog';
-import { feedbackFormHref } from '@/lib/feedback-link';
+import { COURSES } from '@/lib/catalog';
+import CURRICULA_JSON from '@/lib/curricula.json';
+import type { LessonMetaRow, ModuleRow } from '@/lib/goc-hoc';
 
-import CatalogTile from './CatalogTile';
-import styles from './home.module.css';
+const COURSE_ID = 'python_advanced';
 
 export const metadata: Metadata = {
-  title: 'Programming EDU — Khóa học',
+  title: 'Programming EDU — Góc học',
 };
 
 export default function HomePage() {
-  const feedback = feedbackFormHref();
+  const course = COURSES.find((c) => c.id === COURSE_ID);
+  const curricula = CURRICULA_JSON as unknown as {
+    CURRICULA: Record<string, { modules?: ModuleRow[] }>;
+    LESSON_META?: Record<string, LessonMetaRow[]>;
+  };
+  const modules = curricula.CURRICULA[COURSE_ID]?.modules ?? [];
+  const meta = curricula.LESSON_META?.[COURSE_ID] ?? [];
 
   return (
     <>
-      <PageStyles hrefs={['/static/css/edu-theme.css']} />
-      {/* .page cao tối thiểu bằng khung nhìn: style.css (đặt min-height cho body)
-          không nạp ở trang này, body co theo nội dung thì nền gradient bị đứt
-          một đường ngang ở đáy khối nội dung. */}
-      <div className={styles.page}>
-        <SiteHeader wide />
-        <main className={styles.main}>
-          <h1 className={styles.title}>Khóa học</h1>
-          <p className={styles.sub}>Chọn một khóa để xem giáo trình chi tiết.</p>
-
-          <div className={styles.cols}>
-            <section className={styles.col} aria-labelledby="programTitle">
-              <h2 className={styles.pill} id="programTitle">
-                Chương trình đào tạo
-              </h2>
-              <ul className={styles.list}>
-                {COURSES.map((course) => (
-                  <CatalogTile
-                    key={course.id}
-                    href={`/courses/${course.id}`}
-                    label={course.label}
-                    description={course.subtitle}
-                    tags={[
-                      // KHÔNG ghi số phiên bản: thẻ này từng ghi 'Python 3.12' (ảnh
-                      // Docker đã bỏ) trong khi runtime là 3.14.2, và nó nằm ngay
-                      // trang chủ. Nhãn không có số thì không lệch được sau mỗi lần
-                      // nâng Pyodide.
-                      { text: 'Python' },
-                      { text: LEVEL_LABEL[course.level], tone: 'red' },
-                    ]}
-                    color={course.color}
-                    accent={course.accent}
-                    mark={course.mark}
-                    icon={course.icon}
-                  />
-                ))}
-              </ul>
-            </section>
-
-            {/* Công cụ nằm NGOÀI cột khóa học: không phải khóa, không ảnh hưởng
-                tiến độ/XP/đăng ký. Mặc định có đúng một mục (Python IDE); tắt bằng
-                NEXT_PUBLIC_IDE_ENABLED=off thì danh sách rỗng, và khi rỗng phải bỏ
-                luôn cả cột — không để một mục "Công cụ" trống trơ trên trang. */}
-            {TOOLS.length > 0 && (
-              <section className={styles.col} aria-labelledby="toolsTitle">
-                <div className={styles.colHead}>
-                  <h2 className={styles.sectionTitle} id="toolsTitle">
-                    Công cụ
-                  </h2>
-                  <span className={styles.colNote}>Môi trường thực hành trực tuyến</span>
-                </div>
-                <ul className={styles.list}>
-                  {TOOLS.map((tool) => (
-                    <CatalogTile
-                      key={tool.id}
-                      href={tool.href}
-                      label={tool.label}
-                      description="Viết và chạy code Python ngay trong trình duyệt, xem kết quả tức thì."
-                      tags={[
-                        { text: 'Sẵn sàng sử dụng', tone: 'ok' },
-                        { text: 'Web Compiler' },
-                      ]}
-                      color={tool.color}
-                      accent={tool.accent}
-                      mark={tool.mark}
-                      icon={tool.icon}
-                      external
-                    />
-                  ))}
-                </ul>
-              </section>
-            )}
-          </div>
-
-          {/* Lối góp ý cho buổi thử nghiệm với giảng viên và sinh viên USTH
-              (14/10/2026). CHỈ đặt ở trang chủ — gắn ở cuối bài hay trong khung
-              bài học thì chen ngang lúc người ta đang học.
-
-              Ẩn hẳn khi chưa đặt NEXT_PUBLIC_FEEDBACK_URL hoặc giá trị không
-              phải URL http/https: xem feedbackHref() để biết vì sao thà không
-              có thẻ còn hơn có nút bấm vào không đi đâu. */}
-          {feedback && (
-            <section className={styles.feedback} aria-labelledby="feedbackTitle">
-              <div className={styles.feedbackBody}>
-                <h2 className={styles.feedbackTitle} id="feedbackTitle">
-                  <span className={styles.feedbackIcon} aria-hidden="true">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /><path d="M8 9h8M8 13h5" /></svg>
-                  </span>
-                  Góp ý cho chúng tôi
-                </h2>
-                <p className={styles.feedbackText}>
-                  Khảo sát ẩn danh, mất khoảng 3–5 phút. Ý kiến của bạn cho chúng tôi
-                  biết phần nào đang khó học.
-                </p>
-              </div>
-              {/* Tab mới để người đang học không mất chỗ; rel="noopener
-                  noreferrer" vì đây là tên miền ngoài (Google Forms). */}
-              <a
-                className={styles.feedbackButton}
-                href={feedback}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Viết đánh giá
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-              </a>
-            </section>
-          )}
-        </main>
-        <footer className={styles.footer}>
-          © 2026 Programming EDU. Học lập trình trực quan và hiệu quả.
-        </footer>
-      </div>
+      <PageStyles hrefs={[]} />
+      <StudyRoom
+        courseId={COURSE_ID}
+        courseName={course?.title ?? 'Python nâng cao'}
+        lessonUrl={course?.lessonUrl ?? `/lesson/${COURSE_ID}`}
+        modules={modules}
+        meta={meta}
+      />
     </>
   );
 }
