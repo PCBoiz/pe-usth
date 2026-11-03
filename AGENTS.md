@@ -81,7 +81,7 @@ học nó.
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **139 bài tập được chấm / 463 ca**, 2 441 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 154 bài, 420 đoạn code, **0 hỏng**, **0 cảnh báo**, ~32 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
-| pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 139 bài, **463 ca đạt**, 625 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, ~12 s |
+| pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 139 bài, **463 ca đạt**, 752 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, **pha 4: 2 288 ca trượt / 0 ca im lặng / 7 nhánh phản hồi**, ~12 s |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 356 khối đủ điều kiện** (300 bỏ qua, phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
@@ -482,6 +482,39 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `pandas` mà chỉ khai `numpy`; SY26 và EX08 không khai gói nào. Nay `bai_tap_cua` nhận
   thêm `code_doc`. Thiếu khai thì `loadPackage` KHÔNG ném — nó rơi về CDN, và CSP
   `connect-src 'self'` chặn đường đó trong trình duyệt.
+
+- **CÂU NÓI VÌ SAO: 1 nhánh phản hồi quan trọng nhất chưa ca nào đi qua — và nó là
+  câu người MỚI gặp nhiều nhất.** Pha 1 chứng minh lời giải đúng ĐẠT, pha 2 chứng minh
+  lời giải sai TRƯỢT. Cả hai chỉ đọc cờ `passed`, nên cả hai vẫn XANH khi `detail` rỗng
+  sạch — tức khi học viên trượt mà không biết vì sao. Van der Kleij 2015: phản hồi CÓ
+  GIẢI THÍCH **d = 0,49**, chỉ nói đúng/sai **0,05**.
+  Đo trước khi dựng, trên 1 869 ca trượt của pha 2: **0 ca im lặng** (nội dung lành,
+  1 654 câu KHÁC NHAU / trung vị 59 ký tự — không phải chữ mẫu), nhưng phân theo NHÁNH
+  thì **"Chưa có hàm solve(data)" đi qua 0 lần**. Lý do: mọi biến thể cũ đều ĐỊNH NGHĨA
+  `solve` — kể cả khung trống, vì starter có `def solve(data): pass`. Mà đó đúng là ca
+  người mới gặp nhiều nhất: xoá hàm, đổi tên hàm, viết thẳng mã ở mức module.
+  Nay có biến thể **"đổi tên hàm solve"** (đổi ở CẢ `def` lẫn mọi lời gọi — đổi mỗi `def`
+  thì lời giải đệ quy ném NameError và ca trượt vì nhánh KHÁC, tức phép đo nói dối theo
+  chiều "đã phủ") và **pha 4**: mọi ca trượt phải có câu nói vì sao, và mọi nhánh đã khai
+  phải có người đi qua. 625 → **752 biến thể**; nhánh `thiếu hàm solve` 0 → **418 lượt**.
+  **CỔNG NÀY BẮT ĐƯỢC HAI LỖI CỦA CHÍNH NÓ, cả hai nhờ chạy thật:**
+  · `NHANH_CHUA_DI_QUA` khai "mô phỏng dừng" trong khi `NHANH_PHAN_HOI` không có nhánh
+    nào tên đó — một ngoại lệ trỏ vào hư không, và nếu không kiểm thì nó im lặng mãi;
+  · nhánh ngoại lệ viết `c.includes(': ')` — **bắt-tất**, đúng lỗi đã ghi ở cổng lời
+    đòi. Nó nuốt luôn "Mô phỏng dừng", nên nhánh ấy vĩnh viễn 0 lượt mà bảng vẫn trông
+    đủ. Nay là phép thử DƯƠNG, và **câu không khớp nhánh nào là LỖI** — chính luật đó
+    lộ ra nhánh thứ bảy: hợp đồng BIỂU THỨC có câu so sánh RIÊNG ("Mong đợi … nhưng
+    nhận …"), không phải "Cần có … nhưng nhận …". Hai hợp đồng, hai câu.
+  Ablate 4 chiều: làm RỖNG câu của nhánh thiếu-solve → **418 ca im lặng** · gỡ biến thể
+  mới → **2 nhánh** báo "không ca nào đi qua" (nó cũng là thứ DUY NHẤT chạm nhánh ngoại
+  lệ) · khai khống một nhánh đang sáng là tối → **1 lỗi** "NGOẠI LỆ ĐÃ LỖI THỜI".
+  **Chiều thứ tư ra 0 đỏ, và phải nói ra:** trả nhánh ngoại lệ về bắt-tất → **0 lỗi**,
+  vì thứ nó nuốt ("mô phỏng dừng") đang được khai là tối sẵn. Tác hại của bắt-tất ở đây
+  là TIỀM ẨN — nó hiện ra đúng vào ngày ai đó xoá dòng khai ấy. Đừng đọc "0 đỏ" thành
+  "bắt-tất vô hại".
+  **GIỚI HẠN:** pha 4 kiểm câu KHÔNG RỖNG và đúng NHÁNH; nó không kiểm câu đó có HỮU ÍCH
+  không. Thứ đo được cho việc ấy là 1 656 câu khác nhau / 2 288 ca — một con số mô tả,
+  không phải một hàng rào.
 
 - **Một dữ kiện ĐÚNG mà im lặng về giới hạn của nó thì MỜI người đọc suy sai.**
   Khi production chưa có thẻ `pe-build`, `check-da-deploy.mjs` chỉ in hai chuỗi

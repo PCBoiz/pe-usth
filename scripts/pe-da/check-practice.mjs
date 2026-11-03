@@ -386,6 +386,46 @@ const datKhungTrong = [];
  *  đáp án bằng chính giá trị đó — cùng họ với `datKhungTrong`: không phải lỗi
  *  của bộ chấm, nhưng là một ca xanh mà học viên chưa làm gì đã nhận. */
 const datTamThuong = [];
+/* ------------------------------------------------------ NHÁNH PHẢN HỒI
+ *
+ * Mỗi nhánh thất bại của `_chay_ca_du_lieu` (studio-harness.py) sinh ra MỘT
+ * câu, và câu đó là thứ duy nhất nói với học viên VÌ SAO. Van der Kleij 2015
+ * (40 nghiên cứu / 70 cỡ hiệu ứng): phản hồi CÓ GIẢI THÍCH d = 0,49, chỉ nói
+ * đúng/sai d = 0,05. Nên một nhánh trả về câu RỖNG không phải lỗi hiển thị —
+ * nó hạ phản hồi xuống đúng dạng yếu nhất.
+ *
+ * Bảng này khai ĐỦ các nhánh, và pha 4 kiểm HAI CHIỀU: nhánh khai mà 0 lượt đi
+ * qua là LỖI (trừ khi khai rõ lý do), và nhánh khai "chưa ai đi qua" mà hoá ra
+ * đã có người đi cũng là LỖI — thiếu chiều sau thì danh sách ngoại lệ chỉ dài
+ * ra rồi thành chỗ giấu rác.
+ */
+const NHANH_PHAN_HOI = [
+  ['sai kiểu trả về', (c) => c.startsWith('TypeError: Bài yêu cầu trả')],
+  ['so sánh giá trị', (c) => c.startsWith('Cần có ')],
+  // Hợp đồng BIỂU THỨC (`{name, call, expect}`) có câu so sánh RIÊNG —
+  // `'Mong đợi %r nhưng nhận %r'`, không phải `'Cần có … nhưng nhận …'`.
+  // Hai hợp đồng, hai câu: gộp chúng làm một nhánh là lại mất dấu một nửa.
+  ['so sánh giá trị (hợp đồng biểu thức)', (c) => c.startsWith('Mong đợi ')],
+  ['thiếu biến kết quả', (c) => c.startsWith('Hãy gán kết quả')],
+  ['thiếu hàm solve', (c) => c.startsWith('Chưa có hàm solve')],
+  ['mô phỏng dừng', (c) => c.startsWith('Mô phỏng dừng')],
+  // Nhánh ngoại lệ phải là một phép thử DƯƠNG, không phải `includes(': ')`.
+  // Bản đầu của tôi viết đúng cái bắt-tất đó và nó nuốt luôn 'Mô phỏng dừng',
+  // tức nhánh ấy vĩnh viễn 0 lượt mà bảng vẫn trông đủ — đúng lỗi "nhóm cuối
+  // viết hop: () => true" mà AGENTS.md đã ghi ở cổng lời đòi.
+  ['ngoại lệ của mã học viên', (c) => /^[A-Za-z_][\w.]*(Error|Exception|Warning|Interrupt|Exit):/.test(c)],
+];
+
+/** Nhánh chưa có ca nào đi qua, kèm LÝ DO. Rỗng thì pha 4 đòi đủ mọi nhánh. */
+const NHANH_CHUA_DI_QUA = {
+  'mô phỏng dừng': 'Nhánh này chỉ bắn khi harness MÔ PHỎNG threading/subprocess '
+    + 'dừng giữa chừng (ngân sách bước). Không bài tập nào hôm nay dùng mô phỏng '
+    + 'tới mức đó, và dựng một biến thể giả để chạm vào nó là chạm vào một đường '
+    + 'không bài nào đi — đo xong rồi mới khai, không phải bỏ qua cho tiện.',
+};
+
+const cauPhanHoi = [];
+const cauRong = [];
 let soBienThe = 0;
 let soTruot = 0;
 
@@ -490,6 +530,35 @@ function traNguyen(bt) {
   return 'def solve(data):\n    return data\n';
 }
 
+/* ------------------------------------------------ ĐỔI TÊN HÀM `solve`
+ *
+ * Biến thể này KHÔNG tìm lỗi ở ca chấm — nó tìm lỗi ở CÂU PHẢN HỒI.
+ *
+ * Đo ngày 04/11/2026 trên 1 869 ca trượt của pha 2: bốn nhánh phản hồi của
+ * `_chay_ca_du_lieu` được đi qua (so sánh 1 781 · thiếu biến kết quả 44 · sai
+ * kiểu trả về 39 · ngoại lệ thô 5), và nhánh **"Chưa có hàm solve(data)"** đi
+ * qua **0 lần**. Lý do: mọi biến thể cũ đều ĐỊNH NGHĨA `solve` (kể cả khung
+ * trống — starter có `def solve(data): pass`), nên không cái nào chạm tới nó.
+ *
+ * Mà đó đúng là câu người MỚI gặp nhiều nhất: xoá hàm, đổi tên hàm, hoặc viết
+ * thẳng mã ở mức module. Một câu phản hồi viết cho ca thường gặp nhất mà chưa
+ * ai chứng minh nó chạy là đúng họ lỗi thống trị của repo, lần này ở lớp
+ * PHẢN HỒI thay vì ở lớp tính năng.
+ *
+ * Bài `mode: "script"` KHÔNG có `solve` — ở đó nhánh tương ứng là "Hãy gán kết
+ * quả vào biến …", và nhánh ấy đã có 44 lượt đi qua. Trả `null` để khỏi sinh
+ * một biến thể không hỏi gì.
+ */
+function doiTenSolve(bt) {
+  if (bt.mode === 'script') return null;
+  const ma = bt.referenceSolution || '';
+  if (!/\bdef\s+solve\s*\(/.test(ma)) return null;
+  // Đổi tên ở CẢ định nghĩa lẫn mọi lời gọi: đổi mỗi `def` thì một lời giải có
+  // đệ quy sẽ ném NameError, và khi đó ca trượt vì ngoại lệ chứ không vì nhánh
+  // ta đang muốn đi qua — phép đo sẽ nói dối theo chiều "đã phủ".
+  return ma.replace(/\bsolve\b/g, 'giai_bai');
+}
+
 /** Giá trị RỖNG cùng kiểu với `v` — đúng thứ một lời giải "chưa làm gì" trả. */
 /** Ca hợp đồng BIỂU THỨC (`{name, call, expect}`) hay hợp đồng DỮ LIỆU? */
 function laBieuThuc(ca) {
@@ -579,6 +648,7 @@ for (const bai of goi.lessons) {
       ['thừa một khoá dict', themKhoa(bt), 'hetsai', null],
       ['hạ tuple/ndarray xuống list', haKieu(bt), 'hetsai', null],
       ['trả nguyên đầu vào', traNguyen(bt), 'tamthuong', (i) => cases[i]?.input ?? null],
+      ['đổi tên hàm solve', doiTenSolve(bt), 'hetsai', null],
       ...rong.map((h) => [`trả rỗng ${pyRepr(h)}`, traRong(bt, h), 'tamthuong', () => h]),
     ]) {
       if (code === null) continue;
@@ -596,6 +666,13 @@ for (const bai of goi.lessons) {
       // Mã sai NỔ là chuyện bình thường (khung trống thiếu hàm solve) và tính
       // là trượt — miễn nó không được báo ĐẠT.
       const ketQua = res.tests || [];
+      // PHA 4 góp số ở đây: mỗi ca TRƯỢT là một lần học viên đọc một câu.
+      for (const r of ketQua) {
+        if (r.passed) continue;
+        const d = (r.detail || '').trim();
+        if (!d) cauRong.push({ ma: bai.id, id: bt.id, loai, ca: r.name });
+        else cauPhanHoi.push({ ma: bai.id, id: bt.id, loai, cau: d });
+      }
       const dat = ketQua.filter((r) => r.passed).length;
       const tong = ketQua.length || cases.length;
       if (luat === 'het') {
@@ -767,7 +844,67 @@ if (cuaDuLieu.length) {
   for (const c of cuaDuLieu) console.log(`  ${c.ma} — ${c.vi}`);
 }
 
-const tongVanDe = hong.length + choPhepSai.length + cuaDuLieu.length;
+/* ------------------------------------------------------------------ PHA 4
+ *
+ * MỌI CA TRƯỢT PHẢI NÓI VÌ SAO — và mọi nhánh đã khai phải có người đi qua.
+ *
+ * Pha 1 chứng minh lời giải đúng ĐẠT, pha 2 chứng minh lời giải sai TRƯỢT. Cả
+ * hai chỉ đọc cờ `passed`, nên cả hai đều XANH khi `detail` rỗng sạch — tức
+ * khi học viên trượt mà không biết vì sao. Pha 4 đọc chính cái trường đó.
+ */
+const cuaPhanHoi = [];
+for (const c of cauRong) {
+  cuaPhanHoi.push(`${c.ma} ${c.id} · ${c.loai} · ca "${c.ca}" TRƯỢT mà không có câu nói vì sao `
+    + '— học viên chỉ thấy ô đỏ. Đó là phản hồi d = 0,05 (Van der Kleij 2015), dạng yếu nhất.');
+}
+const chuaKhai = [];
+const demNhanh = new Map(NHANH_PHAN_HOI.map(([ten]) => [ten, 0]));
+for (const c of cauPhanHoi) {
+  const hit = NHANH_PHAN_HOI.find(([, hop]) => hop(c.cau));
+  if (hit) demNhanh.set(hit[0], demNhanh.get(hit[0]) + 1);
+  else chuaKhai.push(c);
+}
+// Một câu không khớp nhánh nào là một HÌNH DẠNG CHƯA KHAI. Bỏ qua nó thì bảng
+// đếm bên dưới tự khai khống độ phủ: nhánh mới thêm vào harness sẽ im lặng rơi
+// ra ngoài, y như khối code thứ bảy từng rơi ra ngoài cổng lời đòi.
+if (chuaKhai.length) {
+  const mau = [...new Set(chuaKhai.map((c) => c.cau.slice(0, 70)))].slice(0, 5);
+  cuaPhanHoi.push(`${chuaKhai.length} câu phản hồi KHÔNG khớp nhánh nào đã khai — `
+    + `NHANH_PHAN_HOI đang nói thiếu. Ví dụ: ${mau.map((m) => JSON.stringify(m)).join(' · ')}`);
+}
+if (!only) {
+  for (const [ten, n] of demNhanh) {
+    if (n === 0 && !NHANH_CHUA_DI_QUA[ten]) {
+      cuaPhanHoi.push(`NHÁNH PHẢN HỒI "${ten}" không ca nào đi qua — câu nó in ra chưa bao giờ `
+        + 'được chạy, nên nó có thể đã hỏng mà mọi thứ vẫn xanh. Thêm một biến thể chạm vào '
+        + 'nó, hoặc khai nó vào NHANH_CHUA_DI_QUA kèm lý do.');
+    }
+  }
+  for (const [ten, vi] of Object.entries(NHANH_CHUA_DI_QUA)) {
+    const n = demNhanh.get(ten);
+    if (n === undefined) {
+      cuaPhanHoi.push(`NHANH_CHUA_DI_QUA khai "${ten}" nhưng NHANH_PHAN_HOI không có nhánh nào `
+        + 'tên đó — ngoại lệ trỏ vào hư không.');
+    } else if (n > 0) {
+      cuaPhanHoi.push(`NGOẠI LỆ ĐÃ LỖI THỜI: "${ten}" khai là chưa ai đi qua (${vi.slice(0, 40)}…) `
+        + `nhưng đo được ${n} lượt. Xoá nó khỏi NHANH_CHUA_DI_QUA.`);
+    }
+  }
+}
+const cauKhac = new Set(cauPhanHoi.map((c) => c.cau)).size;
+console.log(`\npha 4 — câu nói VÌ SAO: ${cauPhanHoi.length} ca trượt · ${cauRong.length} ca im lặng `
+  + `· ${cauKhac} câu khác nhau`);
+for (const [ten, n] of demNhanh) {
+  const khai = NHANH_CHUA_DI_QUA[ten] ? '  (khai CHƯA AI ĐI QUA)' : '';
+  console.log(`   ${String(n).padStart(5)}  ${ten}${khai}`);
+}
+if (cuaPhanHoi.length) {
+  console.log('\n=== ca TRƯỢT mà không nói vì sao ===');
+  for (const c of cuaPhanHoi.slice(0, 20)) console.log(`  ${c}`);
+  if (cuaPhanHoi.length > 20) console.log(`  … còn ${cuaPhanHoi.length - 20}`);
+}
+
+const tongVanDe = hong.length + choPhepSai.length + cuaDuLieu.length + cuaPhanHoi.length;
 if (tongVanDe) {
   console.log(`\n✗ ${tongVanDe} vấn đề phải sửa.`);
   process.exit(1);
