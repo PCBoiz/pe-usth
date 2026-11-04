@@ -45,6 +45,7 @@ import {
 } from '@/lib/ide-runner';
 import { EDITOR_LOAD_TIMEOUT_MS, editorLoadPhase } from '@/lib/editor-load-gate';
 import { ideCodeHref, readIdeCodeFromHash } from '@/lib/ide-handoff';
+import { canKeoKetQua } from '@/lib/ide-output-scroll';
 
 import { DEFAULT_CODE, IDE_EXAMPLES } from './examples';
 import styles from './ide.module.css';
@@ -260,6 +261,12 @@ export default function IdeClient() {
   // "Đếm ngược mấy giây cuối" bên dưới.
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  // Ô kết quả, và cờ "lần chạy này do người học bấm, kết quả về thì kéo ô vào
+  // màn". Trên điện thoại ô nằm DƯỚI editor 55vh: đo ở 390×844 có băng khôi
+  // phục, nó bắt đầu ở y = 888 — bấm Chạy xong màn hình không đổi một pixel.
+  // Luật quyết định nằm ở lib/ide-output-scroll.ts.
+  const outputRef = useRef<HTMLElement | null>(null);
+  const keoKetQuaRef = useRef(false);
   // Cho CodeVisualizer tô dòng đang chạy ngay trong Monaco. Giữ ở đây vì chỉ
   // `onMount` của editor mới có hai đối tượng này; mọi việc với decoration nằm
   // trong CodeVisualizer.
@@ -423,6 +430,7 @@ export default function IdeClient() {
     if (askLinkRef.current) return; // mã từ link chưa được xác nhận — xem `askLink`
     const controller = new AbortController();
     abortRef.current = controller;
+    keoKetQuaRef.current = true;
     // Pyodide ngay trong trình duyệt — đường DUY NHẤT từ 25/10/2026. Nhánh gửi
     // lên `POST /api/python/run` đã đi cùng `src/python-runner/`.
     setSecondsLeft(null); // xem chú thích của bộ đếm ngược: xoá số sót của lần trước
@@ -447,6 +455,28 @@ export default function IdeClient() {
       abortRef.current = null;
     }
   }, []);
+
+  /**
+   * Kết quả vừa về (xong, bị cắt, hay lỗi) mà ô kết quả nằm ngoài màn ⇒ kéo nó
+   * vào. Chờ tới lúc KẾT QUẢ VỀ chứ không cuộn ngay lúc bấm: trong lúc chạy,
+   * nút "■ Dừng" ở trên editor phải còn trong tầm tay — cuộn sớm là đẩy nó ra
+   * khỏi màn đúng lúc người học có thể cần nó.
+   *
+   * Effect (sau khi React đã vẽ ô kết quả mới) chứ không gọi ngay sau
+   * setState: lúc đó DOM còn là bản cũ. `block: 'nearest'` cuộn ÍT NHẤT có thể;
+   * máy tính xếp ngang thì `canKeoKetQua` trả false và không có gì xảy ra.
+   */
+  useEffect(() => {
+    if (!keoKetQuaRef.current) return;
+    if (state.status !== 'done' && state.status !== 'error') return;
+    keoKetQuaRef.current = false;
+    const el = outputRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    if (!canKeoKetQua(r.top, r.bottom, window.innerHeight)) return;
+    const giamChuyenDong = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ block: 'nearest', behavior: giamChuyenDong ? 'auto' : 'smooth' });
+  }, [state]);
 
   /**
    * Người học bấm "■ Dừng".
@@ -648,7 +678,13 @@ export default function IdeClient() {
               )}
             </section>
 
-            <section className={styles.outputPane} aria-label="Kết quả" aria-live="polite" aria-busy={running}>
+            <section
+              ref={outputRef}
+              className={styles.outputPane}
+              aria-label="Kết quả"
+              aria-live="polite"
+              aria-busy={running}
+            >
               <Output state={state} />
             </section>
           </div>
