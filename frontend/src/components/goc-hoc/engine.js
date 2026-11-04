@@ -1284,6 +1284,10 @@ const start = () => {
   layout();
   const h = hashRoute();
   if (h){ finishIntro(); countUp(); drawCal(); go(h, h === 'learn' ? { ...CUR_OPTS } : {}); }
+  /* Dựng LẠI vì số thật về sau mốc chờ (StudyRoom.tsx, lib/goc-hoc-cho-so.ts):
+     người học đã xem màn mở đầu — có khi nó còn đang chạy dở — nên vào thẳng
+     trạng thái cuối, không bật đèn lần hai. */
+  else if (state.boQuaMoDau){ finishIntro(); countUp(); drawCal(); }
   else runIntro();
 };
 if (img.complete) start(); else on(img, 'load', start);

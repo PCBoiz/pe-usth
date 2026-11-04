@@ -49,6 +49,8 @@ import {
   type RoomUser,
 } from '@/lib/goc-hoc';
 
+import { choSoCoTran } from '@/lib/goc-hoc-cho-so';
+
 import { initStudyRoom } from './engine';
 import { SHELL_HTML } from './shell';
 import './scene.css';
@@ -181,44 +183,59 @@ export default function StudyRoom(props: StudyRoomProps) {
     let huy = false;
 
     const total = props.modules.reduce((s, m) => s + m.lessons.length, 0);
-    const cho = new Promise<KetQua>((res) =>
-      setTimeout(() => res({ user: EMPTY_USER, done: [] }), TRAN_CHO_MS),
-    );
 
-    void Promise.race([laySo(props.courseId, total), cho]).then(({ user, done }) => {
-      // Cleanup đã chạy (StrictMode, hoặc người dùng đi sang trang khác trong
-      // lúc chờ): không được dựng cảnh lên một DOM đã bỏ.
-      if (huy || !hostRef.current) return;
-      const content = buildContent({
-        courseId: props.courseId,
-        courseName: props.courseName,
-        lessonUrl: props.lessonUrl,
-        modules: props.modules,
-        meta: props.meta,
-        completed: new Set(done),
-      });
-      host.innerHTML = SHELL_HTML;
-      dispose = initStudyRoom(host, {
-        content,
-        user,
-        feedback: props.feedbackUrl ?? null,
-        ten: {
-          doc: () => lsGet(LS_TEN),
-          ghi: (v: string) => {
-            try {
-              if (v) localStorage.setItem(LS_TEN, v);
-              else localStorage.removeItem(LS_TEN);
-            } catch {
-              /* chế độ riêng tư: không lưu được thì thôi, cảnh vẫn chạy */
-            }
+    // Quá TRAN_CHO_MS thì dựng với người dùng trống; số thật về SAU thì dựng
+    // LẠI một lần (`muon`) — bản cũ dùng Promise.race nên số về muộn bị vứt:
+    // đo trên production, /api/enrolled 3 087 ms > 3 000 ⇒ cả phiên trang chủ
+    // nói "chưa có phiên học" với người đã xong 2 bài. Xem lib/goc-hoc-cho-so.ts.
+    const huyCho = choSoCoTran<KetQua>(
+      laySo(props.courseId, total),
+      TRAN_CHO_MS,
+      { user: EMPTY_USER, done: [] },
+      ({ user, done }, muon) => {
+        // Cleanup đã chạy (StrictMode, hoặc người dùng đi sang trang khác trong
+        // lúc chờ): không được dựng cảnh lên một DOM đã bỏ.
+        if (huy || !hostRef.current) return;
+        // Dựng lại: gỡ cảnh đang chạy trước (bộ hẹn giờ, rAF, sự kiện).
+        if (dispose) {
+          dispose();
+          dispose = null;
+        }
+        const content = buildContent({
+          courseId: props.courseId,
+          courseName: props.courseName,
+          lessonUrl: props.lessonUrl,
+          modules: props.modules,
+          meta: props.meta,
+          completed: new Set(done),
+        });
+        host.innerHTML = SHELL_HTML;
+        dispose = initStudyRoom(host, {
+          content,
+          user,
+          feedback: props.feedbackUrl ?? null,
+          // Lần dựng lại KHÔNG chạy lại màn mở đầu (đèn bật, 3,1 s): người học
+          // đã xem nó, và nó có thể còn đang chạy dở lúc số về.
+          boQuaMoDau: muon,
+          ten: {
+            doc: () => lsGet(LS_TEN),
+            ghi: (v: string) => {
+              try {
+                if (v) localStorage.setItem(LS_TEN, v);
+                else localStorage.removeItem(LS_TEN);
+              } catch {
+                /* chế độ riêng tư: không lưu được thì thôi, cảnh vẫn chạy */
+              }
+            },
           },
-        },
-      });
-      setCanhSan(true);
-    });
+        });
+        setCanhSan(true);
+      },
+    );
 
     return () => {
       huy = true;
+      huyCho();
       if (dispose) dispose();
       host.innerHTML = '';
     };
