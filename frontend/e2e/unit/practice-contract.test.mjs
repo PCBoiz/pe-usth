@@ -235,7 +235,7 @@ test('harness khai contract_json và phân nhánh theo trường có mặt', () 
 
 // ─────────────────────────────────────────────────── số đo, để không tụt mốc
 
-test('bản dựng có 140 bài tập được chấm và 467 ca', () => {
+test('bản dựng có 141 bài tập được chấm và 471 ca', () => {
   // Con số này phải đo lại mỗi lần đổi nguồn hoặc đổi cổng lọc, không được
   // đoán — xem AGENTS.md, dòng "204 ca test tưởng có mà không có".
   //
@@ -259,8 +259,13 @@ test('bản dựng có 140 bài tập được chấm và 467 ca', () => {
   // (mục 4 bảng xếp hạng: cho bài 1 một thành công máy chấm được). Câu "tám bài
   // là những bài DUY NHẤT còn chấm được" ở trên đếm SÓT: đo lại còn 6 bài chạy
   // trong trình duyệt mà chưa chấm — PY01, PY02, PY03, SY11, RC01, GU12.
-  assert.equal(coBaiTap.length, 140, 'số bài có bài tập được chấm');
-  assert.equal(ca, 467, 'tổng số ca chấm');
+  //
+  // 140 -> 141 ngày 4/11/2026: SY11 (module & import) — làm tròn XUỐNG bằng
+  // math.floor; ca 9.99 tách đúng floor (9.9) với round (10.0), nên lời giải
+  // dùng round trượt 3/4. PY02/PY03 KHÔNG nhận bài tập: chúng dạy môi trường và
+  // trạng thái kernel, không chấm được nếu không đòi thứ bài chưa dạy.
+  assert.equal(coBaiTap.length, 141, 'số bài có bài tập được chấm');
+  assert.equal(ca, 471, 'tổng số ca chấm');
 });
 
 test('mọi bài tập được chấm đều có lời giải mẫu KHÁC khung đề', () => {

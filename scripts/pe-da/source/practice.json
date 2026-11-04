@@ -28841,6 +28841,54 @@
     {
       "id": "SY11",
       "title": "Module và các cách import",
+      "exercises": [
+        {
+          "id": "SY11-practice-1",
+          "type": "code",
+          "title": "Tự viết và chạy trong terminal",
+          "prompt": "Viết solve(data) nhận dict có price (giá một cốc, số thực) và cups (số cốc). Quán tính tiền làm tròn XUỐNG tới 1 chữ số thập phân bằng floor của module math, như ở màn đọc. Trả tổng tiền đã làm tròn xuống.",
+          "starter": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+          "referenceSolution": "import math\n\ndef solve(data):\n    tong = data[\"price\"] * data[\"cups\"]\n    return math.floor(tong * 10) / 10\n",
+          "tests": [
+            {
+              "name": "Một cốc giá 8.79",
+              "input": {
+                "price": 8.79,
+                "cups": 1
+              },
+              "expected": 8.7
+            },
+            {
+              "name": "Ba cốc, tổng có phần trăm lẻ",
+              "input": {
+                "price": 1.25,
+                "cups": 3
+              },
+              "expected": 3.7
+            },
+            {
+              "name": "Tổng vừa tròn",
+              "input": {
+                "price": 2.5,
+                "cups": 4
+              },
+              "expected": 10.0
+            },
+            {
+              "name": "Làm tròn thường sẽ lên 10 — làm tròn xuống thì không",
+              "input": {
+                "price": 3.33,
+                "cups": 3
+              },
+              "expected": 9.9
+            }
+          ],
+          "hints": [
+            "math.floor đưa một số thực về số nguyên bằng cách làm tròn XUỐNG; muốn giữ 1 chữ số thập phân thì nhân 10 trước, chia 10 sau.",
+            "Nhớ import math (hoặc from math import floor) trước khi gọi — thiếu dòng import là NameError."
+          ]
+        }
+      ],
       "mcq": [
         {
           "id": "SY11-predict",

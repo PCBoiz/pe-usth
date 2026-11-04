@@ -156,16 +156,71 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dict có price (giá một cốc, số thực) và cups (số cốc). Quán tính tiền làm tròn XUỐNG tới 1 chữ số thập phân bằng floor của module math, như ở màn đọc. Trả tổng tiền đã làm tròn xuống.",
+    "io": [
+     {
+      "label": "data =",
+      "value": "{'price': 8.79, 'cups': 1}"
+     },
+     {
+      "label": "trả về",
+      "value": "8.7"
+     }
+    ]
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport math\nprint(math.floor(8.79 * 10) / 10)\nfrom math import floor\nprint(floor(8.79 * 10) / 10)\n\n# ── Đoạn 2 ──\nimport math as mt\nfrom math import floor as down\nprint(mt.pi > 3)\nprint(down(-1.2))\n\n# ── Đoạn 3 ──\nimport tempfile, importlib.util\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"pricing.py\"\n    path.write_text(\"def has_discount(cups): return cups >= 5\\n\", encoding=\"utf8\")\n    spec = importlib.util.spec_from_file_location(\"pricing_demo\", path)\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    print(module.has_discount(6))\n"
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import math\n\ndef solve(data):\n    tong = data[\"price\"] * data[\"cups\"]\n    return math.floor(tong * 10) / 10\n",
+   "tests": [
+    {
+     "name": "Một cốc giá 8.79",
+     "input": {
+      "price": 8.79,
+      "cups": 1
+     },
+     "expected": 8.7
+    },
+    {
+     "name": "Ba cốc, tổng có phần trăm lẻ",
+     "input": {
+      "price": 1.25,
+      "cups": 3
+     },
+     "expected": 3.7
+    },
+    {
+     "name": "Tổng vừa tròn",
+     "input": {
+      "price": 2.5,
+      "cups": 4
+     },
+     "expected": 10.0
+    },
+    {
+     "name": "Làm tròn thường sẽ lên 10 — làm tròn xuống thì không",
+     "input": {
+      "price": 3.33,
+      "cups": 3
+     },
+     "expected": 9.9
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "math.floor đưa một số thực về số nguyên bằng cách làm tròn XUỐNG; muốn giữ 1 chữ số thập phân thì nhân 10 trước, chia 10 sau."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Nhớ import math (hoặc from math import floor) trước khi gọi — thiếu dòng import là NameError."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co",
+ "_bai_tap": "cham",
  "_vet": {
   "can": 3,
   "co": 0,
