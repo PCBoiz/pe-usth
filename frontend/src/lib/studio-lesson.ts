@@ -1419,6 +1419,30 @@ export function maxReachedStep(screens: LessonScreen[], d: LessonDraft): number 
 }
 
 /**
+ * Màn xa nhất BẤM được trên thanh tiến độ — giới hạn đưa cho `seekMax`.
+ *
+ * Bài MÁY CHỦ đã ghi hoàn thành thì MỌI màn mở được. Thanh tiến độ đã VẼ đúng
+ * như vậy từ lâu (`doneSteps` lấy `completed || d.done[...]`), nhưng giới hạn
+ * bấm chỉ đọc nháp cục bộ — mà nháp với máy chủ lệch nhau được (nháp nằm ở
+ * localStorage, hoàn thành nằm ở DB). Đo trên production (PY02 đã hoàn thành,
+ * nháp ở màn 2, 1 màn xong): 15/15 đoạn vẽ đầy, 2/15 bấm được, ngay dưới băng
+ * "✓ Bài này đã hoàn thành" — và đề ôn chấm ở máy chủ nằm ở màn tổng kết, cách
+ * 13 lần "Tiếp tục".
+ *
+ * Bài chưa hoàn thành: giữ nguyên luật cũ — thanh tiến độ không phải đường tắt
+ * bỏ qua phần chưa làm.
+ */
+export function gioiHanXemLai(
+  soMan: number,
+  buocHienTai: number,
+  xaNhatDaToi: number,
+  daHoanThanh: boolean,
+): number {
+  if (daHoanThanh) return soMan;
+  return Math.max(buocHienTai, Math.min(soMan, xaNhatDaToi));
+}
+
+/**
  * Bấm nút đi tiếp thì có được đánh dấu màn này "đã làm đúng" hay không.
  *
  * Nút đi tiếp của màn có chấm trước đây chỉ xuất hiện khi ĐÚNG, nên nhánh

@@ -44,6 +44,9 @@
  *   ::after nới `inset: -7px 0` (vùng 20px)          → 1 đỏ
  *   bỏ hẳn `button.segment::after`                  → 1 đỏ
  *   bỏ `border-radius: inherit` của .segmentFill     → 1 đỏ
+ *   gioiHanXemLai bỏ qua `completed`                 → 1 đỏ
+ *   gioiHanXemLai mở hết mọi bài, kể cả chưa xong    → 1 đỏ
+ *   StudioLesson trả seekMax về biểu thức cũ          → 1 đỏ
  *
  * Chạy: cd frontend && npm run test:unit
  */
@@ -52,6 +55,7 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { gioiHanXemLai } from '../../src/lib/studio-lesson.ts';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FE = join(HERE, '..', '..');
@@ -312,4 +316,33 @@ test('thẻ fill tự bo theo góc của đoạn — thay cho overflow:hidden đ
     '.segmentFill không bo theo đoạn ⇒ hai đầu thanh và hai bên khe giữa các phần '
       + 'mất góc bo khi đoạn đã đầy (trước đây overflow:hidden cắt hộ).',
   );
+});
+
+// ---------------------------------------------------------------------------
+// 6. BÀI ĐÃ HOÀN THÀNH — đoạn nào VẼ đầy thì đoạn đó BẤM được
+// ---------------------------------------------------------------------------
+//
+// Đo trên production (PY02, máy chủ ghi hoàn thành; nháp cục bộ ở màn 2, 1 màn
+// xong): 15/15 đoạn vẽ đầy — `doneSteps` lấy `completed || d.done[...]` — mà
+// chỉ 2/15 đoạn bấm được, vì `seekMax` chỉ đọc nháp. Ngay trên là băng "✓ Bài
+// này đã hoàn thành", và đề ôn chấm ở máy chủ nằm ở màn tổng kết 15/15: cách 13
+// lần "Tiếp tục".
+
+test('bài đã hoàn thành: mọi màn bấm được — số đo PY02: 15 màn, đang ở 2, nháp tới 2', () => {
+  assert.equal(gioiHanXemLai(15, 2, 2, true), 15);
+});
+
+test('bài CHƯA hoàn thành: giữ luật cũ — thanh tiến độ không phải đường tắt', () => {
+  assert.equal(gioiHanXemLai(15, 2, 2, false), 2, 'mở màn chưa đi qua của bài chưa xong');
+  assert.equal(gioiHanXemLai(15, 5, 9, false), 9, 'màn đã giải quyết phía trước phải mở');
+  assert.equal(gioiHanXemLai(15, 3, 99, false), 15, 'không được vượt số màn');
+  assert.equal(gioiHanXemLai(15, 7, 4, false), 7, 'màn đang đứng luôn bấm được');
+});
+
+test('StudioLesson dùng CÙNG một cờ `completed` cho cả vẽ lẫn bấm', () => {
+  const s = boChuThich(SHELL);
+  assert.match(s, /seekMax=\{gioiHanXemLai\(screens\.length, d\.step, reached, completed\)\}/,
+    'seekMax không còn đi qua gioiHanXemLai(…, completed) — đoạn vẽ đầy mà không bấm được sẽ quay lại.');
+  assert.match(s, /doneSteps=\{screens\.map\(\(x\) => completed \|\| Boolean\(d\.done\[x\.key\]\)\)\}/,
+    'doneSteps đổi cách đọc `completed` — kiểm lại rằng vẽ và bấm vẫn khớp nhau.');
 });

@@ -52,6 +52,7 @@ import {
   gameOf,
   isRunnableGame,
   markDoneOnNext,
+  gioiHanXemLai,
   maxReachedStep,
   nhomMan,
   optionDetail,
@@ -493,7 +494,9 @@ export default function StudioLesson({
         // mở ra kèm băng "Chưa đúng" của màn trước.
         onBack={() => goTo(d.step - 1)}
         onSeek={screens.length > 1 ? goTo : undefined}
-        seekMax={Math.max(d.step, Math.min(screens.length, reached))}
+        // Bài đã hoàn thành thì mọi đoạn bấm được — khớp với cách `doneSteps` vẽ
+        // chúng là đầy. Xem gioiHanXemLai trong lib/studio-lesson.ts.
+        seekMax={gioiHanXemLai(screens.length, d.step, reached, completed)}
         doneSteps={screens.map((x) => completed || Boolean(d.done[x.key]))}
         // Ranh giới ba phần. `nhomMan` gom theo khối LIỀN NHAU chứ không theo
         // phần, nên nếu một ngày màn bị xen kẽ thì thanh vẽ đúng thứ có thật
