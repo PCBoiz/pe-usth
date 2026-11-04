@@ -274,3 +274,21 @@ jobs:
         with:
           python-version: '3.12'
       - run: python scripts/pe-v4/anim/check.py --strict
+
+  # Kiểm tra tính đồng bộ của giáo trình pe-v4 với frontend/src/lib/curricula.json.
+  # Chạy sync_curricula.py và kiểm tra git diff; nếu có ai sửa tay curricula.json hoặc
+  # quên sync sau khi cập nhật nội dung bài thì CI lập tức báo lỗi.
+  dong-bo-giao-trinh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Chạy sync_curricula.py và kiểm lệch
+        run: |
+          python scripts/pe-v4/sync_curricula.py
+          if ! git diff --exit-code -- frontend/src/lib/curricula.json; then
+            echo "::error::curricula.json bị lệch với dữ liệu pe-v4. Hãy chạy 'python scripts/pe-v4/sync_curricula.py' rồi commit."
+            exit 1
+          fi

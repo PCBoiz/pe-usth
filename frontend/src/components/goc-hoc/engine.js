@@ -548,7 +548,18 @@ function runIntro(){
   introTimer.push(setTimeout(()=>{ drawCal(); finishIntro(); },3100));
 }
 $('#skip').addEventListener('click',()=>{ finishIntro(); countUp(); drawCal(); });
-on(window,'keydown',e=>{ if (e.key==='Escape'){ if (app.classList.contains('intro')){ finishIntro(); countUp(); drawCal(); } else if (route) back(); else if (peeking) unpeek(); else { $('#calPop').hidden=true; hidePop(true); } } });
+on(window,'keydown',e=>{
+  if (e.key==='Escape'){
+    if (e.defaultPrevented) return;
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || (e.target && e.target.isContentEditable)) return;
+    if (e.target && e.target !== document.body && e.target !== document.documentElement && !app.contains(e.target)) return;
+    if (app.classList.contains('intro')){ finishIntro(); countUp(); drawCal(); }
+    else if (route) back();
+    else if (peeking) unpeek();
+    else { $('#calPop').hidden=true; hidePop(true); }
+  }
+});
 /* ---------- nội dung các màn ----------
  * Mọi màn dưới đây dựng từ `CONTENT` (giáo trình thật) và `USER` (số thật hoặc
  * null). Chuỗi nào đến từ SERVER (tên người, tên trong bảng xếp hạng, tên huy
