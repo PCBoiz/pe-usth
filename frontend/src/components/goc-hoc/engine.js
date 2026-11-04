@@ -690,9 +690,13 @@ function body(r){
   }
 
   if (r==='practice'){
-    /* Luật THẬT của /practice: backend đòi kho câu ≥ 5 mà mỗi bài góp 3 câu,
-       nên phải xong 2 bài mới sinh được đề (xem lib/practice-plan.ts). Nói
-       trước điều đó thay vì để người học bấm rồi nhận lỗi 400. */
+    /* Luật THẬT của đề ôn chấm ở máy chủ: kho câu ≥ 5 (MIN_POOL, src/quizzes/
+       quizzes.service.ts) mà mỗi bài góp 3 câu, nên phải xong 2 bài mới sinh
+       được đề. Nói trước điều đó thay vì để người học bấm rồi nhận lỗi 400.
+       Đề ôn KHÔNG có trang riêng: nút cũ "Mở trang Ôn tập" dẫn tới `/practice`
+       — trang đã bị gỡ ở 070886a — nên ai đủ 2 bài bấm vào là gặp 404 (đo trên
+       production 04/11). Đề nằm ở màn tổng kết của bài đã xong (ReviewQuiz),
+       nên ở đây NÓI ra chỗ đó, không dựng nút tới một trang không có. */
     const done = USER.lessonsDone;
     const xong = MODULES.flatMap(m=>m.lessons).filter(l=>l.state==='done');
     const moDuoc = done != null && done >= 2;
@@ -701,7 +705,7 @@ function body(r){
       <p class="hw">${done == null ? 'Chưa đọc được tiến độ của bạn, nên chưa biết. Mở một bài học là máy có phiên và chỗ này tự có số.'
         : moDuoc ? `Rồi. Bạn đã xong ${done} bài, đủ để sinh một đề ôn.`
         : `Chưa. Cần xong 2 bài (bạn đang có ${done}) vì mỗi bài chỉ góp 3 câu, mà một đề cần ít nhất 5 câu.`}</p>
-      <p class="hw" style="margin-top:12px"><a class="btn" href="/practice">Mở trang Ôn tập</a></p></div>
+      <p class="hw" style="margin-top:12px">Đề ôn nằm ở màn tổng kết — màn cuối — của bài đã xong, ngay trên nút “Hoàn thành”.</p></div>
       <div class="leafp r"><h3>Bài đã xong</h3>
       ${xong.length ? `<ul class="plist">${xong.slice(-6).reverse().map(l=>`<li><span class="s d"></span><span>${esc(l.title)}<small>Bài ${l.no}${l.code?` · ${esc(l.code)}`:''}</small></span><span class="x">+${l.xp||0}</span></li>`).join('')}</ul>`
         : `<p class="hw">${done == null ? 'Chưa có phiên học trên máy này.' : 'Chưa có bài nào. Xong bài đầu tiên là nó hiện ở đây.'}</p>`}

@@ -14,8 +14,12 @@
  *
  * Một tính năng không có đường vào thì bằng không, bất kể nó được kiểm kỹ tới
  * đâu — và chuyện này sống sót được vì mọi ca test đều kiểm NỘI DUNG màn chứ
- * không ai kiểm có đường nào tới màn. Nên ca test của file này canh đúng điều
- * đó: mỗi route đứng một mình phải có ít nhất một lối vào từ thanh trên.
+ * không ai kiểm có đường nào tới màn.
+ *
+ * 04/11/2026 — CHIỀU NGƯỢC LẠI của cùng bệnh: một lối vào mà KHÔNG có màn.
+ * `/practice` đã bị gỡ (xem chú thích trong `navItems`) nên mục "Ôn tập" thành
+ * liên kết tới 404. `e2e/unit/lien-ket-noi-bo.test.mjs` canh chiều này cho MỌI
+ * liên kết nội bộ trong `src/`, không riêng thanh trên.
  */
 
 /** Một mục trên thanh điều hướng. */
@@ -34,9 +38,14 @@ export type NavItem = {
 export function navItems(ideEnabled: boolean): NavItem[] {
   const items: NavItem[] = [
     { href: '/', label: 'Khoá học', match: '/' },
-    // Màn ôn tự chặn khi chưa đủ dữ liệu (xem `lib/practice-plan.ts`), nên cứ
-    // dẫn sang — chính màn đó giải thích cần gì, tốt hơn là giấu lối đi.
-    { href: '/practice', label: 'Ôn tập', match: '/practice' },
+    // KHÔNG có "Ôn tập" → `/practice`. Route đó (cùng `/practice/challenge` và
+    // `lib/practice-plan.ts`) bị gỡ ở 070886a (22/10, main lùi về trước đợt
+    // thiết kế); file này quay lại ở 4d5f86d (04/11) khi bê giao diện từ nhánh
+    // `test` — mang theo mục điều hướng mà KHÔNG mang theo trang. Đo trên
+    // production: thanh trên của mọi trang dẫn tới một trang 404. Đề ôn chấm ở
+    // máy chủ hiện nằm ở màn tổng kết của bài đã xong (ReviewQuiz). Dựng lại
+    // `/practice` là quyết định của chủ dự án; dựng xong thì trả mục này về —
+    // `lien-ket-noi-bo.test.mjs` sẽ đỏ nếu trả về trước khi trang có thật.
   ];
   if (ideEnabled) {
     items.push({ href: '/ide', label: 'Bàn thí nghiệm', match: '/ide' });

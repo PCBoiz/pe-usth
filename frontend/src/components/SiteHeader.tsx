@@ -17,6 +17,7 @@ import styles from './SiteHeader.module.css';
  * đã làm hai màn thành trang mồ côi: `/practice` và `/practice/challenge` dựng
  * xong, kiểm kỹ, mà không trang nào dẫn tới (xem lý lẽ đầy đủ ở đầu
  * `lib/site-nav.ts`). Danh sách mục nằm ở file đó để `node --test` kiểm được.
+ * 04/11/2026: `/practice` không còn trong cây mã nên mục "Ôn tập" đã gỡ.
  *
  * Giao diện sáng/tối dùng cùng hợp đồng với script chống nháy ở layout gốc:
  * khóa localStorage `theme` và cặp class `dark`/`light` trên <body>.
