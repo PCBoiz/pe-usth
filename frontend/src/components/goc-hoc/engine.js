@@ -123,7 +123,7 @@ Object.entries(DATA.meta).forEach(([k,[x,y,w,h]])=>{
   itemsEl.appendChild(d); EL[k] = d;
   const g = document.createElement('div'); g.className = `glowi k-${kind}`; g.dataset.k = k;
   Object.assign(g.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px',transformOrigin:ORIGIN[k]||'50% 100%'});
-  g.innerHTML = `<img src="/goc-hoc/items/${k}-g.webp" alt="">`; glowsEl.appendChild(g); GEL[k] = g;
+  g.dataset.src = `/goc-hoc/items/${k}-g.webp`; glowsEl.appendChild(g); GEL[k] = g;
 });
 // laptop screen life lives inside the laptop layer so it lifts with it
 /* the laptop stands in front of the window glass, so it lives above the sash layer and carries its own light tint */
@@ -361,9 +361,20 @@ function placeUI(){
   if (notePop.classList.contains('on') && popNote) placeNotePop(popNote);
 }
 
+function ensureGlowImg(k){
+  const g = GEL[k];
+  if (g && !g.firstElementChild && g.dataset.src){
+    const im = document.createElement('img'); im.src = g.dataset.src; im.alt = '';
+    g.appendChild(im);
+  }
+}
+
 /* ---------- hover: lift the object, light its outline, link the menu ---------- */
 function setOn(G, on){
-  G.keys.forEach(k=>{ EL[k].classList.toggle('on',on); GEL[k].classList.toggle('on',on); });
+  G.keys.forEach(k=>{
+    if (on) ensureGlowImg(k);
+    EL[k].classList.toggle('on',on); GEL[k].classList.toggle('on',on);
+  });
   if (G.g==='window') host.querySelectorAll('[data-g="window"]').forEach(g=>g.classList.toggle('on',on));
   G.tag.classList.toggle('on', on && !route && !busy);
   if (G.g==='mug' && on){ steamG.classList.add('puff'); setTimeout(()=>steamG.classList.remove('puff'),2400); }
