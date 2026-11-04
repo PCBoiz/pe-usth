@@ -207,7 +207,7 @@ npx eslint "{src,apps,libs,test}/**/*.ts" --ignore-pattern "src/generated/**"
 file markdown — xem mục đầu của LOOP.md để biết nếp dùng và vì sao đổi.
 
 Agent chạy việc trong repo này đi theo [LOOP.md](LOOP.md): bậc thang lệnh nói đúng/sai mà
-không cần người đọc, ba luật dừng, và bốn cách một vòng lặp nói dối (nới phép kiểm cho
+không cần người đọc, bốn luật dừng (luật thứ tư: nhiệm vụ tự mâu thuẫn ⇒ khai bất khả là kết quả hợp lệ), và bốn cách một vòng lặp nói dối (nới phép kiểm cho
 xanh · đo song song lúc đang build · xanh vì không ai đi qua · test không có răng). Mục
 tiêu là chạy tới xanh rồi mới bàn giao, không hỏi giữa chừng.
 

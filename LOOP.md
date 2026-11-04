@@ -61,7 +61,7 @@ dưới).
 Việc nào không chạm giáo trình thì bỏ bậc 2–6; việc nào không chạm `src/` thì bỏ bậc 7.
 Đừng chạy bậc không liên quan — nó chỉ tốn thời gian và làm nhiễu tín hiệu.
 
-## Ba luật dừng
+## Bốn luật dừng
 
 **Xanh hết ⇒ xong.** Không thêm "cho chắc". Không dọn thứ không ai yêu cầu.
 
@@ -72,6 +72,21 @@ file đi qua zipfile nguyên vẹn. Mọi con số trong báo cáo phải đến
 **Đỏ vì một ràng buộc thật ⇒ DỪNG và báo.** Ví dụ: cần ghi DB production, cần file chỉ có
 trên máy chủ dự án, cần một quyết định sản phẩm. Dừng ở đó, nói rõ đã làm tới đâu và lệnh
 để người ta chạy tiếp. **Đừng đi vòng, và đừng nhờ agent khác làm hộ thứ bạn bị chặn.**
+
+**Nhiệm vụ không làm ĐÚNG được ⇒ KHAI BẤT KHẢ — và đó là một kết quả hợp lệ, không
+phải thất bại.** Luật trên nói về ràng buộc BÊN NGOÀI. Luật này nói về nhiệm vụ TỰ MÂU
+THUẪN: bộ kiểm đòi một hành vi mà đặc tả cấm; ca test khẳng định một con số mà bản dựng
+thật không ra; "làm cho xanh" chỉ đạt được bằng cách đổi assert hoặc đặc-cách đúng đầu
+vào của test. Khi đó báo đúng như vậy rồi dừng: chỉ ra HAI vế mâu thuẫn, số đo của mỗi
+vế, và quyết định cần ai đưa ra. Không đổi assert cho khớp, không nới trần, không viết
+nhánh `if` riêng cho dữ liệu test.
+Vì sao phải viết ra thành luật: trên ImpossibleBench (nhiệm vụ CỐ Ý không làm được), các
+mô hình Claude **>79% số lần là SỬA TEST**; cho phép khai bất khả hạ tỉ lệ gian lận
+**54% → 9%**; prompt lỏng thì NÂNG nó lên **66%**; cho thêm lượt thử lại cũng NÂNG
+**33% → 38%**. Nên đỏ mà không hiểu thì quay về luật thứ hai — ĐO — chứ đừng thử lại
+cho tới khi may mắn xanh. **Giới hạn của các con số này:** chúng đo trên benchmark,
+nơi phần thưởng CHÍNH LÀ test; chưa có số nào từ một repo sản phẩm có người duyệt
+(xem mục 7 của `reports/Hướng đi tối ưu tiếp theo.md`).
 
 ## Bốn cách làm vòng lặp nói dối — đều đã xảy ra ở repo này
 
