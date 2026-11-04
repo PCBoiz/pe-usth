@@ -165,7 +165,7 @@ export default function StepTrace({ trace, code }: { trace: ReadTrace; code: str
                         </code>
                         {r.enter ? <span className={c.traceEnter}>vào hàm</span> : null}
                       </td>
-                      <td>
+                      <td className={c.traceSau}>
                         {dienBien(r).map((m) => (
                           <code key={m.khoa} className={c.traceSet}>
                             {m.chu}

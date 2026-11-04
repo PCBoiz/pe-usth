@@ -35,6 +35,8 @@
  *   bỏ `.trace { animation: none }` trong reduced-motion   → 1 đỏ
  *   hạ font-size ô nhập về 14px (iOS tự phóng trang)       → 1 đỏ
  *   bỏ `overflow-x: auto` của bảng (hỏng ở 360px)          → 1 đỏ
+ *   bỏ min-width của cột "Sau đó" (.traceSau)              → 1 đỏ
+ *   ô "Sau đó" thôi mang className .traceSau               → 1 đỏ
  *   `khopDapAn` bóc luôn dấu nháy                          → 1 đỏ
  *   dựng lại dòng "Nguồn: …" ở ReadScreen                  → 1 đỏ
  *   build không phát vết nào (traces.json vắng)            → 2 đỏ ở đây,
@@ -280,4 +282,20 @@ test('build.py ĐỎ khi số vết phát ra không khớp số khối đủ đi
   // Và hash: nguồn sửa code sau khi sinh vết là lệch NGUY HIỂM NHẤT, vì bảng
   // vẫn mở ra, vẫn đẹp, và dạy một đoạn code không còn tồn tại.
   assert.match(BUILD, /codeHash/);
+});
+
+// Cột "Sau đó" có bề rộng TỐI THIỂU. Đo trên production 04/11/2026 ở 390px:
+// `.traceSet` ngắt ở bất kỳ đâu nên min-content ~1 ký tự, còn cột mã là
+// `white-space: pre` — bố cục bảng bóp cột GIÁ TRỊ (thứ câu dự đoán hỏi) còn
+// 53px (VZ30, một hàng cao 621px, bảng 2 990px) / 49px (SY06). Với 12em: 189px,
+// hàng cao nhất 150 / 45px, bảng 1 110 / 590px.
+test('cột "Sau đó" không bị bóp: ô mang .traceSau và .traceSau có min-width ≥ 10em', () => {
+  assert.match(TRACE_CODE, /<td className=\{c\.traceSau\}>\s*\{dienBien\(r\)/,
+    'ô "Sau đó" thôi mang .traceSau ⇒ ở điện thoại cột giá trị lại còn ~50px.');
+  const css = CSS.replace(/\/\*[\s\S]*?\*\//g, '');
+  const m = /(^|\})\s*\.traceSau\s*\{([^}]*)\}/.exec(css);
+  assert.ok(m, 'thiếu quy tắc .traceSau ở phạm vi gốc.');
+  const w = /min-width:\s*(\d+(?:\.\d+)?)em/.exec(m[2]);
+  assert.ok(w && Number(w[1]) >= 10,
+    `.traceSau min-width ${w ? w[1] + 'em' : 'không khai'} — dưới 10em thì giá trị biến lại gãy thành cột hẹp.`);
 });

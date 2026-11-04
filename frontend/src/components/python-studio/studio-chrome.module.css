@@ -1173,6 +1173,21 @@
   color: var(--edu-t3);
 }
 
+/* Cột "Sau đó" — GIÁ TRỊ các biến, tức thứ câu dự đoán hỏi và lý do bảng này
+   tồn tại — có bề rộng TỐI THIỂU. Không có nó, bố cục bảng tự động chia chỗ
+   theo min-content: `.traceSet` ngắt ở BẤT KỲ đâu (`overflow-wrap: anywhere`)
+   nên min-content chỉ còn ~1 ký tự, còn `.traceCode` là `white-space: pre` nên
+   cột mã giữ trọn dòng dài nhất. Đo trên production ở 390px: VZ30 ba cột
+   110/683/53px, một hàng cao 621px, cả bảng 2 990px; SY06 105/384/49px.
+   12em đo được: VZ30 cột giá trị 189px, hàng cao nhất 150px, bảng 1 110px;
+   SY06 hàng 45px, bảng 590px. 16em chỉ bớt thêm vài px (VZ30 134px) mà rộng
+   ngang hơn; ở máy tính cột này đã ~424px nên quy tắc không đổi gì. Bảng ở
+   điện thoại VỐN đã cuộn ngang vì cột mã (xem .traceTable), nên nới cột này
+   không sinh thêm việc cuộn mới. */
+.traceSau {
+  min-width: 12em;
+}
+
 /* Mỗi biến đổi là một mẩu riêng trên một dòng riêng: ba biến đổi cùng lúc mà
    dồn vào một dòng thì không ai tách được `a = 1 b = 2` ra. */
 .traceSet {
