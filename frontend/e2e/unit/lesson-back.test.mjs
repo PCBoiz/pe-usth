@@ -44,7 +44,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -157,4 +157,97 @@ test('.backText ẩn bằng clip, không bằng display:none', () => {
       + 'clip-path: inset(50%) như hiện tại.',
   );
   assert.match(khoi[1], /clip-path/);
+});
+
+// ---------------------------------------------------------------------------
+// 4. KHÔNG NHẢY BỐ CỤC KHI NỘI DUNG BÀI VỀ
+// ---------------------------------------------------------------------------
+//
+// Khung "Đang tải bài học…" dựng TRƯỚC, nội dung bài về SAU. Đo trên production
+// (1440×900, phiên đang học dở ở màn 12/13) cú chuyển đó là MỘT layout shift
+// 0,0424, ghép từ hai thứ:
+//   · thanh cuộn hiện ra (khung tải ngắn hơn màn, nội dung thì không) ⇒ cả
+//     trang dời trái: cột 360 → 352, pill 1230 → 1215 — đúng 15px rãnh cuộn;
+//   · nút "Quay lại" chỉ dựng khi nội dung đã về và step > 1 ⇒ ô trái cao
+//     17 → 40px, nhãn "Tiến độ tự lưu" nhảy lên 12px.
+// Sửa cả hai thì đo còn 0,0057 — và 0,0048 trong đó là do chính phép thử chèn
+// CSS sau khi trang đã vẽ, tức bản thật còn khoảng 0,0009.
+
+/** Tách CSS thành phạm vi: '' (gốc) và từng `@media (…)`, theo dấu ngoặc. */
+function phamVi(css) {
+  const sach = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  const out = { '': '' };
+  let i = 0;
+  while (i < sach.length) {
+    const m = sach.indexOf('@media', i);
+    if (m < 0) { out[''] += sach.slice(i); break; }
+    out[''] += sach.slice(i, m);
+    const mo = sach.indexOf('{', m);
+    let sau = 1, j = mo + 1;
+    while (j < sach.length && sau > 0) { if (sach[j] === '{') sau++; else if (sach[j] === '}') sau--; j++; }
+    const ten = sach.slice(m, mo).trim();
+    out[ten] = (out[ten] || '') + sach.slice(mo + 1, j - 1);
+    i = j;
+  }
+  return out;
+}
+/** Giá trị px của `thuoc` trong khối `.lop {…}` của một phạm vi, hoặc null. */
+function px(khoi, lop, thuoc) {
+  const dau = khoi.indexOf(`.${lop} {`);
+  if (dau < 0) return null;
+  const than = khoi.slice(dau, khoi.indexOf('}', dau));
+  const d = than.split(/[;{]/).map((x) => x.trim()).find((x) => x.startsWith(`${thuoc}:`));
+  if (!d) return null;
+  const so = /^(\d+(?:\.\d+)?)px$/.exec(d.slice(thuoc.length + 1).trim());
+  return so ? Number(so[1]) : null;
+}
+
+test('ô trái GIỮ CHỖ cho nút "Quay lại" ở MỌI khổ màn — nhãn lưu không nhảy khi bài về', () => {
+  const pv = phamVi(CSS);
+  const gocNut = px(pv[''], 'backBtn', 'height');
+  const gocO = px(pv[''], 'leftSlot', 'min-height');
+  assert.ok(gocNut, 'Không đọc được height của .backBtn gốc — đổi cấu trúc thì sửa ca này.');
+  for (const [ten, khoi] of Object.entries(pv)) {
+    const nut = px(khoi, 'backBtn', 'height') ?? gocNut;
+    const o = px(khoi, 'leftSlot', 'min-height') ?? gocO;
+    assert.ok(
+      o !== null && o >= nut,
+      `${ten || 'gốc'}: .leftSlot min-height ${o ?? 'không khai'} < nút Quay lại ${nut}px — `
+        + 'nút chỉ dựng khi nội dung đã về, nên ô nở ra đúng lúc bài hiện và nhãn lưu nhảy.',
+    );
+  }
+});
+
+test('rãnh thanh cuộn giữ ở trang bài học — và CHỈ ở đó', () => {
+  const sach = CSS.replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.match(
+    sach,
+    /:global\(html\):has\(\.chrome\)\s*\{\s*scrollbar-gutter:\s*stable;/,
+    'Thiếu rãnh thanh cuộn: khung tải không có thanh cuộn, nội dung thì có ⇒ cả '
+      + 'trang dời 15px sang trái mỗi lần mở bài (đo: cột 360 → 352).',
+  );
+  // Đặt trên `html` trần thì trang chủ Góc học (cảnh tràn màn, overflow:hidden)
+  // nhận một dải trống 15px dọc mép phải — rãnh vẫn được chừa khi overflow là
+  // hidden. Quét MỌI file CSS: khai báo nào cũng phải nằm trong selector :has(.
+  const tep = [];
+  const di = (thuMuc) => {
+    for (const e of readdirSync(thuMuc, { withFileTypes: true })) {
+      const p = join(thuMuc, e.name);
+      if (e.isDirectory()) di(p);
+      else if (e.name.endsWith('.css')) tep.push(p);
+    }
+  };
+  di(join(FE, 'src'));
+  di(join(FE, 'public', 'static', 'css'));
+  for (const p of tep) {
+    const s = doc(p).replace(/\/\*[\s\S]*?\*\//g, '');
+    for (const m of s.matchAll(/scrollbar-gutter\s*:/g)) {
+      const selector = s.slice(s.lastIndexOf('}', m.index) + 1, s.lastIndexOf('{', m.index));
+      assert.ok(
+        selector.includes(':has('),
+        `${p.slice(FE.length + 1)}: scrollbar-gutter trên "${selector.trim()}" — không giới hạn `
+          + 'bằng :has(...) thì nó chạm cả trang chủ.',
+      );
+    }
+  }
 });

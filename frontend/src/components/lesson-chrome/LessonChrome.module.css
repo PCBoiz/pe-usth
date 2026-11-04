@@ -25,6 +25,20 @@
   background: var(--st-page-bg);
 }
 
+/* GIỮ CHỖ CHO THANH CUỘN — chỉ ở trang có khung bài học.
+   Khung "Đang tải bài học…" ngắn hơn màn hình nên KHÔNG có thanh cuộn; nội dung
+   thật cao hơn nên thanh cuộn hiện ra và mọi thứ dời sang trái: đo trên
+   production (1440×900, Windows) cột nội dung 360 → 352px, nút chính 480 → 472,
+   pill chuỗi ngày 1230 → 1215 — đúng bề rộng 15px của thanh cuộn. Mỗi lần mở
+   bài là một cú giật ngang.
+   KHÔNG đặt trên `html` cho cả site: trang chủ Góc học là cảnh tràn màn hình
+   `overflow:hidden`, mà `scrollbar-gutter:stable` vẫn chừa rãnh khi overflow là
+   hidden — tức một dải trống 15px dọc mép phải cảnh. Nên chỉ bật khi trong
+   trang CÓ khung bài học. Điện thoại dùng thanh cuộn nổi, rãnh bằng 0. */
+:global(html):has(.chrome) {
+  scrollbar-gutter: stable;
+}
+
 .topBar {
   height: var(--st-chrome-h);
   position: sticky;
@@ -304,6 +318,10 @@ button.segment::after {
 .leftSlot {
   justify-self: start;
   min-width: 0;
+  /* Giữ đúng chiều cao nút "Quay lại" (40px) kể cả khi nút CHƯA có — nút chỉ
+     dựng khi nội dung đã về và step > 1, nên trước đó ô cao 17px và nhãn "Tiến
+     độ tự lưu" nhảy lên 12px đúng lúc bài hiện ra (đo: 56,848 → 56,836). */
+  min-height: 40px;
   padding-left: 129px;
   display: flex;
   align-items: center;
@@ -513,6 +531,8 @@ button.segment:focus-visible,
   }
   .leftSlot {
     gap: 8px;
+    /* Nút cao 44px ở khổ này — giữ chỗ đúng bằng nó (xem .leftSlot gốc). */
+    min-height: 44px;
   }
   .primaryBtn {
     flex: 1;
