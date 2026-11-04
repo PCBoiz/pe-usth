@@ -181,7 +181,11 @@ describe('LearningEventsService.record', () => {
     // từng sự kiện, nó cho mốc suy ra `createdAt - (clientSentAt - clientAt)` —
     // mốc duy nhất so được giữa người học khi đồng hồ máy họ lệch.
     chenDuoc(2);
-    const sentAt = '2026-10-28T03:04:05.000Z';
+    // Mốc TƯƠNG ĐỐI với bây giờ, không ghi cứng ngày. `gioClientHoacNull` chỉ nhận
+    // giờ client lệch ≤ `GIOI_HAN.lechClientAtMs` (7 ngày) so với giờ máy chủ —
+    // bản cũ ghi '2026-10-28T03:04:05Z' nên ca này TỰ ĐỎ từ 04/11/2026 (quá 7
+    // ngày), trên mọi máy, không do mã nào đổi. Một ca test có hạn sử dụng.
+    const sentAt = new Date(Date.now() - 60_000).toISOString();
     await service.record(7, [suKien(), suKien()], sentAt);
     for (const hang of prisma.learningEvent.createMany.mock.calls[0][0].data) {
       expect(hang.clientSentAt).toEqual(new Date(sentAt));
