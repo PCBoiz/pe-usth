@@ -76,7 +76,7 @@ học nó.
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **146 cảnh báo** (+7 = `goc-hoc/engine.js`, vào cùng 4d5f86d) |
-| Frontend unit test | `cd frontend && npm run test:unit` → **527 ca** / 41 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **533 ca** / 42 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **139 bài tập được chấm / 463 ca**, 2 441 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
@@ -112,8 +112,9 @@ mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 
 read-diagram 12 ·
 read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 34 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 13 · feedback-rank 3 = 527.
-Mốc trước là 525; lesson-back 7 → 9 (KHÔNG NHẢY BỐ CỤC khi nội dung bài về: ô trái giữ chỗ
+worker-csp 7 · ds-contrast 13 · feedback-rank 3 · goc-hoc-khung-cho 6 = 533.
+Mốc trước là 527; thêm goc-hoc-khung-cho 6 (KHUNG GIỮ CHỖ trang chủ: vị trí ảnh là bản CHÉP layout()
+sang CSS — ca đọc hằng thật từ engine.js và tính lại từng hệ số). Trước đó 525 → 527; lesson-back 7 → 9 (KHÔNG NHẢY BỐ CỤC khi nội dung bài về: ô trái giữ chỗ
 cho nút Quay lại ở mọi khổ màn, rãnh thanh cuộn chỉ ở trang bài học). Trước đó 524 → 525; bê giao diện từ nhánh `test` (4d5f86d) làm đỏ 6 ca — sửa: ds-contrast 14 → 13
 (gỡ ca chip: hai chip nó canh chỉ sống trong `home.module.css`, file đã xoá), course-resume
 8 → 9 (hàng bài phải mang id mà effect cuộn tìm), review-quiz 33 → 34 (trang công khai chỉ

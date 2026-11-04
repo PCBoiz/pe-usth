@@ -32,12 +32,59 @@
 }
 [hidden]{display:none!important}
 html,body{height:100%}
-body{background:var(--ground);color:var(--ink);font-family:var(--f-body);font-size:14px;overflow:hidden;-webkit-font-smoothing:antialiased}
+body{background:var(--ground);color:var(--ink);font-family:var(--f-body);font-size:14px;overflow:hidden;-webkit-font-smoothing:antialiased;
+  /* margin:0 — trang chủ không nạp CSS nào đặt lại lề mặc định 8px của body,
+     nên tài liệu cao 100% + 8px. Bình thường overflow:hidden của body lan ra
+     khung nhìn và che đi, NHƯNG edu-responsive.css (nạp ở MỌI trang) đặt
+     `html, body { overflow-x: hidden }` ở ≤ 1023px ⇒ <html> thành vùng cuộn,
+     overflow của body thôi lan ⇒ trang chủ CUỘN được 8px và hiện thanh cuộn
+     ở máy tính 821–1023px. Thanh cuộn đó còn làm #app hẹp 16px, nên engine
+     (đọc app.clientWidth) chọn bố cục ĐIỆN THOẠI trong khi CSS (đọc khung nhìn)
+     chọn bố cục máy tính — đo ở 821px: #app 806px, lệch 500px so với khung giữ
+     chỗ. Bỏ 8px thì không còn gì để cuộn. */
+  margin:0}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
 :focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:10px}
 svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 #app{position:fixed;inset:0;overflow:hidden;background:var(--ground)}
+
+/* ── KHUNG GIỮ CHỖ dựng ở MÁY CHỦ (StudyRoom.tsx) ─────────────────────────
+   HTML máy chủ từng là MỘT div rỗng: trang không vẽ gì tới khi JS hydrate,
+   lấy số (laySo, tới 3 s nếu có phiên) và initStudyRoom dựng xong cảnh — và
+   ảnh phòng chỉ được YÊU CẦU lúc đó. Đo trên production (390×844, CPU 4×):
+   FCP = LCP = 3 372 ms (trung vị 3 lượt); vết: "load delay" 4 546 ms, tải ảnh
+   chỉ 48 ms. Khung này đưa đúng KHUNG HÌNH ĐẦU của màn mở đầu ra HTML máy chủ:
+   ảnh phòng dưới lớp tối rgba(9,7,18,.9) — chính là #dark khi --r = -700px
+   (runIntro). Nên lúc cảnh thật phủ lên, tối thay tối, không có cú nháy.
+   Vị trí ảnh CHÉP NGUYÊN phép tính của layout() trong engine.js, viết lại
+   bằng max()/min()/clamp() trên vw/dvh. RW = bề rộng phòng sau khi co
+   (= IW·s, IW 2752, IH 1536). Đổi layout() thì đổi ở đây — có ca test canh. */
+.gh-cho{position:fixed;inset:0;overflow:hidden;background:var(--ground);pointer-events:none}
+.gh-cho-toi{position:absolute;inset:0;background:rgba(9,7,18,.9)}
+/* Máy tính: s = H/IH, hoặc 0,86W/IW nếu phòng hẹp hơn 86% bề ngang.
+   ox = min(0, max(căn trái vùng nội dung, căn giữa vùng nội dung)) — max() gộp
+   hai nhánh if của layout(): khi nội dung VỪA vùng trống thì căn giữa lớn hơn,
+   khi KHÔNG vừa thì căn trái lớn hơn (hiệu hai vế = (trống − nội dung)/2).
+   0,17987 = 495/2752 · 0,51653 = (495+2348)/2/2752 · 0,55814 = 1536/2752. */
+/* VỀ CON SỐ LCP, nói cho đúng: ảnh của cảnh thật (cùng URL, cùng khung, lệch
+   ≤ 0,2px) vẫn được LCP ghi thành mục MỚI lúc cảnh dựng xong — Chrome tính
+   "size" của nó 165 868 so với 165 841 của khung này, và đã thử nới khung thêm
+   1px rồi 8px mà size của khung KHÔNG đổi (bị cắt theo cách mình không điều
+   khiển được). Nên chỉ số LCP vẫn trỏ vào lúc cảnh dựng xong, trong khi người
+   dùng đã thấy đúng khung hình ấy từ lúc FCP. Đừng thêm mẹo nới khung nữa. */
+.gh-cho-phong{position:absolute;max-width:none;height:auto;
+  --rw:max(179.1667dvh,86vw);
+  width:var(--rw);
+  left:min(0px,max(calc(6px - .17987*var(--rw)),calc((100vw - clamp(320px,23vw,380px) - 16px)/2 - .51653*var(--rw))));
+  top:min(0px,calc(.8*(100dvh - .55814*var(--rw))))}
+/* Điện thoại (≤ 820px, đúng ngưỡng L.mobile): s = max(0,69·H/IH, W/IW).
+   123,625 = 0,69·2752/1536 · 0,48328 = 1330/2752 · 0,41788 = 1150/2752. */
+@media (max-width: 820px){
+  .gh-cho-phong{--rw:max(123.625dvh,100vw);
+    left:clamp(calc(100vw - var(--rw)),calc(50vw - .48328*var(--rw)),0px);
+    top:min(0px,calc(33dvh - .41788*var(--rw)))}
+}
 #cam{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
 #room{position:absolute;left:0;top:0;width:2752px;height:1536px;transform-origin:0 0}
 #room > *{position:absolute;left:0;top:0}

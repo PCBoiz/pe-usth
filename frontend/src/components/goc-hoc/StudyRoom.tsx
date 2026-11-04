@@ -37,7 +37,7 @@
  * `TRAN_CHO_MS`, backend chết thì không ai phải nhìn màn hình trống), rồi dựng.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { apiFetch, asList, findEnrollment } from '@/lib/api';
 import { completedLessonSet, hasStoredSession, LS_ACCESS, LS_LEGACY_REFRESH } from '@/lib/course-progress';
@@ -171,6 +171,8 @@ async function laySo(courseId: string, total: number): Promise<KetQua> {
 
 export default function StudyRoom(props: StudyRoomProps) {
   const hostRef = useRef<HTMLDivElement>(null);
+  /** Cảnh thật đã dựng xong chưa — tới lúc đó khung giữ chỗ (máy chủ) còn hiện. */
+  const [canhSan, setCanhSan] = useState(false);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -212,6 +214,7 @@ export default function StudyRoom(props: StudyRoomProps) {
           },
         },
       });
+      setCanhSan(true);
     });
 
     return () => {
@@ -221,5 +224,27 @@ export default function StudyRoom(props: StudyRoomProps) {
     };
   }, [props.courseId, props.courseName, props.lessonUrl, props.modules, props.meta, props.feedbackUrl]);
 
-  return <div ref={hostRef} />;
+  return (
+    <>
+      {/* KHUNG GIỮ CHỖ — dựng ở MÁY CHỦ, nên có trong HTML đầu tiên: ảnh phòng
+          dưới lớp tối, đúng khung hình đầu của màn mở đầu (xem scene.css,
+          `.gh-cho`). Trước khi có nó, HTML chỉ là div rỗng và ảnh phòng chỉ
+          được YÊU CẦU sau khi JS dựng xong cảnh: FCP = LCP = 3,4 s trên điện
+          thoại giả lập. Nó là ANH EM của host, KHÔNG nằm trong host: engine ghi
+          đè `host.innerHTML`, mà React không được sở hữu nút nào ở đó. #app
+          (position:fixed, đứng sau trong DOM) phủ lên nó ngay khi dựng xong;
+          gỡ nó là việc dọn dẹp, không phải bước chuyển cảnh. */}
+      {!canhSan && (
+        <div className="gh-cho" aria-hidden="true">
+          {/* next/image vô dụng ở đây: vị trí ảnh là phép tính chép từ
+              layout() bằng CSS, và ảnh này chính là ảnh #roomImg của cảnh
+              (cùng URL ⇒ cảnh dùng lại bản đã tải). */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="gh-cho-phong" src="/goc-hoc/room.webp" alt="" fetchPriority="high" />
+          <div className="gh-cho-toi" />
+        </div>
+      )}
+      <div ref={hostRef} />
+    </>
+  );
 }
