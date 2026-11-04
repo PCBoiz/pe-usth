@@ -81,7 +81,7 @@
   flex-shrink: 0;
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: var(--edu-accent);
+  color: var(--ds-violet);
   background: var(--edu-card-bg);
   border-radius: 6px;
   padding: 2px 8px;
@@ -161,7 +161,7 @@
 .answerKey {
   margin-top: 14px;
   background: var(--edu-panel-bg-solid);
-  border: 1px dashed var(--edu-accent);
+  border: 1px dashed var(--ds-violet);
   border-radius: 12px;
   padding: 10px 14px;
   font-size: 13px;
@@ -183,7 +183,7 @@
 }
 
 .adminTag {
-  background: var(--edu-accent);
+  background: var(--ds-violet);
   color: var(--edu-panel-bg-solid);
   border-radius: 4px;
   padding: 2px 6px;
@@ -208,7 +208,7 @@
 
 .answerKey dl > div {
   padding-left: 10px;
-  border-left: 2px solid var(--edu-accent);
+  border-left: 2px solid var(--ds-mark-ochre);
 }
 
 .answerKey dt {
@@ -254,8 +254,9 @@
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--edu-accent-text);
-  background: var(--edu-accent-soft);
+  /* Tint ĐỤC, không phải 10% alpha của chính màu chữ: 10,26:1 ngày. */
+  color: var(--ds-violet-deep);
+  background: var(--ds-violet-tint);
   border-radius: 999px;
   padding: 3px 10px;
 }
@@ -389,7 +390,7 @@
 
 .contracts .sig {
   font-weight: 700;
-  color: var(--edu-accent-text);
+  color: var(--ds-violet);
   background: transparent;
   padding: 0;
   font-size: 13px;
@@ -425,9 +426,9 @@
    hộp thành tích mới. Chỉ dùng token màu --edu-… và --st-… (lint:tokens cấm mã màu). */
 
 .boss {
-  background: var(--edu-accent-soft);
-  border-color: var(--edu-accent);
-  color: var(--edu-accent-text);
+  background: var(--ds-violet-tint);
+  border-color: var(--ds-violet);
+  color: var(--ds-violet-deep);
 }
 
 .tfList {
@@ -467,8 +468,10 @@
   top: 72px;
   right: 24px;
   z-index: 40;
-  background: var(--edu-accent);
-  color: var(--edu-panel-bg-solid);
+  /* "+10 điểm" là XP ⇒ họ ochre ("đã có") của bảng v2, chữ --ds-on-action:
+     5,48:1 ngày / 9,68:1 đêm. */
+  background: var(--ds-ochre);
+  color: var(--ds-on-action);
   font-weight: 800;
   font-size: 14px;
   border-radius: 999px;
@@ -555,7 +558,7 @@
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
-  color: var(--edu-accent-text);
+  color: var(--ds-violet);
 }
 
 .award {
@@ -589,8 +592,8 @@
   border-radius: 999px;
   padding: 10px 24px;
   font-weight: 700;
-  background: var(--edu-accent);
-  color: var(--edu-panel-bg-solid);
+  background: var(--ds-action);
+  color: var(--ds-on-action);
   cursor: pointer;
 }
 
@@ -723,7 +726,7 @@
 .theoryFigure figcaption a {
   display: inline;
   margin-left: 8px;
-  color: var(--edu-accent);
+  color: var(--ds-violet);
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
@@ -813,7 +816,9 @@
    như thể nó là dòng code tiếp theo. */
 .readExpected {
   background: var(--st-code-bg);
-  border-left: 3px solid var(--edu-accent);
+  /* Viền trái là TRANG TRÍ (nhãn "KẾT QUẢ:" mới chở nghĩa) và nằm sát nền
+     code nâu ⇒ màu nhấn bảng v2 dành cho nền tối, 8,62:1 trên nền đó. */
+  border-left: 3px solid var(--ds-mark-ochre);
   border-radius: 10px;
   padding: 10px 14px;
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -917,7 +922,8 @@
 .readDiagramLane {
   padding: 12px;
   border: 1px solid var(--edu-sidebar-border);
-  border-left: 3px solid var(--edu-accent);
+  /* Thanh nhấn trang trí của mỗi làn — cùng vai với viền trái .readExpected. */
+  border-left: 3px solid var(--ds-mark-ochre);
   border-radius: 10px;
   background: var(--edu-panel-bg-solid);
 }
@@ -962,7 +968,7 @@
    câu trả lời của cả sơ đồ. */
 .readDiagramSteps li:last-child code {
   font-weight: 700;
-  color: var(--edu-accent-text);
+  color: var(--ds-violet);
 }
 
 .readDiagramNote {
@@ -995,7 +1001,7 @@
 }
 
 .traceOpen:hover {
-  border-color: var(--edu-accent);
+  border-color: var(--ds-violet);
   color: var(--edu-t1);
 }
 
@@ -1063,8 +1069,10 @@
   padding: 8px 16px;
   border: 0;
   border-radius: 10px;
-  background: var(--edu-accent);
-  color: #fff;
+  /* Cặp nút chính của bảng lofi (5,57:1 ngày / 7,98:1 đêm). Chữ trắng
+     cứng cũ trên --edu-accent bản đêm chỉ 3,19:1. */
+  background: var(--ds-action);
+  color: var(--ds-on-action);
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -1083,8 +1091,11 @@
   line-height: 1.6;
 }
 
+/* Cùng mã màu với token cũ (--edu-accent-text), chỉ đổi sang tên bảng v2.
+   Đo 04/11: ở màn đọc, `.read p` (class + thẻ) THẮNG quy tắc này nên câu
+   "Khớp." thực tế hiện bằng --edu-t1 — đổi màu ở đây không ai thấy. */
 .traceVerdictOk {
-  color: var(--edu-accent-text);
+  color: var(--ds-violet);
 }
 
 .traceVerdictNo {
@@ -1319,12 +1330,15 @@
   cursor: default;
 }
 
+/* Bí danh --st-ok/err-line thay cho --edu-ok/--edu-err kèm mã màu dự phòng:
+   --edu-err KHÔNG được khai ở đâu cả, nên viền "sai" từng là màu dự phòng
+   cam viết cứng, lệch với mọi chỗ chấm sai khác (họ sanguine). */
 .onGianCachDung {
-  border-color: var(--edu-ok, #1b8a5a);
+  border-color: var(--st-ok-line);
 }
 
 .onGianCachSai {
-  border-color: var(--edu-err, #c2410c);
+  border-color: var(--st-err-line);
 }
 
 /* Lời giải thích của phương án KHÔNG được làm mờ: Van der Kleij 2015 đo phản
@@ -1349,8 +1363,8 @@
   padding: 9px 18px;
   border: none;
   border-radius: 999px;
-  background: var(--edu-accent);
-  color: #fff;
+  background: var(--ds-action);
+  color: var(--ds-on-action);
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -1365,8 +1379,8 @@
   padding: 9px 18px;
   border: none;
   border-radius: 999px;
-  background: var(--edu-accent);
-  color: #fff;
+  background: var(--ds-action);
+  color: var(--ds-on-action);
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -1404,8 +1418,10 @@
   line-height: 1.55;
 }
 
+/* TỪNG TRƯỢT AA: --edu-ok trên nền trắng chỉ 3,77:1 cho chữ 13px/600.
+   Bí danh --st-ok-text (họ ochre) đạt 5,48:1 ngày / 8,25:1 đêm trên thẻ. */
 .practiceVerdictOk {
-  color: var(--edu-ok, #1b8a5a);
+  color: var(--st-ok-text);
 }
 
 .practiceVerdictNo {
@@ -1425,15 +1441,15 @@
 }
 
 .practiceReveal:hover {
-  border-color: var(--edu-accent);
-  color: var(--edu-accent);
+  border-color: var(--ds-violet);
+  color: var(--ds-violet);
 }
 
 /* Vòng focus: nút này trước đây chỉ có :hover, nên người dùng bàn phím Tab tới
    nó mà không thấy mình đang ở đâu (WCAG 2.4.7). Không dùng chung với :hover —
    đổi màu viền là tín hiệu của chuột, vòng outline là tín hiệu của bàn phím. */
 .practiceReveal:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: 2px solid var(--ds-violet);
   outline-offset: 2px;
 }
 

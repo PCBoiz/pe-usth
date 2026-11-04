@@ -1,6 +1,6 @@
 /* Nút "Thử ngay trong IDE". Cùng ngôn ngữ thị giác với nút phụ của khung bài
-   (.secondaryBtn ở LessonChrome.module.css): pill, viền mảnh, nền accent-soft.
-   Không thêm màu thương hiệu mới — chỉ token --edu-* đã có. */
+   (.secondaryBtn ở LessonChrome.module.css): pill, viền mảnh, nền tint.
+   Không thêm màu mới — chỉ token --ds-* của bảng lofi (studio-tokens.css). */
 /* Không có lề trên: ở màn mở đầu bài, `.brief` là flex column có gap 13px nên
    thêm lề nữa là nút trôi ra giữa hai thẻ, không còn thuộc khối code nào. */
 .row {
@@ -25,10 +25,13 @@
   /* Vùng chạm 40px cho ngón tay (khung bài dùng 48–52px cho nút chính). */
   min-height: 40px;
   padding: 0 16px;
-  border: 1px solid var(--edu-accent);
+  /* Liên kết ⇒ họ violet của bảng lofi; nền là tint ĐỤC, không phải 10%
+     alpha của chính màu chữ. Chữ violet-deep trên violet-tint 10,26:1 ngày /
+     9,21:1 đêm (bản cũ 5,93:1); viền violet 6,66:1 trên thẻ. */
+  border: 1px solid var(--ds-violet);
   border-radius: 999px;
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent-text);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet-deep);
   font-family: inherit;
   font-size: 13px;
   font-weight: 700;
@@ -37,8 +40,10 @@
   transition: background 0.15s ease, transform 0.12s ease;
 }
 
+/* Bảng v2 không có bậc tint đậm hơn, nên pha 12% violet vào chính tint —
+   vẫn ĐỤC, chữ violet-deep trên nó 8,59:1 ngày / 7,38:1 đêm. */
 .button:hover {
-  background: var(--edu-accent-soft-strong);
+  background: color-mix(in srgb, var(--ds-violet) 12%, var(--ds-violet-tint));
 }
 
 .button:active {
@@ -46,7 +51,7 @@
 }
 
 .button:focus-visible {
-  outline: 3px solid var(--edu-accent-3);
+  outline: 3px solid var(--ds-violet);
   outline-offset: 3px;
 }
 

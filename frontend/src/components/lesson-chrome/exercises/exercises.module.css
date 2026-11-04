@@ -50,7 +50,10 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--edu-accent-3);
+  /* Chấm trang trí trên nền code NÂU: --ds-mark-ochre là màu nhấn bảng v2
+     dành cho nền tối (8,62:1 trên --ds-code-bg) — chấm xanh cũ là thứ lạnh
+     duy nhất còn lại trong khung code. Không đụng --st-code-* / --st-syn-*. */
+  background: var(--ds-mark-ochre);
 }
 
 .codeBody {
@@ -132,10 +135,12 @@
 .optionCard:disabled {
   cursor: default;
 }
+/* LỰA CHỌN ⇒ họ violet. Nền tint ĐỤC thay cho 10% alpha: chữ --edu-t1 trên
+   nó 13,90:1 ngày / 12,29:1 đêm; viền violet 6,66:1 trên thẻ (cũ 5,14:1). */
 .optionSelected {
   composes: optionCard;
-  border-color: var(--edu-accent);
-  background: var(--edu-accent-soft);
+  border-color: var(--ds-violet);
+  background: var(--ds-violet-tint);
 }
 .optionMain code {
   font-family: 'JetBrains Mono', monospace;
@@ -158,8 +163,8 @@
 }
 .optionRadioSelected {
   composes: optionRadio;
-  border-color: var(--edu-accent);
-  background: radial-gradient(circle, var(--edu-accent) 0 40%, transparent 42%);
+  border-color: var(--ds-violet);
+  background: radial-gradient(circle, var(--ds-violet) 0 40%, transparent 42%);
 }
 
 .checkbox {
@@ -176,8 +181,8 @@
 }
 .checkboxSelected {
   composes: checkbox;
-  border-color: var(--edu-accent);
-  background: var(--edu-accent);
+  border-color: var(--ds-violet);
+  background: var(--ds-violet);
   color: var(--edu-panel-bg-solid);
 }
 
@@ -204,9 +209,9 @@
 }
 .toggleSelected {
   composes: toggleBtn;
-  border-color: var(--edu-accent);
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent-text);
+  border-color: var(--ds-violet);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet-deep);
 }
 .toggleIcon {
   width: 26px;
@@ -221,7 +226,7 @@
 }
 .toggleIconSelected {
   composes: toggleIcon;
-  background: var(--edu-accent);
+  background: var(--ds-violet);
 }
 
 /* ── Fill blank ──────────────────────────────────────────────── */
@@ -240,7 +245,8 @@
 .blank:focus {
   outline: none;
   border-style: solid;
-  border-color: var(--edu-accent-3);
+  /* Ô trống nằm TRONG khung code nâu ⇒ màu nhấn cho nền tối, 8,62:1. */
+  border-color: var(--ds-mark-ochre);
 }
 .suggestions {
   display: flex;
@@ -263,7 +269,7 @@
 }
 .chip:hover {
   border-color: var(--st-slot-border);
-  background: var(--edu-accent-soft);
+  background: var(--ds-violet-tint);
 }
 
 /* ── Trạng thái sau khi bấm "Kiểm tra" ───────────────────────── */
@@ -318,8 +324,11 @@
   border: 0;
   border-radius: 999px;
   padding: 10px 20px;
-  background: var(--edu-accent-grad);
-  color: var(--edu-panel-bg-solid);
+  /* Hành động chính của ô soạn mã ⇒ cặp nút chính của bảng lofi. Gradient
+     brand cũ có đầu cuối chỉ 3,19:1 với chữ trắng; cặp này 5,57:1 ngày /
+     7,98:1 đêm và không còn dốc màu. */
+  background: var(--ds-action);
+  color: var(--ds-on-action);
   font: inherit;
   font-size: 13px;
   font-weight: 700;
@@ -328,7 +337,8 @@
 }
 .runBtn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px var(--edu-accent-soft-strong);
+  /* Bóng ấm duy nhất của bảng v2 thay cho quầng xanh. */
+  box-shadow: var(--ds-shadow-open);
 }
 .runBtn:active:not(:disabled) {
   transform: translateY(1px);
@@ -472,8 +482,11 @@
    SandboxEditor.tsx: focus vào ô là con trỏ biến mất hoàn toàn khỏi màn
    (WCAG 2.4.7). Dùng cùng kiểu vòng với LessonChrome.module.css; offset ÂM vì
    .codeCard có overflow:hidden — vòng vẽ ra ngoài sẽ bị cắt mất. */
+/* Vòng vẽ TRONG khung code nâu (offset âm) nên KHÔNG dùng violet như mọi
+   vòng focus khác — violet ngày trên nền code tối chỉ 2,56:1. Màu nhấn
+   cho nền tối --ds-mark-ochre đạt 8,62:1 (bản cũ 5,38:1). */
 textarea.codeBody:focus-visible {
-  outline: 3px solid var(--edu-accent-3);
+  outline: 3px solid var(--ds-mark-ochre);
   outline-offset: -3px;
 }
 

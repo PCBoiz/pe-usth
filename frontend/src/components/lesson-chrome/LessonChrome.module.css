@@ -67,8 +67,10 @@
   cursor: pointer;
   transition: background 0.15s, transform 0.1s;
 }
+/* Bảng lofi (studio-tokens.css): tint ĐỤC thay cho --edu-accent-soft — một
+   lớp 10% alpha của chính màu nhấn, khuôn đã làm hai chip trang chủ trượt AA. */
 .closeBtn:hover {
-  background: var(--edu-accent-soft);
+  background: var(--ds-violet-tint);
 }
 .closeBtn:active {
   transform: scale(0.95);
@@ -145,18 +147,26 @@ button.segment::after {
 }
 /* Luôn render thẻ fill (kể cả rộng 0) để width có thể transition — nếu chỉ
    gắn/gỡ thẻ theo bước thì trình duyệt không có giá trị cũ để nội suy. */
+/* Thanh tiến độ là VỊ TRÍ ("bạn ở đây") ⇒ họ violet của bảng lofi.
+   Đo trên rãnh --st-track (--ds-desk): violet 5,28:1 ngày / 5,63:1 đêm —
+   bản cũ --edu-accent chỉ 4,07:1. */
 .segmentFill {
   width: 0;
   height: 100%;
-  background: var(--edu-accent);
+  background: var(--ds-violet);
   transition: width 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .segmentCurrent .segmentFill {
-  background: var(--edu-accent);
+  background: var(--ds-violet);
 }
-/* Đã xong nhưng nằm sau màn đang xem lại. */
+/* Đã xong nhưng nằm sau màn đang xem lại. Bảng v2 không có bậc "violet
+   nhạt" nên pha bằng color-mix trên chính token, không viết mã màu.
+   75% là SỐ ĐO, không phải ước lượng: trên rãnh 3,13:1 ngày / 3,62:1 đêm
+   (WCAG 1.4.11; bản cũ --edu-accent-3 chỉ 2,51:1), cách đoạn violet đậm 1,69:1 —
+   ngang mức tách cũ (1,62:1) nên hai loại đoạn vẫn phân biệt được. Thấp
+   hơn 75% thì tụt dưới 3:1 trên rãnh ban ngày. */
 .segmentAhead .segmentFill {
-  background: var(--edu-accent-3);
+  background: color-mix(in srgb, var(--ds-violet) 75%, var(--ds-card));
 }
 
 .stepLabel {
@@ -175,7 +185,9 @@ button.segment::after {
   min-width: 120px;
   height: 34px;
   background: var(--st-streak-bg);
-  color: var(--edu-accent-text);
+  /* --st-streak-bg là --ds-violet-tint; chữ violet-deep trên nó 10,26:1
+     ngày / 9,21:1 đêm (cặp SiteHeader đang dùng). */
+  color: var(--ds-violet-deep);
   border-radius: 17px;
   padding: 0 18px;
   display: inline-flex;
@@ -328,14 +340,14 @@ button.segment::after {
   transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
 }
 .backBtn:hover {
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent-text);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet-deep);
 }
 .backBtn:active {
   transform: translateY(1px);
 }
 .backBtn:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: 2px solid var(--ds-violet);
   outline-offset: 2px;
 }
 
@@ -349,10 +361,18 @@ button.segment::after {
   height: 52px;
   border-radius: 26px;
   border: 0;
-  background: var(--edu-accent);
-  /* Chữ trắng ở cả hai chế độ: nền nút là màu accent cố định (trước đây dùng
-     --edu-panel-bg-solid nên ở chế độ tối chữ thành màu tối, khó đọc). */
-  color: #fff;
+  /* --ds-action + --ds-on-action là cặp DUY NHẤT bảng v2 cho phép đặt chữ
+     lên nền nhấn đậm (cùng cặp với nút chính của CourseShell/trang chủ).
+     Chữ KHÔNG còn trắng cứng: ở Ban đêm --ds-action đổi sang bản sáng, chữ
+     trắng trên đó chỉ ~2,3:1; --ds-on-action đổi theo (7,98:1). Ngày: chữ
+     trắng trên --ds-action đo được 5,57:1 (chú thích trong studio-tokens.css
+     ghi 7,33 — số đó không khớp giá trị thật của token).
+     Hai biến thể Ok/Err bên dưới compose lớp này nên cũng thừa hưởng chữ
+     --ds-on-action: trước đây Ban đêm là chữ trắng trên --ds-ochre bản đêm,
+     tức 1,93:1. (Không viết mã màu trong chú thích: lint:tokens grep cả
+     chú thích.) */
+  background: var(--ds-action);
+  color: var(--ds-on-action);
   font-size: 16px;
   font-weight: 700;
   font-family: inherit;
@@ -399,8 +419,8 @@ button.segment::after {
   transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
 }
 .secondaryBtn:hover {
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent-text);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet-deep);
 }
 .secondaryBtn:active {
   transform: translateY(1px);
@@ -410,7 +430,8 @@ button.segment::after {
 button.segment:focus-visible,
 .primaryBtn:focus-visible,
 .secondaryBtn:focus-visible {
-  outline: 3px solid var(--edu-accent-3);
+  /* violet trên thanh trắng 6,70:1 (bản cũ --edu-accent-3: 3,19:1 — sát ngưỡng 3:1). */
+  outline: 3px solid var(--ds-violet);
   outline-offset: 3px;
 }
 
@@ -513,8 +534,8 @@ button.segment:focus-visible,
 .scorePill {
   margin-left: auto;
   height: 34px;
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent-text);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet-deep);
   border-radius: 17px;
   padding: 0 14px;
   display: inline-flex;

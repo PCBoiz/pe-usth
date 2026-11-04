@@ -451,6 +451,20 @@ const DA_SANG_LOFI = [
     readFileSync(join(__dirname, '..', '..', 'public', 'static', 'css', 'edu-course-detail.css'), 'utf8')],
   ['src/components/CourseShell.module.css',
     readFileSync(join(__dirname, '..', '..', 'src', 'components', 'CourseShell.module.css'), 'utf8')],
+  // 04/11 — /ide (6ac5a0c, 19 khai báo brand → 0) và màn BÀI HỌC (7 file, tới
+  // 18 phần tử brand mỗi màn → chỉ còn --ds-action ở nút chính). Thiếu các dòng
+  // này thì hai bề mặt lớn nhất của sản phẩm không có gì chặn lùi về bảng cũ.
+  ...[
+    'src/app/ide/ide.module.css',
+    'src/components/code-visualizer/CodeVisualizer.module.css',
+    'src/components/lesson-chrome/LessonChrome.module.css',
+    'src/components/lesson-chrome/ShellB.module.css',
+    'src/components/lesson-chrome/LessonBrief.module.css',
+    'src/components/lesson-chrome/TryItButton.module.css',
+    'src/components/lesson-chrome/exercises/exercises.module.css',
+    'src/components/python-studio/studio-chrome.module.css',
+    'src/components/python-studio/review-quiz.module.css',
+  ].map((p) => [p, readFileSync(join(__dirname, '..', '..', ...p.split('/')), 'utf8')]),
 ];
 
 test('bề mặt đã sang lofi: lớp tương tác không còn token brand xanh–đỏ', () => {

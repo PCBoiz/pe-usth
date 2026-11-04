@@ -31,8 +31,12 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent-text);
+  /* Tint ĐỤC của bảng lofi, KHÔNG phải --edu-accent-soft (10% alpha của chính
+     màu nhấn đặt dưới chữ cùng họ — khuôn đã làm hai chip trang chủ tụt còn
+     2,95–3,20:1). Chữ violet-deep trên violet-tint: 10,26:1 ngày, 9,21:1
+     đêm; bản cũ 5,93:1. Icon dùng currentColor nên đi theo. */
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet-deep);
   border-radius: 999px;
   padding: 6px 14px;
   font-size: 12px;
@@ -53,7 +57,9 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--edu-accent);
+  /* Chấm TRANG TRÍ cạnh tên bài (tên bài tự mang nghĩa) ⇒ nhấn ấm của
+     bảng lofi. 1,99:1 trên thẻ là đủ vì nó không chở thông tin nào. */
+  background: var(--ds-mark-ochre);
   flex-shrink: 0;
 }
 
@@ -99,7 +105,7 @@
   gap: 8px;
   border: 1px solid var(--edu-sidebar-border);
   background: var(--edu-panel-bg-solid);
-  color: var(--edu-accent-text);
+  color: var(--ds-violet);
   border-radius: 999px;
   padding: 8px 16px;
   font: inherit;
@@ -109,7 +115,7 @@
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
 }
 .hintToggle:hover {
-  background: var(--edu-accent-soft);
+  background: var(--ds-violet-tint);
   border-color: var(--st-slot-border);
 }
 .hintToggle:active {
@@ -157,8 +163,8 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent-text);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet-deep);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -176,7 +182,7 @@
 }
 .hintText code {
   font-family: 'JetBrains Mono', Consolas, monospace;
-  color: var(--edu-accent-text);
+  color: var(--ds-violet);
 }
 
 @media (max-width: 560px) {
