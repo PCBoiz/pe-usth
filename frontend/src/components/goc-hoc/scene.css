@@ -471,6 +471,9 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .opt.no{border-color:#ff8b8b;color:#ffb1b1}
 #fb{margin:10px 0 0;font-size:13px;color:#c9d3ec;min-height:1.4em}
 .dots{display:flex;gap:6px;margin-top:20px;align-items:center;font-size:12px;color:var(--code-dim)}
+/* Nhãn "M1 · 18 bài" KHÔNG xuống dòng: trong hàng flex nó bị bóp về min-content
+   (25px) và gãy làm ba dòng "M1 · / 18 / bài" — đo ở 390px. */
+.dots span{white-space:nowrap}
 .dots i{width:22px;height:5px;border-radius:5px;background:#2a3249}
 .dots i.d{background:var(--ok)}.dots i.c{background:var(--amber)}
 .edx{background:#0e1220;border-left:1px solid #222a40;display:flex;flex-direction:column;min-width:0}
@@ -624,9 +627,18 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
   /* Bụi bay: 7px × tỉ lệ phòng trên điện thoại ≈ 2,7px trên màn (đã đo) — không
      ai thấy, nhưng 16 hoạt ảnh của nó vẫn giữ luồng chính dựng khung. */
   .mote{display:none}
-  .course{grid-template-columns:1fr;gap:8px}
-  .lesson{grid-template-columns:1fr}
-  .spread{grid-template-columns:1fr;aspect-ratio:auto}.leafp.l{display:none}.leafp.r{border-radius:14px;min-height:520px}.flip{width:100%}
+  .course{grid-template-columns:minmax(0,1fr);gap:8px}
+  /* minmax(0,1fr), KHÔNG `1fr` trần: `1fr` là minmax(auto,1fr) nên cột không co
+     dưới min-content — dòng mã dài nhất ở .edx kéo cột ra 576,8px trong thẻ
+     358px (đo ở 390×844), và overflow:hidden của .lesson CẮT mất tiêu đề, đoạn
+     văn, mục lục (6 phần tử, 102–203px). Bản máy tính đã dùng minmax(0,…) từ
+     đầu; khối điện thoại ghi đè làm mất nó. .edx .code có overflow-x:auto nên
+     dòng mã dài thành CUỘN trong khung thay vì nong cả thẻ. */
+  .lesson{grid-template-columns:minmax(0,1fr)}
+  /* Điện thoại: chấm bài XUỐNG HÀNG ở cỡ thật thay vì co lại — học phần 32 bài
+     (M3) co trong ~300px thì mỗi chấm còn ~1px. */
+  .dots{flex-wrap:wrap}.dots i{flex:none}
+  .spread{grid-template-columns:minmax(0,1fr);aspect-ratio:auto}.leafp.l{display:none}.leafp.r{border-radius:14px;min-height:520px}.flip{width:100%}
   .plank{grid-template-columns:repeat(4,minmax(0,1fr))}
   /* BẢNG DỌC (engine: .paper.doc, viewBox 600×1000 — xem ROAD_DOC). Bảng ghim
      thôi giữ tỉ lệ ngang 1500/1080 mà NỞ theo tờ giấy: trước đây giấy cao
