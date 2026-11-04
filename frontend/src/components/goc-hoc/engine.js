@@ -1,4 +1,4 @@
-import { DATA, CAL, KEYS, ROAD, SCODE } from './scene-data';
+import { DATA, CAL, KEYS, ROAD, SCODE, nhanLoTrinh } from './scene-data';
 
 /*
  * Góc học PE — động cơ cảnh, port từ artifact cùng tên.
@@ -639,10 +639,16 @@ function body(r){
       <path class="path" d="${d}" id="rpath"/><path class="string" id="rstr" d="M${strPts}"/>
       ${ROAD.map((p,i)=>{ const m=MODULES[i]; if(!m) return '';
         const all=m.lessons.every(l=>l.state==='done'); const st = all?'done' : i===curMi?'cur':'next';
-        const fill = st==='done'?'#c8323d':st==='cur'?'#e39a4a':'#b8a88a'; const [lx,ly,an]=p.lbl;
-        return `<g class="node" style="transform-origin:${p.at[0]}px ${p.at[1]}px">${st==='cur'?`<circle cx="${p.at[0]}" cy="${p.at[1]}" r="30" fill="#ffc97a" opacity=".35"/>`:''}
-          <circle cx="${p.at[0]}" cy="${p.at[1]}" r="17" fill="${fill}"/><text class="num" x="${p.at[0]}" y="${p.at[1]+5.5}" text-anchor="middle">${i+1}</text>
-          <text x="${lx}" y="${ly}" text-anchor="${an}">${esc(m.name)}${all?' ✓':''}</text></g>`; }).join('')}
+        const fill = st==='done'?'#c8323d':st==='cur'?'#e39a4a':'#b8a88a';
+        /* Nhãn NGẮN nhiều dòng (scene-data.js nhanLoTrinh), đặt trên điểm ở tầng
+           trên, dưới điểm ở tầng dưới — đường nối luôn chéo giữa hai tầng nên
+           không cắt qua nhãn. Tên đầy đủ nằm trong <title>. 19 = cao dòng của
+           phông 17px; 36/42 = khoảng tránh vòng "đang học" (r = 30). */
+        const dong = nhanLoTrinh(m.name); if (all) dong[dong.length-1] += ' ✓';
+        const x = p.at[0], y0 = p.nhan==='tren' ? p.at[1] - 36 - (dong.length-1)*19 : p.at[1] + 42;
+        return `<g class="node" style="transform-origin:${x}px ${p.at[1]}px"><title>${esc(m.name)}</title>${st==='cur'?`<circle cx="${x}" cy="${p.at[1]}" r="30" fill="#ffc97a" opacity=".35"/>`:''}
+          <circle cx="${x}" cy="${p.at[1]}" r="17" fill="${fill}"/><text class="num" x="${x}" y="${p.at[1]+5.5}" text-anchor="middle">${i+1}</text>
+          <text class="lbl" x="${x}" y="${y0}" text-anchor="middle">${dong.map((d,k)=>`<tspan x="${x}"${k?' dy="19"':''}>${esc(d)}</tspan>`).join('')}</text></g>`; }).join('')}
     </svg><div class="note" id="note">${CUR?`<b>${esc(CUR.m.short)}</b>${esc(CUR.l.title)}<br>${modStats(CUR.m).sub}<br><button class="btn" data-tab="learn">Xem bài</button>`:'Giáo trình chưa có học phần nào'}</div></div></div></div></div>`;
   }
 
