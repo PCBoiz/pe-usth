@@ -42,7 +42,8 @@ export default function SelfExplain({
         onChange={(e) => onChange(e.target.value)}
         style={{
           width: '100%',
-          minHeight: 132,
+          // 158 = 132 cũ + padding 2×12 + viền 2×1 (border-box, xem LessonChrome.module.css).
+          minHeight: 158,
           resize: 'vertical',
           padding: '12px 14px',
           borderRadius: 12,

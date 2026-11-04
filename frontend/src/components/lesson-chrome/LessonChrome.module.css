@@ -25,6 +25,19 @@
   background: var(--st-page-bg);
 }
 
+/* Ô NHẬP NHIỀU DÒNG của mọi màn bài học tính bề rộng GỒM CẢ padding/viền.
+   Trang bài học không nạp `style.css` (chỗ duy nhất có `* { box-sizing:
+   border-box }`), nên <textarea> giữ mặc định content-box — mà cả bốn ô ở đây
+   đều viết `width: 100%` kèm padding. Đo trên production 390×844 (PY06):
+   · ô soạn mã bài tập (SandboxEditor) rộng 349px trong thẻ 317px: 32px phải bị
+     `overflow:hidden` của thẻ code CẮT — mất padding phải và ~2 ký tự cuối của
+     mỗi dòng gãy, con trỏ gõ ở cuối dòng chui vào chỗ bị cắt;
+   · ô trả lời màn luyện tập (.practiceInput) thò 30px ra ngoài thẻ trắng.
+   Đặt Ở ĐÂY một lần thay vì vá bốn chỗ: ô thứ năm sẽ lại viết `width: 100%`. */
+.chrome textarea {
+  box-sizing: border-box;
+}
+
 /* GIỮ CHỖ CHO THANH CUỘN — chỉ ở trang có khung bài học.
    Khung "Đang tải bài học…" ngắn hơn màn hình nên KHÔNG có thanh cuộn; nội dung
    thật cao hơn nên thanh cuộn hiện ra và mọi thứ dời sang trái: đo trên

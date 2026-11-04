@@ -116,7 +116,9 @@ export default function SandboxEditor({
           onChange={(e) => onCodeChange(e.target.value)}
           style={{
             width: '100%',
-            minHeight: 220,
+            // 248 = 220 cũ + padding dọc 2×14: `.chrome textarea` (LessonChrome.module.css)
+            // đặt border-box nên min-height nay GỒM padding — giữ nguyên chiều cao thật.
+            minHeight: 248,
             resize: 'vertical',
             border: 0,
             // KHÔNG đặt outline:none ở đây. Bản trước có, và vì style nội tuyến

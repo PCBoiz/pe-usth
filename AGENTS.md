@@ -76,7 +76,7 @@ học nó.
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **146 cảnh báo** (+7 = `goc-hoc/engine.js`, vào cùng 4d5f86d) |
-| Frontend unit test | `cd frontend && npm run test:unit` → **548 ca** / 44 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **550 ca** / 45 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **139 bài tập được chấm / 463 ca**, 2 441 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
@@ -112,8 +112,9 @@ mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 
 read-diagram 12 ·
 read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 34 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 13 · feedback-rank 3 · goc-hoc-khung-cho 6 · goc-hoc-lo-trinh 9 · goc-hoc-man-con 3 = 548.
-Mốc trước là 545; lesson-back 9 → 12 (ĐOẠN THANH TIẾN ĐỘ: vùng bấm thật 13×7px vì `overflow: hidden` cắt `::after` nới vùng chạm).
+worker-csp 7 · ds-contrast 13 · feedback-rank 3 · goc-hoc-khung-cho 6 · goc-hoc-lo-trinh 9 · goc-hoc-man-con 3 · o-nhap-nhieu-dong 2 = 550.
+Mốc trước là 548; thêm o-nhap-nhieu-dong 2 (Ô NHẬP NHIỀU DÒNG: `width: 100%` + padding trên content-box — ô soạn mã bài tập bị cắt 32px, ô luyện tập thò 30px).
+Trước đó 545 → 548; lesson-back 9 → 12 (ĐOẠN THANH TIẾN ĐỘ: vùng bấm thật 13×7px vì `overflow: hidden` cắt `::after` nới vùng chạm).
 Trước đó 542 → 545; thêm goc-hoc-man-con 3 (LƯỚI `1fr` TRẦN cắt nội dung màn Học tiếp trên điện thoại).
 Trước đó 538 → 542; goc-hoc-lo-trinh 5 → 9 (BẢNG DỌC cho điện thoại: khung ngang co còn 0,30, nhãn 5px).
 Trước đó 533 → 538; thêm goc-hoc-lo-trinh 5 (BẢNG LỘ TRÌNH: mỗi học phần thật một điểm — từng có 8 điểm cho 11

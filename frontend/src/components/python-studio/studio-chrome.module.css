@@ -1236,7 +1236,9 @@
 
 .practiceInput {
   width: 100%;
-  min-height: 120px;
+  /* 146 = 120 cũ + padding 2×12 + viền 2×1: `.chrome textarea` (LessonChrome.module.css)
+     đặt border-box nên min-height nay GỒM padding — giữ nguyên chiều cao thật. */
+  min-height: 146px;
   resize: vertical;
   padding: 12px 14px;
   border: 1px solid var(--edu-sidebar-border);
