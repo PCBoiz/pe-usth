@@ -76,7 +76,7 @@ học nó.
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **146 cảnh báo** (+7 = `goc-hoc/engine.js`, vào cùng 4d5f86d) |
-| Frontend unit test | `cd frontend && npm run test:unit` → **569 ca** / 48 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **570 ca** / 48 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **139 bài tập được chấm / 463 ca**, 2 441 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
@@ -106,14 +106,15 @@ thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg`
 catalog-duration 2 · catalog-naming 3 · consent-banner 15 · course-resume 9 ·
 data-files 18 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
-ide-trace 38 · inline-code 3 · insert-gate-sync 2 · label-version 2 ·
+ide-trace 38 · inline-code 4 · insert-gate-sync 2 · label-version 2 ·
 learning-events 48 · lesson-back 15 · lesson-load 7 · mcq-code 9 ·
 mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 · prewarm-gate 5 ·
 read-diagram 12 ·
 read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 34 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 13 · feedback-rank 3 · goc-hoc-khung-cho 6 · goc-hoc-lo-trinh 9 · goc-hoc-man-con 3 · o-nhap-nhieu-dong 2 · ide-output-scroll 6 · lien-ket-noi-bo 3 · goc-hoc-cho-so 7 = 569.
-Mốc trước là 566; lesson-back 12 → 15 (BÀI ĐÃ HOÀN THÀNH: thanh tiến độ vẽ 15/15 đoạn đầy mà chỉ 2 đoạn bấm được).
+worker-csp 7 · ds-contrast 13 · feedback-rank 3 · goc-hoc-khung-cho 6 · goc-hoc-lo-trinh 9 · goc-hoc-man-con 3 · o-nhap-nhieu-dong 2 · ide-output-scroll 6 · lien-ket-noi-bo 3 · goc-hoc-cho-so 7 = 570.
+Mốc trước là 569; inline-code 3 → 4 (Ý CHÍNH MÀN TỔNG KẾT vỡ cột: withInlineCode đặt thẳng trong <li> flex — 82/179 bài).
+Trước đó 566 → 569; lesson-back 12 → 15 (BÀI ĐÃ HOÀN THÀNH: thanh tiến độ vẽ 15/15 đoạn đầy mà chỉ 2 đoạn bấm được).
 Trước đó 559 → 566; thêm goc-hoc-cho-so 7 (SỐ VỀ MUỘN BỊ VỨT: /api/enrolled 3 087 ms > trần 3 000 ⇒ trang chủ nói "chưa có phiên học" cả phiên với người đã xong 2 bài).
 Trước đó 556 → 559; thêm lien-ket-noi-bo 3 (LIÊN KẾT TỚI TRANG KHÔNG CÓ: "Ôn tập" ở thanh trên và nút trong cảnh Góc học cùng dẫn tới `/practice` → 404).
 Trước đó 550 → 556; thêm ide-output-scroll 6 (/ide TRÊN ĐIỆN THOẠI: bấm Chạy xong ô kết quả vẫn dưới mép màn — 0px thấy ở 390×844 có băng khôi phục, 6px ở 375×667).

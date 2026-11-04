@@ -198,7 +198,15 @@ export default function Recap({
                   dày đặc. Dựng trần thì học viên đọc ra cả dấu backtick —
                   ảnh người thử gửi ngày 27/10 chụp đúng dòng
                   `.venv\Scripts\python -m pip install numpy`. */}
-              {withInlineCode(f)}
+              {/* BỌC trong MỘT <span>: <li> là flex (dấu ✓ + chữ), mà
+                  withInlineCode trả về NHIỀU nút — mỗi đoạn chữ và mỗi <code>
+                  thành một flex item riêng. Đo trên production (PY02, 390px):
+                  ý chính vỡ thành cột, <code> rộng 19px xếp dọc từng ký tự,
+                  một <li> cao 789px; 82/179 bài có ít nhất một ý như vậy.
+                  Bọc lại thì đo được: <li> 460/203/789 → 180/180/270px, mép
+                  phải <code> 519 → 358px. (`minWidth: 0` đã thử: không đổi số
+                  nào — <code> nội tuyến tự xuống dòng nhờ overflow-wrap.) */}
+              <span>{withInlineCode(f)}</span>
             </li>
           ))}
         </ul>

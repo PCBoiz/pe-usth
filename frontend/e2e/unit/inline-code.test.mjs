@@ -24,6 +24,7 @@
  *   Recap dựng {f} trần trở lại               → 1 đỏ
  *   mỗi nhánh giữ một bản withInlineCode riêng → 1 đỏ
  *   regex nuốt qua xuống dòng ([^`] thay vì [^`\n]) → 1 đỏ
+ *   bỏ <span> bọc withInlineCode(f) trong <li> flex → 1 đỏ
  *
  * Chạy: cd frontend && npm run test:unit
  */
@@ -86,4 +87,29 @@ test('regex chỉ nhận cặp backtick TRONG MỘT DÒNG', () => {
   re.lastIndex = 0;
   const haiDong = 'dòng đầu có một ` lẻ\ndòng sau cũng có ` lẻ';
   assert.deepEqual([...haiDong.matchAll(re)], [], 'Regex đã vắt qua xuống dòng.');
+});
+
+// ---------------------------------------------------------------------------
+// withInlineCode trả về NHIỀU nút — đặt thẳng vào một hộp flex là vỡ.
+// ---------------------------------------------------------------------------
+//
+// Bản sửa 27/10 ở trên đổi `{f}` (MỘT nút chữ) thành `{withInlineCode(f)}`
+// (chữ + <code> + chữ…) mà không đổi cái <li> chứa nó — một hộp `display: flex`
+// (dấu ✓ + chữ). Mỗi nút thành một flex item riêng. Đo trên production
+// 04/11/2026 (PY02, 390×844): ý chính vỡ thành cột, <code> rộng 19px xếp dọc
+// TỪNG KÝ TỰ, một <code> lọt ra x = 500..519 trên màn 390, một <li> cao 789px.
+// Đếm trên bản dựng: 167/565 ý chính có mã nội dòng, 82/179 bài dính ít nhất
+// một. Phép dò dùng để tìm (chạy được ở mọi màn): phần tử flex/grid có con
+// TRỰC TIẾP vừa là nút chữ vừa là <code> — chỉ màn tổng kết khớp.
+
+test('ý chính ở màn tổng kết là MỘT flex item: withInlineCode nằm trong một <span>', () => {
+  const sach = RECAP.replace(/\{\/\*[\s\S]*?\*\/\}/g, '');
+  const li = sach.slice(sach.indexOf('facts.map'), sach.indexOf('</li>', sach.indexOf('facts.map')));
+  assert.ok(li.length > 0, 'không tìm thấy khối <li> của facts.map — đổi cấu trúc thì sửa ca này.');
+  assert.match(li, /display: 'flex'/, '<li> thôi là flex thì ca này hết lý do — xem lại.');
+  assert.match(
+    li,
+    /<span>\{withInlineCode\(f\)\}<\/span>/,
+    'withInlineCode(f) là con TRỰC TIẾP của <li> flex ⇒ mỗi đoạn chữ / <code> thành một cột.',
+  );
 });
