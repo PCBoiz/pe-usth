@@ -1,7 +1,18 @@
-/* Bộ xem từng bước — chỉ dùng token của edu-theme.css (lint:tokens cấm mã màu hex).
+/* Bộ xem từng bước — chỉ dùng token (lint:tokens cấm mã màu hex trong *.module.css).
    Giữ cùng ngôn ngữ hình ảnh với ide.module.css: panel bo 16px, viền
-   --edu-panel-border, chữ --edu-t1/t3, nhấn bằng --edu-accent. Không thêm màu
-   thương hiệu mới; chỗ cần "đang ở đây" thì pha từ --edu-accent. */
+   --edu-panel-border, chữ --edu-t1/t3.
+
+   Bảng lofi chill. Ba vai, đừng trộn:
+   · --ds-action  — CHỈ nền nút chính (.start). Một màu đặc, không gradient.
+   · --ds-violet  — lấy nét, vị trí, trạng thái ĐANG BẬT (.ctrlOn, .scrub).
+   · --ds-mark-ochre pha loãng — mọi DẢI TÔ "chỗ này vừa đổi" (.frameTop,
+     .freshOut, .monacoLine). Đây là vai bút dạ quang: ấm, và vì token này
+     GIỮ NGUYÊN ở cả hai chế độ nên cùng một dải đọc được trên nền trắng lẫn
+     nền tối của Monaco vs-dark.
+   Bỏ --edu-accent-grad (gradient brand xanh hai mốc) và cả họ
+   --edu-accent-soft*.
+   Không viết mã màu dạng hex vào file này, kể cả trong chú thích: lint:tokens
+   là một lệnh grep thẳng, nó không bóc chú thích ra trước khi tìm. */
 
 .panel {
   margin-top: 16px;
@@ -36,11 +47,14 @@
   font: inherit;
   font-size: 14px;
   font-weight: 600;
-  color: var(--edu-panel-bg-solid);
-  background: var(--edu-accent-grad);
+  /* Cùng hợp đồng màu với nút Chạy ở ide.module.css — hai nút chính này đứng
+     cạnh nhau trên cùng thanh công cụ, nên lệch nhau là thấy ngay. */
+  color: var(--ds-on-action);
+  background: var(--ds-action);
   border: 0;
   border-radius: 999px;
   cursor: pointer;
+  box-shadow: 0 6px 18px rgba(42, 32, 23, 0.16);
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
 .start:hover:not(:disabled) { transform: translateY(-1px); }
@@ -48,7 +62,7 @@
 .start:focus-visible,
 .ctrl:focus-visible,
 .scrub:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: 2px solid var(--ds-violet);
   outline-offset: 2px;
 }
 
@@ -79,7 +93,7 @@
   margin-right: 6px;
   vertical-align: -1px;
   border: 2px solid var(--edu-track-bg);
-  border-top-color: var(--edu-accent);
+  border-top-color: var(--ds-violet);
   border-radius: 50%;
   animation: cv-spin 0.8s linear infinite;
 }
@@ -99,7 +113,7 @@
   display: block;
   width: 34%;
   height: 100%;
-  background: var(--edu-accent-grad);
+  background: var(--ds-action);
   border-radius: 999px;
   animation: cv-progress 1.1s ease-in-out infinite;
 }
@@ -156,22 +170,29 @@
   color: var(--edu-t1);
   background: var(--edu-pill-bg);
   border: 1px solid var(--edu-pill-border);
-  border-radius: 10px;
+  /* 8px: thang bán kính của bảng lofi là 4/8/12/16/pill, 10px nằm ngoài thang. */
+  border-radius: var(--ds-r-sm);
   cursor: pointer;
 }
-.ctrl:hover:not(:disabled) { background: var(--edu-accent-soft); }
+.ctrl:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ds-mark-ochre) 18%, transparent);
+}
 .ctrl:disabled { opacity: 0.45; cursor: default; }
-/* Đang tự chạy: nút phải nói ra là nó đang BẬT, không chỉ đổi ký tự ⏩ -> ⏸. */
+/* Đang tự chạy: nút phải nói ra là nó đang BẬT, không chỉ đổi ký tự ⏩ -> ⏸.
+   Dùng bộ ba --ds-violet (vai "đang chọn") chứ không phải dải ochre ấm: ochre
+   đã là vai "vừa đổi" ở ba chỗ ngay bên cạnh, nên lấy nó làm cả "đang bật" là
+   bỏ mất phân biệt giữa hai thứ khác hẳn nhau. Chữ trên nền tint: 5,85:1
+   (sáng) · 6,09:1 (tối); viền 6,70:1 trên thẻ trắng. */
 .ctrlOn {
-  background: var(--edu-accent-soft-strong);
-  border-color: var(--edu-accent);
-  color: var(--edu-accent-text);
+  background: var(--ds-violet-tint);
+  border-color: var(--ds-violet);
+  color: var(--ds-violet);
 }
 
 .scrub {
   flex: 1 1 180px;
   min-width: 140px;
-  accent-color: var(--edu-accent);
+  accent-color: var(--ds-violet);
 }
 
 .counter {
@@ -231,7 +252,8 @@
 .frameTop {
   color: var(--edu-t1);
   font-weight: 600;
-  background: var(--edu-accent-soft);
+  /* Chữ --edu-t1 trên dải này: 13,82:1 — dải tô không đụng tới ngưỡng chữ. */
+  background: color-mix(in srgb, var(--ds-mark-ochre) 22%, transparent);
 }
 /* Gọi hàm: khung mới TRÔI VÀO TỪ DƯỚI (từ phía hàm gọi) và chồng lên đầu danh
    sách. Trả về: bóng của khung vừa rời đi trôi ngược xuống rồi tắt. Hai hiệu
@@ -348,7 +370,9 @@
    transform được là phá luôn cách <pre> xếp dòng). Nền nhạt thì GIỮ, không
    animate: đứng lại ở bước nào cũng thấy dòng nào là dòng mới. */
 .freshOut {
-  background: var(--edu-accent-soft-strong);
+  /* Đậm hơn .frameTop một nấc: đây là thứ phải BẮT MẮT trong một khối <pre>
+     mà mọi dòng trông như nhau. Chữ --edu-t1 trên dải này: 13,29:1. */
+  background: color-mix(in srgb, var(--ds-mark-ochre) 28%, transparent);
   border-radius: 3px;
   animation: cv-fresh-out 200ms ease-out both;
 }
@@ -363,8 +387,15 @@
    Hiệu ứng chỉ dùng opacity/transform; nhịp do CodeVisualizer.tsx truyền xuống
    qua --pe-step-ms (cùng luật stepMotion đã có test), vì decoration của Monaco
    chỉ nhận className chứ không nhận style. */
+/* 20%, và con số này ĐƯỢC ĐO chứ không chọn cho đẹp. Dải nằm DƯỚI chữ của
+   Monaco — màu chữ do theme `vs`/`vs-dark` quyết, ta không chỉnh được — nên
+   luật là "đừng làm tệ hơn thứ đang có". Đo token nhạt nhất (ngoặc xanh lá
+   rgb(49,147,49)): nền xanh 14% cũ cho 3,33:1, ochre 20% cho 3,45:1 — nhỉnh
+   hơn. Độ thấy của chính dải: 1,14 (sáng) · 1,52 (tối) so với 1,18 của bản cũ.
+   Đậm hơn nữa thì dải rõ thêm chút nhưng chữ tụt xuống (26% → 3,32 sáng /
+   2,85 tối), nên 20% là chỗ cân. Đổi số thì ĐO LẠI cả hai chiều. */
 .monacoLine {
-  background: var(--edu-accent-soft-strong);
+  background: color-mix(in srgb, var(--ds-mark-ochre) 20%, transparent);
 }
 
 /* Nhịp là LỚP TĨNH, không phải biến đặt lên nút gốc Monaco ở mỗi bước — xem
@@ -410,7 +441,14 @@
     animation: none;
   }
 }
-.monacoGlyph { background: var(--edu-accent); }
+/* Dấu ở lề trái Monaco, cùng màu bút dạ quang với dải .monacoLine để hai thứ
+   đọc ra MỘT cái đánh dấu chứ không phải hai. GIỚI HẠN phải nói ra: trên lề
+   TRẮNG của theme `vs` nó chỉ 1,99:1 — yếu nếu đây là thứ DUY NHẤT chỉ dòng
+   đang chạy, nhưng nó trùng thông tin với dải tô cả dòng ngay cạnh, nên không
+   có thông tin nào chỉ nằm ở mình nó. Trên nền tối của vs-dark: 7,93:1.
+   Không có token ẤM nào đổi theo chế độ để làm tốt hơn — --edu-amber đứng yên
+   ở cả hai chế độ và chỉ được 2,74:1 trên nền tối. */
+.monacoGlyph { background: var(--ds-mark-ochre); }
 
 /* Người dùng đã nói "ít chuyển động" ở mức hệ điều hành thì tắt hết, chỉ giữ
    lại thứ mang THÔNG TIN: con trỏ vẫn nhảy đúng dòng (CodeVisualizer.tsx tự

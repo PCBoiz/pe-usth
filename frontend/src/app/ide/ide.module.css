@@ -1,4 +1,13 @@
-/* Python IDE — chỉ dùng token của edu-theme.css (lint:tokens cấm mã màu hex). */
+/* Python IDE — chỉ dùng token (lint:tokens cấm mã màu hex trong *.module.css).
+
+   Bảng lofi chill: BỀ MẶT giữ họ --edu-* (giấy kem ấm, mực nâu, đường kẻ
+   --edu-card-line) vì trang chủ và trang khoá học đã sang đó; chỉ vai NHẤN đổi
+   sang --ds-*. KHÔNG lấy --ds-page/--ds-card/--ds-line: đo ra chúng vẫn là xanh
+   xám LẠNH, dùng ở đây là /ide lạnh một mình giữa một site đã ấm.
+   Nhấn: nền nút chính --ds-action, lấy nét/vị trí --ds-violet, dải tô ấm pha từ
+   --ds-mark-ochre. Bỏ --edu-accent-grad (gradient brand xanh hai mốc).
+   Không viết mã màu dạng hex vào file này, kể cả trong chú thích: lint:tokens
+   là một lệnh grep thẳng, nó không bóc chú thích ra trước khi tìm. */
 .page { min-height: 100vh; }
 
 .main {
@@ -41,7 +50,7 @@
 }
 .select:focus-visible,
 .run:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: 2px solid var(--ds-violet);
   outline-offset: 2px;
 }
 /* <option> vẽ bằng bảng màu hệ điều hành: ép nền đặc để chữ không chìm ở chế độ tối. */
@@ -56,12 +65,18 @@
   font: inherit;
   font-size: 15px;
   font-weight: 600;
-  color: var(--edu-panel-bg-solid);
-  background: var(--edu-accent-grad);
+  /* Nền ĐẶC --ds-action, không còn gradient brand: bảng lofi chỉ có MỘT màu
+     hành động, và một dải hai màu là thứ đọc ra "brand" mạnh nhất trên trang.
+     Chữ lấy --ds-on-action (màu ghép sẵn của nó) chứ không mượn nền panel —
+     đo được 5,57:1 ở chế độ sáng và 7,98:1 ở chế độ tối. */
+  color: var(--ds-on-action);
+  background: var(--ds-action);
   border: 0;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: var(--edu-card-shadow);
+  /* Bóng NÂU ẤM cùng họ --edu-card-shadow, đậm hơn một nấc vì nút này nổi trên
+     mặt giấy. KHÔNG dùng --edu-brand-glow (quầng xanh + đỏ). */
+  box-shadow: 0 6px 18px rgba(42, 32, 23, 0.16);
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
 .run:hover:not(:disabled) { transform: translateY(-1px); }
@@ -89,7 +104,7 @@
 }
 .stop:hover { background: color-mix(in srgb, crimson 26%, transparent); }
 .stop:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: 2px solid var(--ds-violet);
   outline-offset: 2px;
 }
 
@@ -160,7 +175,7 @@
   margin-right: 6px;
   vertical-align: -1px;
   border: 2px solid var(--edu-track-bg);
-  border-top-color: var(--edu-accent);
+  border-top-color: var(--ds-violet);
   border-radius: 50%;
   animation: ide-spin 0.8s linear infinite;
 }
@@ -174,7 +189,11 @@
   font-size: 13px;
   color: var(--edu-t3);
 }
-.ok { color: var(--edu-accent-text); }
+/* "Mã thoát: 0" — ĐẠT. Trước đây tô --edu-accent-text, tức cùng màu XANH với
+   nút bấm: một trạng thái thành công không đọc ra thành công, và nó nằm ngay
+   cạnh .fail đỏ. --ds-ochre là vai "đạt" của bảng lofi và đổi theo chế độ
+   (5,48:1 trên thẻ sáng · 8,16:1 trên panel tối). */
+.ok { color: var(--ds-ochre); }
 .fail { color: color-mix(in srgb, crimson 85%, var(--edu-t1)); }
 
 .notice {
@@ -268,7 +287,7 @@
 .restoredClose:hover { background: var(--edu-track-bg); }
 .restoredAction:focus-visible,
 .restoredClose:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: 2px solid var(--ds-violet);
   outline-offset: 2px;
 }
 
@@ -326,7 +345,7 @@
 }
 .retry:hover { background: var(--edu-track-bg); }
 .retry:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: 2px solid var(--ds-violet);
   outline-offset: 2px;
 }
 
@@ -349,6 +368,6 @@
   border-radius: 12px;
 }
 .fallbackInput:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: 2px solid var(--ds-violet);
   outline-offset: -1px;
 }

@@ -72,7 +72,7 @@
   --ds-violet:      #1D4ED8;   /* vị trí, lựa chọn, liên kết · 7,63:1 */
   --ds-violet-deep: #15337A;   /* chữ tím trên nền tím nhạt · 10,09:1 */
   --ds-violet-tint: #E8F0FE;
-  --ds-action:      #1F5FE0;   /* CHỈ nền nút chính · chữ trắng 7,33:1 */
+  --ds-action:      #1F5FE0;   /* CHỈ nền nút chính · chữ trắng 5,57:1 (đo lại 04/11 — bản cũ ghi 7,33 là SAI; đạt AA 4,5, KHÔNG đạt AAA 7) */
   --ds-on-action:   #FFFFFF;   /* chữ/hình đặt trên nền màu nhấn đậm */
   --ds-sanguine:    #CF2338;   /* chú ý, chưa đúng · 6,41:1 */
   --ds-sanguine-tint: #FFF1F3;
