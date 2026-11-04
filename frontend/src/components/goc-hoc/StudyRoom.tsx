@@ -15,12 +15,17 @@
  *   3. giữ `localStorage` (tên hiển thị) — engine không tự chạm vào, vì ở chế
  *      độ riêng tư `localStorage` NÉM LỖI chứ không trả null.
  *
- * ── VÌ SAO LÀ `apiFetch`, KHÔNG PHẢI `apiFetch` ──────────────────
+ * ── VÌ SAO CHỈ GỌI KHI ĐÃ CÓ PHIÊN ─────────────────────────────────────────
  * Trang chủ là trang CÔNG KHAI. `apiFetch` gặp 401 sẽ thử refresh rồi rơi
  * xuống `ensureGuest()`, tức MỖI CON BOT quét web tạo một tài khoản khách:
  * bảng `users` phình, và hạn mức THROTTLE_GUEST_LIMIT (120 lượt/giờ/IP) cháy
  * đúng lúc cả phòng máy chung một NAT cần tài khoản thật. Nên ở đây: chỉ gọi
- * khi máy ĐÃ CÓ phiên (`hasStoredSession`), và chỉ bằng đường chỉ-refresh.
+ * khi máy ĐÃ CÓ phiên (`hasStoredSession` trong `laySo`).
+ * Nhánh `test` còn một lớp thứ hai — `apiFetchSessionOnly`, gặp 401 thì dừng
+ * chứ không tạo khách. Main CHƯA áp lớp đó (chủ dự án quyết 04/11: "vẫn để
+ * trang web mở cho khách như hiện tại"), nên người có cờ phiên đã chết mở
+ * trang chủ là nhận MỘT tài khoản khách mới. Bot thì không — chúng không có
+ * phiên nào nên dừng ở `hasStoredSession`.
  * Khách vãng lai: 0 lời gọi mạng, và vẫn thấy ĐẦY ĐỦ căn phòng — chỉ các con
  * số là dấu "—". Bẫy này ghi trong AGENTS.md ("apiFetch gặp 401 là TỰ TẠO tài
  * khoản khách").
@@ -60,6 +65,13 @@ export type StudyRoomProps = {
   lessonUrl: string;
   modules: ModuleRow[];
   meta: LessonMetaRow[];
+  /**
+   * Link form góp ý, đã qua `feedbackHref()` ở trang (server). null = tắt
+   * (biến môi trường đặt rỗng, hoặc giá trị không phải http/https). Trang này
+   * là cửa vào của người thử, nên nó phải có đường tới form — bản bê từ nhánh
+   * `test` (4d5f86d) mất đường đó và `feedback-link.test.mjs` đỏ.
+   */
+  feedbackUrl?: string | null;
 };
 
 function lsGet(key: string): string | null {
@@ -187,6 +199,7 @@ export default function StudyRoom(props: StudyRoomProps) {
       dispose = initStudyRoom(host, {
         content,
         user,
+        feedback: props.feedbackUrl ?? null,
         ten: {
           doc: () => lsGet(LS_TEN),
           ghi: (v: string) => {
@@ -206,7 +219,7 @@ export default function StudyRoom(props: StudyRoomProps) {
       if (dispose) dispose();
       host.innerHTML = '';
     };
-  }, [props.courseId, props.courseName, props.lessonUrl, props.modules, props.meta]);
+  }, [props.courseId, props.courseName, props.lessonUrl, props.modules, props.meta, props.feedbackUrl]);
 
   return <div ref={hostRef} />;
 }

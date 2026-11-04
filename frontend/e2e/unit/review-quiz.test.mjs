@@ -337,14 +337,64 @@ test('ô đề ôn CHỈ được mount từ cây bài học, không từ trang 
   assert.deepEqual(ra, ['components/python-studio/screens/RecapScreen.tsx']);
 });
 
-test('trang công khai vẫn KHÔNG gọi API nào', () => {
-  // Cơ chế thật đang chặn bot sinh tài khoản là "trang công khai không có
-  // đường nào để gọi API", không phải một hàm fetch cẩn thận. Nối đường quiz
-  // vào bài học không được làm hỏng tính chất đó.
+/** Bỏ chú thích: chữ `apiFetch` trong một câu GIẢI THÍCH không phải lời gọi. */
+const boChuThich = (s) =>
+  s
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .split('\n')
+    .filter((d) => !d.trimStart().startsWith('//'))
+    .join('\n');
+
+test('trang công khai KHÔNG tự gọi API, và không mount đề ôn', () => {
+  // Bản trước của ca này đòi "trang công khai không có ĐƯỜNG nào tới API".
+  // Từ 4d5f86d (bê trang chủ Góc học + trang khoá từ nhánh `test`) điều đó
+  // KHÔNG còn đúng: cả hai trang lấy tiến độ qua `apiFetch` — chủ dự án quyết
+  // giữ thế (04/11). Ca này nay canh phần CÒN đúng: chính file trang không gọi
+  // API và không mount đề ôn. Phần "chỉ gọi khi đã có phiên" ở ca dưới.
+  //
+  // Và nó từng ĐỎ OAN vì không bỏ chú thích: page.tsx GIẢI THÍCH vì sao không
+  // gọi `apiFetch`, và chính câu giải thích ấy khớp regex.
   for (const f of ['src/app/page.tsx', 'src/app/(standalone)/courses/[courseId]/page.tsx']) {
-    const s = doc(`../../${f}`);
+    const s = boChuThich(doc(`../../${f}`));
     assert.doesNotMatch(s, /apiFetch|ReviewQuiz|quiz\/generate|quiz\/status/, f);
   }
+});
+
+test('trang công khai CHỈ gọi API khi máy đã có phiên — bot không chạm API', () => {
+  // Cơ chế THẬT đang chặn "mỗi con bot một tài khoản khách" trên hai trang công
+  // khai: `apiFetch` chỉ được gọi SAU phép `hasStoredSession`. Bot không có
+  // phiên đã lưu nên dừng ở đó, 0 lời gọi mạng. Gỡ phép chặn là mở lại lỗ ấy
+  // mà không gì khác đỏ — trang vẫn chạy, chỉ bảng `users` phình ra.
+
+  // Trang chủ: mọi `apiFetch(` nằm trong helper `doc`, và `doc` chỉ được gọi
+  // trong `laySo` SAU dòng trả sớm khi chưa có phiên.
+  const room = boChuThich(doc('../../src/components/goc-hoc/StudyRoom.tsx'));
+  const goi = [...room.matchAll(/apiFetch\(/g)].map((m) => m.index);
+  const thanDoc = room.indexOf('async function doc<');
+  const hetDoc = room.indexOf('\n}', thanDoc);
+  assert.ok(thanDoc >= 0, 'StudyRoom.tsx không còn helper `doc` — đổi cấu trúc thì sửa ca này.');
+  assert.ok(goi.length > 0 && goi.every((i) => i > thanDoc && i < hetDoc),
+    'Có lời gọi apiFetch( nằm NGOÀI helper `doc` của StudyRoom — nó không đi qua phép chặn phiên.');
+  const laySo = room.indexOf('async function laySo(');
+  const chan = room.indexOf('if (!hasStoredSession(session)) return', laySo);
+  assert.ok(laySo >= 0 && chan > laySo, '`laySo` không còn trả sớm khi chưa có phiên.');
+  const goiDoc = [...room.matchAll(/\bdoc<[^>]*>\(|\bdoc\(/g)].map((m) => m.index)
+    .filter((i) => i !== thanDoc + 'async function '.length);
+  assert.ok(goiDoc.length > 0 && goiDoc.every((i) => i > chan),
+    'Có lời gọi doc(...) đứng TRƯỚC phép chặn phiên trong StudyRoom.');
+
+  // Trang khoá: lời gọi duy nhất nằm trong `fetchCompleted`, mà
+  // `loadCompletedLessons` chặn phiên ngay dòng đầu.
+  const detail = boChuThich(doc('../../src/app/(standalone)/courses/[courseId]/CourseDetail.tsx'));
+  const goiCD = [...detail.matchAll(/apiFetch\(/g)].map((m) => m.index);
+  const fc = detail.indexOf('fetchCompleted:');
+  assert.equal(goiCD.length, 1, 'CourseDetail phải có ĐÚNG MỘT lời gọi apiFetch( (trong fetchCompleted).');
+  assert.ok(fc >= 0 && goiCD[0] > fc && goiCD[0] - fc < 200,
+    'Lời gọi apiFetch( của CourseDetail không nằm trong fetchCompleted.');
+  const prog = boChuThich(doc('../../src/lib/course-progress.ts'));
+  assert.match(prog,
+    /export async function loadCompletedLessons\([\s\S]*?\): Promise<number\[\] \| null> \{\s*if \(!hasStoredSession\(input\.session\)\) return null;/,
+    '`loadCompletedLessons` phải chặn phiên ở DÒNG ĐẦU, trước mọi lời gọi.');
 });
 
 // ------------------------------------------- ĐỀ ĐANG LÀM sống qua tải lại

@@ -158,3 +158,22 @@ test('setState HOÃN khỏi thân effect — React 19 chặn gọi thẳng', () 
     }
   }
 });
+
+/**
+ * Effect cuộn tìm hàng bằng `getElementById(\`cd-lesson-${…}\`)` — nên hàng bài
+ * PHẢI mang đúng id ấy. Thiếu thì `getElementById` trả null, effect `return`
+ * lặng lẽ, và module vẫn mở đúng nên mọi ca trên đều XANH trong khi người học
+ * phải tự cuộn tìm bài trong một module 20 bài.
+ *
+ * Không phải lo xa: bản CourseDetail bê từ nhánh `test` (4d5f86d) mất đúng cái
+ * id này. Ablation trước khi có ca: gỡ `id=` khỏi hàng → 0 đỏ.
+ */
+test('hàng bài mang đúng id mà effect cuộn tìm', () => {
+  const tim = DETAIL.match(/getElementById\(`([a-z-]+)\$\{/);
+  assert.ok(tim, 'Không thấy getElementById(`…${…}`) — effect cuộn đổi cách tìm thì sửa ca này.');
+  const tienTo = tim[1];
+  assert.ok(
+    boChuThich(DETAIL).includes('id={`' + tienTo + '${index}`}'),
+    `Không hàng bài nào mang id={\`${tienTo}\${index}\`} — effect cuộn sẽ tìm ra null và không cuộn.`,
+  );
+});

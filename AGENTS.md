@@ -75,8 +75,8 @@ học nó.
 | Backend test | **35 bộ, 501 ca**, tất cả đạt (chạy RIÊNG — xem bẫy tranh CPU) |
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
-| Frontend lint | 0 lỗi, **139 cảnh báo** |
-| Frontend unit test | `cd frontend && npm run test:unit` → **524 ca** / 41 tệp, tất cả đạt |
+| Frontend lint | 0 lỗi, **146 cảnh báo** (+7 = `goc-hoc/engine.js`, vào cùng 4d5f86d) |
+| Frontend unit test | `cd frontend && npm run test:unit` → **525 ca** / 41 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **139 bài tập được chấm / 463 ca**, 2 441 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
@@ -86,7 +86,7 @@ học nó.
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **17 mục, 14 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
-| Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **15 CSS module trong `src/`** |
+| Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **14 CSS module trong `src/`** |
 | Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **179/179 bài khớp bản dựng**, 0 lỗi (biên nhận 04/11/2026) |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
 | Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **18 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
@@ -103,17 +103,20 @@ thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg`
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
 **Con số 507 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
-catalog-duration 2 · catalog-naming 3 · consent-banner 15 · course-resume 8 ·
+catalog-duration 2 · catalog-naming 3 · consent-banner 15 · course-resume 9 ·
 data-files 18 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
 ide-trace 38 · inline-code 3 · insert-gate-sync 2 · label-version 2 ·
 learning-events 48 · lesson-back 7 · lesson-load 7 · mcq-code 9 ·
 mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 · prewarm-gate 5 ·
 read-diagram 12 ·
-read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 33 · run-stale 15 ·
+read-guess 19 · read-trace 15 · recap-recall 7 · read-try-it 20 · review-quiz 34 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 14 · feedback-rank 3 = 524.
-Mốc trước là 523; ds-contrast 13 → 14 (TRANG CHỦ bỏ token brand xanh–đỏ).
+worker-csp 7 · ds-contrast 13 · feedback-rank 3 = 525.
+Mốc trước là 524; bê giao diện từ nhánh `test` (4d5f86d) làm đỏ 6 ca — sửa: ds-contrast 14 → 13
+(gỡ ca chip: hai chip nó canh chỉ sống trong `home.module.css`, file đã xoá), course-resume
+8 → 9 (hàng bài phải mang id mà effect cuộn tìm), review-quiz 33 → 34 (trang công khai chỉ
+gọi API sau `hasStoredSession`). Trước đó 523 → 524; ds-contrast 13 → 14 (TRANG CHỦ bỏ token brand xanh–đỏ).
 Trước đó 522 → 523; ds-contrast 12 → 13 (CHIP TRANG CHỦ: nền alpha làm chữ chìm).
 Trước đó 520 → 522; ds-contrast 10 → 12 (NỀN TRANG bỏ mesh xanh–đỏ + quầng bám chuột).
 Trước đó 518 → 520; ds-contrast 8 → 10 (VIỀN THẺ TRANG CÔNG KHAI + BÓNG MẶT NỔI).
@@ -1362,10 +1365,14 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   · trang BÀI HỌC (`/lesson/*`) — nơi học viên thật sự cần một danh tính để lưu tiến độ — dùng
     `apiFetch`. Hôm nay đúng ba chỗ gọi nó, và cả ba đều ở bài học: `useLessonData.ts`,
     `PythonStudio.tsx`, `LessonDbDesign.tsx` (cộng `learning-events.ts` khi lớp log được bật);
-  · **mọi trang công khai KHÔNG gọi API nào cả** — trang chủ và `/courses/*` đọc danh mục TĨNH
-    (`catalog.ts` + `curricula.json`), còn badge "Tiếp tục ở bài X" đọc cookie mốc
-    `pe_has_session` qua `pe-bridge.js`. Đó là cơ chế THẬT đang chặn chuyện bot sinh tài khoản,
-    và nó mạnh hơn một hàm fetch cẩn thận: không có đường nào để gọi sai.
+  · **trang công khai CHỈ gọi API khi máy ĐÃ có phiên** — câu này từng là "không gọi API
+    nào cả", và nó KHÔNG còn đúng từ 4d5f86d (bê trang chủ Góc học + trang khoá từ nhánh
+    `test`): cả hai lấy tiến độ qua `apiFetch`, sau phép `hasStoredSession` (`laySo()`
+    trong `StudyRoom.tsx`, `loadCompletedLessons()` trong `course-progress.ts`). Bot không
+    có phiên đã lưu nên dừng ở đó — 0 lời gọi. `review-quiz.test.mjs` canh phép chặn ấy
+    (ablate gỡ chặn ở mỗi trang → 1 đỏ). Lớp thứ hai của nhánh `test`
+    (`apiFetchSessionOnly`) CHƯA áp, theo quyết định của chủ dự án 04/11, nên người có cờ
+    phiên đã chết mở trang chủ là nhận MỘT tài khoản khách mới.
   **Dòng này từng ghi "mọi trang công khai dùng `apiFetchSessionOnly`" — hàm đó CHƯA BAO GIỜ
   được viết.** `grep -rn apiFetchSessionOnly frontend/ src/` ra 0 kết quả; `api.ts` chỉ export
   `apiFetch`, `danhDauPhien`, `asList`, `findEnrollment`, `HAN_DU_PHONG_GIAY`. Luật đúng về tinh
@@ -2488,6 +2495,30 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   nút, tím/đỏ/lục, bán kính, bóng) vẫn ở nhánh `test`. Port tiếp thì theo đúng luật này:
   **mỗi vòng token + nối ít nhất một bề mặt THẬT**, không thêm token suông — thêm token mà
   chưa mặt nào dùng là đúng lỗi thống trị của repo, lần thứ mười ba.
+
+- **BÊ GIAO DIỆN TỪ NHÁNH KHÁC LÀ BÊ CẢ NHỮNG BẢN SỬA MÀ NHÁNH ĐÓ CHƯA CÓ — và tôi
+  push mà không chạy bậc thang.** 4d5f86d chép nguyên trang chủ Góc học + `CourseDetail`
+  + `CourseShell` từ `tester/test` (commit cuối 22/10). Main đi trước nhánh đó 170 commit,
+  nên bản chép VIẾT ĐÈ những bản sửa main đã có sau ngày ấy. Bộ test frontend đỏ **6 ca ở 4
+  file**, cổng tài nguyên chết **2 lỗi**, và không cái nào được chạy trước khi push:
+  · `course-resume` 3 đỏ — `CourseDetail` của `test` ghim lại module 0: đóng bài là rơi về
+    đầu khoá 179 bài, đúng lỗi NĂM người thử báo ngày 27/10. Khối đọc `?lesson=` + effect
+    cuộn RIÊNG đã đưa về; và một ca mới đòi hàng bài mang id mà effect tìm — bản chép mất
+    đúng cái id đó mà không ca nào đỏ (ablate trước khi có ca: **0 đỏ**);
+  · `feedback-link` 1 đỏ — trang chủ mới KHÔNG có đường tới form góp ý, tức cửa vào của
+    người thử mất kênh góp ý. Nay link nằm dưới thẻ "Khoá đang học";
+  · `review-quiz` 1 đỏ, và đỏ vì lý do SAI: regex khớp chữ `apiFetch` trong một CHÚ THÍCH.
+    Nhưng tính chất ca ấy khẳng định ("trang công khai không có đường tới API") thì đúng là
+    đã sai — nên viết lại theo hợp đồng mới chứ không chỉ bóc chú thích;
+  · `ds-contrast` 1 đỏ — `home.module.css` thành file chết (chỉ `CatalogTile.tsx` import, mà
+    `CatalogTile` không ai dùng; cổng tài nguyên chết MIỄN `app/` nên không thấy). Xoá cả
+    hai cùng `skeleton.css` + `course_detail.css` (2 lỗi của cổng). Ca chip gỡ theo, dòng
+    `DA_SANG_LOFI` trỏ sang `goc-hoc/scene.css` để danh sách không ngắn lại.
+  **Và phép thay chữ hàng loạt làm hỏng CHÚ THÍCH:** `s/apiFetchSessionOnly/apiFetch/g` biến
+  câu giải thích thành *"Dùng `apiFetch`, không dùng `apiFetch`"* ở hai file. Thay tên một
+  hàm thì đọc lại mọi câu văn chứa nó.
+  **Luật rút ra: bê từ nhánh khác thì chạy CẢ bộ unit + bốn cổng TRƯỚC khi push**, vì thứ bị
+  viết đè là thứ bên kia không biết là có.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

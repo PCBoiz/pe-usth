@@ -1138,6 +1138,10 @@ function apDungSo(){
   T('courseName', CONTENT.course.name);
   T('courseSub', CUR ? `Bài tiếp theo: ${CUR.l.title}` : '');
   const cl = $('#courseLink'); if (cl) cl.href = `/courses/${CONTENT.course.id}`;
+  // Link góp ý: chỉ hiện khi trang (server) đưa xuống một địa chỉ đã qua
+  // feedbackHref(). Không có thì GIỮ `hidden` — đặt biến môi trường rỗng là
+  // cố ý tắt nút, không được rơi về một địa chỉ đoán.
+  const fb = $('#fbLink'); if (fb && state.feedback) { fb.href = state.feedback; fb.hidden = false; }
 
   T('calPopT', new Date().toLocaleDateString('vi-VN', { month: 'long', year: 'numeric' }));
   /* Lịch chỉ khoanh hôm nay: API trả đúng một con số `streak`, không trả tập

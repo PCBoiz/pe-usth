@@ -420,62 +420,6 @@ test('không còn quầng sáng bám chuột vẽ trên <html>', () => {
   );
 });
 
-/* CHIP CỦA TRANG CHỦ — và đây là lớp lỗi, không phải hai dòng CSS.
- *
- * Đo trên production 04/11 bằng phép hợp thành alpha THẬT (đi ngược cây tổ tiên,
- * không lấy nền `body`): "Cơ bản" 3,20:1 và "Sẵn sàng sử dụng" 2,95:1 — cả hai
- * là 13px/500, tức chữ THƯỜNG, ngưỡng 4,5:1.
- *
- * Nguyên nhân là một KHUÔN: tô 10–20% chính màu chữ lên nền rồi đặt màu đó lên
- * trên. Nền càng đậm thì chữ càng chìm, và nó trông vẫn "hợp tông" nên không ai
- * nghi. Ca này vì vậy đòi nền chip phải ĐỤC và cặp màu phải vượt AA — bắt cả
- * những chip viết sau này theo đúng khuôn ấy.
- *
- * Giới hạn phải nói ra: ca đọc CSS tĩnh, nên nó chỉ thấy chip khai màu bằng
- * token. Một chip tô màu bằng `style={{…}}` trong TSX thì nó mù.
- */
-const HOME = readFileSync(join(__dirname, '..', '..', 'src', 'app', 'home.module.css'), 'utf8');
-
-test('chip trang chủ: nền ĐỤC và cặp màu vượt AA (nền alpha làm chữ chìm)', () => {
-  const CHIP = ['tagRed', 'tagOk'];
-  for (const ten of CHIP) {
-    // KHÔNG dựng regex từ chuỗi template: `\.` trong một template literal là
-    // escape của dấu chấm thường, nên `` `\.${ten}\s*\{` `` ra regex
-    // `.tagReds*{` — ca ĐỎ OAN với "không còn lớp .tagRed". Đúng bẫy "viết
-    // regex THẲNG, đừng dựng từ chuỗi" mà AGENTS.md đã ghi ở ca thanh sticky.
-    const dau = HOME.indexOf(`.${ten} {`);
-    assert.ok(dau >= 0, `không còn lớp .${ten} trong home.module.css — đổi tên thì sửa ca này`);
-    const than = HOME.slice(dau, HOME.indexOf('}', dau));
-    const lay = (prop) => {
-      const d = than.split(/[;{]/).map((x) => x.trim()).find((x) => x.startsWith(`${prop}:`));
-      return d ? d.slice(prop.length + 1).trim() : null;
-    };
-    const chu = lay('color');
-    const nen = lay('background');
-    assert.ok(chu && nen, `.${ten} phải khai cả color lẫn background`);
-
-    // Nền ĐỤC: một `rgba(...)` alpha < 1 là đúng khuôn đã làm hỏng hai chip này.
-    assert.ok(
-      !/rgba\s*\([^)]*,\s*0?\.\d+\s*\)/.test(nen),
-      `.${ten} tô nền bằng ${nen} — nền alpha của CHÍNH màu chữ làm tương phản `
-        + 'tự co lại (đo được 3,20 và 2,95 trên production). Dùng tint ĐỤC.',
-    );
-
-    const giai = (v) => {
-      const bd = v.match(/^var\((--[a-z0-9-]+)\)$/);
-      if (!bd) return /^#[0-9a-fA-F]{6}$/.test(v) ? v : null;
-      return token(':root', bd[1]) ?? token('body', bd[1]);
-    };
-    const [a, b] = [giai(chu), giai(nen)];
-    assert.ok(a && b, `.${ten}: không giải được ${chu} / ${nen} thành mã màu`);
-    const t = tiSo(a, b);
-    assert.ok(
-      t >= AA,
-      `.${ten}: ${a} trên ${b} = ${t.toFixed(2)}:1, dưới AA ${AA} cho chữ 13px.`,
-    );
-  }
-});
-
 /* TRANG CHỦ KHÔNG ĐƯỢC DÙNG BẢNG BRAND XANH–ĐỎ NỮA.
  *
  * Màu TĨNH của trang đã sang lofi từ mấy vòng trước, nhưng lớp TƯƠNG TÁC thì
@@ -496,7 +440,13 @@ test('chip trang chủ: nền ĐỤC và cặp màu vượt AA (nền alpha làm
  * nó nạp thì ra 128, vì phần lớn selector là dashboard/forum di sản không
  * trang nào render. */
 const DA_SANG_LOFI = [
-  ['src/app/home.module.css', HOME],
+  // Dòng này từng là `src/app/home.module.css`. Từ 4d5f86d trang chủ là cảnh
+  // Góc học và file đó không còn ai nạp — đã XOÁ cùng `CatalogTile.tsx`, thành
+  // phần duy nhất import nó. Dòng KHÔNG bớt đi mà trỏ sang bề mặt đang LÀ trang
+  // chủ, để danh sách vẫn chỉ dài thêm. (Ca "chip trang chủ nền đục" cùng file
+  // thì đã gỡ: hai chip nó canh chỉ sống trong file đã xoá — xem AGENTS.md.)
+  ['src/components/goc-hoc/scene.css',
+    readFileSync(join(__dirname, '..', '..', 'src', 'components', 'goc-hoc', 'scene.css'), 'utf8')],
   ['public/static/css/edu-course-detail.css',
     readFileSync(join(__dirname, '..', '..', 'public', 'static', 'css', 'edu-course-detail.css'), 'utf8')],
   ['src/components/CourseShell.module.css',

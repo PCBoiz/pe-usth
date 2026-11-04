@@ -106,6 +106,7 @@ export const SHELL_HTML = /* html */ `
       <div class="prog"><i id="courseProg"></i></div>
       <p class="cnote" id="courseNote"></p>
       <div class="event"><div style="flex:1;min-width:0"><b id="courseName"></b><small id="courseSub"></small></div><a class="btn" id="courseLink" href="/courses/python_advanced">Mở khoá học</a></div>
+      <a class="fb" id="fbLink" target="_blank" rel="noopener noreferrer" title="Khảo sát ẩn danh về khoá học, mở ở tab mới" hidden>Góp ý cho nhóm làm khoá ↗</a>
     </section>
     <div class="music glass" id="music"><button class="ib" id="musicBtn" aria-label="Phát nhạc lofi"><svg class="i"><use href="#i-play"/></svg></button><div class="eq"><i></i><i></i><i></i><i></i></div><span id="musicTxt">Nhạc lofi · đang tắt</span></div>
   </aside>

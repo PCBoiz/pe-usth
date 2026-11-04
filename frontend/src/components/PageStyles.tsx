@@ -44,7 +44,6 @@ const RANK: Record<string, number> = {
   'lesson.css': 22,
   'lesson_db_design.css': 23,
   'chatbot.css': 24,
-  'course_detail.css': 25,
   'course_db_design.css': 26,
   // các file pages/*.inline.css → 30 (mặc định)
   'edu-theme.css': 40,

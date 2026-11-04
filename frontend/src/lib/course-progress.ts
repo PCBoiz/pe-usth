@@ -14,8 +14,9 @@
  *     và mọi con bot mở /courses/python_advanced đều tạo một tài khoản khách:
  *     bảng `users` phình, và ăn hết quota THROTTLE_GUEST_LIMIT (mặc định 120
  *     lượt/giờ/IP) nên cả phòng máy chung NAT bị 429 đúng lúc cần tài khoản
- *     thật. Nên trang khoá chỉ được gọi API khi ĐÃ CÓ phiên trong máy, và phải
- *     gọi qua đường chỉ-refresh (apiFetchSessionOnly).
+ *     thật. Nên trang khoá chỉ được gọi API khi ĐÃ CÓ phiên trong máy. (Nhánh
+ *     `test` thêm lớp thứ hai — đường chỉ-refresh `apiFetchSessionOnly`; main
+ *     chưa áp, theo quyết định của chủ dự án 04/11 — xem CourseDetail.tsx.)
  *
  *  2. GỢI Ý BÀI NÀO (planResume). Chỉ đề xuất, không khoá: mọi bài vẫn bấm vào
  *     được, nên hàm này không bao giờ trả "không được học bài X".
@@ -75,7 +76,7 @@ export function hasStoredSession(input: {
  */
 export async function loadCompletedLessons(input: {
   session: { access?: string | null; legacyRefresh?: string | null; cookie?: string | null };
-  /** Phải đi đường chỉ-refresh (apiFetchSessionOnly) — không bao giờ tạo khách. */
+  /** Chỉ được gọi khi đã có phiên — hàm này tự chặn bằng hasStoredSession. */
   fetchCompleted: () => Promise<number[] | null>;
 }): Promise<number[] | null> {
   if (!hasStoredSession(input.session)) return null;

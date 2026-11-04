@@ -16,9 +16,13 @@
 //     khách vãng lai thấy đủ phòng, đủ sách, đủ tên bài mà KHÔNG một lời gọi
 //     mạng nào. Cùng nguồn với trang khoá học — xem bẫy "Hai nguồn danh sách
 //     bài" trong AGENTS.md: đừng viết cứng số 48 ở đây.
-//  2. SỐ CỦA NGƯỜI HỌC LẤY Ở CLIENT, QUA `apiFetchSessionOnly`. Trang này công
+//  2. SỐ CỦA NGƯỜI HỌC LẤY Ở CLIENT, VÀ CHỈ KHI ĐÃ CÓ PHIÊN. Trang này công
 //     khai; `apiFetch` gặp 401 là tự tạo tài khoản khách, tức mỗi con bot một
-//     tài khoản. StudyRoom.tsx giữ luật đó, đừng gọi API ở đây.
+//     tài khoản. Nhánh `test` chặn bằng `apiFetchSessionOnly`; main CHƯA áp
+//     hợp đồng phiên đó (chủ dự án quyết 04/11: "vẫn để trang web mở cho khách
+//     như hiện tại"), nên chặn nằm ở `laySo()` trong StudyRoom.tsx: không có
+//     phiên đã lưu ⇒ trả sớm, KHÔNG một lời gọi nào. Bot không có phiên nên
+//     không chạm API. Đừng gọi API ở đây, và đừng gỡ phép chặn ấy.
 //  3. KHÔNG `PageStyles hrefs={[...]}` NÀO KHÁC RỖNG. Cảnh có CSS riêng
 //     (scene.css, import trong StudyRoom.tsx). `PageStyles` ở đây chỉ để lấy
 //     @font-face tự lưu trữ của Be Vietnam Pro + JetBrains Mono (PageStyles tự
@@ -30,6 +34,7 @@ import StudyRoom from '@/components/goc-hoc/StudyRoom';
 import PageStyles from '@/components/PageStyles';
 import { COURSES } from '@/lib/catalog';
 import CURRICULA_JSON from '@/lib/curricula.json';
+import { feedbackFormHref } from '@/lib/feedback-link';
 import type { LessonMetaRow, ModuleRow } from '@/lib/goc-hoc';
 
 const COURSE_ID = 'python_advanced';
@@ -56,6 +61,7 @@ export default function HomePage() {
         lessonUrl={course?.lessonUrl ?? `/lesson/${COURSE_ID}`}
         modules={modules}
         meta={meta}
+        feedbackUrl={feedbackFormHref()}
       />
     </>
   );

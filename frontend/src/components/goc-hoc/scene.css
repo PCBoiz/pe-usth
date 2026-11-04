@@ -569,6 +569,13 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
    lại — trạng thái TRỐNG là trạng thái thường gặp nhất (khách chưa có phiên),
    nên nó phải được thiết kế chứ không để kệ trơ ra. */
 .pill.dn svg{stroke:var(--ok)}
+/* Link góp ý dưới thẻ "Khoá đang học": lặng (chữ nhỏ, gạch chân) vì nó là lối
+   phụ, nhưng phải THẤY được — đợt thử nghiệm sống nhờ những câu góp ý này.
+   [hidden] phải thắng display:inline-flex, nếu không link rỗng vẫn hiện. */
+.today .fb{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12.5px;color:var(--faint);text-decoration:underline;text-underline-offset:3px}
+.today .fb:hover{color:var(--amber)}
+.today .fb:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:4px}
+.today .fb[hidden]{display:none}
 .cnote{margin:8px 0 0;font-size:12.5px;color:var(--faint);line-height:1.45}
 .today .prog{margin-top:8px}
 .facts{font-family:var(--f-mono);font-size:12.5px;color:var(--code-dim)}
