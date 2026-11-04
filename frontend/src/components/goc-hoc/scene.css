@@ -97,7 +97,17 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 #sun{position:absolute;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,236,190,.9),rgba(255,214,150,.35) 40%,transparent);opacity:0;mix-blend-mode:screen}
 #rainSvg{width:2752px;height:1536px;pointer-events:none;opacity:0;transition:opacity .9s}
 .rain #rainSvg{opacity:1}
-.drops{animation:fall .62s linear infinite}
+/* Mưa CHỈ chạy khi đang mưa. Đây là hoạt ảnh DUY NHẤT của cảnh không lên được
+   compositor (transform trên phần tử SVG — trace ghi compositeFailed 1024, đã đo
+   bằng cách khởi động lại mọi hoạt ảnh trong một vết), nên lúc chạy nó vẽ lại
+   #rainSvg trên luồng chính mỗi khung — kể cả khi #rainSvg đang opacity 0.
+   `paused` chứ không `animation:none`: none đưa giọt về vị trí đầu, tức giọt
+   NHẢY trong 0,9s mờ dần lúc tạnh. */
+.drops{animation:fall .62s linear infinite;animation-play-state:paused}
+.rain .drops{animation-play-state:running}
+/* Lớp đang trong suốt thì không chạy hoạt ảnh — engine.js applyTOD() gắn hai lớp
+   này theo giờ trong ngày. */
+.khongSao .star,.khongDenPho .city{animation-play-state:paused}
 @keyframes fall{from{transform:translateY(-960px)}to{transform:translateY(0)}}
 #win{left:1036px!important;top:158px!important;width:806px;height:930px;perspective:2600px;perspective-origin:50% 45%;pointer-events:none}
 .sash{position:absolute;top:0;width:403px;height:930px;transition:transform 1.9s cubic-bezier(.3,.08,.2,1)}
@@ -555,6 +565,9 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
   .mi .ic{width:30px;height:30px}
   .today .q{display:none}.today h3{margin:0}
   .music,#hint{display:none}
+  /* Bụi bay: 7px × tỉ lệ phòng trên điện thoại ≈ 2,7px trên màn (đã đo) — không
+     ai thấy, nhưng 16 hoạt ảnh của nó vẫn giữ luồng chính dựng khung. */
+  .mote{display:none}
   .course{grid-template-columns:1fr;gap:8px}
   .lesson{grid-template-columns:1fr}
   .spread{grid-template-columns:1fr;aspect-ratio:auto}.leafp.l{display:none}.leafp.r{border-radius:14px;min-height:520px}.flip{width:100%}

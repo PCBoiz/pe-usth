@@ -253,10 +253,17 @@ function sample(h){
 }
 const sg=$('#sgrad'), clB=$('#clB'), clR=$('#clR'), moon=$('#moon'), sun=$('#sun');
 function applyTOD(h){
+  dongBoMay(h);
   const o = sample(((h%24)+24)%24);
   sg.style.background = `linear-gradient(180deg,${o.sky[0]} 0%,${o.sky[1]} 10%,${o.sky[2]} 41%,${o.sky[3]} 58%,${o.sky[4]} 74%,${o.sky[4]} 100%)`;
   clB.style.background = o.cb; clB.style.opacity = o.ca; clR.style.background = o.cr; clR.style.opacity = o.ra;
   stars.style.opacity = o.star; moon.style.opacity = o.moon; sun.style.opacity = o.sun;
+  // Lớp sao / đèn phố đang trong suốt thì DỪNG hoạt ảnh của chúng (scene.css,
+  // `.khongSao` / `.khongDenPho`): 23 sao vẫn nhấp nháy giữa ban ngày ở opacity
+  // 0, và mỗi hoạt ảnh đang chạy giữ luồng chính dựng khung (đo: riêng nhóm sao
+  // ăn ~40% nhịp trống ở CPU 4×). Qua CLASS chứ không gọi .pause(): pause() từ
+  // JS ghi đè vĩnh viễn animation-play-state, tức làm hỏng luật .rm/.away.
+  app.classList.toggle('khongSao', o.star < 0.02); app.classList.toggle('khongDenPho', o.city < 0.02);
   const hh = ((h%24)+24)%24;
   const mp = ((hh>=18?hh-18:hh+6)/12); moon.style.left = (80+mp*560)+'px'; moon.style.top = (230-Math.sin(mp*Math.PI)*170)+'px';
   const sp = Math.min(1,Math.max(0,(hh-6)/12)); sun.style.left = (120+sp*560)+'px'; sun.style.top = (560-Math.sin(sp*Math.PI)*430)+'px';
@@ -284,16 +291,30 @@ function setReal(v){ realTime = v; $('#tReal').setAttribute('aria-pressed',Strin
   if (v) setTOD(nowH(), true); }
 setInterval(()=>{ if (realTime && !todAnim) { TOD = nowH(); applyTOD(TOD); } }, 30000);
 
-/* clouds drift: position follows the clock, plus a slow live drift */
-let drift = 0, lastT = performance.now();
-(function clouds(n){
-  const dt = Math.min(.1,(n-lastT)/1000); lastT = n;
-  if (!RM && !document.hidden) drift += dt * (windowOpen ? 16 : 3.5);
-  const x = -(((TOD*90 + drift) % 648) + 648) % 648;
-  const px = (route||busy) ? 0 : par.x*14;
-  clB.style.transform = clR.style.transform = `translateX(${(x+px).toFixed(1)}px)`;
-  requestAnimationFrame(clouds);
-})(lastT);
+/* clouds drift: position follows the clock, plus a slow live drift.
+ *
+ * TỪNG LÀ một vòng rAF ghi `transform` MỖI KHUNG để mây trôi 3,5 px/giây.
+ * Đo trên production (390×844, CPU 4×, đứng yên): vòng này cùng vòng parallax
+ * `pl()` ép luồng chính dựng một khung MỖI vsync, và mỗi khung luồng chính lại
+ * tính lại style cho cả ~147 phần tử đang chạy hoạt ảnh CSS (đèn, sao, quầng
+ * sáng — chúng chạy trên compositor, nhưng khung nào luồng chính dựng thì vẫn
+ * phải lấy mẫu chúng). Kết quả: luồng chính bận 99%, 19 khung chính/giây.
+ * Nay là MỘT hoạt ảnh WAAPI `transform` lặp vô hạn — compositor tự chạy, luồng
+ * chính không phải làm gì. Vị trí theo giờ trong ngày đi vào `currentTime`
+ * (một vòng = 648px = đúng chu kỳ lặp của mask mây), tốc độ khi mở cửa sổ đi
+ * vào `playbackRate`. */
+const MAY_CHU_KY = 648, MAY_TOC = 3.5, MAY_TOC_MO = 16;
+const MAY_MS = MAY_CHU_KY / MAY_TOC * 1000;
+const mayAnims = [clB, clR].map((el) => el.animate(
+  [{ transform: 'translateX(0px)' }, { transform: `translateX(-${MAY_CHU_KY}px)` }],
+  { duration: MAY_MS, iterations: Infinity }));
+let mayTOD = TOD;
+/** Dời mây theo phần giờ đã đổi kể từ lần trước (90px mỗi giờ, như bản cũ). */
+function dongBoMay(h){
+  const them = ((h - mayTOD) * 90) / MAY_TOC * 1000; mayTOD = h;
+  mayAnims.forEach((a) => { a.currentTime = ((((a.currentTime || 0) + them) % MAY_MS) + MAY_MS) % MAY_MS; });
+}
+mayAnims.forEach((a) => { a.currentTime = ((TOD * 90) % MAY_CHU_KY) / MAY_TOC * 1000; if (RM) a.pause(); });
 
 /* ---------- layout ---------- */
 const L = {s:1, ox:0, oy:0, W:0, H:0, mobile:false, sideLeft:0};
@@ -424,6 +445,7 @@ function toggleWindow(force){
   app.classList.toggle('open', windowOpen); $('#tWin').setAttribute('aria-pressed', String(windowOpen));
   GW.label = windowOpen ? 'Cửa sổ · Đóng lại' : 'Cửa sổ · Mở để hóng gió'; GW.tag.textContent = GW.label; GW.hit.setAttribute('aria-label',GW.label);
   bulbEls.forEach(b=>b.firstChild.getAnimations().forEach(a=>a.playbackRate = windowOpen?1.7:1));
+  mayAnims.forEach((a) => { a.playbackRate = windowOpen ? MAY_TOC_MO / MAY_TOC : 1; });
   clearInterval(leafTimer);
   if (windowOpen && !RM){ leafTimer = setInterval(spawnLeaf, 650); toast('Đã mở cửa sổ. Gió vào phòng rồi.'); }
 }
@@ -502,11 +524,25 @@ $('#bellBtn').addEventListener('click',()=>{ if (!notes.length) return toast('Ch
   popPinned = true; showPop(notes[notes.length-1]); });
 
 /* ---------- parallax ---------- */
-app.addEventListener('pointermove',e=>{ if (RM || L.mobile) return; par.tx = (e.clientX/L.W-.5)*2; par.ty = (e.clientY/L.H-.5)*2; });
-(function pl(){ par.x += (par.tx-par.x)*0.06; par.y += (par.ty-par.y)*0.06;
+/* TỪNG chạy rAF MỖI KHUNG, mãi mãi — kể cả trên điện thoại, nơi parallax tắt
+   (par.tx luôn 0) — và mỗi khung gọi `querySelectorAll('.ui')`. Đó là một nửa
+   lý do luồng chính bận 99% khi trang đứng yên (xem chú thích mây ở trên).
+   Nay vòng chỉ chạy khi con trỏ vừa đổi đích, và TỰ DỪNG khi đã hội tụ. */
+let plId = 0;
+function pl(){ plId = 0;
+  par.x += (par.tx-par.x)*0.06; par.y += (par.ty-par.y)*0.06;
+  const xong = Math.abs(par.tx-par.x) < 0.002 && Math.abs(par.ty-par.y) < 0.002;
+  if (xong){ par.x = par.tx; par.y = par.ty; }
   if (!route && !busy){ room.style.translate = `${-par.x*6}px ${-par.y*4}px`;
+    clB.style.translate = clR.style.translate = `${(par.x*14).toFixed(1)}px 0`;
     host.querySelectorAll('.ui').forEach(u=>u.style.translate = `${par.x*3}px ${par.y*2}px`); }
-  requestAnimationFrame(pl); })();
+  if (!xong) plId = requestAnimationFrame(pl); }
+app.addEventListener('pointermove',e=>{ if (RM || L.mobile) return; par.tx = (e.clientX/L.W-.5)*2; par.ty = (e.clientY/L.H-.5)*2;
+  if (!plId) plId = requestAnimationFrame(pl); });
+/* Sự kiện hoạt ảnh CSS (~38/giây từ ~147 hoạt ảnh lặp) nổi lên listener gốc
+   của React — đo được ~30 ms/giây luồng chính ở CPU 4× cho những sự kiện
+   không ai nghe. Engine không dùng chúng; chặn ở #app. */
+['animationstart','animationiteration','animationend'].forEach((t) => app.addEventListener(t, (e) => e.stopPropagation()));
 
 setInterval(()=>{ if (route || busy || RM || document.hidden) return; $('#phoneGlow').classList.add('ping'); rankTag.classList.add('on');
   setTimeout(()=>{ $('#phoneGlow').classList.remove('ping'); rankTag.classList.remove('on'); }, 3200); }, 23000);
