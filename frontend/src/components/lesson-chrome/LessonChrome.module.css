@@ -118,9 +118,12 @@
   height: 6px;
   border-radius: 0;
   background: var(--st-track);
-  overflow: hidden;
-  /* Đoạn có thể bấm được render thành <button> — bỏ style mặc định của nút,
-     và nới vùng chạm lên 20px bằng padding ảo để ngón tay bấm trúng. */
+  /* KHÔNG overflow: hidden. Nó từng ở đây để cắt góc của thẻ fill theo bo góc
+     hai đầu thanh — và nó cắt luôn cả ::after nới vùng chạm bên dưới: trình
+     duyệt không hit-test phần con nằm ngoài hộp overflow:hidden. Đo bằng
+     elementFromPoint trên production (390×844): vùng bấm thật 13×7px trong khi
+     chú thích cũ hứa 20px. Góc của fill nay theo `border-radius: inherit`. */
+  /* Đoạn có thể bấm được render thành <button> — bỏ style mặc định của nút. */
   padding: 0;
   border: 0;
   display: block;
@@ -154,10 +157,14 @@ button.segment {
   cursor: pointer;
   position: relative;
 }
+/* Nới vùng chạm DỌC lên 6 + 2×9 = 24px (WCAG 2.5.8) mà rãnh vẫn mảnh 6px.
+   Chỉ nới theo chiều dọc: các đoạn ghép sát nhau, nới ngang là chồng lên đoạn
+   bên cạnh. Bề ngang ở bài nhiều màn vẫn ~13px — đường quay lại tương đương là
+   nút "← Quay lại" ở thanh dưới (ngoại lệ "Equivalent" của 2.5.8). */
 button.segment::after {
   content: '';
   position: absolute;
-  inset: -7px 0;
+  inset: -9px 0;
 }
 /* Luôn render thẻ fill (kể cả rộng 0) để width có thể transition — nếu chỉ
    gắn/gỡ thẻ theo bước thì trình duyệt không có giá trị cũ để nội suy. */
@@ -167,6 +174,9 @@ button.segment::after {
 .segmentFill {
   width: 0;
   height: 100%;
+  /* Thay cho overflow:hidden của .segment: fill tự bo theo đúng góc của đoạn
+     chứa nó (đầu thanh, hai bên khe giữa các phần). */
+  border-radius: inherit;
   background: var(--ds-violet);
   transition: width 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
 }

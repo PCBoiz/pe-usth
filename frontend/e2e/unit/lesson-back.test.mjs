@@ -39,6 +39,11 @@
  *   `onBack` gọi history.back()                     → 1 đỏ
  *   quên `onBack: undefined` ở một khung lỗi         → 1 đỏ
  *   `.backText { display: none }` ở @media          → 1 đỏ
+ *   trả `overflow: hidden` vào .segment             → 1 đỏ
+ *   `overflow: clip` cho .segment trong @media 560   → 1 đỏ
+ *   ::after nới `inset: -7px 0` (vùng 20px)          → 1 đỏ
+ *   bỏ hẳn `button.segment::after`                  → 1 đỏ
+ *   bỏ `border-radius: inherit` của .segmentFill     → 1 đỏ
  *
  * Chạy: cd frontend && npm run test:unit
  */
@@ -250,4 +255,61 @@ test('rãnh thanh cuộn giữ ở trang bài học — và CHỈ ở đó', () 
       );
     }
   }
+});
+
+// ---------------------------------------------------------------------------
+// 5. ĐƯỜNG QUAY LẠI THỨ HAI — đoạn thanh tiến độ phải bấm TRÚNG được
+// ---------------------------------------------------------------------------
+//
+// Mỗi đoạn đã đi qua là một <button> "Xem lại màn N", rãnh cao 6px. Một
+// `::after` có sẵn để nới vùng chạm lên 20px — nhưng `.segment` mang
+// `overflow: hidden` (để cắt góc của thẻ fill), và trình duyệt KHÔNG hit-test
+// phần con nằm ngoài hộp overflow:hidden. Đo bằng elementFromPoint trên
+// production (390×844, PY06 màn 12/13): 12 đoạn, vùng bấm THẬT 13×7px. Chú
+// thích hứa 20px; bounding box nói 6px; chỉ phép hit-test nói sự thật.
+
+/** Thân khối của đúng selector `sel` (khớp nguyên chuỗi trước `{`), hoặc null. */
+function khoiCua(khoi, sel) {
+  for (const m of khoi.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+    if (m[1].split(',').map((s) => s.trim()).includes(sel)) return m[2];
+  }
+  return null;
+}
+
+test('đoạn thanh tiến độ KHÔNG overflow hidden/clip — nó cắt mất vùng chạm của ::after', () => {
+  for (const [ten, khoi] of Object.entries(phamVi(CSS))) {
+    for (const sel of ['.segment', 'button.segment']) {
+      const than = khoiCua(khoi, sel);
+      if (!than) continue;
+      assert.doesNotMatch(
+        than,
+        /overflow(-[xy])?\s*:\s*(hidden|clip)/,
+        `${ten || 'gốc'}: ${sel} có overflow hidden/clip — ::after nới vùng chạm bị cắt, `
+          + 'vùng bấm thật về lại 6px (đo: 13×7px trên điện thoại).',
+      );
+    }
+  }
+});
+
+test('vùng chạm DỌC của đoạn ≥ 24px (WCAG 2.5.8): cao rãnh + hai lần độ nới của ::after', () => {
+  const goc = phamVi(CSS)[''];
+  const cao = px(goc, 'segment', 'height');
+  assert.ok(cao, 'Không đọc được height của .segment — đổi cấu trúc thì sửa ca này.');
+  const sau = khoiCua(goc, 'button.segment::after');
+  assert.ok(sau, 'Không còn button.segment::after — vùng chạm về lại đúng bằng rãnh 6px.');
+  const inset = /inset\s*:\s*-(\d+(?:\.\d+)?)px\s+0\s*(;|$)/.exec(sau.trim());
+  assert.ok(inset, `button.segment::after không nới DỌC bằng "inset: -Npx 0" (đang: ${sau.trim()}).`);
+  const vung = cao + 2 * Number(inset[1]);
+  assert.ok(vung >= 24, `vùng chạm dọc ${vung}px < 24px (rãnh ${cao}px + 2×${inset[1]}px).`);
+});
+
+test('thẻ fill tự bo theo góc của đoạn — thay cho overflow:hidden đã bỏ', () => {
+  const than = khoiCua(phamVi(CSS)[''], '.segmentFill');
+  assert.ok(than, 'Không thấy .segmentFill.');
+  assert.match(
+    than,
+    /border-radius\s*:\s*inherit/,
+    '.segmentFill không bo theo đoạn ⇒ hai đầu thanh và hai bên khe giữa các phần '
+      + 'mất góc bo khi đoạn đã đầy (trước đây overflow:hidden cắt hộ).',
+  );
 });
