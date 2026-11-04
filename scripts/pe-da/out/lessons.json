@@ -41262,16 +41262,105 @@
     },
     "step_4": {
      "task": {
-      "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+      "title": "Tự viết và chạy trong terminal",
+      "body": "Viết solve(data) nhận dict mô tả mô hình Worker: khoá là tên child process, giá trị là list tên các thread vẽ bên trong process đó. Trả dict {\"processes\": số child process, \"threads\": tổng số thread} — đúng phép đếm ở màn đọc. Các process có thể có số thread khác nhau.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'P1': ['T1', 'T2'], 'P2': ['T3', 'T4']}"
+       },
+       {
+        "label": "trả về",
+        "value": "{'processes': 2, 'threads': 4}"
+       }
+      ]
      },
-     "starterCode": "# ── Đoạn 1 ──\nprefork = {\"parent\": \"master\", \"children\": [\"P1\", \"P2\", \"P3\"]}\nprint(len(prefork[\"children\"]))\nprint(prefork[\"parent\"])\n\n# ── Đoạn 2 ──\nworker_model = {\"P1\": [\"T1\", \"T2\"], \"P2\": [\"T3\", \"T4\"]}\nprint(len(worker_model))\nprint(sum(len(threads) for threads in worker_model.values()))\n\n# ── Đoạn 3 ──\nlinks = [(\"browser-main\", \"browser-io\", \"inside-process\"),\n         (\"browser\", \"renderer\", \"IPC\")]\nprint([kind for a, b, kind in links if a == \"browser\"])\n"
+     "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+     "solutionCode": "def solve(data):\n    return {\n        \"processes\": len(data),\n        \"threads\": sum(len(threads) for threads in data.values()),\n    }\n",
+     "tests": [
+      {
+       "name": "Hai process, mỗi process hai thread",
+       "input": {
+        "P1": [
+         "T1",
+         "T2"
+        ],
+        "P2": [
+         "T3",
+         "T4"
+        ]
+       },
+       "expected": {
+        "processes": 2,
+        "threads": 4
+       }
+      },
+      {
+       "name": "Số thread mỗi process khác nhau",
+       "input": {
+        "P1": [
+         "T1",
+         "T2",
+         "T3",
+         "T4"
+        ],
+        "P2": [
+         "T5"
+        ],
+        "P3": [
+         "T6",
+         "T7"
+        ]
+       },
+       "expected": {
+        "processes": 3,
+        "threads": 7
+       }
+      },
+      {
+       "name": "Một process chưa có thread nào",
+       "input": {
+        "P1": [],
+        "P2": [
+         "T1"
+        ]
+       },
+       "expected": {
+        "processes": 2,
+        "threads": 1
+       }
+      },
+      {
+       "name": "Một process, ba thread",
+       "input": {
+        "C1": [
+         "T1",
+         "T2",
+         "T3"
+        ]
+       },
+       "expected": {
+        "processes": 1,
+        "threads": 3
+       }
+      }
+     ],
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "len(data) đếm số khoá của dictionary — tức số child process."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "Thread nằm trong các list là GIÁ TRỊ: duyệt data.values() và cộng len() của từng list."
+      }
+     ]
     }
    },
    "_mode": "pyodide",
    "_blocked": [],
    "_so_mcq": 3,
-   "_bai_tap": "khong co",
+   "_bai_tap": "cham",
    "_vet": {
     "can": 3,
     "co": 2,

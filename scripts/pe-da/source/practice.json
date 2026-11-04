@@ -36564,6 +36564,88 @@
     {
       "id": "RC01",
       "title": "Đọc sơ đồ Apache và Chromium: process ở ngoài, thread ở trong",
+      "exercises": [
+        {
+          "id": "RC01-practice-1",
+          "type": "code",
+          "title": "Tự viết và chạy trong terminal",
+          "prompt": "Viết solve(data) nhận dict mô tả mô hình Worker: khoá là tên child process, giá trị là list tên các thread vẽ bên trong process đó. Trả dict {\"processes\": số child process, \"threads\": tổng số thread} — đúng phép đếm ở màn đọc. Các process có thể có số thread khác nhau.",
+          "starter": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+          "referenceSolution": "def solve(data):\n    return {\n        \"processes\": len(data),\n        \"threads\": sum(len(threads) for threads in data.values()),\n    }\n",
+          "tests": [
+            {
+              "name": "Hai process, mỗi process hai thread",
+              "input": {
+                "P1": [
+                  "T1",
+                  "T2"
+                ],
+                "P2": [
+                  "T3",
+                  "T4"
+                ]
+              },
+              "expected": {
+                "processes": 2,
+                "threads": 4
+              }
+            },
+            {
+              "name": "Số thread mỗi process khác nhau",
+              "input": {
+                "P1": [
+                  "T1",
+                  "T2",
+                  "T3",
+                  "T4"
+                ],
+                "P2": [
+                  "T5"
+                ],
+                "P3": [
+                  "T6",
+                  "T7"
+                ]
+              },
+              "expected": {
+                "processes": 3,
+                "threads": 7
+              }
+            },
+            {
+              "name": "Một process chưa có thread nào",
+              "input": {
+                "P1": [],
+                "P2": [
+                  "T1"
+                ]
+              },
+              "expected": {
+                "processes": 2,
+                "threads": 1
+              }
+            },
+            {
+              "name": "Một process, ba thread",
+              "input": {
+                "C1": [
+                  "T1",
+                  "T2",
+                  "T3"
+                ]
+              },
+              "expected": {
+                "processes": 1,
+                "threads": 3
+              }
+            }
+          ],
+          "hints": [
+            "len(data) đếm số khoá của dictionary — tức số child process.",
+            "Thread nằm trong các list là GIÁ TRỊ: duyệt data.values() và cộng len() của từng list."
+          ]
+        }
+      ],
       "mcq": [
         {
           "id": "RC01-predict",
