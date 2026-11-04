@@ -175,16 +175,64 @@
     },
     "step_4": {
      "task": {
-      "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+      "title": "Tự viết và chạy trong terminal",
+      "body": "Hệ thống cung cấp cups là số cốc quán bán được trong một ngày. Mỗi cốc giá 15 nghìn đồng. Gán doanh thu của ngày đó, tính bằng nghìn đồng, vào revenue.",
+      "io": [
+       {
+        "label": "cups =",
+        "value": "21"
+       },
+       {
+        "label": "revenue =",
+        "value": "315"
+       }
+      ]
      },
-     "starterCode": "# ── Đoạn 1 ──\nprint(12 + 9)\n\n# ── Đoạn 2 ──\nmorning = 12\nafternoon = 9\nprint(morning + afternoon)\n\n# ── Đoạn 3 ──\ncups = 21\nprint(\"So coc:\", cups)\nprint(cups * 15)\n"
+     "starterCode": "# cups là số cốc bán được trong ngày; mỗi cốc 15 nghìn đồng.\n# Gán doanh thu (nghìn đồng) vào revenue.\n",
+     "solutionCode": "revenue = cups * 15\n",
+     "tests": [
+      {
+       "name": "Ngày đầu bán 21 cốc",
+       "input": 21,
+       "expected": 315
+      },
+      {
+       "name": "Ngày vắng khách",
+       "input": 8,
+       "expected": 120
+      },
+      {
+       "name": "Chỉ bán được một cốc",
+       "input": 1,
+       "expected": 15
+      },
+      {
+       "name": "Ngày đông khách",
+       "input": 100,
+       "expected": 1500
+      }
+     ],
+     "contract": {
+      "mode": "script",
+      "inputVariable": "cups",
+      "resultVariable": "revenue"
+     },
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "Ở màn đọc, doanh thu 315 nghìn đến từ số cốc nhân với giá một cốc."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "Tên nhận kết quả đứng bên trái dấu =: revenue = … — bên phải là phép nhân."
+      }
+     ]
     }
    },
    "_mode": "pyodide",
    "_blocked": [],
    "_so_mcq": 3,
-   "_bai_tap": "khong co",
+   "_bai_tap": "cham",
    "_vet": {
     "can": 0,
     "co": 0,

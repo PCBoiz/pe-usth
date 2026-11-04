@@ -235,7 +235,7 @@ test('harness khai contract_json và phân nhánh theo trường có mặt', () 
 
 // ─────────────────────────────────────────────────── số đo, để không tụt mốc
 
-test('bản dựng có 139 bài tập được chấm và 463 ca', () => {
+test('bản dựng có 140 bài tập được chấm và 467 ca', () => {
   // Con số này phải đo lại mỗi lần đổi nguồn hoặc đổi cổng lọc, không được
   // đoán — xem AGENTS.md, dòng "204 ca test tưởng có mà không có".
   //
@@ -254,8 +254,13 @@ test('bản dựng có 139 bài tập được chấm và 463 ca', () => {
   // 138 -> 139 ngày 4/11/2026: SY24 (sqlalchemy) được mở khoá sau khi vendor
   // wheel vào /pyodide/v314.0.7/ — 3 ca soạn tại repo, vì gói nguồn có 0 bài
   // tập cho bài này. SY23 thì KHÔNG mở: h5py kéo theo scipy 13,7 MB.
-  assert.equal(coBaiTap.length, 139, 'số bài có bài tập được chấm');
-  assert.equal(ca, 463, 'tổng số ca chấm');
+  //
+  // 139 -> 140 ngày 4/11/2026: PY01 — BÀI ĐẦU TIÊN của khoá — nhận bài tập 4 ca
+  // (mục 4 bảng xếp hạng: cho bài 1 một thành công máy chấm được). Câu "tám bài
+  // là những bài DUY NHẤT còn chấm được" ở trên đếm SÓT: đo lại còn 6 bài chạy
+  // trong trình duyệt mà chưa chấm — PY01, PY02, PY03, SY11, RC01, GU12.
+  assert.equal(coBaiTap.length, 140, 'số bài có bài tập được chấm');
+  assert.equal(ca, 467, 'tổng số ca chấm');
 });
 
 test('mọi bài tập được chấm đều có lời giải mẫu KHÁC khung đề', () => {

@@ -5,6 +5,45 @@
     {
       "id": "PY01",
       "title": "Chạy một phép tính và đọc kết quả",
+      "exercises": [
+        {
+          "id": "PY01-practice-2",
+          "type": "code",
+          "title": "Tự viết và chạy trong terminal",
+          "prompt": "Hệ thống cung cấp cups là số cốc quán bán được trong một ngày. Mỗi cốc giá 15 nghìn đồng. Gán doanh thu của ngày đó, tính bằng nghìn đồng, vào revenue.",
+          "mode": "script",
+          "starter": "# cups là số cốc bán được trong ngày; mỗi cốc 15 nghìn đồng.\n# Gán doanh thu (nghìn đồng) vào revenue.\n",
+          "referenceSolution": "revenue = cups * 15\n",
+          "tests": [
+            {
+              "name": "Ngày đầu bán 21 cốc",
+              "input": 21,
+              "expected": 315
+            },
+            {
+              "name": "Ngày vắng khách",
+              "input": 8,
+              "expected": 120
+            },
+            {
+              "name": "Chỉ bán được một cốc",
+              "input": 1,
+              "expected": 15
+            },
+            {
+              "name": "Ngày đông khách",
+              "input": 100,
+              "expected": 1500
+            }
+          ],
+          "hints": [
+            "Ở màn đọc, doanh thu 315 nghìn đến từ số cốc nhân với giá một cốc.",
+            "Tên nhận kết quả đứng bên trái dấu =: revenue = … — bên phải là phép nhân."
+          ],
+          "inputVariable": "cups",
+          "resultVariable": "revenue"
+        }
+      ],
       "mcq": [
         {
           "id": "PY01-practice-1",
