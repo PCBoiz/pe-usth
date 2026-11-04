@@ -418,6 +418,18 @@ test('không còn quầng sáng bám chuột vẽ trên <html>', () => {
     'html.edu-fx::before/::after đã quay lại — hai quầng brand bám con trỏ '
       + 'là nửa còn lại của mesh xanh–đỏ, xem chú thích trong edu-theme.css.',
   );
+  // Nửa JS của cùng hiệu ứng: gỡ phần VẼ mà để vòng rAF ghi --ax/--ay/--bx/--by
+  // lên <html> thì mỗi khung chuột di chuyển là tính lại style CẢ TRANG cho một
+  // thứ không ai đọc — đo trên /courses: 161 ms/s style, 23% luồng chính. Biến
+  // của thẻ/nút (--cx, --mx…) ghi lên CHÍNH phần tử đó thì không bị cấm.
+  const FX = readFileSync(join(__dirname, '..', '..', 'public', 'static', 'js', 'edu-fx.js'), 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .split('\n').filter((d) => !d.trimStart().startsWith('//')).join('\n');
+  assert.ok(
+    !/(root|documentElement)\.style\.setProperty\(/.test(FX),
+    'edu-fx.js lại ghi biến CSS lên <html> — biến khai trên gốc thì MỌI phần tử '
+      + 'thừa kế, nên mỗi lần ghi là tính lại style cả trang.',
+  );
 });
 
 /* TRANG CHỦ KHÔNG ĐƯỢC DÙNG BẢNG BRAND XANH–ĐỎ NỮA.

@@ -1,11 +1,17 @@
-/* Hiệu ứng chuột cho giao diện xanh–đỏ.
- *  1. Đèn xanh (bám sát) + đỏ (đuổi chậm) sau nội dung: chỉ cập nhật 4 biến CSS
- *     --ax --ay --bx --by trên <html>; phần vẽ nằm ở html::before/::after trong
- *     edu-theme.css (không chèn DOM → không gây lỗi hydration).
- *  2. Card/ô có [data-fx] hoặc khớp CARD: đốm sáng bám con trỏ (--cx --cy);
+/* Hiệu ứng chuột.
+ *  1. Card/ô có [data-fx] hoặc khớp CARD: đốm sáng bám con trỏ (--cx --cy);
  *     [data-fx="tilt"] và .course-card còn nghiêng 3D tối đa ~6° và nhấc 4px.
- *  3. Nút chính nhích về phía con trỏ vài px (--mx --my).
- * Chỉ chạy trên thiết bị có chuột và khi không bật "giảm chuyển động". */
+ *  2. Nút chính nhích về phía con trỏ vài px (--mx --my).
+ * Chỉ chạy trên thiết bị có chuột và khi không bật "giảm chuyển động".
+ *
+ * ĐÃ GỠ (04/11/2026): hai "đèn" xanh + đỏ bám chuột. Phần VẼ của chúng
+ * (html.edu-fx::before/::after trong edu-theme.css) đã bỏ từ đợt sang bảng
+ * lofi, và ds-contrast.test.mjs cấm dựng lại — nhưng file này vẫn chạy một
+ * vòng rAF ghi 4 biến --ax --ay --bx --by lên <html> MỖI KHUNG khi chuột di
+ * chuyển. Biến khai trên <html> thì mọi phần tử thừa kế, nên mỗi lần ghi là
+ * tính lại style CẢ TRANG cho một thứ không ai đọc. Đo trên production
+ * (/courses, 1440×900, CPU 1×, rê chuột giả ~60 Hz trong 3 s): style 161 ms/s,
+ * luồng chính bận 23%; chặn đúng 4 lần ghi đó → 0 ms/s, bận 6%. */
 (function () {
   if (typeof window === 'undefined' || window.__eduFx) return;
   window.__eduFx = true;
@@ -20,20 +26,7 @@
   var CARD = '[data-fx], .course-card, .cd-block, .cd-card, .section-card';
   var BTN = '.btn-main, .btn-primary, .card-btn-enroll, .cd-enroll-btn, .streak-btn-go';
   var TILT_MAX = 6;
-  var tx = -999, ty = -999, ax = -999, ay = -999, bx = -999, by = -999;
-  var raf = 0, seen = false;
   var lastCard = null, lastBtn = null;
-
-  function frame() {
-    ax += (tx - ax) * 0.3; ay += (ty - ay) * 0.3;
-    bx += (tx - bx) * 0.11; by += (ty - by) * 0.11;
-    root.style.setProperty('--ax', ax.toFixed(1) + 'px');
-    root.style.setProperty('--ay', ay.toFixed(1) + 'px');
-    root.style.setProperty('--bx', bx.toFixed(1) + 'px');
-    root.style.setProperty('--by', by.toFixed(1) + 'px');
-    var moving = Math.abs(tx - bx) + Math.abs(ty - by) > 0.5;
-    raf = moving ? requestAnimationFrame(frame) : 0;
-  }
 
   function closest(el, sel) { return el && el.closest ? el.closest(sel) : null; }
   function resetCard(c) {
@@ -45,18 +38,11 @@
     b.style.removeProperty('--mx'); b.style.removeProperty('--my');
   }
   function leave() {
-    root.classList.remove('edu-fx-on'); seen = false;
     resetCard(lastCard); resetBtn(lastBtn); lastCard = lastBtn = null;
   }
 
   document.addEventListener('pointermove', function (e) {
     if (e.pointerType && e.pointerType !== 'mouse') return;
-    tx = e.clientX; ty = e.clientY;
-    if (!seen) {
-      seen = true; ax = bx = tx; ay = by = ty;
-      root.classList.add('edu-fx-on');
-    }
-    if (!raf) raf = requestAnimationFrame(frame);
 
     var card = closest(e.target, CARD);
     if (lastCard && lastCard !== card) resetCard(lastCard);
