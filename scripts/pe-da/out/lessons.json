@@ -43913,16 +43913,91 @@
     },
     "step_4": {
      "task": {
-      "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+      "title": "Tự viết và chạy trong terminal",
+      "body": "Viết solve(data) nhận dict có luong (tên nguyên liệu → số gam mỗi cốc, CHỈ gồm nguyên liệu đã khai định lượng) và so_coc (tên nguyên liệu → số cốc; có thể có thêm nguyên liệu chưa khai). Trả lượng trung bình có trọng số theo số cốc, chỉ tính trên các nguyên liệu có trong luong, làm tròn 2 chữ số. Nếu luong rỗng — món chưa khai nguyên liệu nào — trả None, không phải 0.",
+      "io": [
+       {
+        "label": "data =",
+        "value": "{'luong': {'ca-phe-hat': 14.0, 'sua-tuoi': 18.0}, 'so_coc': {'ca-phe-hat': 2, 'sua-tuoi': 3, 'duong': 1}}"
+       },
+       {
+        "label": "trả về",
+        "value": "16.4"
+       }
+      ]
      },
-     "starterCode": "# ── Đoạn 1 ──\nfrom decimal import Decimal, ROUND_FLOOR\nluong=['14.29','16.00']\nnormalized=[float(Decimal(x).quantize(Decimal('0.1'),rounding=ROUND_FLOOR)) for x in luong]\nprint(normalized)\n\n# ── Đoạn 2 ──\nluong={'ca-phe-hat':14.0,'sua-tuoi':18.0}\nso_coc={'ca-phe-hat':2,'sua-tuoi':3,'duong':1}\nweighted=sum(gam*so_coc[ten] for ten,gam in luong.items())\ndenominator=sum(so_coc[ten] for ten in luong)\nprint(weighted/denominator)\n\n# ── Đoạn 3 ──\nimport gzip,pickle\nsnapshot={'version':1,'items':[{'id':'latte','name':'Latte','group':'Ca phe'}],'ingredients':[],'recipe':[]}\nblob=gzip.compress(pickle.dumps(snapshot))\nloaded=pickle.loads(gzip.decompress(blob))\nprint(loaded['items'][0]['id'])\nprint(loaded==snapshot)\n"
+     "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+     "solutionCode": "def solve(data):\n    luong = data[\"luong\"]\n    so_coc = data[\"so_coc\"]\n    if not luong:\n        return None\n    tu = sum(gam * so_coc[ten] for ten, gam in luong.items())\n    mau = sum(so_coc[ten] for ten in luong)\n    return round(tu / mau, 2)\n",
+     "tests": [
+      {
+       "name": "Đường chưa khai — không vào mẫu số",
+       "input": {
+        "luong": {
+         "ca-phe-hat": 14.0,
+         "sua-tuoi": 18.0
+        },
+        "so_coc": {
+         "ca-phe-hat": 2,
+         "sua-tuoi": 3,
+         "duong": 1
+        }
+       },
+       "expected": 16.4
+      },
+      {
+       "name": "Trọng số lệch nhau",
+       "input": {
+        "luong": {
+         "a": 10,
+         "b": 20
+        },
+        "so_coc": {
+         "a": 1,
+         "b": 3
+        }
+       },
+       "expected": 17.5
+      },
+      {
+       "name": "Món chưa khai nguyên liệu nào",
+       "input": {
+        "luong": {},
+        "so_coc": {
+         "duong": 2
+        }
+       },
+       "expected": null
+      },
+      {
+       "name": "Một nguyên liệu đã khai, một chưa",
+       "input": {
+        "luong": {
+         "sua-tuoi": 12.5
+        },
+        "so_coc": {
+         "sua-tuoi": 4,
+         "da": 2
+        }
+       },
+       "expected": 12.5
+      }
+     ],
+     "hints": [
+      {
+       "title": "Gợi ý 1",
+       "body": "Mẫu số là tổng số cốc của các nguyên liệu CÓ trong luong — duyệt luong, đừng cộng hết so_coc.values()."
+      },
+      {
+       "title": "Gợi ý 2",
+       "body": "Kiểm luong rỗng TRƯỚC khi chia: chia cho 0 là ZeroDivisionError, còn 0 thì nói sai rằng món có lượng 0 gam."
+      }
+     ]
     }
    },
    "_mode": "pyodide",
    "_blocked": [],
    "_so_mcq": 3,
-   "_bai_tap": "khong co",
+   "_bai_tap": "cham",
    "_vet": {
     "can": 3,
     "co": 2,

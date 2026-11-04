@@ -235,7 +235,7 @@ test('harness khai contract_json và phân nhánh theo trường có mặt', () 
 
 // ─────────────────────────────────────────────────── số đo, để không tụt mốc
 
-test('bản dựng có 142 bài tập được chấm và 475 ca', () => {
+test('bản dựng có 143 bài tập được chấm và 479 ca', () => {
   // Con số này phải đo lại mỗi lần đổi nguồn hoặc đổi cổng lọc, không được
   // đoán — xem AGENTS.md, dòng "204 ca test tưởng có mà không có".
   //
@@ -268,8 +268,13 @@ test('bản dựng có 142 bài tập được chấm và 475 ca', () => {
   // 141 -> 142 ngày 4/11/2026: RC01 — đếm child process và thread từ dict mô
   // hình Worker; ca "số thread mỗi process khác nhau" bắt lời giải nhân theo
   // process đầu (trượt 2/4).
-  assert.equal(coBaiTap.length, 142, 'số bài có bài tập được chấm');
-  assert.equal(ca, 475, 'tổng số ca chấm');
+  //
+  // 142 -> 143 ngày 4/11/2026: GU12 — trung bình có trọng số CHỈ trên nguyên
+  // liệu đã khai (đường chưa khai không vào mẫu số), món chưa khai gì trả None
+  // chứ không 0. Đây là bài cuối chạy trong trình duyệt mà chưa chấm; còn
+  // PY02/PY03 cố ý không làm (xem 129063a).
+  assert.equal(coBaiTap.length, 143, 'số bài có bài tập được chấm');
+  assert.equal(ca, 479, 'tổng số ca chấm');
 });
 
 test('mọi bài tập được chấm đều có lời giải mẫu KHÁC khung đề', () => {
