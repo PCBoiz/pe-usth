@@ -58,6 +58,23 @@ export const ROAD = Array.from({ length: 11 }, (_, i) => ({
   nhan: i % 2 === 0 ? 'tren' : 'duoi',
 }));
 
+/*
+ * BẢNG DỌC cho điện thoại (L.mobile, ≤ 820px) — khung 600 × 1000.
+ *
+ * Khung ngang 1000 × 600 nhét vào màn dọc 390px thì co còn 0,30: đo trên
+ * production 87df502, nhãn hiện ra 5,1px, số trong vòng tròn 4,8px, và 69% tờ
+ * giấy trống (giấy 309×564px mà bảng chỉ vẽ trong 301×181px) — tờ giấy còn
+ * thò hẳn ra khỏi khung bảng ghim (bảng cao 258px).
+ * Nay: 11 điểm đi TỪ TRÊN XUỐNG, zigzag nhẹ hai cột (x 80/140) để đường vẫn
+ * có nhịp; nhãn một CỘT bên phải (x 190, canh trái), tối đa 2 dòng × 22 ký tự,
+ * phông 28 đơn vị. Bước dọc 88 vừa hai dòng (cao dòng 32). Ở 390px giấy rộng
+ * ~309px ⇒ tỉ lệ ~0,52 ⇒ nhãn ~14,5px.
+ */
+const DOC_X = [80, 140], DOC_Y0 = 60, DOC_BUOC = 88;
+export const ROAD_DOC = Array.from({ length: 11 }, (_, i) => ({
+  at: [DOC_X[i % 2], DOC_Y0 + i * DOC_BUOC],
+}));
+
 /**
  * Nhãn của một học phần trên bảng: tối đa `soDong` dòng × `toiDa` ký tự.
  * Bỏ "M3 · " (số đã nằm trong vòng tròn), giữ phần trước dấu ":" (chủ đề chính
