@@ -2520,6 +2520,28 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **Luật rút ra: bê từ nhánh khác thì chạy CẢ bộ unit + bốn cổng TRƯỚC khi push**, vì thứ bị
   viết đè là thứ bên kia không biết là có.
 
+- **ĐO ĐỘ GIẬT CỦA TRANG CHỦ: ba cách đo đã nói dối, và một cách thì không.**
+  Trang chủ Góc học bận 98% luồng chính khi ĐỨNG YÊN trên điện thoại giả lập (390×844,
+  CPU 4×); 2059211 hạ còn ~62%. Ba bẫy của chính phép đo, đều đã cắn trong vòng đó:
+  · **Đếm fps bằng rAF tự làm hỏng phép đo**: rAF ép luồng chính dựng một khung MỖI
+    vsync, mà khung nào luồng chính dựng thì nó tính lại style cho MỌI phần tử đang
+    chạy hoạt ảnh (~147 ở đây). Đầu dò đúng: đếm nhịp trống bằng vòng `MessageChannel`
+    trong 2 giây, so với sàn "dừng hết hoạt ảnh" (`dau-do.js` của vòng đó).
+  · **`tom.mjs` chọn renderer BẬN NHẤT, và đó có thể là tab khác.** Một tab cũ của
+    agent còn mở trang chủ production chạy vòng rAF, nên phép đo "sau sửa" đọc ra rAF
+    142 ms/s trong khi trang đang đo có 0. Lọc theo pid có URL đúng, hoặc đóng tab lạ.
+  · **Vết cũ không có cờ `compositeFailed`** cho hoạt ảnh bắt đầu TRƯỚC khi ghi vết.
+    Muốn biết hoạt ảnh nào không lên compositor: ghi vết rồi `cancel()`+`play()` mọi
+    hoạt ảnh. Kết quả: chỉ mưa SVG (`fall`, mã 1024) hỏng.
+  **Hai giả thuyết đã BÁC bằng số, đừng dựng lại:** (1) sự kiện `animationiteration`
+  nổi lên React ép khung — đổi cả 145 hoạt ảnh sang WAAPI thì style còn TĂNG; (2) một
+  nhóm là thủ phạm — dừng từng nhóm không nhóm nào hạ dưới 85%, mỗi nhóm CHẠY RIÊNG
+  đều ăn nhịp tỉ lệ theo số phần tử. Nên luật thật là: **mọi hoạt ảnh đang chạy đều có
+  giá, kể cả trên compositor** — dừng cái vô hình (sao ban ngày, mưa khi tạnh, bụi 2,7px
+  trên điện thoại), và đừng để vòng rAF chạy khi không có gì đổi.
+  **Còn lại là quyết định thiết kế:** 39 quầng sáng `breathe` + 54 bóng đèn `twk` là
+  chính cảnh; mỗi nhóm một mình vẫn ăn ~45–60% nhịp trống.
+
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
 Hai đường, chọn sai là xoá tiến độ của người đang học:
