@@ -119,6 +119,37 @@ try {
 }
 
 /**
+ * Hàng "Đã nạp DB chưa" — gọi `check-da-nap.mjs --json`, không tính lại.
+ *
+ * VÌ SAO: từ 80dee65 (04/11/2026 05:28) hàng đó ghi "179/179 bài khớp bản dựng,
+ * 0 lỗi" trong khi chính `check-da-nap` thoát 1 với 5 bài lệch — và cổng này
+ * báo "0 lỗi" suốt, vì nó không đọc hàng ấy. Bảng mốc nền là TÍN HIỆU DỪNG; một
+ * hàng nói "đã nạp hết" khi chưa là đúng loại câu khiến vòng lặp bàn giao sai.
+ *
+ * `check-da-nap` THOÁT 1 khi có bài lệch — tức đúng lúc ta cần số nhất thì
+ * `execFileSync` ném. Đọc `stdout` từ chính lỗi đó, đừng nuốt nó thành NaN.
+ */
+const chayJson = (tep) => {
+  try {
+    return JSON.parse(execFileSync(process.execPath, [join(GOC, 'scripts', tep), '--json'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }));
+  } catch (e) {
+    if (e && typeof e.stdout === 'string' && e.stdout.trim()) return JSON.parse(e.stdout);
+    throw e;
+  }
+};
+try {
+  const ra = chayJson('check-da-nap.mjs');
+  doDuoc.khopDaNap = ra.coBienNhan
+    ? ra.tong - (ra.chuaNap?.length ?? 0) - (ra.chuaTungNap?.length ?? 0)
+    : 0;
+} catch {
+  doDuoc.khopDaNap = NaN;
+}
+
+/**
  * `check-perf` và `check-figures` in `N ca · M hỏng` ở dòng cuối. Bóc con số ra
  * thay vì chạy lại chúng: cả hai nạp Pyodide (~10 s mỗi bộ), mà cổng này phải
  * rẻ để chạy được ở mọi lần commit.
@@ -192,6 +223,8 @@ const DOI_CHIEU = [
   ['tongKhoi', /\*\*\d+\/(\d+) khối \(\d+,\d+%\) có một lời đòi\*\*/, 'tổng khối code màn đọc'],
   ['caPerf', /check-perf\.mjs` → (\d+) ca/, 'số ca của bộ đo độ hiệu quả'],
   ['caFigures', /check-figures\.mjs` → (\d+) ca/, 'số ca của bộ xuất hình'],
+  // Neo vào CHÍNH hàng "Đã nạp DB chưa": "N/179 khớp" xuất hiện cả ở chỗ khác.
+  ['khopDaNap', /\| Đã nạp DB chưa \|[^|\n]*?(\d+)\/\d+ (?:bài )?khớp/, 'số bài khớp biên nhận nạp DB'],
 ];
 // `tenMayBoQua` dùng khoá khác để regex không đụng nhau; ánh xạ lại ở đây.
 const ANH_XA = { tenMayBoQua: 'tenMay' };
@@ -225,9 +258,15 @@ for (const [khoa, re, ten] of DOI_CHIEU) {
  * thành "bảng đã được kiểm hết", mà đó đúng là cách con số 204 sống sót.
  */
 const KHONG_KIEM_DUOC = [
-  'Backend test 485 ca · Backend lint 104 lỗi · Frontend lint 139 cảnh báo · ' +
-    'Frontend unit 518 ca · tracer 65 phép kiểm — đều phải CHẠY một bộ mới biết, ' +
-    'nên chúng nằm ngoài cổng này. Đổi chúng thì vẫn phải tự đo.',
+  // KHÔNG ghi con số ở đây: chính câu này từng mang "485 ca · 139 cảnh báo ·
+  // 518 ca" sau khi cả ba đã đổi — một con số không cổng nào đối chiếu được thì
+  // đừng chép nó vào một chỗ thứ hai.
+  'Backend test · Backend lint · Frontend lint · Frontend unit · tracer — đều ' +
+    'phải CHẠY một bộ mới biết, nên chúng nằm ngoài cổng này. Đổi chúng thì vẫn ' +
+    'phải tự đo.',
+  'Hàng "pe-da bảng từng bước" (số khối đủ điều kiện / bỏ qua) — con số đó chỉ ' +
+    'build.py in ra lúc dựng, không nằm trong out/. Nó từng ghi 356/300 khi thật ' +
+    'là 359/303.',
   'Các con số của pe-v4 (48 bài / 427 ca) — gói đó không còn xuất bản và bản ' +
     'dựng của nó không nằm trong đường đi hằng ngày.',
 ];
