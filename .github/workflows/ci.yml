@@ -275,9 +275,12 @@ jobs:
           python-version: '3.12'
       - run: python scripts/pe-v4/anim/check.py --strict
 
-  # Kiểm tra tính đồng bộ của giáo trình pe-v4 với frontend/src/lib/curricula.json.
-  # Chạy sync_curricula.py và kiểm tra git diff; nếu có ai sửa tay curricula.json hoặc
-  # quên sync sau khi cập nhật nội dung bài thì CI lập tức báo lỗi.
+  # Kiểm tra tính đồng bộ của giáo trình pe-v4 với frontend/src/lib/curricula.json
+  # và đối chiếu dữ liệu seed DB (D6c) với giao diện & catalog.
+  # CI báo đỏ nếu:
+  #  1. curricula.json lệch với pe-v4 (quên sync hoặc sửa tay);
+  #  2. Dữ liệu seed DB lệch bất kỳ màn/khoá nào trong 48 bài với buildScreens() (dashboard-plan);
+  #  3. Thời lượng quảng cáo catalog lệch tổng 48 bài (catalog-duration).
   dong-bo-giao-trinh:
     runs-on: ubuntu-latest
     steps:
@@ -285,6 +288,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
       - name: Chạy sync_curricula.py và kiểm lệch
         run: |
           python scripts/pe-v4/sync_curricula.py
@@ -292,3 +301,9 @@ jobs:
             echo "::error::curricula.json bị lệch với dữ liệu pe-v4. Hãy chạy 'python scripts/pe-v4/sync_curricula.py' rồi commit."
             exit 1
           fi
+
+      - name: So khớp dữ liệu bài DB với curricula.json và catalog (D6c)
+        working-directory: frontend
+        run: |
+          npm ci
+          node --test e2e/unit/dashboard-plan.test.mjs e2e/unit/catalog-duration.test.mjs
