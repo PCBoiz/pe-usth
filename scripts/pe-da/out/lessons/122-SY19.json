@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Cây thư mục của dự án quán đã rõ ở bài trước, giờ đến chỗ các file phình to. Một log lặp cùng mẫu hàng nghìn lần có thể được nén để giảm chỗ lưu. Điều đầu tiên cần kiểm là giải nén thu lại đúng bytes ban đầu:"
+      "text": "Cây thư mục của dự án quán đã rõ ở bài trước, giờ đến chỗ các file phình to. Một log lặp cùng mẫu hàng nghìn lần có thể được nén để giảm chỗ lưu. Điều đầu tiên cần kiểm là giải nén thu lại đúng `bytes` ban đầu:"
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Các hàm compress/decompress làm việc với bytes. Với văn bản, dùng encode để chuyển thành bytes trước khi nén và decode để chuyển lại thành chuỗi sau khi giải nén. Một file .gz thường lưu một luồng nén; nếu cần giữ nhiều file cùng tên của chúng, dùng định dạng đóng gói (archive) như ZIP hoặc tar."
+      "text": "Các hàm compress/decompress làm việc với `bytes`. Với văn bản, dùng encode để chuyển thành `bytes` trước khi nén và decode để chuyển lại thành chuỗi sau khi giải nén. Một file .gz thường lưu một luồng nén; nếu cần giữ nhiều file cùng tên của chúng, dùng định dạng đóng gói (archive) như ZIP hoặc tar."
      },
      {
       "type": "code",

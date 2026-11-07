@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Code có lịch sử rồi, giờ đến cấu trúc. Một món trong thực đơn của quán có mã, tên và nhóm. Theo cách viết thủ tục, bạn có thể dùng dict giữ hồ sơ món và các hàm riêng để sửa, liệt kê. Cách hướng đối tượng gom dữ liệu này với hành vi liên quan vào Item; mã gọi làm việc qua thuộc tính và các hàm của từng món, gọi là method. Cả hai cách vẫn dùng hàm, nhưng khác nơi giữ dữ liệu và tổ chức trách nhiệm:"
+      "text": "Code có lịch sử rồi, giờ đến cấu trúc. Một món trong thực đơn của quán có mã, tên và nhóm. Theo cách viết thủ tục, bạn có thể dùng `dict` giữ hồ sơ món và các hàm riêng để sửa, liệt kê. Cách hướng đối tượng gom dữ liệu này với hành vi liên quan vào Item; mã gọi làm việc qua thuộc tính và các hàm của từng món, gọi là method. Cả hai cách vẫn dùng hàm, nhưng khác nơi giữ dữ liệu và tổ chức trách nhiệm:"
      },
      {
       "type": "code",
@@ -441,7 +441,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Gán alias = first không tạo một món thứ hai. Hai tên cùng tham chiếu một object. Các câu ôn trong slide dùng bối cảnh Java: biến thuộc kiểu cơ bản (primitive) như int giữ giá trị, còn biến tham chiếu (reference) giữ tham chiếu đến object. Gán một biến reference cho biến khác có thể làm hai biến cùng trỏ tới một object. Ở Python, mọi giá trị đều là object và phép gán gắn tên với object. Cần phân biệt gán lại tên với sửa một object dùng chung."
+      "text": "Gán alias = first không tạo một món thứ hai. Hai tên cùng tham chiếu một object. Các câu ôn trong slide dùng bối cảnh Java: biến thuộc kiểu cơ bản (primitive) như `int` giữ giá trị, còn biến tham chiếu (reference) giữ tham chiếu đến object. Gán một biến reference cho biến khác có thể làm hai biến cùng trỏ tới một object. Ở Python, mọi giá trị đều là object và phép gán gắn tên với object. Cần phân biệt gán lại tên với sửa một object dùng chung."
      }
     ]
    ],

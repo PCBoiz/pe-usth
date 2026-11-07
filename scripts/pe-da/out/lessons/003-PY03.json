@@ -62,7 +62,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Hai kiểu dữ liệu đầu tiên của sổ xuất hiện ở đây: số cốc là một con số, tên món là chữ. `type(12)` cho biết 12 có kiểu int, còn `type(\"data\")` cho biết chuỗi có kiểu str. Khi cần tra một thứ gì, gõ `dir(object)` để xem tên các thuộc tính, hoặc `help(print)` để đọc hướng dẫn dùng print."
+      "text": "Hai kiểu dữ liệu đầu tiên của sổ xuất hiện ở đây: số cốc là một con số, tên món là chữ. `type(12)` cho biết 12 có kiểu `int`, còn `type(\"data\")` cho biết chuỗi có kiểu `str`. Khi cần tra một thứ gì, gõ `dir(object)` để xem tên các thuộc tính, hoặc `help(print)` để đọc hướng dẫn dùng print."
      },
      {
       "type": "paragraph",

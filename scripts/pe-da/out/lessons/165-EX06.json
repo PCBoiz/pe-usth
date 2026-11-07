@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Hết ca, quán cần lưu một bản nén mà ứng dụng mở lại được. Trước khi đưa việc lưu sang thread, kiểm hai chiều ghi và nạp trên file thật. pickle biến object thành bytes; gzip nén bytes; hai bước không thay thế nhau. Chỉ nạp pickle từ nguồn bạn tin cậy."
+      "text": "Hết ca, quán cần lưu một bản nén mà ứng dụng mở lại được. Trước khi đưa việc lưu sang thread, kiểm hai chiều ghi và nạp trên file thật. pickle biến object thành `bytes`; gzip nén `bytes`; hai bước không thay thế nhau. Chỉ nạp pickle từ nguồn bạn tin cậy."
      },
      {
       "type": "code",

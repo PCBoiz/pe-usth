@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Set chỉ giữ các phần tử khác nhau và không có chỉ số vị trí, nên nó trả lời \"có hay không\" rất gọn. Phép hiệu `menu - da_ban` giữ món thuộc bảng giá nhưng không thuộc nhóm đã bán. Ví dụ gọi `sorted` lúc in để thứ tự ổn định giữa các lần chạy, vì bản thân set không giữ thứ tự nào."
+      "text": "Set chỉ giữ các phần tử khác nhau và không có chỉ số vị trí, nên nó trả lời \"có hay không\" rất gọn. Phép hiệu `menu - da_ban` giữ món thuộc bảng giá nhưng không thuộc nhóm đã bán. Ví dụ gọi `sorted` lúc in để thứ tự ổn định giữa các lần chạy, vì bản thân `set` không giữ thứ tự nào."
      },
      {
       "type": "code",
@@ -66,7 +66,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Tạo set từ một dãy cũng loại các tên trùng, nên ba lần bán latte chỉ còn một tên. Nhưng nó không giữ thứ tự bản ghi, và không giữ số lần mỗi tên xuất hiện — muốn đếm số cốc mỗi món thì set không làm được."
+      "text": "Tạo `set` từ một dãy cũng loại các tên trùng, nên ba lần bán latte chỉ còn một tên. Nhưng nó không giữ thứ tự bản ghi, và không giữ số lần mỗi tên xuất hiện — muốn đếm số cốc mỗi món thì `set` không làm được."
      }
     ]
    ],

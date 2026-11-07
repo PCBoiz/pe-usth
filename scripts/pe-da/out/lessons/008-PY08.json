@@ -50,7 +50,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Số cốc ba ngày từ máy tính tiền về trong một dòng chữ, kèm dấu xuống dòng ở cuối. `rstrip()` bỏ khoảng trắng phía phải, kể cả dấu xuống dòng đó. `split(\",\")` tách theo dấu phẩy và trả một list các chuỗi — vẫn là chuỗi, chưa phải số. `splitlines()` tách theo các dấu xuống dòng, dùng khi cả tệp về trong một chuỗi."
+      "text": "Số cốc ba ngày từ máy tính tiền về trong một dòng chữ, kèm dấu xuống dòng ở cuối. `rstrip()` bỏ khoảng trắng phía phải, kể cả dấu xuống dòng đó. `split(\",\")` tách theo dấu phẩy và trả một `list` các chuỗi — vẫn là chuỗi, chưa phải số. `splitlines()` tách theo các dấu xuống dòng, dùng khi cả tệp về trong một chuỗi."
      },
      {
       "type": "code",

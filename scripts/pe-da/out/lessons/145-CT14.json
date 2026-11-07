@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Hàm change thêm 9 vào list trong process con, nhưng list values ở cha vẫn là [1, 2]. Hãy lưu mỗi ví dụ thành file .py rồi chạy file. Khi dùng cơ chế spawn, process con cần import được module chứa hàm worker. Khối if __name__ == \"__main__\":, thường gọi là main guard, ngăn phần khởi chạy process chạy lại khi module được import ở con."
+      "text": "Hàm change thêm 9 vào `list` trong process con, nhưng `list` values ở cha vẫn là [1, 2]. Hãy lưu mỗi ví dụ thành file .py rồi chạy file. Khi dùng cơ chế spawn, process con cần import được module chứa hàm worker. Khối if __name__ == \"__main__\":, thường gọi là main guard, ngăn phần khởi chạy process chạy lại khi module được import ở con."
      },
      {
       "type": "code",

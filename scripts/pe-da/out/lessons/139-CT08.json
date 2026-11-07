@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Popen trả về sau khi khởi tạo, không chờ toàn bộ công việc xong như run. Với `text=True`, communicate nhận chuỗi; ở chế độ nhị phân, nó nhận bytes. communicate giúp gửi đầu vào, đọc đầu ra và chờ kết thúc mà không tự viết các lần đọc/ghi dễ làm đầy pipe."
+      "text": "Popen trả về sau khi khởi tạo, không chờ toàn bộ công việc xong như run. Với `text=True`, communicate nhận chuỗi; ở chế độ nhị phân, nó nhận `bytes`. communicate giúp gửi đầu vào, đọc đầu ra và chờ kết thúc mà không tự viết các lần đọc/ghi dễ làm đầy pipe."
      },
      {
       "type": "code",

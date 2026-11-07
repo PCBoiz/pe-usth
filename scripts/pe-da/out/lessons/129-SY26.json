@@ -640,7 +640,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ở PW3, floor được áp lúc nhận lượng, rồi lượng trung bình dùng số đã lưu. Với 8.7 và 6.2, trung bình có trọng số là 8.075; ví dụ round trên float chỉ minh họa hiển thị, không thiết lập quy tắc làm tròn cho số liệu chính thức. Đề phải nói rõ dùng giá trị nào để xếp hạng và tie-break khi bằng nhau."
+      "text": "Ở PW3, floor được áp lúc nhận lượng, rồi lượng trung bình dùng số đã lưu. Với 8.7 và 6.2, trung bình có trọng số là 8.075; ví dụ round trên `float` chỉ minh họa hiển thị, không thiết lập quy tắc làm tròn cho số liệu chính thức. Đề phải nói rõ dùng giá trị nào để xếp hạng và tie-break khi bằng nhau."
      },
      {
       "type": "code",

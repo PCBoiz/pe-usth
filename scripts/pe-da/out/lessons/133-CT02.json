@@ -118,7 +118,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Đây là mô hình của exec: thay image chương trình trong process hiện tại, giữ PID và không tạo process thứ ba. Trong tên họ hàm, l nhận các đối số riêng, v nhận vector argv; p tìm chương trình qua PATH và e nhận environment tường minh. Vì thế execl/execv khác cách truyền đối số, execlp/execvp thêm tìm PATH, execle thêm environment. Trong ví dụ C của slide, argv gồm \"/bin/ps\", \"-ef\", rồi NULL kết thúc danh sách. Python subprocess nhận một list đối số thay cho việc bạn tự chép nguyên chữ ký C."
+      "text": "Đây là mô hình của exec: thay image chương trình trong process hiện tại, giữ PID và không tạo process thứ ba. Trong tên họ hàm, l nhận các đối số riêng, v nhận vector argv; p tìm chương trình qua PATH và e nhận environment tường minh. Vì thế execl/execv khác cách truyền đối số, execlp/execvp thêm tìm PATH, execle thêm environment. Trong ví dụ C của slide, argv gồm \"/bin/ps\", \"-ef\", rồi NULL kết thúc danh sách. Python subprocess nhận một `list` đối số thay cho việc bạn tự chép nguyên chữ ký C."
      },
      {
       "type": "code",

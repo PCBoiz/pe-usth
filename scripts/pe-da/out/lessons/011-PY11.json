@@ -34,11 +34,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Tuple có thứ tự và đọc theo chỉ số như list, nên `dong[0]` là 10 cốc. Nó không cho gán lại các vị trí, vì vậy một dòng đã chốt không bị sửa nhầm. Nếu một phần tử trỏ tới một list thì list đó vẫn đổi được; tính bất biến của tuple không tự đóng băng object con."
+      "text": "Tuple có thứ tự và đọc theo chỉ số như `list`, nên `dong[0]` là 10 cốc. Nó không cho gán lại các vị trí, vì vậy một dòng đã chốt không bị sửa nhầm. Nếu một phần tử trỏ tới một `list` thì `list` đó vẫn đổi được; tính bất biến của `tuple` không tự đóng băng object con."
      },
      {
       "type": "paragraph",
-      "text": "Dấu phẩy mới là thứ tạo tuple một phần tử: `(10,)` là tuple, còn `(10)` vẫn là số 10. Phép `so_coc, don_gia = dong` được gọi là unpacking: mỗi phần tử vào một tên, và dạng cơ bản cần số tên bằng số phần tử."
+      "text": "Dấu phẩy mới là thứ tạo `tuple` một phần tử: `(10,)` là `tuple`, còn `(10)` vẫn là số 10. Phép `so_coc, don_gia = dong` được gọi là unpacking: mỗi phần tử vào một tên, và dạng cơ bản cần số tên bằng số phần tử."
      },
      {
       "type": "code",
@@ -50,11 +50,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Collection là cách gom nhiều object vào một cấu trúc, và quán cần vài kiểu gom khác nhau. List phù hợp khi còn thêm và sửa, như số cốc mỗi ngày. Tuple phù hợp cho bản ghi đã chốt, như một dòng hoá đơn. String, list, tuple và range đều là sequence: có thứ tự và đọc theo vị trí."
+      "text": "Collection là cách gom nhiều object vào một cấu trúc, và quán cần vài kiểu gom khác nhau. List phù hợp khi còn thêm và sửa, như số cốc mỗi ngày. Tuple phù hợp cho bản ghi đã chốt, như một dòng hoá đơn. String, `list`, `tuple` và range đều là sequence: có thứ tự và đọc theo vị trí."
      },
      {
       "type": "paragraph",
-      "text": "Hai cấu trúc còn lại trả lời câu hỏi khác. Set giữ các thành viên không trùng và không có chỉ số, như tập món đã bán trong ngày. Còn dict tra giá trị theo khóa, như bảng giá tra theo tên món. Bạn chọn theo thao tác cần làm, không theo cách nó được in ra."
+      "text": "Hai cấu trúc còn lại trả lời câu hỏi khác. Set giữ các thành viên không trùng và không có chỉ số, như tập món đã bán trong ngày. Còn `dict` tra giá trị theo khóa, như bảng giá tra theo tên món. Bạn chọn theo thao tác cần làm, không theo cách nó được in ra."
      },
      {
       "type": "code",
@@ -70,7 +70,7 @@
      },
      {
       "type": "paragraph",
-      "text": "bytes bất biến, còn bytearray cho đổi từng byte. Đừng coi mỗi byte là một ký tự tiếng Việt. Để chuyển giữa chuỗi và bytes khi đọc hay ghi văn bản, bạn phải chọn cách mã hóa (encoding). Chỗ này bạn chưa cần tới khi ghi sổ bán hàng mỗi ngày, nhưng nó quay lại ngay khi quán nối với một thiết bị thật."
+      "text": "`bytes` bất biến, còn bytearray cho đổi từng byte. Đừng coi mỗi byte là một ký tự tiếng Việt. Để chuyển giữa chuỗi và `bytes` khi đọc hay ghi văn bản, bạn phải chọn cách mã hóa (encoding). Chỗ này bạn chưa cần tới khi ghi sổ bán hàng mỗi ngày, nhưng nó quay lại ngay khi quán nối với một thiết bị thật."
      }
     ]
    ],

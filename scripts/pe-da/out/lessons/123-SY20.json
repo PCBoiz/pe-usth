@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "ZIP giữ nhiều file và cả các mục thư mục theo tên; nó có thể nén từng thành viên. `read(name)` lấy bytes của đúng file, giúp bạn kiểm tên và nội dung trước khi viết ra đĩa. Không cần extractall chỉ để đọc một bảng."
+      "text": "ZIP giữ nhiều file và cả các mục thư mục theo tên; nó có thể nén từng thành viên. `read(name)` lấy `bytes` của đúng file, giúp bạn kiểm tên và nội dung trước khi viết ra đĩa. Không cần extractall chỉ để đọc một bảng."
      },
      {
       "type": "code",

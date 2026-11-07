@@ -58,7 +58,7 @@
     [
      {
       "type": "paragraph",
-      "text": "stdout nhận file đã mở nên bạn không thêm dấu > vào list đối số truyền cho chương trình. Trong shell thực hành, phần phân tích lệnh, gọi là parser, sẽ nhận ra dấu >, mở file đích rồi nối file đó với stdout trước khi chạy chương trình."
+      "text": "stdout nhận file đã mở nên bạn không thêm dấu > vào `list` đối số truyền cho chương trình. Trong shell thực hành, phần phân tích lệnh, gọi là parser, sẽ nhận ra dấu >, mở file đích rồi nối file đó với stdout trước khi chạy chương trình."
      },
      {
       "type": "code",

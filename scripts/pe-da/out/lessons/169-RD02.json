@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "stack tạo một chiều mới. Hai dãy vốn có shape (2,) trở thành bảng (2,2), mỗi hàng là một ngày. concatenate hai dãy đó không tạo chiều ngày mà chỉ cho dãy bốn số. Khi làm nhiều lô lớn, thu các lô vào list rồi ghép một lần để tránh sao chép lại toàn bộ sau mỗi lần thêm."
+      "text": "stack tạo một chiều mới. Hai dãy vốn có shape (2,) trở thành bảng (2,2), mỗi hàng là một ngày. concatenate hai dãy đó không tạo chiều ngày mà chỉ cho dãy bốn số. Khi làm nhiều lô lớn, thu các lô vào `list` rồi ghép một lần để tránh sao chép lại toàn bộ sau mỗi lần thêm."
      }
     ]
    ],

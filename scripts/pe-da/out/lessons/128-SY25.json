@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Dictionary giúp tra theo mã; tuple (item_id, ingredient_id) làm khóa của một định lượng. Ở PW1, bạn chỉ dùng collection và hàm để tổ chức dữ liệu, chưa cần class cho món hay nguyên liệu. Mỗi món vẫn cần nhóm món, dù trường này không tham gia công thức lượng trung bình."
+      "text": "Dictionary giúp tra theo mã; `tuple` (item_id, ingredient_id) làm khóa của một định lượng. Ở PW1, bạn chỉ dùng collection và hàm để tổ chức dữ liệu, chưa cần class cho món hay nguyên liệu. Mỗi món vẫn cần nhóm món, dù trường này không tham gia công thức lượng trung bình."
      },
      {
       "type": "code",

@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`da_ban[\"espresso\"]` đọc giá trị của khóa đó, và gây `KeyError` nếu khóa không có. `get` cho bạn trả về một giá trị mặc định, nên một món chưa từng bán không làm chương trình dừng. Có khóa khác với có giá trị khác 0. `\"latte\"` nằm trong sổ với số liệu hợp lệ là 0 cốc, tức hôm nay chưa bán được cốc nào. `in` trên dict xét khóa, không xét giá trị."
+      "text": "`da_ban[\"espresso\"]` đọc giá trị của khóa đó, và gây `KeyError` nếu khóa không có. `get` cho bạn trả về một giá trị mặc định, nên một món chưa từng bán không làm chương trình dừng. Có khóa khác với có giá trị khác 0. `\"latte\"` nằm trong sổ với số liệu hợp lệ là 0 cốc, tức hôm nay chưa bán được cốc nào. `in` trên `dict` xét khóa, không xét giá trị."
      },
      {
       "type": "code",
@@ -50,7 +50,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Trong `for mon, tien in gia.items()`, mỗi lượt lấy một cặp khóa và giá trị rồi gán vào `mon` và `tien`. Đây là vòng lặp `for`, và bài PY14 sẽ nói kỹ hơn về nó. `keys()` và `values()` trả về các view, tức cách xem khóa hoặc giá trị luôn phản ánh nội dung hiện tại của dict. Python 3 giữ thứ tự bạn đã chèn, nên bảng in ra theo đúng thứ tự bạn thêm món."
+      "text": "Trong `for mon, tien in gia.items()`, mỗi lượt lấy một cặp khóa và giá trị rồi gán vào `mon` và `tien`. Đây là vòng lặp `for`, và bài PY14 sẽ nói kỹ hơn về nó. `keys()` và `values()` trả về các view, tức cách xem khóa hoặc giá trị luôn phản ánh nội dung hiện tại của `dict`. Python 3 giữ thứ tự bạn đã chèn, nên bảng in ra theo đúng thứ tự bạn thêm món."
      },
      {
       "type": "code",
@@ -66,7 +66,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Khi bỏ một món khỏi bảng giá, `pop(key, default)` vừa lấy vừa xoá, nên bỏ `tra_da` cũng cho bạn biết giá cuối của nó là 12. Không truyền `default` thì một khóa thiếu gây `KeyError`, còn `del gia[mon]` thì chỉ xoá. `not in` cũng xét khóa, giống `in`. Giá trị trong dict còn có thể là list hay một dict khác, chẳng hạn một món kèm nhiều mức size."
+      "text": "Khi bỏ một món khỏi bảng giá, `pop(key, default)` vừa lấy vừa xoá, nên bỏ `tra_da` cũng cho bạn biết giá cuối của nó là 12. Không truyền `default` thì một khóa thiếu gây `KeyError`, còn `del gia[mon]` thì chỉ xoá. `not in` cũng xét khóa, giống `in`. Giá trị trong `dict` còn có thể là `list` hay một `dict` khác, chẳng hạn một món kèm nhiều mức size."
      }
     ]
    ],

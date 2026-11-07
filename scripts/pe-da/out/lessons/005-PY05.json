@@ -106,7 +106,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Phép chia còn một chi tiết dễ vấp khi bạn đọc tài liệu cũ. Python 3 cho `99 / 100` bằng 0.99 dù hai toán hạng đều là int. Trộn int với float như `2 + 3.0` thường cho float. Đừng chép kết quả chia của Python 2 vào bảng tính của quán."
+      "text": "Phép chia còn một chi tiết dễ vấp khi bạn đọc tài liệu cũ. Python 3 cho `99 / 100` bằng 0.99 dù hai toán hạng đều là `int`. Trộn `int` với `float` như `2 + 3.0` thường cho `float`. Đừng chép kết quả chia của Python 2 vào bảng tính của quán."
      }
     ]
    ],

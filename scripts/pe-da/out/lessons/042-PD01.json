@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Tổng ba ngày là 36 cốc. `len(cups)` cho biết Series có ba phần tử. Trong các bài sau, `tolist()` được dùng để in giá trị gọn thành list; dữ liệu ban đầu vẫn là Series."
+      "text": "Tổng ba ngày là 36 cốc. `len(cups)` cho biết Series có ba phần tử. Trong các bài sau, `tolist()` được dùng để in giá trị gọn thành `list`; dữ liệu ban đầu vẫn là Series."
      }
     ]
    ],

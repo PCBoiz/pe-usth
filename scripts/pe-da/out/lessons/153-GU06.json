@@ -53,7 +53,7 @@
      },
      {
       "type": "paragraph",
-      "text": "set cập nhật biến; các widget liên kết bằng textvariable phản ánh cùng biến khi giao diện xử lý sự kiện. Không dùng một StringVar chung cho những nhóm radio độc lập."
+      "text": "`set` cập nhật biến; các widget liên kết bằng textvariable phản ánh cùng biến khi giao diện xử lý sự kiện. Không dùng một StringVar chung cho những nhóm radio độc lập."
      }
     ]
    ],

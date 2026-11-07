@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Giả sử sổ hai ngày đang là `[1, 2]` và bạn nhận thêm hai ngày `[3, 4]`. `append([3, 4])` thêm một phần tử là list con, nên sổ có ba ô và ô thứ ba lại là một dãy. `extend([3, 4])` thêm hai con số riêng, đúng ý \"ghi tiếp hai ngày\". `a + b` tạo một list mới, còn `a += b` mở rộng chính `a`. `insert(0, 0)` chèn số 0 ở đầu."
+      "text": "Giả sử sổ hai ngày đang là `[1, 2]` và bạn nhận thêm hai ngày `[3, 4]`. `append([3, 4])` thêm một phần tử là `list` con, nên sổ có ba ô và ô thứ ba lại là một dãy. `extend([3, 4])` thêm hai con số riêng, đúng ý \"ghi tiếp hai ngày\". `a + b` tạo một `list` mới, còn `a += b` mở rộng chính `a`. `insert(0, 0)` chèn số 0 ở đầu."
      },
      {
       "type": "paragraph",
@@ -62,7 +62,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Năm thao tác dưới đây hay dùng khi dọn một dãy đếm nháp. `remove(x)` xoá lần xuất hiện đầu tiên khớp `x`. `pop()` xoá và trả về phần tử cuối, còn `pop(index)` chọn vị trí cần lấy. `del` xoá theo vị trí hoặc theo lát cắt. `sort` sắp tại chỗ và `reverse` đảo tại chỗ; cả hai trả `None` chứ không trả list đã đổi."
+      "text": "Năm thao tác dưới đây hay dùng khi dọn một dãy đếm nháp. `remove(x)` xoá lần xuất hiện đầu tiên khớp `x`. `pop()` xoá và trả về phần tử cuối, còn `pop(index)` chọn vị trí cần lấy. `del` xoá theo vị trí hoặc theo lát cắt. `sort` sắp tại chỗ và `reverse` đảo tại chỗ; cả hai trả `None` chứ không trả `list` đã đổi."
      },
      {
       "type": "paragraph",
@@ -70,7 +70,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Còn một cái bẫy khi bạn muốn giữ lại bản gốc. Gán `b = a` không sao chép list: hai tên cùng trỏ vào một dãy, nên sửa `b` là sửa cả sổ gốc. Dùng `a.copy()` để có một bản sao nông. Với dữ liệu lồng nhau, vẫn phải xem hai bản có dùng chung object con hay không."
+      "text": "Còn một cái bẫy khi bạn muốn giữ lại bản gốc. Gán `b = a` không sao chép `list`: hai tên cùng trỏ vào một dãy, nên sửa `b` là sửa cả sổ gốc. Dùng `a.copy()` để có một bản sao nông. Với dữ liệu lồng nhau, vẫn phải xem hai bản có dùng chung object con hay không."
      }
     ]
    ],

@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Nhiều file đã gom được vào một gói nén rồi, nhưng dữ liệu trong bộ nhớ thì khác. Bạn lưu một tuple gồm mã đơn của quán và danh sách số cốc. JSON và pickle (định dạng nhị phân riêng của Python) đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
+      "text": "Nhiều file đã gom được vào một gói nén rồi, nhưng dữ liệu trong bộ nhớ thì khác. Bạn lưu một `tuple` gồm mã đơn của quán và danh sách số cốc. JSON và pickle (định dạng nhị phân riêng của Python) đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
      },
      {
       "type": "code",
@@ -92,7 +92,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Pickle lưu biểu diễn nhị phân của cấu trúc object Python; JSON là text với tập kiểu đơn giản hơn. JSON chuyển tuple thành array, đọc lại thành list. Pickle còn giữ set và nhiều kiểu Python khác, nhưng không thể mặc định lưu mọi tài nguyên đang mở."
+      "text": "Pickle lưu biểu diễn nhị phân của cấu trúc object Python; JSON là text với tập kiểu đơn giản hơn. JSON chuyển `tuple` thành array, đọc lại thành `list`. Pickle còn giữ `set` và nhiều kiểu Python khác, nhưng không thể mặc định lưu mọi tài nguyên đang mở."
      },
      {
       "type": "code",
@@ -104,7 +104,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`dump/load` nhận file binary, còn `dumps/loads` dùng bytes trong memory. Function và class cấp module thường được lưu theo tên tham chiếu; khi load phải còn module/class tương thích. File handle hoặc socket không tự khôi phục kết nối chỉ nhờ pickle."
+      "text": "`dump/load` nhận file binary, còn `dumps/loads` dùng `bytes` trong memory. Function và class cấp module thường được lưu theo tên tham chiếu; khi load phải còn module/class tương thích. File handle hoặc socket không tự khôi phục kết nối chỉ nhờ pickle."
      },
      {
       "type": "code",
@@ -120,7 +120,7 @@
      },
      {
       "type": "paragraph",
-      "text": "JSON lưu được số, chuỗi, boolean, null, list và object với khóa chuỗi. `json.dumps({1, 2})` gây TypeError vì set không có biểu diễn JSON mặc định; instance class tự tạo cũng cần chuyển thành dữ liệu đơn giản hoặc bộ mã hóa riêng. Ngược lại, một scalar hay collection chỉ pickle được khi các thành phần bên trong cũng pickle được."
+      "text": "JSON lưu được số, chuỗi, boolean, null, `list` và object với khóa chuỗi. `json.dumps({1, 2})` gây TypeError vì `set` không có biểu diễn JSON mặc định; instance class tự tạo cũng cần chuyển thành dữ liệu đơn giản hoặc bộ mã hóa riêng. Ngược lại, một scalar hay collection chỉ pickle được khi các thành phần bên trong cũng pickle được."
      }
     ]
    ],

@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Sau AB, con trỏ đứng trước newline; readline tiếp theo chỉ còn newline của dòng đó. `readlines` lấy các dòng còn lại thành list. Dòng cuối không bắt buộc có newline. Với text, read(size) đếm ký tự; với binary, nó đếm bytes."
+      "text": "Sau AB, con trỏ đứng trước newline; readline tiếp theo chỉ còn newline của dòng đó. `readlines` lấy các dòng còn lại thành `list`. Dòng cuối không bắt buộc có newline. Với text, read(size) đếm ký tự; với binary, nó đếm `bytes`."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`seek(1)` ở binary đưa con trỏ đến byte có offset 1. Ghi Z thay byte B, không tự chèn thêm phần tử như list.insert. Khi dùng file thật với r+b, quy tắc này cũng áp dụng."
+      "text": "`seek(1)` ở binary đưa con trỏ đến byte có offset 1. Ghi Z thay byte B, không tự chèn thêm phần tử như `list`.insert. Khi dùng file thật với r+b, quy tắc này cũng áp dụng."
      },
      {
       "type": "code",
@@ -102,11 +102,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Một ký tự Unicode có thể dùng nhiều byte UTF-8. Không cắt bytes tùy ý rồi mặc định phần còn lại decode được. Với text file, dùng seek(0) để quay đầu hoặc vị trí do tell trả lại; không coi mọi số ký tự là byte offset hợp lệ."
+      "text": "Một ký tự Unicode có thể dùng nhiều byte UTF-8. Không cắt `bytes` tùy ý rồi mặc định phần còn lại decode được. Với text file, dùng seek(0) để quay đầu hoặc vị trí do tell trả lại; không coi mọi số ký tự là byte offset hợp lệ."
      },
      {
       "type": "paragraph",
-      "text": "Nếu chỉ cần lọc dòng, duyệt `for line in f` để xử lý lần lượt. `read()` không truyền size lấy toàn bộ phần còn lại, còn readlines tạo list các dòng còn lại; cả hai có thể dùng nhiều RAM với file lớn. `seek(0)` đưa vị trí về đầu để đọc lại."
+      "text": "Nếu chỉ cần lọc dòng, duyệt `for line in f` để xử lý lần lượt. `read()` không truyền size lấy toàn bộ phần còn lại, còn readlines tạo `list` các dòng còn lại; cả hai có thể dùng nhiều RAM với file lớn. `seek(0)` đưa vị trí về đầu để đọc lại."
      }
     ]
    ],

@@ -66,7 +66,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ở đây, 2 nhân 3 bằng 6 và 4 nhân 3 bằng 12. Hãy phân biệt với list Python: `[2, 4] * 3` lặp lại danh sách thành `[2, 4, 2, 4, 2, 4]`. Khi làm việc với array số, `* 3` nhân từng giá trị với 3."
+      "text": "Ở đây, 2 nhân 3 bằng 6 và 4 nhân 3 bằng 12. Hãy phân biệt với `list` Python: `[2, 4] * 3` lặp lại danh sách thành `[2, 4, 2, 4, 2, 4]`. Khi làm việc với array số, `* 3` nhân từng giá trị với 3."
      },
      {
       "type": "paragraph",

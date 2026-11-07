@@ -489,7 +489,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Hai kiểu dữ liệu đầu tiên của sổ xuất hiện ở đây: số cốc là một con số, tên món là chữ. `type(12)` cho biết 12 có kiểu int, còn `type(\"data\")` cho biết chuỗi có kiểu str. Khi cần tra một thứ gì, gõ `dir(object)` để xem tên các thuộc tính, hoặc `help(print)` để đọc hướng dẫn dùng print."
+        "text": "Hai kiểu dữ liệu đầu tiên của sổ xuất hiện ở đây: số cốc là một con số, tên món là chữ. `type(12)` cho biết 12 có kiểu `int`, còn `type(\"data\")` cho biết chuỗi có kiểu `str`. Khi cần tra một thứ gì, gõ `dir(object)` để xem tên các thuộc tính, hoặc `help(print)` để đọc hướng dẫn dùng print."
        },
        {
         "type": "paragraph",
@@ -951,7 +951,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Phép chia còn một chi tiết dễ vấp khi bạn đọc tài liệu cũ. Python 3 cho `99 / 100` bằng 0.99 dù hai toán hạng đều là int. Trộn int với float như `2 + 3.0` thường cho float. Đừng chép kết quả chia của Python 2 vào bảng tính của quán."
+        "text": "Phép chia còn một chi tiết dễ vấp khi bạn đọc tài liệu cũ. Python 3 cho `99 / 100` bằng 0.99 dù hai toán hạng đều là `int`. Trộn `int` với `float` như `2 + 3.0` thường cho `float`. Đừng chép kết quả chia của Python 2 vào bảng tính của quán."
        }
       ]
      ],
@@ -1580,7 +1580,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Số cốc ba ngày từ máy tính tiền về trong một dòng chữ, kèm dấu xuống dòng ở cuối. `rstrip()` bỏ khoảng trắng phía phải, kể cả dấu xuống dòng đó. `split(\",\")` tách theo dấu phẩy và trả một list các chuỗi — vẫn là chuỗi, chưa phải số. `splitlines()` tách theo các dấu xuống dòng, dùng khi cả tệp về trong một chuỗi."
+        "text": "Số cốc ba ngày từ máy tính tiền về trong một dòng chữ, kèm dấu xuống dòng ở cuối. `rstrip()` bỏ khoảng trắng phía phải, kể cả dấu xuống dòng đó. `split(\",\")` tách theo dấu phẩy và trả một `list` các chuỗi — vẫn là chuỗi, chưa phải số. `splitlines()` tách theo các dấu xuống dòng, dùng khi cả tệp về trong một chuỗi."
        },
        {
         "type": "code",
@@ -2044,7 +2044,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Giả sử sổ hai ngày đang là `[1, 2]` và bạn nhận thêm hai ngày `[3, 4]`. `append([3, 4])` thêm một phần tử là list con, nên sổ có ba ô và ô thứ ba lại là một dãy. `extend([3, 4])` thêm hai con số riêng, đúng ý \"ghi tiếp hai ngày\". `a + b` tạo một list mới, còn `a += b` mở rộng chính `a`. `insert(0, 0)` chèn số 0 ở đầu."
+        "text": "Giả sử sổ hai ngày đang là `[1, 2]` và bạn nhận thêm hai ngày `[3, 4]`. `append([3, 4])` thêm một phần tử là `list` con, nên sổ có ba ô và ô thứ ba lại là một dãy. `extend([3, 4])` thêm hai con số riêng, đúng ý \"ghi tiếp hai ngày\". `a + b` tạo một `list` mới, còn `a += b` mở rộng chính `a`. `insert(0, 0)` chèn số 0 ở đầu."
        },
        {
         "type": "paragraph",
@@ -2060,7 +2060,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Năm thao tác dưới đây hay dùng khi dọn một dãy đếm nháp. `remove(x)` xoá lần xuất hiện đầu tiên khớp `x`. `pop()` xoá và trả về phần tử cuối, còn `pop(index)` chọn vị trí cần lấy. `del` xoá theo vị trí hoặc theo lát cắt. `sort` sắp tại chỗ và `reverse` đảo tại chỗ; cả hai trả `None` chứ không trả list đã đổi."
+        "text": "Năm thao tác dưới đây hay dùng khi dọn một dãy đếm nháp. `remove(x)` xoá lần xuất hiện đầu tiên khớp `x`. `pop()` xoá và trả về phần tử cuối, còn `pop(index)` chọn vị trí cần lấy. `del` xoá theo vị trí hoặc theo lát cắt. `sort` sắp tại chỗ và `reverse` đảo tại chỗ; cả hai trả `None` chứ không trả `list` đã đổi."
        },
        {
         "type": "paragraph",
@@ -2068,7 +2068,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Còn một cái bẫy khi bạn muốn giữ lại bản gốc. Gán `b = a` không sao chép list: hai tên cùng trỏ vào một dãy, nên sửa `b` là sửa cả sổ gốc. Dùng `a.copy()` để có một bản sao nông. Với dữ liệu lồng nhau, vẫn phải xem hai bản có dùng chung object con hay không."
+        "text": "Còn một cái bẫy khi bạn muốn giữ lại bản gốc. Gán `b = a` không sao chép `list`: hai tên cùng trỏ vào một dãy, nên sửa `b` là sửa cả sổ gốc. Dùng `a.copy()` để có một bản sao nông. Với dữ liệu lồng nhau, vẫn phải xem hai bản có dùng chung object con hay không."
        }
       ]
      ],
@@ -2295,11 +2295,11 @@
       [
        {
         "type": "paragraph",
-        "text": "Tuple có thứ tự và đọc theo chỉ số như list, nên `dong[0]` là 10 cốc. Nó không cho gán lại các vị trí, vì vậy một dòng đã chốt không bị sửa nhầm. Nếu một phần tử trỏ tới một list thì list đó vẫn đổi được; tính bất biến của tuple không tự đóng băng object con."
+        "text": "Tuple có thứ tự và đọc theo chỉ số như `list`, nên `dong[0]` là 10 cốc. Nó không cho gán lại các vị trí, vì vậy một dòng đã chốt không bị sửa nhầm. Nếu một phần tử trỏ tới một `list` thì `list` đó vẫn đổi được; tính bất biến của `tuple` không tự đóng băng object con."
        },
        {
         "type": "paragraph",
-        "text": "Dấu phẩy mới là thứ tạo tuple một phần tử: `(10,)` là tuple, còn `(10)` vẫn là số 10. Phép `so_coc, don_gia = dong` được gọi là unpacking: mỗi phần tử vào một tên, và dạng cơ bản cần số tên bằng số phần tử."
+        "text": "Dấu phẩy mới là thứ tạo `tuple` một phần tử: `(10,)` là `tuple`, còn `(10)` vẫn là số 10. Phép `so_coc, don_gia = dong` được gọi là unpacking: mỗi phần tử vào một tên, và dạng cơ bản cần số tên bằng số phần tử."
        },
        {
         "type": "code",
@@ -2311,11 +2311,11 @@
       [
        {
         "type": "paragraph",
-        "text": "Collection là cách gom nhiều object vào một cấu trúc, và quán cần vài kiểu gom khác nhau. List phù hợp khi còn thêm và sửa, như số cốc mỗi ngày. Tuple phù hợp cho bản ghi đã chốt, như một dòng hoá đơn. String, list, tuple và range đều là sequence: có thứ tự và đọc theo vị trí."
+        "text": "Collection là cách gom nhiều object vào một cấu trúc, và quán cần vài kiểu gom khác nhau. List phù hợp khi còn thêm và sửa, như số cốc mỗi ngày. Tuple phù hợp cho bản ghi đã chốt, như một dòng hoá đơn. String, `list`, `tuple` và range đều là sequence: có thứ tự và đọc theo vị trí."
        },
        {
         "type": "paragraph",
-        "text": "Hai cấu trúc còn lại trả lời câu hỏi khác. Set giữ các thành viên không trùng và không có chỉ số, như tập món đã bán trong ngày. Còn dict tra giá trị theo khóa, như bảng giá tra theo tên món. Bạn chọn theo thao tác cần làm, không theo cách nó được in ra."
+        "text": "Hai cấu trúc còn lại trả lời câu hỏi khác. Set giữ các thành viên không trùng và không có chỉ số, như tập món đã bán trong ngày. Còn `dict` tra giá trị theo khóa, như bảng giá tra theo tên món. Bạn chọn theo thao tác cần làm, không theo cách nó được in ra."
        },
        {
         "type": "code",
@@ -2331,7 +2331,7 @@
        },
        {
         "type": "paragraph",
-        "text": "bytes bất biến, còn bytearray cho đổi từng byte. Đừng coi mỗi byte là một ký tự tiếng Việt. Để chuyển giữa chuỗi và bytes khi đọc hay ghi văn bản, bạn phải chọn cách mã hóa (encoding). Chỗ này bạn chưa cần tới khi ghi sổ bán hàng mỗi ngày, nhưng nó quay lại ngay khi quán nối với một thiết bị thật."
+        "text": "`bytes` bất biến, còn bytearray cho đổi từng byte. Đừng coi mỗi byte là một ký tự tiếng Việt. Để chuyển giữa chuỗi và `bytes` khi đọc hay ghi văn bản, bạn phải chọn cách mã hóa (encoding). Chỗ này bạn chưa cần tới khi ghi sổ bán hàng mỗi ngày, nhưng nó quay lại ngay khi quán nối với một thiết bị thật."
        }
       ]
      ],
@@ -2540,7 +2540,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`da_ban[\"espresso\"]` đọc giá trị của khóa đó, và gây `KeyError` nếu khóa không có. `get` cho bạn trả về một giá trị mặc định, nên một món chưa từng bán không làm chương trình dừng. Có khóa khác với có giá trị khác 0. `\"latte\"` nằm trong sổ với số liệu hợp lệ là 0 cốc, tức hôm nay chưa bán được cốc nào. `in` trên dict xét khóa, không xét giá trị."
+        "text": "`da_ban[\"espresso\"]` đọc giá trị của khóa đó, và gây `KeyError` nếu khóa không có. `get` cho bạn trả về một giá trị mặc định, nên một món chưa từng bán không làm chương trình dừng. Có khóa khác với có giá trị khác 0. `\"latte\"` nằm trong sổ với số liệu hợp lệ là 0 cốc, tức hôm nay chưa bán được cốc nào. `in` trên `dict` xét khóa, không xét giá trị."
        },
        {
         "type": "code",
@@ -2556,7 +2556,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Trong `for mon, tien in gia.items()`, mỗi lượt lấy một cặp khóa và giá trị rồi gán vào `mon` và `tien`. Đây là vòng lặp `for`, và bài PY14 sẽ nói kỹ hơn về nó. `keys()` và `values()` trả về các view, tức cách xem khóa hoặc giá trị luôn phản ánh nội dung hiện tại của dict. Python 3 giữ thứ tự bạn đã chèn, nên bảng in ra theo đúng thứ tự bạn thêm món."
+        "text": "Trong `for mon, tien in gia.items()`, mỗi lượt lấy một cặp khóa và giá trị rồi gán vào `mon` và `tien`. Đây là vòng lặp `for`, và bài PY14 sẽ nói kỹ hơn về nó. `keys()` và `values()` trả về các view, tức cách xem khóa hoặc giá trị luôn phản ánh nội dung hiện tại của `dict`. Python 3 giữ thứ tự bạn đã chèn, nên bảng in ra theo đúng thứ tự bạn thêm món."
        },
        {
         "type": "code",
@@ -2572,7 +2572,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Khi bỏ một món khỏi bảng giá, `pop(key, default)` vừa lấy vừa xoá, nên bỏ `tra_da` cũng cho bạn biết giá cuối của nó là 12. Không truyền `default` thì một khóa thiếu gây `KeyError`, còn `del gia[mon]` thì chỉ xoá. `not in` cũng xét khóa, giống `in`. Giá trị trong dict còn có thể là list hay một dict khác, chẳng hạn một món kèm nhiều mức size."
+        "text": "Khi bỏ một món khỏi bảng giá, `pop(key, default)` vừa lấy vừa xoá, nên bỏ `tra_da` cũng cho bạn biết giá cuối của nó là 12. Không truyền `default` thì một khóa thiếu gây `KeyError`, còn `del gia[mon]` thì chỉ xoá. `not in` cũng xét khóa, giống `in`. Giá trị trong `dict` còn có thể là `list` hay một `dict` khác, chẳng hạn một món kèm nhiều mức size."
        }
       ]
      ],
@@ -2777,7 +2777,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Set chỉ giữ các phần tử khác nhau và không có chỉ số vị trí, nên nó trả lời \"có hay không\" rất gọn. Phép hiệu `menu - da_ban` giữ món thuộc bảng giá nhưng không thuộc nhóm đã bán. Ví dụ gọi `sorted` lúc in để thứ tự ổn định giữa các lần chạy, vì bản thân set không giữ thứ tự nào."
+        "text": "Set chỉ giữ các phần tử khác nhau và không có chỉ số vị trí, nên nó trả lời \"có hay không\" rất gọn. Phép hiệu `menu - da_ban` giữ món thuộc bảng giá nhưng không thuộc nhóm đã bán. Ví dụ gọi `sorted` lúc in để thứ tự ổn định giữa các lần chạy, vì bản thân `set` không giữ thứ tự nào."
        },
        {
         "type": "code",
@@ -2809,7 +2809,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Tạo set từ một dãy cũng loại các tên trùng, nên ba lần bán latte chỉ còn một tên. Nhưng nó không giữ thứ tự bản ghi, và không giữ số lần mỗi tên xuất hiện — muốn đếm số cốc mỗi món thì set không làm được."
+        "text": "Tạo `set` từ một dãy cũng loại các tên trùng, nên ba lần bán latte chỉ còn một tên. Nhưng nó không giữ thứ tự bản ghi, và không giữ số lần mỗi tên xuất hiện — muốn đếm số cốc mỗi món thì `set` không làm được."
        }
       ]
      ],
@@ -3047,7 +3047,7 @@
        },
        {
         "type": "paragraph",
-        "text": "List comprehension như `[x * 2 for x in values if x >= 2]` tạo một list mới: điều kiện chọn phần tử, còn biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt của đầu vào (input). Nếu phép tính cần nhiều bước, một vòng lặp thường dễ đọc hơn."
+        "text": "List comprehension như `[x * 2 for x in values if x >= 2]` tạo một `list` mới: điều kiện chọn phần tử, còn biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt của đầu vào (input). Nếu phép tính cần nhiều bước, một vòng lặp thường dễ đọc hơn."
        }
       ]
      ],
@@ -3747,7 +3747,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Cùng cách phân biệt này còn dùng lại ở các bài sau. Khi truyền đối số cho một luồng (thread), `args=(10,)` là tuple một phần tử và dấu phẩy là bắt buộc. Bạn sẽ gặp lại \"truyền hàm\" và \"gọi hàm\" ở cả bài tiến trình, bài luồng và bài GUI (giao diện đồ hoạ) của quán."
+        "text": "Cùng cách phân biệt này còn dùng lại ở các bài sau. Khi truyền đối số cho một luồng (thread), `args=(10,)` là `tuple` một phần tử và dấu phẩy là bắt buộc. Bạn sẽ gặp lại \"truyền hàm\" và \"gọi hàm\" ở cả bài tiến trình, bài luồng và bài GUI (giao diện đồ hoạ) của quán."
        }
       ]
      ],
@@ -3943,7 +3943,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Khi dọn sổ bạn còn gặp ba lỗi khác. `TypeError` là thao tác không phù hợp với kiểu. `IndexError` là chỉ số không tồn tại. `KeyError` là thiếu khóa trong một dict. Traceback cho biết chuỗi lời gọi và vị trí phát sinh; hãy đọc dòng lỗi cuối rồi tìm lại dòng code liên quan."
+        "text": "Khi dọn sổ bạn còn gặp ba lỗi khác. `TypeError` là thao tác không phù hợp với kiểu. `IndexError` là chỉ số không tồn tại. `KeyError` là thiếu khóa trong một `dict`. Traceback cho biết chuỗi lời gọi và vị trí phát sinh; hãy đọc dòng lỗi cuối rồi tìm lại dòng code liên quan."
        },
        {
         "type": "code",
@@ -4939,7 +4939,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ở đây, 2 nhân 3 bằng 6 và 4 nhân 3 bằng 12. Hãy phân biệt với list Python: `[2, 4] * 3` lặp lại danh sách thành `[2, 4, 2, 4, 2, 4]`. Khi làm việc với array số, `* 3` nhân từng giá trị với 3."
+        "text": "Ở đây, 2 nhân 3 bằng 6 và 4 nhân 3 bằng 12. Hãy phân biệt với `list` Python: `[2, 4] * 3` lặp lại danh sách thành `[2, 4, 2, 4, 2, 4]`. Khi làm việc với array số, `* 3` nhân từng giá trị với 3."
        },
        {
         "type": "paragraph",
@@ -5681,7 +5681,7 @@
        },
        {
         "type": "paragraph",
-        "text": "`(3,)` nghĩa là một chiều có độ dài 3. Dấu phẩy là cách Python viết tuple có một phần tử. Array này không phải bảng 1 hàng × 3 cột; bảng như vậy có `shape` là `(1, 3)` và `ndim` là 2."
+        "text": "`(3,)` nghĩa là một chiều có độ dài 3. Dấu phẩy là cách Python viết `tuple` có một phần tử. Array này không phải bảng 1 hàng × 3 cột; bảng như vậy có `shape` là `(1, 3)` và `ndim` là 2."
        }
       ]
      ],
@@ -10008,7 +10008,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Tổng ba ngày là 36 cốc. `len(cups)` cho biết Series có ba phần tử. Trong các bài sau, `tolist()` được dùng để in giá trị gọn thành list; dữ liệu ban đầu vẫn là Series."
+        "text": "Tổng ba ngày là 36 cốc. `len(cups)` cho biết Series có ba phần tử. Trong các bài sau, `tolist()` được dùng để in giá trị gọn thành `list`; dữ liệu ban đầu vẫn là Series."
        }
       ]
      ],
@@ -10256,7 +10256,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`to_numpy()` lấy các giá trị thành NumPy array, bỏ nhãn hàng và cột; array của một cột vẫn có hai chiều nên kết quả gồm các list nhỏ. Slide cũ dùng `.values` cho thao tác tương tự; code mới thường viết rõ `to_numpy()`. Nếu các cột khác kiểu, array kết quả có thể cần kiểu chung thay vì giữ nguyên kiểu của từng cột."
+        "text": "`to_numpy()` lấy các giá trị thành NumPy array, bỏ nhãn hàng và cột; array của một cột vẫn có hai chiều nên kết quả gồm các `list` nhỏ. Slide cũ dùng `.values` cho thao tác tương tự; code mới thường viết rõ `to_numpy()`. Nếu các cột khác kiểu, array kết quả có thể cần kiểu chung thay vì giữ nguyên kiểu của từng cột."
        },
        {
         "type": "paragraph",
@@ -10534,7 +10534,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ở index đã sắp xếp này, lát cắt loc gồm cả nhãn cuối C02. Lát cắt iloc dừng trước vị trí 2, giống slicing của list. Chọn một nhãn hoặc vị trí không tồn tại sẽ báo lỗi."
+        "text": "Ở index đã sắp xếp này, lát cắt loc gồm cả nhãn cuối C02. Lát cắt iloc dừng trước vị trí 2, giống slicing của `list`. Chọn một nhãn hoặc vị trí không tồn tại sẽ báo lỗi."
        },
        {
         "type": "code",
@@ -14404,7 +14404,7 @@
        },
        {
         "type": "paragraph",
-        "text": "axis=1 ghép theo cột và căn theo index, không chỉ theo vị trí. Vì vậy mục tiêu của Q1 là 15. Khi có nhiều lô, thu gom chúng vào list rồi concat một lần, tránh nối lại toàn bộ bảng sau từng hàng."
+        "text": "axis=1 ghép theo cột và căn theo index, không chỉ theo vị trí. Vì vậy mục tiêu của Q1 là 15. Khi có nhiều lô, thu gom chúng vào `list` rồi concat một lần, tránh nối lại toàn bộ bảng sau từng hàng."
        }
       ]
      ],
@@ -20958,7 +20958,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Khi gửi hình, thêm mô tả bằng chữ nêu xu hướng và con số quan trọng; một caption chỉ nói “biểu đồ” không đủ. Kiểm tra cỡ chữ ở kích thước thật, độ tương phản và bản in đen trắng. setp cho phép sửa đồng thời các đường đã vẽ thay vì tạo lại dữ liệu. plot trả về một list các Line2D, mỗi phần tử là một đường đã vẽ. plt.setp(lines, linewidth=2.5) thay thuộc tính các đường trong list đó, không thay các con số gốc. color chọn màu cố định; trong scatter, c còn có thể nhận dãy số để ánh xạ qua cmap. alpha=0 là trong suốt, alpha=1 là đục hoàn toàn."
+        "text": "Khi gửi hình, thêm mô tả bằng chữ nêu xu hướng và con số quan trọng; một caption chỉ nói “biểu đồ” không đủ. Kiểm tra cỡ chữ ở kích thước thật, độ tương phản và bản in đen trắng. setp cho phép sửa đồng thời các đường đã vẽ thay vì tạo lại dữ liệu. plot trả về một `list` các Line2D, mỗi phần tử là một đường đã vẽ. plt.setp(lines, linewidth=2.5) thay thuộc tính các đường trong `list` đó, không thay các con số gốc. color chọn màu cố định; trong scatter, c còn có thể nhận dãy số để ánh xạ qua cmap. alpha=0 là trong suốt, alpha=1 là đục hoàn toàn."
        },
        {
         "type": "code",
@@ -27486,7 +27486,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Code có lịch sử rồi, giờ đến cấu trúc. Một món trong thực đơn của quán có mã, tên và nhóm. Theo cách viết thủ tục, bạn có thể dùng dict giữ hồ sơ món và các hàm riêng để sửa, liệt kê. Cách hướng đối tượng gom dữ liệu này với hành vi liên quan vào Item; mã gọi làm việc qua thuộc tính và các hàm của từng món, gọi là method. Cả hai cách vẫn dùng hàm, nhưng khác nơi giữ dữ liệu và tổ chức trách nhiệm:"
+        "text": "Code có lịch sử rồi, giờ đến cấu trúc. Một món trong thực đơn của quán có mã, tên và nhóm. Theo cách viết thủ tục, bạn có thể dùng `dict` giữ hồ sơ món và các hàm riêng để sửa, liệt kê. Cách hướng đối tượng gom dữ liệu này với hành vi liên quan vào Item; mã gọi làm việc qua thuộc tính và các hàm của từng món, gọi là method. Cả hai cách vẫn dùng hàm, nhưng khác nơi giữ dữ liệu và tổ chức trách nhiệm:"
        },
        {
         "type": "code",
@@ -27905,7 +27905,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Gán alias = first không tạo một món thứ hai. Hai tên cùng tham chiếu một object. Các câu ôn trong slide dùng bối cảnh Java: biến thuộc kiểu cơ bản (primitive) như int giữ giá trị, còn biến tham chiếu (reference) giữ tham chiếu đến object. Gán một biến reference cho biến khác có thể làm hai biến cùng trỏ tới một object. Ở Python, mọi giá trị đều là object và phép gán gắn tên với object. Cần phân biệt gán lại tên với sửa một object dùng chung."
+        "text": "Gán alias = first không tạo một món thứ hai. Hai tên cùng tham chiếu một object. Các câu ôn trong slide dùng bối cảnh Java: biến thuộc kiểu cơ bản (primitive) như `int` giữ giá trị, còn biến tham chiếu (reference) giữ tham chiếu đến object. Gán một biến reference cho biến khác có thể làm hai biến cùng trỏ tới một object. Ở Python, mọi giá trị đều là object và phép gán gắn tên với object. Cần phân biệt gán lại tên với sửa một object dùng chung."
        }
       ]
      ],
@@ -31614,7 +31614,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`a` nối ở cuối, phù hợp nhật ký. Mở log bằng w để thêm một dòng sẽ làm mất phần cũ. `t` là text mặc định; `b` là binary dùng bytes. Dấu + cho phép cả đọc và ghi, nhưng không bỏ qua quy tắc ghi đè của w hoặc nối cuối của a."
+        "text": "`a` nối ở cuối, phù hợp nhật ký. Mở log bằng w để thêm một dòng sẽ làm mất phần cũ. `t` là text mặc định; `b` là binary dùng `bytes`. Dấu + cho phép cả đọc và ghi, nhưng không bỏ qua quy tắc ghi đè của w hoặc nối cuối của a."
        },
        {
         "type": "code",
@@ -31833,7 +31833,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Sau AB, con trỏ đứng trước newline; readline tiếp theo chỉ còn newline của dòng đó. `readlines` lấy các dòng còn lại thành list. Dòng cuối không bắt buộc có newline. Với text, read(size) đếm ký tự; với binary, nó đếm bytes."
+        "text": "Sau AB, con trỏ đứng trước newline; readline tiếp theo chỉ còn newline của dòng đó. `readlines` lấy các dòng còn lại thành `list`. Dòng cuối không bắt buộc có newline. Với text, read(size) đếm ký tự; với binary, nó đếm `bytes`."
        },
        {
         "type": "code",
@@ -31845,7 +31845,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`seek(1)` ở binary đưa con trỏ đến byte có offset 1. Ghi Z thay byte B, không tự chèn thêm phần tử như list.insert. Khi dùng file thật với r+b, quy tắc này cũng áp dụng."
+        "text": "`seek(1)` ở binary đưa con trỏ đến byte có offset 1. Ghi Z thay byte B, không tự chèn thêm phần tử như `list`.insert. Khi dùng file thật với r+b, quy tắc này cũng áp dụng."
        },
        {
         "type": "code",
@@ -31901,11 +31901,11 @@
       [
        {
         "type": "paragraph",
-        "text": "Một ký tự Unicode có thể dùng nhiều byte UTF-8. Không cắt bytes tùy ý rồi mặc định phần còn lại decode được. Với text file, dùng seek(0) để quay đầu hoặc vị trí do tell trả lại; không coi mọi số ký tự là byte offset hợp lệ."
+        "text": "Một ký tự Unicode có thể dùng nhiều byte UTF-8. Không cắt `bytes` tùy ý rồi mặc định phần còn lại decode được. Với text file, dùng seek(0) để quay đầu hoặc vị trí do tell trả lại; không coi mọi số ký tự là byte offset hợp lệ."
        },
        {
         "type": "paragraph",
-        "text": "Nếu chỉ cần lọc dòng, duyệt `for line in f` để xử lý lần lượt. `read()` không truyền size lấy toàn bộ phần còn lại, còn readlines tạo list các dòng còn lại; cả hai có thể dùng nhiều RAM với file lớn. `seek(0)` đưa vị trí về đầu để đọc lại."
+        "text": "Nếu chỉ cần lọc dòng, duyệt `for line in f` để xử lý lần lượt. `read()` không truyền size lấy toàn bộ phần còn lại, còn readlines tạo `list` các dòng còn lại; cả hai có thể dùng nhiều RAM với file lớn. `seek(0)` đưa vị trí về đầu để đọc lại."
        }
       ]
      ],
@@ -32557,7 +32557,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Cây thư mục của dự án quán đã rõ ở bài trước, giờ đến chỗ các file phình to. Một log lặp cùng mẫu hàng nghìn lần có thể được nén để giảm chỗ lưu. Điều đầu tiên cần kiểm là giải nén thu lại đúng bytes ban đầu:"
+        "text": "Cây thư mục của dự án quán đã rõ ở bài trước, giờ đến chỗ các file phình to. Một log lặp cùng mẫu hàng nghìn lần có thể được nén để giảm chỗ lưu. Điều đầu tiên cần kiểm là giải nén thu lại đúng `bytes` ban đầu:"
        },
        {
         "type": "code",
@@ -32569,7 +32569,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Các hàm compress/decompress làm việc với bytes. Với văn bản, dùng encode để chuyển thành bytes trước khi nén và decode để chuyển lại thành chuỗi sau khi giải nén. Một file .gz thường lưu một luồng nén; nếu cần giữ nhiều file cùng tên của chúng, dùng định dạng đóng gói (archive) như ZIP hoặc tar."
+        "text": "Các hàm compress/decompress làm việc với `bytes`. Với văn bản, dùng encode để chuyển thành `bytes` trước khi nén và decode để chuyển lại thành chuỗi sau khi giải nén. Một file .gz thường lưu một luồng nén; nếu cần giữ nhiều file cùng tên của chúng, dùng định dạng đóng gói (archive) như ZIP hoặc tar."
        },
        {
         "type": "code",
@@ -32841,7 +32841,7 @@
       [
        {
         "type": "paragraph",
-        "text": "ZIP giữ nhiều file và cả các mục thư mục theo tên; nó có thể nén từng thành viên. `read(name)` lấy bytes của đúng file, giúp bạn kiểm tên và nội dung trước khi viết ra đĩa. Không cần extractall chỉ để đọc một bảng."
+        "text": "ZIP giữ nhiều file và cả các mục thư mục theo tên; nó có thể nén từng thành viên. `read(name)` lấy `bytes` của đúng file, giúp bạn kiểm tên và nội dung trước khi viết ra đĩa. Không cần extractall chỉ để đọc một bảng."
        },
        {
         "type": "code",
@@ -33213,7 +33213,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Nhiều file đã gom được vào một gói nén rồi, nhưng dữ liệu trong bộ nhớ thì khác. Bạn lưu một tuple gồm mã đơn của quán và danh sách số cốc. JSON và pickle (định dạng nhị phân riêng của Python) đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
+        "text": "Nhiều file đã gom được vào một gói nén rồi, nhưng dữ liệu trong bộ nhớ thì khác. Bạn lưu một `tuple` gồm mã đơn của quán và danh sách số cốc. JSON và pickle (định dạng nhị phân riêng của Python) đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
        },
        {
         "type": "code",
@@ -33283,7 +33283,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Pickle lưu biểu diễn nhị phân của cấu trúc object Python; JSON là text với tập kiểu đơn giản hơn. JSON chuyển tuple thành array, đọc lại thành list. Pickle còn giữ set và nhiều kiểu Python khác, nhưng không thể mặc định lưu mọi tài nguyên đang mở."
+        "text": "Pickle lưu biểu diễn nhị phân của cấu trúc object Python; JSON là text với tập kiểu đơn giản hơn. JSON chuyển `tuple` thành array, đọc lại thành `list`. Pickle còn giữ `set` và nhiều kiểu Python khác, nhưng không thể mặc định lưu mọi tài nguyên đang mở."
        },
        {
         "type": "code",
@@ -33295,7 +33295,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`dump/load` nhận file binary, còn `dumps/loads` dùng bytes trong memory. Function và class cấp module thường được lưu theo tên tham chiếu; khi load phải còn module/class tương thích. File handle hoặc socket không tự khôi phục kết nối chỉ nhờ pickle."
+        "text": "`dump/load` nhận file binary, còn `dumps/loads` dùng `bytes` trong memory. Function và class cấp module thường được lưu theo tên tham chiếu; khi load phải còn module/class tương thích. File handle hoặc socket không tự khôi phục kết nối chỉ nhờ pickle."
        },
        {
         "type": "code",
@@ -33311,7 +33311,7 @@
        },
        {
         "type": "paragraph",
-        "text": "JSON lưu được số, chuỗi, boolean, null, list và object với khóa chuỗi. `json.dumps({1, 2})` gây TypeError vì set không có biểu diễn JSON mặc định; instance class tự tạo cũng cần chuyển thành dữ liệu đơn giản hoặc bộ mã hóa riêng. Ngược lại, một scalar hay collection chỉ pickle được khi các thành phần bên trong cũng pickle được."
+        "text": "JSON lưu được số, chuỗi, boolean, null, `list` và object với khóa chuỗi. `json.dumps({1, 2})` gây TypeError vì `set` không có biểu diễn JSON mặc định; instance class tự tạo cũng cần chuyển thành dữ liệu đơn giản hoặc bộ mã hóa riêng. Ngược lại, một scalar hay collection chỉ pickle được khi các thành phần bên trong cũng pickle được."
        }
       ]
      ],
@@ -33540,7 +33540,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Kiểm shape, tên cột và vài giá trị giúp phát hiện đọc sai ngay từ đầu. Trang 328 dùng package sas7bdat; pandas có reader cho định dạng này nên bạn có thể dùng read_sas. encoding giúp giải chuỗi bytes thành text khi reader hỗ trợ."
+        "text": "Kiểm shape, tên cột và vài giá trị giúp phát hiện đọc sai ngay từ đầu. Trang 328 dùng package sas7bdat; pandas có reader cho định dạng này nên bạn có thể dùng read_sas. encoding giúp giải chuỗi `bytes` thành text khi reader hỗ trợ."
        },
        {
         "type": "code",
@@ -33980,7 +33980,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`fetchmany` lấy một nhóm dòng ở vị trí hiện tại; fetchall sau đó chỉ còn những dòng chưa lấy. result.keys cho tên cột. `with engine.connect()` đóng connection khi rời block; `dispose` thu dọn nhóm kết nối do engine quản lý (connection pool) khi đã làm xong. Chỉ tạo DataFrame từ các tuple mà bỏ tên cột sẽ làm mất ý nghĩa dữ liệu."
+        "text": "`fetchmany` lấy một nhóm dòng ở vị trí hiện tại; fetchall sau đó chỉ còn những dòng chưa lấy. result.keys cho tên cột. `with engine.connect()` đóng connection khi rời block; `dispose` thu dọn nhóm kết nối do engine quản lý (connection pool) khi đã làm xong. Chỉ tạo DataFrame từ các `tuple` mà bỏ tên cột sẽ làm mất ý nghĩa dữ liệu."
        },
        {
         "type": "code",
@@ -34221,7 +34221,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Dictionary giúp tra theo mã; tuple (item_id, ingredient_id) làm khóa của một định lượng. Ở PW1, bạn chỉ dùng collection và hàm để tổ chức dữ liệu, chưa cần class cho món hay nguyên liệu. Mỗi món vẫn cần nhóm món, dù trường này không tham gia công thức lượng trung bình."
+        "text": "Dictionary giúp tra theo mã; `tuple` (item_id, ingredient_id) làm khóa của một định lượng. Ở PW1, bạn chỉ dùng collection và hàm để tổ chức dữ liệu, chưa cần class cho món hay nguyên liệu. Mỗi món vẫn cần nhóm món, dù trường này không tham gia công thức lượng trung bình."
        },
        {
         "type": "code",
@@ -35384,7 +35384,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ở PW3, floor được áp lúc nhận lượng, rồi lượng trung bình dùng số đã lưu. Với 8.7 và 6.2, trung bình có trọng số là 8.075; ví dụ round trên float chỉ minh họa hiển thị, không thiết lập quy tắc làm tròn cho số liệu chính thức. Đề phải nói rõ dùng giá trị nào để xếp hạng và tie-break khi bằng nhau."
+        "text": "Ở PW3, floor được áp lúc nhận lượng, rồi lượng trung bình dùng số đã lưu. Với 8.7 và 6.2, trung bình có trọng số là 8.075; ví dụ round trên `float` chỉ minh họa hiển thị, không thiết lập quy tắc làm tròn cho số liệu chính thức. Đề phải nói rõ dùng giá trị nào để xếp hạng và tie-break khi bằng nhau."
        },
        {
         "type": "code",
@@ -36282,7 +36282,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Pickle giữ tuple key của bảng định lượng mà JSON không hỗ trợ trực tiếp cho key. Khi lưu object domain thật, giữ class ở module ổn định như domains.item; khi load Python cần tìm đúng class đó. Giữ toàn bộ state trong một dict version giúp kiểm schema trước khi cập nhật registry."
+        "text": "Pickle giữ `tuple` key của bảng định lượng mà JSON không hỗ trợ trực tiếp cho key. Khi lưu object domain thật, giữ class ở module ổn định như domains.item; khi load Python cần tìm đúng class đó. Giữ toàn bộ state trong một `dict` version giúp kiểm schema trước khi cập nhật registry."
        },
        {
         "type": "code",
@@ -37025,7 +37025,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Đây là mô hình của exec: thay image chương trình trong process hiện tại, giữ PID và không tạo process thứ ba. Trong tên họ hàm, l nhận các đối số riêng, v nhận vector argv; p tìm chương trình qua PATH và e nhận environment tường minh. Vì thế execl/execv khác cách truyền đối số, execlp/execvp thêm tìm PATH, execle thêm environment. Trong ví dụ C của slide, argv gồm \"/bin/ps\", \"-ef\", rồi NULL kết thúc danh sách. Python subprocess nhận một list đối số thay cho việc bạn tự chép nguyên chữ ký C."
+        "text": "Đây là mô hình của exec: thay image chương trình trong process hiện tại, giữ PID và không tạo process thứ ba. Trong tên họ hàm, l nhận các đối số riêng, v nhận vector argv; p tìm chương trình qua PATH và e nhận environment tường minh. Vì thế execl/execv khác cách truyền đối số, execlp/execvp thêm tìm PATH, execle thêm environment. Trong ví dụ C của slide, argv gồm \"/bin/ps\", \"-ef\", rồi NULL kết thúc danh sách. Python subprocess nhận một `list` đối số thay cho việc bạn tự chép nguyên chữ ký C."
        },
        {
         "type": "code",
@@ -39240,7 +39240,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Popen trả về sau khi khởi tạo, không chờ toàn bộ công việc xong như run. Với `text=True`, communicate nhận chuỗi; ở chế độ nhị phân, nó nhận bytes. communicate giúp gửi đầu vào, đọc đầu ra và chờ kết thúc mà không tự viết các lần đọc/ghi dễ làm đầy pipe."
+        "text": "Popen trả về sau khi khởi tạo, không chờ toàn bộ công việc xong như run. Với `text=True`, communicate nhận chuỗi; ở chế độ nhị phân, nó nhận `bytes`. communicate giúp gửi đầu vào, đọc đầu ra và chờ kết thúc mà không tự viết các lần đọc/ghi dễ làm đầy pipe."
        },
        {
         "type": "code",
@@ -39432,7 +39432,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Single-threaded process có một luồng thực thi, với một stack và một ngữ cảnh CPU. Khi có nhiều luồng, mỗi luồng có stack, stack pointer (SP: vị trí hiện tại trên stack), program counter, thanh ghi và trạng thái điều phối riêng. Code, dữ liệu toàn cục, heap và file descriptors được dùng chung, nên worker truy cập được list result. Descriptor có thể trỏ tới file đang mở, TCP/UNIX socket hoặc thiết bị. Slide còn nhắc signals: đây là cơ chế thông báo của hệ điều hành, không phải dữ liệu Python riêng tự sao chép vào mỗi luồng. Quy tắc xử lý signal tùy hệ điều hành; bài này không dạy socket API."
+        "text": "Single-threaded process có một luồng thực thi, với một stack và một ngữ cảnh CPU. Khi có nhiều luồng, mỗi luồng có stack, stack pointer (SP: vị trí hiện tại trên stack), program counter, thanh ghi và trạng thái điều phối riêng. Code, dữ liệu toàn cục, heap và file descriptors được dùng chung, nên worker truy cập được `list` result. Descriptor có thể trỏ tới file đang mở, TCP/UNIX socket hoặc thiết bị. Slide còn nhắc signals: đây là cơ chế thông báo của hệ điều hành, không phải dữ liệu Python riêng tự sao chép vào mỗi luồng. Quy tắc xử lý signal tùy hệ điều hành; bài này không dạy socket API."
        },
        {
         "type": "code",
@@ -39688,7 +39688,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`target=double` truyền hàm, không gọi double ngay. `args=(4,)` là tuple một đối số. Nếu viết target=double(4), hàm sẽ chạy lúc dựng đối tượng và giá trị trả về bị truyền thay cho hàm."
+        "text": "`target=double` truyền hàm, không gọi double ngay. `args=(4,)` là `tuple` một đối số. Nếu viết target=double(4), hàm sẽ chạy lúc dựng đối tượng và giá trị trả về bị truyền thay cho hàm."
        },
        {
         "type": "code",
@@ -39957,7 +39957,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Hai object có trạng thái thuộc tính riêng, nhưng nếu bạn truyền cùng một list cho cả hai thì list đó vẫn là dữ liệu chung. Chọn target cho công việc đơn giản; subclass khi việc gom trạng thái và hành vi giúp dễ đọc hơn."
+        "text": "Hai object có trạng thái thuộc tính riêng, nhưng nếu bạn truyền cùng một `list` cho cả hai thì `list` đó vẫn là dữ liệu chung. Chọn target cho công việc đơn giản; subclass khi việc gom trạng thái và hành vi giúp dễ đọc hơn."
        }
       ]
      ],
@@ -40702,7 +40702,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Hàm change thêm 9 vào list trong process con, nhưng list values ở cha vẫn là [1, 2]. Hãy lưu mỗi ví dụ thành file .py rồi chạy file. Khi dùng cơ chế spawn, process con cần import được module chứa hàm worker. Khối if __name__ == \"__main__\":, thường gọi là main guard, ngăn phần khởi chạy process chạy lại khi module được import ở con."
+        "text": "Hàm change thêm 9 vào `list` trong process con, nhưng `list` values ở cha vẫn là [1, 2]. Hãy lưu mỗi ví dụ thành file .py rồi chạy file. Khi dùng cơ chế spawn, process con cần import được module chứa hàm worker. Khối if __name__ == \"__main__\":, thường gọi là main guard, ngăn phần khởi chạy process chạy lại khi module được import ở con."
        },
        {
         "type": "code",
@@ -40909,7 +40909,7 @@
       [
        {
         "type": "paragraph",
-        "text": "stdout nhận file đã mở nên bạn không thêm dấu > vào list đối số truyền cho chương trình. Trong shell thực hành, phần phân tích lệnh, gọi là parser, sẽ nhận ra dấu >, mở file đích rồi nối file đó với stdout trước khi chạy chương trình."
+        "text": "stdout nhận file đã mở nên bạn không thêm dấu > vào `list` đối số truyền cho chương trình. Trong shell thực hành, phần phân tích lệnh, gọi là parser, sẽ nhận ra dấu >, mở file đích rồi nối file đó với stdout trước khi chạy chương trình."
        },
        {
         "type": "code",
@@ -42553,7 +42553,7 @@
        },
        {
         "type": "paragraph",
-        "text": "set cập nhật biến; các widget liên kết bằng textvariable phản ánh cùng biến khi giao diện xử lý sự kiện. Không dùng một StringVar chung cho những nhóm radio độc lập."
+        "text": "`set` cập nhật biến; các widget liên kết bằng textvariable phản ánh cùng biến khi giao diện xử lý sự kiện. Không dùng một StringVar chung cho những nhóm radio độc lập."
        }
       ]
      ],
@@ -42735,7 +42735,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Combobox.get trả chữ đang chọn. readonly ngăn người dùng gõ tự do qua giao diện, nhưng code vẫn phải kiểm tra dữ liệu khi dùng set hoặc nạp từ file. current chọn theo vị trí từ 0."
+        "text": "Combobox.get trả chữ đang chọn. readonly ngăn người dùng gõ tự do qua giao diện, nhưng code vẫn phải kiểm tra dữ liệu khi dùng `set` hoặc nạp từ file. current chọn theo vị trí từ 0."
        }
       ]
      ],
@@ -44795,7 +44795,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Stack, data section, heap và descriptor là những phần của mô hình trạng thái process. Các process thường có không gian địa chỉ riêng; có thể cố ý chia sẻ qua cơ chế OS, nhưng không mặc định list Python được dùng chung. Ví dụ thật dưới thay list trong process con; list của cha vẫn giữ nguyên."
+        "text": "Stack, data section, heap và descriptor là những phần của mô hình trạng thái process. Các process thường có không gian địa chỉ riêng; có thể cố ý chia sẻ qua cơ chế OS, nhưng không mặc định `list` Python được dùng chung. Ví dụ thật dưới thay `list` trong process con; `list` của cha vẫn giữ nguyên."
        },
        {
         "type": "code",
@@ -44806,7 +44806,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ở POSIX, fork trả PID con ở cha và 0 ở con, sau đó hai nhánh tiếp tục từ vị trí sau fork. exec thay image của process hiện tại. Hậu tố l nhận danh sách đối số riêng, v nhận một vector/list đối số, p tìm executable qua PATH, e nhận environment tường minh. execl, execle, execlp, execv và execvp là các biến thể được nhắc trong slide. Windows có CreateProcess và API cũ WinExec; tên và cờ WinAPI trong đoạn C không phải cú pháp Python. Dùng subprocess nếu muốn bài thực hành chạy trên cả Windows và UNIX."
+        "text": "Ở POSIX, fork trả PID con ở cha và 0 ở con, sau đó hai nhánh tiếp tục từ vị trí sau fork. exec thay image của process hiện tại. Hậu tố l nhận danh sách đối số riêng, v nhận một vector/`list` đối số, p tìm executable qua PATH, e nhận environment tường minh. execl, execle, execlp, execv và execvp là các biến thể được nhắc trong slide. Windows có CreateProcess và API cũ WinExec; tên và cờ WinAPI trong đoạn C không phải cú pháp Python. Dùng subprocess nếu muốn bài thực hành chạy trên cả Windows và UNIX."
        },
        {
         "type": "code",
@@ -44949,7 +44949,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ở bài trước bạn đọc cây tiến trình của máy. Trong ví dụ dưới, values và alias cùng trỏ tới một list. Vì vậy, thêm phần tử qua alias cũng làm bạn thấy phần tử mới khi đọc values. CPython dùng cơ chế đếm tham chiếu, gọi là reference counting, để theo dõi các tham chiếu tới object. Bộ thu gom rác còn xử lý những nhóm object tham chiếu vòng nhau. Số tham chiếu bạn thấy khi debug có thể gồm cả tham chiếu tạm do công cụ quan sát tạo ra, nên không nên coi đó là số biến bạn đã tự viết."
+        "text": "Ở bài trước bạn đọc cây tiến trình của máy. Trong ví dụ dưới, values và alias cùng trỏ tới một `list`. Vì vậy, thêm phần tử qua alias cũng làm bạn thấy phần tử mới khi đọc values. CPython dùng cơ chế đếm tham chiếu, gọi là reference counting, để theo dõi các tham chiếu tới object. Bộ thu gom rác còn xử lý những nhóm object tham chiếu vòng nhau. Số tham chiếu bạn thấy khi debug có thể gồm cả tham chiếu tạm do công cụ quan sát tạo ra, nên không nên coi đó là số biến bạn đã tự viết."
        },
        {
         "type": "code",
@@ -45294,7 +45294,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Hết ca, quán cần lưu một bản nén mà ứng dụng mở lại được. Trước khi đưa việc lưu sang thread, kiểm hai chiều ghi và nạp trên file thật. pickle biến object thành bytes; gzip nén bytes; hai bước không thay thế nhau. Chỉ nạp pickle từ nguồn bạn tin cậy."
+        "text": "Hết ca, quán cần lưu một bản nén mà ứng dụng mở lại được. Trước khi đưa việc lưu sang thread, kiểm hai chiều ghi và nạp trên file thật. pickle biến object thành `bytes`; gzip nén `bytes`; hai bước không thay thế nhau. Chỉ nạp pickle từ nguồn bạn tin cậy."
        },
        {
         "type": "code",
@@ -46586,7 +46586,7 @@
        },
        {
         "type": "paragraph",
-        "text": "stack tạo một chiều mới. Hai dãy vốn có shape (2,) trở thành bảng (2,2), mỗi hàng là một ngày. concatenate hai dãy đó không tạo chiều ngày mà chỉ cho dãy bốn số. Khi làm nhiều lô lớn, thu các lô vào list rồi ghép một lần để tránh sao chép lại toàn bộ sau mỗi lần thêm."
+        "text": "stack tạo một chiều mới. Hai dãy vốn có shape (2,) trở thành bảng (2,2), mỗi hàng là một ngày. concatenate hai dãy đó không tạo chiều ngày mà chỉ cho dãy bốn số. Khi làm nhiều lô lớn, thu các lô vào `list` rồi ghép một lần để tránh sao chép lại toàn bộ sau mỗi lần thêm."
        }
       ]
      ],

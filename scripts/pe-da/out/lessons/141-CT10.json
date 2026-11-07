@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`target=double` truyền hàm, không gọi double ngay. `args=(4,)` là tuple một đối số. Nếu viết target=double(4), hàm sẽ chạy lúc dựng đối tượng và giá trị trả về bị truyền thay cho hàm."
+      "text": "`target=double` truyền hàm, không gọi double ngay. `args=(4,)` là `tuple` một đối số. Nếu viết target=double(4), hàm sẽ chạy lúc dựng đối tượng và giá trị trả về bị truyền thay cho hàm."
      },
      {
       "type": "code",

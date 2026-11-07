@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Pickle giữ tuple key của bảng định lượng mà JSON không hỗ trợ trực tiếp cho key. Khi lưu object domain thật, giữ class ở module ổn định như domains.item; khi load Python cần tìm đúng class đó. Giữ toàn bộ state trong một dict version giúp kiểm schema trước khi cập nhật registry."
+      "text": "Pickle giữ `tuple` key của bảng định lượng mà JSON không hỗ trợ trực tiếp cho key. Khi lưu object domain thật, giữ class ở module ổn định như domains.item; khi load Python cần tìm đúng class đó. Giữ toàn bộ state trong một `dict` version giúp kiểm schema trước khi cập nhật registry."
      },
      {
       "type": "code",

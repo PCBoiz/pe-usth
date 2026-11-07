@@ -53,7 +53,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Hai object có trạng thái thuộc tính riêng, nhưng nếu bạn truyền cùng một list cho cả hai thì list đó vẫn là dữ liệu chung. Chọn target cho công việc đơn giản; subclass khi việc gom trạng thái và hành vi giúp dễ đọc hơn."
+      "text": "Hai object có trạng thái thuộc tính riêng, nhưng nếu bạn truyền cùng một `list` cho cả hai thì `list` đó vẫn là dữ liệu chung. Chọn target cho công việc đơn giản; subclass khi việc gom trạng thái và hành vi giúp dễ đọc hơn."
      }
     ]
    ],

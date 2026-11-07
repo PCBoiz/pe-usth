@@ -53,7 +53,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Combobox.get trả chữ đang chọn. readonly ngăn người dùng gõ tự do qua giao diện, nhưng code vẫn phải kiểm tra dữ liệu khi dùng set hoặc nạp từ file. current chọn theo vị trí từ 0."
+      "text": "Combobox.get trả chữ đang chọn. readonly ngăn người dùng gõ tự do qua giao diện, nhưng code vẫn phải kiểm tra dữ liệu khi dùng `set` hoặc nạp từ file. current chọn theo vị trí từ 0."
      }
     ]
    ],

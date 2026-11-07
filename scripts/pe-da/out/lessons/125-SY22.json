@@ -45,7 +45,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Kiểm shape, tên cột và vài giá trị giúp phát hiện đọc sai ngay từ đầu. Trang 328 dùng package sas7bdat; pandas có reader cho định dạng này nên bạn có thể dùng read_sas. encoding giúp giải chuỗi bytes thành text khi reader hỗ trợ."
+      "text": "Kiểm shape, tên cột và vài giá trị giúp phát hiện đọc sai ngay từ đầu. Trang 328 dùng package sas7bdat; pandas có reader cho định dạng này nên bạn có thể dùng read_sas. encoding giúp giải chuỗi `bytes` thành text khi reader hỗ trợ."
      },
      {
       "type": "code",

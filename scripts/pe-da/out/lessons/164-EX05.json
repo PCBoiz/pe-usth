@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ở bài trước bạn đọc cây tiến trình của máy. Trong ví dụ dưới, values và alias cùng trỏ tới một list. Vì vậy, thêm phần tử qua alias cũng làm bạn thấy phần tử mới khi đọc values. CPython dùng cơ chế đếm tham chiếu, gọi là reference counting, để theo dõi các tham chiếu tới object. Bộ thu gom rác còn xử lý những nhóm object tham chiếu vòng nhau. Số tham chiếu bạn thấy khi debug có thể gồm cả tham chiếu tạm do công cụ quan sát tạo ra, nên không nên coi đó là số biến bạn đã tự viết."
+      "text": "Ở bài trước bạn đọc cây tiến trình của máy. Trong ví dụ dưới, values và alias cùng trỏ tới một `list`. Vì vậy, thêm phần tử qua alias cũng làm bạn thấy phần tử mới khi đọc values. CPython dùng cơ chế đếm tham chiếu, gọi là reference counting, để theo dõi các tham chiếu tới object. Bộ thu gom rác còn xử lý những nhóm object tham chiếu vòng nhau. Số tham chiếu bạn thấy khi debug có thể gồm cả tham chiếu tạm do công cụ quan sát tạo ra, nên không nên coi đó là số biến bạn đã tự viết."
      },
      {
       "type": "code",

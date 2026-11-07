@@ -58,7 +58,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`to_numpy()` lấy các giá trị thành NumPy array, bỏ nhãn hàng và cột; array của một cột vẫn có hai chiều nên kết quả gồm các list nhỏ. Slide cũ dùng `.values` cho thao tác tương tự; code mới thường viết rõ `to_numpy()`. Nếu các cột khác kiểu, array kết quả có thể cần kiểu chung thay vì giữ nguyên kiểu của từng cột."
+      "text": "`to_numpy()` lấy các giá trị thành NumPy array, bỏ nhãn hàng và cột; array của một cột vẫn có hai chiều nên kết quả gồm các `list` nhỏ. Slide cũ dùng `.values` cho thao tác tương tự; code mới thường viết rõ `to_numpy()`. Nếu các cột khác kiểu, array kết quả có thể cần kiểu chung thay vì giữ nguyên kiểu của từng cột."
      },
      {
       "type": "paragraph",

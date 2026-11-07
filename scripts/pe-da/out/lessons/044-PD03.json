@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ở index đã sắp xếp này, lát cắt loc gồm cả nhãn cuối C02. Lát cắt iloc dừng trước vị trí 2, giống slicing của list. Chọn một nhãn hoặc vị trí không tồn tại sẽ báo lỗi."
+      "text": "Ở index đã sắp xếp này, lát cắt loc gồm cả nhãn cuối C02. Lát cắt iloc dừng trước vị trí 2, giống slicing của `list`. Chọn một nhãn hoặc vị trí không tồn tại sẽ báo lỗi."
      },
      {
       "type": "code",

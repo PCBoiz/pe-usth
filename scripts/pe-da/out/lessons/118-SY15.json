@@ -179,7 +179,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`a` nối ở cuối, phù hợp nhật ký. Mở log bằng w để thêm một dòng sẽ làm mất phần cũ. `t` là text mặc định; `b` là binary dùng bytes. Dấu + cho phép cả đọc và ghi, nhưng không bỏ qua quy tắc ghi đè của w hoặc nối cuối của a."
+      "text": "`a` nối ở cuối, phù hợp nhật ký. Mở log bằng w để thêm một dòng sẽ làm mất phần cũ. `t` là text mặc định; `b` là binary dùng `bytes`. Dấu + cho phép cả đọc và ghi, nhưng không bỏ qua quy tắc ghi đè của w hoặc nối cuối của a."
      },
      {
       "type": "code",

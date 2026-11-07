@@ -66,7 +66,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Cùng cách phân biệt này còn dùng lại ở các bài sau. Khi truyền đối số cho một luồng (thread), `args=(10,)` là tuple một phần tử và dấu phẩy là bắt buộc. Bạn sẽ gặp lại \"truyền hàm\" và \"gọi hàm\" ở cả bài tiến trình, bài luồng và bài GUI (giao diện đồ hoạ) của quán."
+      "text": "Cùng cách phân biệt này còn dùng lại ở các bài sau. Khi truyền đối số cho một luồng (thread), `args=(10,)` là `tuple` một phần tử và dấu phẩy là bắt buộc. Bạn sẽ gặp lại \"truyền hàm\" và \"gọi hàm\" ở cả bài tiến trình, bài luồng và bài GUI (giao diện đồ hoạ) của quán."
      }
     ]
    ],

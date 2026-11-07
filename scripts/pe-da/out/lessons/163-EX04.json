@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Stack, data section, heap và descriptor là những phần của mô hình trạng thái process. Các process thường có không gian địa chỉ riêng; có thể cố ý chia sẻ qua cơ chế OS, nhưng không mặc định list Python được dùng chung. Ví dụ thật dưới thay list trong process con; list của cha vẫn giữ nguyên."
+      "text": "Stack, data section, heap và descriptor là những phần của mô hình trạng thái process. Các process thường có không gian địa chỉ riêng; có thể cố ý chia sẻ qua cơ chế OS, nhưng không mặc định `list` Python được dùng chung. Ví dụ thật dưới thay `list` trong process con; `list` của cha vẫn giữ nguyên."
      },
      {
       "type": "code",
@@ -45,7 +45,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ở POSIX, fork trả PID con ở cha và 0 ở con, sau đó hai nhánh tiếp tục từ vị trí sau fork. exec thay image của process hiện tại. Hậu tố l nhận danh sách đối số riêng, v nhận một vector/list đối số, p tìm executable qua PATH, e nhận environment tường minh. execl, execle, execlp, execv và execvp là các biến thể được nhắc trong slide. Windows có CreateProcess và API cũ WinExec; tên và cờ WinAPI trong đoạn C không phải cú pháp Python. Dùng subprocess nếu muốn bài thực hành chạy trên cả Windows và UNIX."
+      "text": "Ở POSIX, fork trả PID con ở cha và 0 ở con, sau đó hai nhánh tiếp tục từ vị trí sau fork. exec thay image của process hiện tại. Hậu tố l nhận danh sách đối số riêng, v nhận một vector/`list` đối số, p tìm executable qua PATH, e nhận environment tường minh. execl, execle, execlp, execv và execvp là các biến thể được nhắc trong slide. Windows có CreateProcess và API cũ WinExec; tên và cờ WinAPI trong đoạn C không phải cú pháp Python. Dùng subprocess nếu muốn bài thực hành chạy trên cả Windows và UNIX."
      },
      {
       "type": "code",

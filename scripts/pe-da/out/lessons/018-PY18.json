@@ -50,7 +50,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Khi dọn sổ bạn còn gặp ba lỗi khác. `TypeError` là thao tác không phù hợp với kiểu. `IndexError` là chỉ số không tồn tại. `KeyError` là thiếu khóa trong một dict. Traceback cho biết chuỗi lời gọi và vị trí phát sinh; hãy đọc dòng lỗi cuối rồi tìm lại dòng code liên quan."
+      "text": "Khi dọn sổ bạn còn gặp ba lỗi khác. `TypeError` là thao tác không phù hợp với kiểu. `IndexError` là chỉ số không tồn tại. `KeyError` là thiếu khóa trong một `dict`. Traceback cho biết chuỗi lời gọi và vị trí phát sinh; hãy đọc dòng lỗi cuối rồi tìm lại dòng code liên quan."
      },
      {
       "type": "code",
