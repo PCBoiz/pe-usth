@@ -83,7 +83,7 @@ học nó.
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **143 bài tập được chấm / 480 ca**, 2 440 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 154 bài, 420 đoạn code, **0 hỏng**, **0 cảnh báo**, ~32 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 143 bài, **480 ca đạt**, 773 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, **pha 4: 2 372 ca trượt / 0 ca im lặng / 7 nhánh phản hồi**, ~12 s |
-| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **98 lỗi · 671 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 31 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 98 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
+| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **98 lỗi · 649 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 31 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 98 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 359 khối đủ điều kiện** (303 bỏ qua — bảng từng ghi 356/300, đã CŨ từ trước 04/11: dựng lại từ HEAD cũng ra 359/303, và `check-moc-nen` không đối chiếu hàng này; phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
@@ -2979,6 +2979,60 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   đúng một trong 250 cảnh báo §4-A. GU09 thì "x, y" và "width, height" là liệt kê ĐỊNH
   DANH, không phải mệnh đề. Nên dọn §4-A sẽ hạ L3 như một tác dụng kèm; sửa L3 trước là
   sửa sai đầu.
+
+- **CÙNG MỘT CẶP TERMBANK ĐẦU ĐỘC RULE THỨ BA, và lần này nó còn làm một GIÁ TRỊ trong
+  termbank sai suốt từ đầu.** Vòng trước sửa L8 đếm trùng `Thread`/`thread` bằng phép đếm
+  theo span. Nguồn thật thì nằm ở phép KHỚP, và nó còn chảy sang §4-A.
+  **ĐO — mỗi mục nhóm A có chữ hoa, khớp ĐÚNG chính tả so với khớp LỎNG:**
+
+  | Mục | Đúng chính tả | Lỏng | Lỏng bắt thêm |
+  |---|---|---|---|
+  | **Thread** | **3** | **40** | **+37** |
+  | Axes | 12 | 13 | +1 |
+  | Popen | 4 | 5 | +1 |
+  | True · False · None · DataFrame · Series · Figure | = | = | **0** |
+
+  **Cả 39 chỗ "lỏng bắt thêm" đều là báo oan, đã đọc từng chỗ:** `Thread` ×37 là chữ
+  `thread` CHỮ THƯỜNG, tức khái niệm nhóm B ("Hai thread cùng sửa dữ liệu", "sleep chặn
+  thread đang gọi nó") — §4-A đi bảo bọc backtick cho chúng, mà cách đúng là L13 (viết
+  "luồng") và L13 đã cảnh báo chúng rồi. Nặng nhất: **PY17 bị bắt ngay trong khuôn chú
+  giải `luồng (thread)`**. Thêm `Axes` bắt `"axes fraction"` — một GIÁ TRỊ CHUỖI của
+  matplotlib — và `Popen` bắt `os.popen`, một hàm KHÁC `subprocess.Popen`.
+  **NGUYÊN NHÂN:** `co = 0 if self.tn.isupper() else re.IGNORECASE`. `isupper()` chỉ True
+  với TOÀN HOA (`GIL`, `CPU`, `API`), nên `Thread`, `Figure`, `DataFrame`, `True` rơi vào
+  nhánh IGNORECASE. Lý do có IGNORECASE vẫn ĐÚNG, nhưng chỉ cho mục CHỮ THƯỜNG bị viết hoa
+  đầu câu ("Stack giữ khung lời gọi hàm"); một định danh Python viết hoa thì **chính tả của
+  nó LÀ chữ hoa theo định nghĩa** — không câu nào viết thường nó. Nay điều kiện là
+  `any(c.isupper() for c in self.tn)`, và mục toàn hoa giữ nguyên hành vi.
+  **PHÁT HIỆN KÈM, lớn hơn con số: `baiDauTien` của `Thread` SAI suốt từ đầu.** Vừa sửa
+  phép khớp thì **TB đỏ 1 lỗi**: *"`baiDauTien`=PY17 nhưng corpus dùng lần đầu ở CT11"*.
+  PY17 chỉ có chữ `thread` chữ thường trong khuôn chú giải, không có class `Thread` lần
+  nào. **Và TB trước đó XANH — vì nó tính "bài đầu tiên" bằng CHÍNH phép khớp sai ấy.** Một
+  luật bất biến tự tính mốc bằng cùng bộ dò mà nó phải canh thì nó nhất quán với cái sai,
+  không phải đúng. Đã sửa về CT11.
+  **ĐIỀU NÀY KHÔNG làm L10 hỏng, và lý do đáng biết:** nhánh §4-A `continue` TRƯỚC khi tới
+  L10, nên L10 chưa bao giờ kiểm chú giải cho mục nhóm A — đúng thiết kế (nhóm A phải nằm
+  trong backtick, và khi đã bọc thì phép quét không thấy nó). Nên `bai_dau` của mục nhóm A
+  chỉ có TB dùng; `bai_dau` của mục nhóm B (`thread`, PY17) là chỗ L11/L13 miễn khuôn chú
+  giải, và nó không đổi.
+  **SỐ ĐÃ ĐO:** §4-A **250 → 228 cảnh báo** (−22, không phải −39: §4-A dồn theo (thuật ngữ,
+  màn) nên 37 lần xuất hiện gộp lại thành ít cảnh báo hơn). Tổng khoá 98 lỗi · 671 → **649
+  cảnh báo**. Không luật nào khác động; TB 1 → 0 sau khi sửa termbank.
+  Ablate 5 chiều: trả bộ dò về khớp lỏng (termbank giữ CT11) → **+1 lỗi TB** kèm đúng câu
+  "`baiDauTien`=CT11 nhưng corpus dùng lần đầu ở PY17", cộng 22 cảnh báo quay lại · trả
+  `baiDauTien` về PY17 (bộ dò giữ phân biệt hoa-thường) → **+1 lỗi TB**, câu ngược lại —
+  tức hai nửa nay KHOÁ NHAU, không gỡ được nửa nào im lặng · gieo class `Thread` chữ hoa →
+  §4-A **1** (còn răng) · gieo khái niệm `thread` chữ thường → §4-A **0**, L13 **1** (đúng
+  luật: dùng "luồng").
+  **MỘT TỒN ĐỌNG ĐỐI XỨNG, đo rồi mới bỏ:** khi class `Thread` đứng trần thì L13 CŨNG cảnh
+  báo "đã chốt gọi là luồng" — vì mục nhóm B chữ thường vẫn cần IGNORECASE (để bắt "Thread"
+  viết hoa đầu câu). Lời khuyên đó sai với một tên class. Nhưng số chỗ bị là **3**, và cách
+  đúng cho cả hai cảnh báo là BỌC BACKTICK — bọc xong thì cả §4-A lẫn L13 đều im. Nên đây
+  là việc nội dung, không phải lỗi cổng thứ hai.
+  **GIỚI HẠN PHẢI NÓI RA:** 228 cảnh báo §4-A còn lại là định danh ĐỨNG TRẦN THẬT (`list`
+  ×36 · `True` ×25 · `False` ×21 · `Figure` ×18 · `tuple` ×12…), và chúng vẫn đang thổi mật
+  độ L8 lên — bọc backtick sẽ hạ cả §4-A lẫn L8, vì backtick bị thay bằng `◆` trước khi
+  quét. Đó là việc NỘI DUNG, chưa làm.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

@@ -287,7 +287,18 @@ class Muc:
         # Viết hoa toàn bộ (GIL, CPU, API) thì phân biệt hoa-thường: khớp lỏng
         # sẽ bắt cả những tiếng Việt không dấu tình cờ trùng. Còn lại khớp lỏng
         # vì thuật ngữ đứng đầu câu bị viết hoa ("Stack giữ khung lời gọi hàm").
-        co = 0 if self.tn.isupper() else re.IGNORECASE
+        # `isupper()` chỉ True với TOÀN HOA (GIL, CPU, API), nên `Thread`, `Figure`,
+        # `DataFrame`, `True`… rơi vào nhánh IGNORECASE và khớp cả bản viết thường.
+        # Đo được: `Thread` khớp đúng chính tả **3** lần, khớp lỏng **40** — 37 chỗ
+        # kia là chữ `thread` CHỮ THƯỜNG, tức KHÁI NIỆM nhóm B, và §4-A đi bảo bọc
+        # backtick cho chúng (nặng nhất: PY17 bị bắt ngay trong khuôn chú giải
+        # `luồng (thread)`). Thêm `Axes` bắt `"axes fraction"` (một giá trị chuỗi
+        # của matplotlib) và `Popen` bắt `os.popen` (một hàm KHÁC). Cả 39 chỗ lỏng
+        # bắt thêm đều là báo oan.
+        # Lý do có IGNORECASE vẫn đúng, nhưng chỉ cho mục CHỮ THƯỜNG bị viết hoa
+        # đầu câu ("Stack giữ khung lời gọi hàm"). Một định danh Python viết hoa thì
+        # chính tả của nó LÀ chữ hoa theo định nghĩa — không câu nào viết thường nó.
+        co = 0 if any(c.isupper() for c in self.tn) else re.IGNORECASE
         # Biên từ của THUẬT NGỮ phải loại cả dấu nối (các luật tiếng Việt ở dưới
         # thì KHÔNG — chúng là cụm từ, không nằm trong từ ghép gạch nối). `-`
         # không thuộc `\w`, nên biên cũ khớp chữ "string" TRONG "f-string" — mà
