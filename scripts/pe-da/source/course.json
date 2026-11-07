@@ -12421,7 +12421,32 @@
         },
         {
           "type": "paragraph",
-          "text": "Đây là mô phỏng hàng đợi (queue): job queue theo dõi các công việc đi vào hệ thống, theo mô hình slide có thể còn nằm trên đĩa; ready queue chứa process đã ở bộ nhớ và sẵn sàng dùng CPU; device queue chứa process chờ một thiết bị I/O. Các mục trong hàng đợi liên hệ với PCB (Process Control Block). Khi process chuyển từ running sang waiting để chờ ổ đĩa, PCB của nó được liên kết vào hàng đợi thiết bị; I/O xong thì nó quay về ready queue."
+          "text": "Đây là mô phỏng hàng đợi (queue). Theo mô hình trong slide, hệ thống có ba hàng đợi:"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Hàng đợi",
+            "Chứa gì"
+          ],
+          "rows": [
+            [
+              "job queue",
+              "các công việc đi vào hệ thống — theo mô hình slide, có thể còn nằm trên đĩa"
+            ],
+            [
+              "ready queue",
+              "process đã ở bộ nhớ và sẵn sàng dùng CPU"
+            ],
+            [
+              "device queue",
+              "process chờ một thiết bị I/O"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Các mục trong hàng đợi liên hệ với PCB (Process Control Block). Khi process chuyển từ running sang waiting để chờ ổ đĩa, PCB của nó được liên kết vào hàng đợi thiết bị; I/O xong thì nó quay về ready queue."
         },
         {
           "type": "code",
@@ -13720,7 +13745,36 @@
         },
         {
           "type": "paragraph",
-          "text": "Slide giới thiệu Tkinter dựa trên Tcl/Tk; PyQt là binding Python cho Qt; Kivy dùng hệ đồ họa OpenGL và hướng tới giao diện đa nền tảng, gồm tương tác cảm ứng; wxPython dựa trên wxWidgets. Các toolkit có điều kiện cài đặt và hệ sinh thái riêng. Phần thực hành này dùng Tkinter, không yêu cầu cài ba toolkit còn lại. Tkinter có trong nhiều bản phân phối Python nhưng vẫn là module tùy chọn."
+          "text": "Slide giới thiệu bốn toolkit:"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Toolkit",
+            "Dựa trên gì"
+          ],
+          "rows": [
+            [
+              "Tkinter",
+              "Tcl/Tk"
+            ],
+            [
+              "PyQt",
+              "binding Python cho Qt"
+            ],
+            [
+              "Kivy",
+              "hệ đồ họa OpenGL, hướng tới giao diện đa nền tảng gồm tương tác cảm ứng"
+            ],
+            [
+              "wxPython",
+              "wxWidgets"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Các toolkit có điều kiện cài đặt và hệ sinh thái riêng. Phần thực hành này dùng Tkinter, không yêu cầu cài ba toolkit còn lại. Tkinter có trong nhiều bản phân phối Python nhưng vẫn là module tùy chọn."
         }
       ],
       "drills": [

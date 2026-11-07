@@ -136,7 +136,36 @@
      },
      {
       "type": "paragraph",
-      "text": "Slide giới thiệu Tkinter dựa trên Tcl/Tk; PyQt là binding Python cho Qt; Kivy dùng hệ đồ họa OpenGL và hướng tới giao diện đa nền tảng, gồm tương tác cảm ứng; wxPython dựa trên wxWidgets. Các toolkit có điều kiện cài đặt và hệ sinh thái riêng. Phần thực hành này dùng Tkinter, không yêu cầu cài ba toolkit còn lại. Tkinter có trong nhiều bản phân phối Python nhưng vẫn là module tùy chọn."
+      "text": "Slide giới thiệu bốn toolkit:"
+     },
+     {
+      "type": "table",
+      "headers": [
+       "Toolkit",
+       "Dựa trên gì"
+      ],
+      "rows": [
+       [
+        "Tkinter",
+        "Tcl/Tk"
+       ],
+       [
+        "PyQt",
+        "binding Python cho Qt"
+       ],
+       [
+        "Kivy",
+        "hệ đồ họa OpenGL, hướng tới giao diện đa nền tảng gồm tương tác cảm ứng"
+       ],
+       [
+        "wxPython",
+        "wxWidgets"
+       ]
+      ]
+     },
+     {
+      "type": "paragraph",
+      "text": "Các toolkit có điều kiện cài đặt và hệ sinh thái riêng. Phần thực hành này dùng Tkinter, không yêu cầu cài ba toolkit còn lại. Tkinter có trong nhiều bản phân phối Python nhưng vẫn là module tùy chọn."
      }
     ]
    ],

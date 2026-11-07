@@ -908,12 +908,18 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
   // 30/10/2026: +7 bài của module 11 (TH01-TH07, thực hành trên bộ CC0 thật).
   // Mỗi bài một màn đọc: 4-5 đoạn + 1 khối code đọc file. table 1 -> 2 là bảng
   // mô tả cột của bộ dữ liệu ở TH01.
+  // 07/11/2026: table 2 -> 4, paragraph 811 -> 813. Hai câu NHỒI MỆNH ĐỀ bằng
+  // dấu `;` thành BẢNG — đúng cách sửa mà VAN-PHONG.md §L3 chốt, và CT03 chính
+  // là ví dụ đã viết sẵn ở đó ("job queue… ready queue… device queue…" → ba
+  // hàng, hai cột). Mỗi lần chuyển: 1 đoạn nhồi → 1 đoạn dẫn + 1 bảng + 1 đoạn
+  // còn lại, nên +1 table và +1 paragraph. Đo sau khi chuyển: L3 43 → 41 lỗi,
+  // L2 cảnh báo 17 → 16, không luật nào tăng.
   assert.deepEqual(count, {
-    paragraph: 811,
+    paragraph: 813,
     code: 508,
     terminal: 17,
     figure: 80,
-    table: 2,
+    table: 4,
     diagram: 3,
   });
   // Câu luyện tập là câu MỞ kèm lời giải mẫu — không có phương án sai nào để
