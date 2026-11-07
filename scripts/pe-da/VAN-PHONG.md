@@ -293,9 +293,21 @@ ra file riêng. Mục `Kết quả ví dụ đã chuẩn bị:` (176/180 file) *
 
 ## 8. Trắc nghiệm
 
-Phần này dựa trên bằng chứng ngoài, không phải quy ước. Số đo của ngân hàng hiện tại:
-**1 032 câu, tất cả đúng 3 phương án, 50,3% đáp án ở vị trí 1, 172 câu cùng tiêu đề,
-124 câu cùng câu dẫn, một dạng câu hỏi duy nhất.**
+Phần này dựa trên bằng chứng ngoài, không phải quy ước.
+
+⚠️ **PHẢI TÁCH NGUỒN KHỎI BẢN PHÁT RA — bản trước không tách, và nó làm đúng điều ngược
+với chuyện M2 đã chữa.** Câu cũ viết *"Số đo của ngân hàng hiện tại: … 50,3% đáp án ở vị
+trí 1"* mà không nói đó là ĐÂU, nên người đọc hôm nay kết luận đề ĐANG PHÁT RA vẫn mang
+bệnh — trong khi `tron_vi_tri_dap_an()` đã chữa nó ở khâu build từ lâu. Phép trộn nằm ở
+BUILD, nên nguồn vẫn lệch và đó là chuyện bình thường; thứ người học gặp mới là bản phát ra.
+
+**NGUỒN `source/practice.json`** (gói của người soạn, chưa qua trộn): **1 053 câu**, tất cả
+đúng **1 053** câu có 3 phương án, **51,3%** đáp án ở vị trí 1, **174** câu trùng tiêu đề
+với một câu khác, **131** câu trùng câu dẫn, một dạng câu hỏi duy nhất.
+
+**BẢN PHÁT RA cho người học** (537 câu, sau `tron_vi_tri_dap_an()`): **không vị trí nào
+vượt 40%** — đó là tính chất luật TL canh, chứ không phải ba con số cụ thể, vì ba con số ấy
+đổi theo mỗi lần gói nguồn đổi mà tính chất thì không. Đo hôm nay: 32,8 / 34,1 / 33,1 %.
 
 ### M1 · Giữ **3 phương án** làm mặc định
 
@@ -314,7 +326,9 @@ ngân hàng **~2,5 phương án**.
 ### M2 · Trộn vị trí đáp án — **ngẫu nhiên CÓ PHÂN TẦNG, ở khâu build, seed cố định**
 
 Không xoay theo công thức (bệnh hiện tại), không ngẫu nhiên thuần: với đề 3 câu, xác suất cả 3
-cùng vị trí là 1/9, tức ~19/172 bài sẽ trông y như bệnh cũ.
+cùng vị trí là 1/9, tức khoảng một phần chín số bài sẽ trông y như bệnh cũ (đo thật
+lúc thử `rng.randrange()`: 23/172 bài — mẫu số là số bài LÚC ĐÓ, và con số này là
+LỊCH SỬ của một phép thử, không phải số đo của corpus hôm nay).
 
 Với đề **lập trình**, thiên lệch đi theo hướng **vị trí đầu** (Tellinghuisen & Sulikowski, 676
 sinh viên; Bresnoc 1989) — nên 50,3% đáp án ở vị trí 1 làm cả ngân hàng **dễ hơn và phân biệt
@@ -442,13 +456,13 @@ Format phải đồng nhất `N lỗi · N cb` cho MỌI hàng; bản cũ viết
 | L14 | Bối cảnh bài phải thuộc `boi-canh.json` | CẢNH BÁO | 0 lỗi · 30 cb |
 | L15 | Đoạn mở bài phải nối với bài trước | CẢNH BÁO | 0 lỗi · 0 cb |
 | TB | Bất biến termbank: `baiDauTien` khớp corpus | LỖI | 0 lỗi · 0 cb |
-| TL | Bảng §2 và bảng này phải khớp số đo | LỖI | 0 lỗi · 0 cb |
+| TL | Số đo trong đặc tả phải khớp số đo thật (§1 · §2 · §8 · §12 · bảng này) | LỖI | 0 lỗi · 0 cb |
 | §4-A | Định danh nhóm A phải nằm trong backtick | CẢNH BÁO | 0 lỗi · 59 cb |
-| **M1** | **3 phương án mặc định** | **LỖI** | 0 (đang đúng) |
-| **M2** | **Trộn vị trí có phân tầng** | **LỖI** | **1 032/1 032** |
-| M3 | Nhiễu phải có lý do lưu kèm | LỖI | 1 032 |
-| M4 | Không bài nào 3 câu cùng một ô Block Model | LỖI | 172/172 |
-| M5 | Một lần trả lời, rồi đi tiếp | LỖI | toàn bộ |
+| **M1** | **3 phương án mặc định** | **LỖI** | — (do `check.py --strict`) |
+| **M2** | **Trộn vị trí có phân tầng** | **LỖI** | — (do `check.py --strict`) |
+| M3 | Nhiễu phải có lý do lưu kèm | LỖI | — (do `check.py --strict`) |
+| M4 | Không bài nào 3 câu cùng một ô Block Model | LỖI | — (do `check.py --strict`) |
+| M5 | Một lần trả lời, rồi đi tiếp | LỖI | — (do `check.py --strict`) |
 
 **Tổng trên corpus thật: 93 lỗi · 467 cảnh báo.**
 

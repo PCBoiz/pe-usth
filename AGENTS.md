@@ -3439,6 +3439,53 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `check_vanphong.py`, nên `doi_chieu_moc` KHÔNG đo được chúng và chúng **vẫn trôi được**.
   Đã khai ra ở đây thay vì để im lặng.
 
+- **§8 CỦA ĐẶC TẢ GỘP NGUỒN VỚI BẢN PHÁT RA, nên nó công bố ĐÚNG CÁI BỆNH MÀ M2 ĐÃ CHỮA
+  như thể còn nguyên.** Vòng trước khai 5 hàng M1–M5 của §11 là chỗ còn trôi được. Đo thì
+  chuyện lớn hơn nằm ở §8: nó viết *"Số đo của ngân hàng **hiện tại**: 1 032 câu, … **50,3%
+  đáp án ở vị trí 1**, …"* mà KHÔNG nói đó là đâu. Người đọc hôm nay kết luận đề ĐANG PHÁT
+  RA vẫn thiên vị vị trí 1 — trong khi `tron_vi_tri_dap_an()` đã chữa nó ở khâu BUILD.
+  **Phép trộn nằm ở build, nên nguồn vẫn lệch và đó là bình thường; thứ người học gặp mới là
+  bản phát ra.** Số đã đo:
+
+  | | §8 ghi | NGUỒN (đo) | PHÁT RA (đo) |
+  |---|---|---|---|
+  | tổng câu | 1 032 | **1 053** | 537 |
+  | có đúng 3 phương án | "tất cả" | 1 053 / 1 053 | — |
+  | đáp án ở vị trí 1 | 50,3% | **51,3%** | **32,8%** |
+  | câu trùng tiêu đề | 172 | **174** | — |
+  | câu trùng câu dẫn | 124 | **131** | — |
+
+  Bốn trong năm con số lệch, và chúng lệch ÍT (gói nguồn lớn thêm khi module 11 vào) — đó là
+  kiểu lệch dễ sống nhất, vì nó không trông sai.
+  **TL nay canh bốn số nguyên của NGUỒN chính xác, còn bản PHÁT RA thì canh TÍNH CHẤT**
+  ("không vị trí nào vượt 40%") thay vì ba con số: ba con số ấy đổi theo mỗi lần gói nguồn
+  đổi, mà tính chất thì không — và tính chất mới là thứ M2 hứa. Cùng lý lẽ "ít con số hơn là
+  câu trả lời đúng" đã dùng cho ghi chú §2.
+  **Phép kiểm tính chất ĐỌC BẢN DỰNG, không đọc một hằng** — ablate: hạ `TRAN_VI_TRI_PHAT_RA`
+  xuống 30 thì nó đỏ với *"một vị trí giữ 34.1% đáp án, vượt trần 30% — phép trộn ở khâu
+  build đã hỏng"*.
+  **NĂM HÀNG M1–M5 CỦA §11: BỎ SỐ, không gắn cổng.** Chúng do `check.py` thi hành nên
+  `doi_chieu_moc` không đo được. Bản cũ ghi "1 032/1 032" · "172/172" · "toàn bộ" — cả ba
+  đều trôi, và cột ấy đang bị dùng với HAI nghĩa trong cùng một bảng (hàng L là số VI PHẠM,
+  hàng M là "N/N đều đạt"). Nay cả năm hàng ghi `— (do check.py --strict)`: không còn con số
+  nào để trôi, và cột lại chỉ có một nghĩa. **Đó là lựa chọn, không phải bỏ sót** — gắn cổng
+  cho chúng đòi `check_vanphong` gọi `check.py`, tức hai cổng dính nhau để canh một con số
+  không ai đọc.
+  **Mẫu số 172 trong §8 (ước lượng "~19/172 bài") thì GIỮ và dán nhãn LỊCH SỬ:** nó là số
+  của một phép thử `rng.randrange()` đã chạy, không phải số đo của corpus hôm nay. Phân biệt
+  ấy phải viết ra, nếu không vòng sau lại đi "sửa" một con số đúng.
+  Ablate 8 chiều, mỗi chiều đỏ: bốn số nguyên của §8 (1 053 → 1 032 · 1 053 → 1 032 ·
+  174 → 172 · 131 → 124) → 1 lỗi mỗi chiều, đúng tên hàng · tỉ lệ 51,3% → 50,3% → 1 ·
+  đổi trần khai 40% → 50% → 1 ("mã đặt 40%") · BỎ hẳn lời khai tính chất → 1 ("bỏ nó đi là
+  bỏ chỗ duy nhất nói ra rằng phép trộn nằm ở khâu build") · hạ trần trong mã xuống 30 →
+  phép kiểm tính chất bắn trên dữ liệu thật.
+  **MỘT PHÉP GIEO CỦA TÔI TRƯỢT, lần thứ ba trong bốn vòng:** chuỗi gieo mang `\)` nên shell
+  ăn mất escape và nó khớp 0 chỗ. Phép gieo in ra "GIEO TRƯỢT" nên tôi thấy; không có dòng
+  đó thì "0 đỏ" sẽ bị đọc thành "cổng không có răng". **Mọi phép ablate phải tự khai khi
+  chuỗi gieo không vào được file.**
+  **GIỚI HẠN:** TL nay canh §1 · §2 · §8 · §12 và bảng §11. §3 (chỉ số độ khó đọc), §5–§7 và
+  các bảng văn liệu vẫn là trích dẫn NGOÀI repo — không đo lại được, vẫn trôi được.
+
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
 Hai đường, chọn sai là xoá tiến độ của người đang học:

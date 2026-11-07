@@ -205,6 +205,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 SOURCE = HERE / 'source' / 'course.json'
+# Gói bài tập + trắc nghiệm của người soạn. Luật TL đọc nó cho §8: số đo của
+# NGÂN HÀNG NGUỒN khác số đo của bản phát ra, vì phép trộn vị trí nằm ở build.
+PRACTICE = HERE / 'source' / 'practice.json'
 # Sổ mốc TỪNG LUẬT. LOOP.md bậc 4 đòi "không luật nào được TĂNG", nhưng trước
 # bản này con số chỉ sống trong §11 của VAN-PHONG.md — tức VĂN XUÔI, đo hồi
 # 29/10 trên 172 bài, và không gì đối chiếu nó. Một luật ratchet không có mốc
@@ -235,7 +238,7 @@ TEN_LUAT = {
     'L14': 'bối cảnh bài phải thuộc danh sách đã chốt (boi-canh.json)',
     'L15': 'đoạn mở bài phải nối với bài trước (CẢNH BÁO, xem docstring)',
     'TB': 'bất biến của chính termbank',
-    'TL': 'bảng §2 của VAN-PHONG.md phải khớp số đo thật',
+    'TL': 'số đo trong VAN-PHONG.md phải khớp số đo thật (§1 · §2 · §8 · §12)',
     '§4-A': 'định danh trong code phải nằm trong backtick',
 }
 
@@ -1055,6 +1058,90 @@ def kiem_tai_lieu(bai: list[dict], bank: list[Muc]) -> None:
         elif nguon[0] != trich[0]:
             loi('TL', f'trần lint backend: §12 trích {trich[0]}, `ci.yml` đặt '
                       f'{nguon[0]}. Sửa trích dẫn, đừng sửa trần.')
+
+    kiem_bang_s8(van)
+
+
+# Ngân hàng trắc nghiệm: NGUỒN (chưa trộn) và BẢN PHÁT RA (đã trộn) là HAI phép
+# đo khác nhau, và bản trước của §8 gộp chúng thành một — nó ghi "ngân hàng hiện
+# tại … 50,3% đáp án ở vị trí 1" mà không nói đó là nguồn, nên người đọc kết luận
+# đề ĐANG PHÁT RA vẫn mang đúng cái bệnh mà M2 đã chữa ở khâu build.
+#
+# Bốn con số của NGUỒN được so CHÍNH XÁC. Bản PHÁT RA thì so TÍNH CHẤT ("không vị
+# trí nào vượt 40%") chứ không so ba con số: ba con số ấy đổi theo mỗi lần gói
+# nguồn đổi, mà tính chất thì không — và tính chất mới là thứ M2 hứa.
+TRAN_VI_TRI_PHAT_RA = 40.0
+
+
+def kiem_bang_s8(van: str) -> None:
+    """TL, phần §8 — số đo ngân hàng trắc nghiệm."""
+    if not PRACTICE.is_file():
+        loi('TL', 'không có source/practice.json — không đối chiếu được §8')
+        return
+    goi = json.loads(PRACTICE.read_text(encoding='utf-8'))
+    cau = []
+    for x in goi['lessons']:
+        for m in (x.get('mcq') or []):
+            cau.append(m)
+            cau.extend(m.get('variants') or [])
+    if not cau:
+        loi('TL', '§8: gói nguồn không có câu trắc nghiệm nào')
+        return
+    ba = sum(1 for c in cau if len(c.get('options') or []) == 3)
+    vt = Counter()
+    for c in cau:
+        ids = [o['id'] for o in (c.get('options') or [])]
+        if c.get('correctOption') in ids:
+            vt[ids.index(c['correctOption'])] += 1
+    tong_vt = sum(vt.values()) or 1
+    trung_tieu_de = sum(n for n in Counter(
+        c.get('title', '') for c in cau).values() if n > 1)
+    trung_cau_dan = sum(n for n in Counter(
+        c.get('prompt', '') for c in cau).values() if n > 1)
+
+    for nhan, pat, that in (
+        ('§8 tổng câu nguồn', r'chưa qua trộn\): \*\*([\d  ]+) câu\*\*', len(cau)),
+        ('§8 số câu có 3 phương án', r'tất cả\s*\n?\s*đúng \*\*([\d  ]+)\*\* câu có 3 phương án', ba),
+        ('§8 số câu trùng tiêu đề', r'\*\*([\d  ]+)\*\* câu trùng tiêu đề', trung_tieu_de),
+        ('§8 số câu trùng câu dẫn', r'\*\*([\d  ]+)\*\* câu trùng câu dẫn', trung_cau_dan),
+    ):
+        ms = re.findall(pat, van)
+        if len(ms) != 1:
+            loi('TL', f'{nhan}: regex khớp {len(ms)} chỗ, đòi ĐÚNG MỘT — đổi chữ '
+                      f'§8 thì phải sửa `kiem_bang_s8`')
+        elif int(str(ms[0]).replace(' ', '').replace(' ', '')) != that:
+            loi('TL', f'{nhan}: §8 ghi {ms[0]}, đo được {that}')
+
+    ms = re.findall(r'\*\*(\d+,\d)%\*\* đáp án ở vị trí 1', van)
+    thuc = f'{100 * vt[0] / tong_vt:.1f}'.replace('.', ',')
+    if len(ms) != 1:
+        loi('TL', f'§8 tỉ lệ vị trí 1 của NGUỒN: regex khớp {len(ms)} chỗ, đòi ĐÚNG MỘT')
+    elif ms[0] != thuc:
+        loi('TL', f'§8 tỉ lệ đáp án ở vị trí 1 (NGUỒN): ghi {ms[0]}%, đo được {thuc}%')
+
+    # BẢN PHÁT RA: kiểm TÍNH CHẤT, và kiểm cả việc §8 còn KHAI tính chất ấy.
+    ms = re.findall(r'không vị trí nào\s*\n?vượt (\d+)%', van)
+    if len(ms) != 1:
+        loi('TL', f'§8: không tìm thấy lời khai "không vị trí nào vượt N%" về bản '
+                  f'PHÁT RA (khớp {len(ms)} chỗ) — bỏ nó đi là bỏ chỗ duy nhất nói '
+                  f'ra rằng phép trộn nằm ở khâu build')
+    elif float(ms[0]) != TRAN_VI_TRI_PHAT_RA:
+        loi('TL', f'§8 khai trần {ms[0]}% cho bản phát ra, mã đặt '
+                  f'{TRAN_VI_TRI_PHAT_RA:g}%')
+    pv = Counter()
+    for l in json.loads((HERE / 'out' / 'lessons.json').read_text(encoding='utf-8')
+                        )['lessons'] if (HERE / 'out' / 'lessons.json').is_file() else []:
+        for m in ((l['content_json'].get('step_2') or {}).get('mcq') or []):
+            o = m.get('options') or []
+            i = next((j for j, x in enumerate(o) if x.get('correct') is True), None)
+            if i is not None:
+                pv[i] += 1
+    n = sum(pv.values())
+    if n:
+        cao = max(100 * pv[i] / n for i in pv)
+        if cao > TRAN_VI_TRI_PHAT_RA:
+            loi('TL', f'bản PHÁT RA: một vị trí giữ {cao:.1f}% đáp án, vượt trần '
+                      f'{TRAN_VI_TRI_PHAT_RA:g}% — phép trộn ở khâu build đã hỏng')
 
 
 def kiem_noi_bai(bai: list[dict], bank: list[Muc]) -> None:
