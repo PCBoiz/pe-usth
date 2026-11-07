@@ -2534,6 +2534,48 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **Luật rút ra: bê từ nhánh khác thì chạy CẢ bộ unit + bốn cổng TRƯỚC khi push**, vì thứ bị
   viết đè là thứ bên kia không biết là có.
 
+- **LIGHTPANDA: ĐÃ ĐỌC TÀI LIỆU VÀ BÁC cho việc ĐO GIAO DIỆN — nó KHÔNG có layout.**
+  Chủ dự án hỏi 07/11 liệu nó có hơn Chrome DevTools không. Đọc README +
+  lightpanda.io/docs: nó viết bằng Zig, chạy JS trên V8, dựng DOM thật — nhưng
+  tài liệu kiến trúc nói nguyên văn *"Because Lightpanda does not render, it does
+  not compute a real visual layout. Element size is a fair approximation from CSS
+  and HTML attributes, but element position is **simulated from DOM depth and
+  sibling order**, not real layout"*, và *"`Page.captureScreenshot` returns a
+  **placeholder image**, not a real render"*. README: *"No graphical rendering
+  engine"*.
+  **Vì sao đó là chí tử ĐÚNG VỚI REPO NÀY, chứ không phải một thiếu sót chung
+  chung:** mọi phép đo giao diện ở đây đều đứng trên layout thật —
+  `getBoundingClientRect` (nút 13×6px), `getComputedStyle` + hợp thành alpha
+  (tương phản AA), `elementFromPoint` (vùng bấm thật, thứ đã lộ ra rằng
+  `overflow:hidden` nuốt `::after`), CLS/LCP/FCP, ảnh chụp. Trên Lightpanda
+  chúng vẫn TRẢ VỀ SỐ — số mô phỏng. Một công cụ trả về con số trông hợp lý mà
+  không phải sự thật là đúng cái đã cắn repo này ba lần ở mục đo độ giật ngay
+  dưới. Chrome tốn hơn, nhưng nó là thứ duy nhất nói được "người học thấy gì".
+  **Số tự công bố, ghi lại để khỏi tra lại:** 100 trang — 123 MB / 5 s so với
+  Chrome 2 GB / 46 s (~16× bộ nhớ, ~9× tốc độ); một trang — 16 ms / 21,2 MB so
+  với 185 ms / 402 MB. Bảng README (123 MB cho "100 pages") và bảng docs (123 MB
+  cho 25 tiến trình song song, 410 MB cho 100) KHÔNG khớp cấu hình — ghi lại chứ
+  không phán xét.
+  **Ba rào kỹ thuật nữa nếu có ngày cần nó cho việc KHÔNG-giao-diện:** không có
+  bản Windows native (phải WSL/Docker — máy dự án là Windows 11); một tiến trình
+  chỉ mở được MỘT tab; giấy phép AGPL-3.0. Và hôm nay chẳng có việc nào cần: mọi
+  cổng không-giao-diện của repo (`check-*.mjs`, `check.py`) chạy thẳng trong Node
+  hoặc Python, không cần trình duyệt nào.
+
+- **`--ds-action` BẰNG ĐÚNG màu nút đang vẽ — "port nốt token" ở trang bài học là
+  việc KHÔNG đổi một pixel nào.** Quét trên production (94b7504) mọi phần tử đang
+  VẼ RA màu brand, bốn màn của một bài: màn 5/8/12 **sạch**; màn 1 chỉ có một
+  `span.num` 7×15px `#EC9277` — tông đất của chính bảng lofi, phép dò bắt oan vì
+  luật "đỏ" của nó quá lỏng. Hai nút lớn (`primaryBtn` 480×52 "Nộp & Chấm điểm",
+  `runBtn` "▶ Chạy thử") vẽ `#1F5FE0` — mà `--ds-action` cũng ĐÚNG LÀ `#1F5FE0`.
+  Chúng chỉ đi qua `--edu-accent-2` thay vì `--ds-action`: cùng một pixel, nên đổi
+  dây là token hygiene chứ không phải cải tiến, và nó vi phạm chính luật "mỗi vòng
+  phải nối một bề mặt THẬT". `segmentFill` `#1d4ed8` là `--ds-violet`, chấm
+  `#cf2338` là `--ds-sanguine` — cả hai đã đúng bảng từ trước.
+  **Hệ quả cho nhánh lofi:** lát tiếp theo KHÔNG nằm ở trang bài học. Phải quét
+  một bề mặt khác (trang `(standalone)`, màn lỗi, trang 404) rồi mới mở việc —
+  và quét bằng trình duyệt, vì grep đã sai 6:1 một lần rồi.
+
 - **ĐO ĐỘ GIẬT CỦA TRANG CHỦ: ba cách đo đã nói dối, và một cách thì không.**
   Trang chủ Góc học bận 98% luồng chính khi ĐỨNG YÊN trên điện thoại giả lập (390×844,
   CPU 4×); 2059211 hạ còn ~62%. Ba bẫy của chính phép đo, đều đã cắn trong vòng đó:
