@@ -195,7 +195,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Trong RAM, biến thường mất khi tiến trình (process) kết thúc. File đã ghi và đóng có thể được đọc ở lần chạy sau; lưu bền không có nghĩa file không thể bị xóa hoặc hỏng. Vòng đời thông thường là open → đọc hoặc ghi → close. Sau close, `f.closed` là True và gọi read/write trên handle đó gây ValueError."
+      "text": "Trong RAM, biến thường mất khi tiến trình (process) kết thúc. File đã ghi và đóng có thể được đọc ở lần chạy sau; lưu bền không có nghĩa file không thể bị xóa hoặc hỏng. Vòng đời thông thường là open → đọc hoặc ghi → close. Sau close, `f.closed` là `True` và gọi read/write trên handle đó gây ValueError."
      },
      {
       "type": "paragraph",

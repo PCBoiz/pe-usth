@@ -39,7 +39,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Các khoảng thường lấy cận trái và bỏ cận phải; khoảng cuối lấy cả cận phải. Đổi bins có thể làm hình trông khác, nên cần kiểm tra vài cách chia khoảng thay vì chỉ giữ hình đẹp nhất. density=True chuyển chiều cao thành mật độ: tổng diện tích cột bằng 1, chứ tổng chiều cao không nhất thiết bằng 1."
+      "text": "Các khoảng thường lấy cận trái và bỏ cận phải; khoảng cuối lấy cả cận phải. Đổi bins có thể làm hình trông khác, nên cần kiểm tra vài cách chia khoảng thay vì chỉ giữ hình đẹp nhất. `density=True` chuyển chiều cao thành mật độ: tổng diện tích cột bằng 1, chứ tổng chiều cao không nhất thiết bằng 1."
      },
      {
       "type": "code",

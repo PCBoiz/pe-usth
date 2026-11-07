@@ -644,7 +644,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bốn kiểu dữ liệu sau đủ cho sổ của quán lúc này. `int` là số nguyên, dùng cho số cốc. `float` là số thực, dùng cho khối lượng cà phê đã xay. `str` là chuỗi, dùng cho tên món. `bool` chỉ có True hoặc False, dùng cho câu hỏi kiểu đơn đã thanh toán hay chưa."
+        "text": "Bốn kiểu dữ liệu sau đủ cho sổ của quán lúc này. `int` là số nguyên, dùng cho số cốc. `float` là số thực, dùng cho khối lượng cà phê đã xay. `str` là chuỗi, dùng cho tên món. `bool` chỉ có `True` hoặc `False`, dùng cho câu hỏi kiểu đơn đã thanh toán hay chưa."
        },
        {
         "type": "paragraph",
@@ -1363,7 +1363,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Mã đơn của quán cũng là một chuỗi, nên cùng mấy phép đọc đó áp được. Trong `ma[start:stop:step]`, điểm dừng không được lấy: `ma[1:5:2]` lấy chỉ số 1 và 3, nên được `\"F3\"`. Bước -1 đọc ngược cả chuỗi. `in` kiểm có chuỗi con, `not in` kiểm không có. Phép kiểm này phân biệt hoa thường, nên `\"CF\" in ma` là True còn `\"cf\" in ma` là False."
+        "text": "Mã đơn của quán cũng là một chuỗi, nên cùng mấy phép đọc đó áp được. Trong `ma[start:stop:step]`, điểm dừng không được lấy: `ma[1:5:2]` lấy chỉ số 1 và 3, nên được `\"F3\"`. Bước -1 đọc ngược cả chuỗi. `in` kiểm có chuỗi con, `not in` kiểm không có. Phép kiểm này phân biệt hoa thường, nên `\"CF\" in ma` là `True` còn `\"cf\" in ma` là `False`."
        },
        {
         "type": "code",
@@ -2060,7 +2060,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Năm thao tác dưới đây hay dùng khi dọn một dãy đếm nháp. `remove(x)` xoá lần xuất hiện đầu tiên khớp `x`. `pop()` xoá và trả về phần tử cuối, còn `pop(index)` chọn vị trí cần lấy. `del` xoá theo vị trí hoặc theo lát cắt. `sort` sắp tại chỗ và `reverse` đảo tại chỗ; cả hai trả None chứ không trả list đã đổi."
+        "text": "Năm thao tác dưới đây hay dùng khi dọn một dãy đếm nháp. `remove(x)` xoá lần xuất hiện đầu tiên khớp `x`. `pop()` xoá và trả về phần tử cuối, còn `pop(index)` chọn vị trí cần lấy. `del` xoá theo vị trí hoặc theo lát cắt. `sort` sắp tại chỗ và `reverse` đảo tại chỗ; cả hai trả `None` chứ không trả list đã đổi."
        },
        {
         "type": "paragraph",
@@ -2805,7 +2805,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bốn phép kiểm quan hệ nói về hai nhóm chứ không về một món. `da_ban.issubset(menu)` hay `da_ban <= menu` hỏi mọi món đã bán có nằm trong bảng giá không — nếu False thì ai đó đã bán một món ngoài bảng. `menu.issuperset(da_ban)` hay `menu >= da_ban` hỏi điều ngược lại. `isdisjoint` hỏi hai nhóm có món chung nào không. Còn `x in da_ban` hỏi về đúng một thành viên."
+        "text": "Bốn phép kiểm quan hệ nói về hai nhóm chứ không về một món. `da_ban.issubset(menu)` hay `da_ban <= menu` hỏi mọi món đã bán có nằm trong bảng giá không — nếu `False` thì ai đó đã bán một món ngoài bảng. `menu.issuperset(da_ban)` hay `menu >= da_ban` hỏi điều ngược lại. `isdisjoint` hỏi hai nhóm có món chung nào không. Còn `x in da_ban` hỏi về đúng một thành viên."
        },
        {
         "type": "paragraph",
@@ -3251,7 +3251,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`while` kiểm điều kiện trước mỗi lượt. Dòng `luot += 1` là thứ làm điều kiện cuối cùng thành False, nên vòng dừng sau lượt thứ ba. Nếu bạn quên đổi trạng thái mà điều kiện luôn đúng, chương trình lặp mãi và máy pha không bao giờ được nghỉ."
+        "text": "`while` kiểm điều kiện trước mỗi lượt. Dòng `luot += 1` là thứ làm điều kiện cuối cùng thành `False`, nên vòng dừng sau lượt thứ ba. Nếu bạn quên đổi trạng thái mà điều kiện luôn đúng, chương trình lặp mãi và máy pha không bao giờ được nghỉ."
        },
        {
         "type": "code",
@@ -3507,7 +3507,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Một hàm chỉ `print` thì không trả lại con số vừa hiện. Nếu không `return` một giá trị, kết quả lời gọi là None, nên `result` ở đây không cộng được vào doanh thu ngày. Muốn đưa kết quả sang bước sau, dùng `return`."
+        "text": "Một hàm chỉ `print` thì không trả lại con số vừa hiện. Nếu không `return` một giá trị, kết quả lời gọi là `None`, nên `result` ở đây không cộng được vào doanh thu ngày. Muốn đưa kết quả sang bước sau, dùng `return`."
        },
        {
         "type": "code",
@@ -7216,7 +7216,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Array True/False dùng để đánh dấu các vị trí như vậy được gọi là mask. Mask giữ số vị trí và thứ tự giống dữ liệu mà bạn vừa so sánh."
+        "text": "Array `True`/`False` dùng để đánh dấu các vị trí như vậy được gọi là mask. Mask giữ số vị trí và thứ tự giống dữ liệu mà bạn vừa so sánh."
        },
        {
         "type": "paragraph",
@@ -8235,7 +8235,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Với điểm có trọng số, khi bỏ một điểm thiếu, bạn phải bỏ cả tín chỉ của môn đó bằng cùng một mask. `np.isnan(a)` đánh dấu ô thiếu; thêm `~` ở trước để đảo True/False, nên `~np.isnan(a)` đánh dấu các ô không thiếu. Ngoài ra, bỏ NaN không đồng nghĩa bỏ mọi giá trị vô hạn; đó là hai điều kiện kiểm tra khác nhau."
+        "text": "Với điểm có trọng số, khi bỏ một điểm thiếu, bạn phải bỏ cả tín chỉ của môn đó bằng cùng một mask. `np.isnan(a)` đánh dấu ô thiếu; thêm `~` ở trước để đảo `True`/`False`, nên `~np.isnan(a)` đánh dấu các ô không thiếu. Ngoài ra, bỏ NaN không đồng nghĩa bỏ mọi giá trị vô hạn; đó là hai điều kiện kiểm tra khác nhau."
        }
       ]
      ],
@@ -9270,7 +9270,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ô sau dấu phẩy ở dòng `1,` bị thiếu, nên được đọc thành NaN với cách dùng mặc định ở đây. `np.isnan(a)` đánh dấu ô thiếu; `.sum()` đếm số ô được đánh dấu vì True được tính là 1 và False là 0."
+        "text": "Ô sau dấu phẩy ở dòng `1,` bị thiếu, nên được đọc thành NaN với cách dùng mặc định ở đây. `np.isnan(a)` đánh dấu ô thiếu; `.sum()` đếm số ô được đánh dấu vì `True` được tính là 1 và `False` là 0."
        },
        {
         "type": "paragraph",
@@ -9486,7 +9486,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Trong phép kiểm tra, `(a >= 1) & (a <= 6)` tạo mask cho các số nằm trong khoảng hợp lệ. `.all()` trả True nếu mọi vị trí trong mask đều là True."
+        "text": "Trong phép kiểm tra, `(a >= 1) & (a <= 6)` tạo mask cho các số nằm trong khoảng hợp lệ. `.all()` trả `True` nếu mọi vị trí trong mask đều là `True`."
        },
        {
         "type": "paragraph",
@@ -11065,7 +11065,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Nhãn đã căn đúng rồi, giờ bạn chỉ muốn xem một phần các đơn của quán thay vì cả bảng, chẳng hạn các đơn lớn. Bạn cần xem các đơn từ 100 nghìn trở lên để kiểm tra chương trình khuyến mại. So sánh một cột với 100 tạo ra một dãy True/False; dãy này quyết định giữ hàng nào."
+        "text": "Nhãn đã căn đúng rồi, giờ bạn chỉ muốn xem một phần các đơn của quán thay vì cả bảng, chẳng hạn các đơn lớn. Bạn cần xem các đơn từ 100 nghìn trở lên để kiểm tra chương trình khuyến mại. So sánh một cột với 100 tạo ra một dãy `True`/`False`; dãy này quyết định giữ hàng nào."
        },
        {
         "type": "code",
@@ -11077,7 +11077,7 @@
       [
        {
         "type": "paragraph",
-        "text": "True giữ hàng, False bỏ hàng khỏi kết quả lọc. Với nhiều điều kiện, dùng & cho “và”, | cho “hoặc”, rồi đặt từng phép so sánh trong ngoặc. Không dùng and/or để nối hai Series."
+        "text": "`True` giữ hàng, `False` bỏ hàng khỏi kết quả lọc. Với nhiều điều kiện, dùng & cho “và”, | cho “hoặc”, rồi đặt từng phép so sánh trong ngoặc. Không dùng and/or để nối hai Series."
        },
        {
         "type": "code",
@@ -11848,7 +11848,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`isna` nhận biết giá trị thiếu. Trung bình mặc định bỏ các ô thiếu, nên 21 được tính từ hai buổi có số thật. Dùng == None hoặc == NaN không phải cách tổng quát để tìm các ô này."
+        "text": "`isna` nhận biết giá trị thiếu. Trung bình mặc định bỏ các ô thiếu, nên 21 được tính từ hai buổi có số thật. Dùng == `None` hoặc == NaN không phải cách tổng quát để tìm các ô này."
        },
        {
         "type": "code",
@@ -12624,7 +12624,7 @@
       [
        {
         "type": "paragraph",
-        "text": "ascending=False xếp giảm dần; nlargest chỉ lấy một số hàng lớn nhất. Nếu cần sắp xếp theo nhãn index thay vì giá trị cột, dùng sort_index. Với cột phân loại, đếm số lần xuất hiện thường hữu ích hơn sắp xếp."
+        "text": "`ascending=False` xếp giảm dần; nlargest chỉ lấy một số hàng lớn nhất. Nếu cần sắp xếp theo nhãn index thay vì giá trị cột, dùng sort_index. Với cột phân loại, đếm số lần xuất hiện thường hữu ích hơn sắp xếp."
        },
        {
         "type": "code",
@@ -12636,7 +12636,7 @@
       [
        {
         "type": "paragraph",
-        "text": "value_counts mặc định bỏ ô thiếu; thêm dropna=False nếu cần đếm cả chúng. count đếm giá trị không thiếu, còn size đếm tất cả phần tử. Với cột số, describe cho các thống kê như count, mean, std, min, các tứ phân vị và max."
+        "text": "value_counts mặc định bỏ ô thiếu; thêm `dropna=False` nếu cần đếm cả chúng. count đếm giá trị không thiếu, còn size đếm tất cả phần tử. Với cột số, describe cho các thống kê như count, mean, std, min, các tứ phân vị và max."
        },
        {
         "type": "code",
@@ -12872,7 +12872,7 @@
       [
        {
         "type": "paragraph",
-        "text": "comment bỏ phần bắt đầu bằng ký tự được chỉ định; header=0 dùng hàng dữ liệu đầu còn lại làm tên cột. nrows chỉ đọc một số hàng, còn usecols chỉ chọn cột cần thiết. File không có tên cột có thể dùng header=None và names=[...]."
+        "text": "comment bỏ phần bắt đầu bằng ký tự được chỉ định; header=0 dùng hàng dữ liệu đầu còn lại làm tên cột. nrows chỉ đọc một số hàng, còn usecols chỉ chọn cột cần thiết. File không có tên cột có thể dùng `header=None` và names=[...]."
        },
        {
         "type": "code",
@@ -12931,7 +12931,7 @@
        },
        {
         "type": "paragraph",
-        "text": "index=False tránh ghi thêm cột số thứ tự khi index không phải dữ liệu nghiệp vụ. Sau khi đọc, vẫn cần kiểm tra shape, kiểu cột, ô thiếu và mã đơn; đọc được file chưa có nghĩa là đã hiểu đúng dữ liệu."
+        "text": "`index=False` tránh ghi thêm cột số thứ tự khi index không phải dữ liệu nghiệp vụ. Sau khi đọc, vẫn cần kiểm tra shape, kiểu cột, ô thiếu và mã đơn; đọc được file chưa có nghĩa là đã hiểu đúng dữ liệu."
        }
       ]
      ],
@@ -13362,7 +13362,7 @@
       [
        {
         "type": "paragraph",
-        "text": "as_index=False giữ store thành cột thông thường. size đếm số hàng của nhóm; count chỉ đếm ô không thiếu trong cột được chọn. Nếu khóa nhóm bị thiếu, mặc định nhóm đó bị bỏ; dropna=False giữ nó để bạn kiểm tra."
+        "text": "`as_index=False` giữ store thành cột thông thường. size đếm số hàng của nhóm; count chỉ đếm ô không thiếu trong cột được chọn. Nếu khóa nhóm bị thiếu, mặc định nhóm đó bị bỏ; `dropna=False` giữ nó để bạn kiểm tra."
        },
        {
         "type": "code",
@@ -14382,7 +14382,7 @@
       [
        {
         "type": "paragraph",
-        "text": "axis=0 là mặc định và nối theo hàng. ignore_index=True tạo nhãn hàng mới. Nó không bỏ đơn trùng: nếu file của một ngày bị đọc hai lần, các dòng vẫn lặp."
+        "text": "axis=0 là mặc định và nối theo hàng. `ignore_index=True` tạo nhãn hàng mới. Nó không bỏ đơn trùng: nếu file của một ngày bị đọc hai lần, các dòng vẫn lặp."
        },
        {
         "type": "code",
@@ -14918,7 +14918,7 @@
       [
        {
         "type": "paragraph",
-        "text": "crosstab đếm tổ hợp phân loại. normalize=\"index\" chia trong từng hàng: web có một đơn đã thanh toán trên hai đơn, nên tỷ lệ là 0.5. margins=True có thể thêm hàng và cột tổng."
+        "text": "crosstab đếm tổ hợp phân loại. normalize=\"index\" chia trong từng hàng: web có một đơn đã thanh toán trên hai đơn, nên tỷ lệ là 0.5. `margins=True` có thể thêm hàng và cột tổng."
        },
        {
         "type": "code",
@@ -16133,7 +16133,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Phép nhân cột xử lý các hàng cùng lúc và rõ hơn một vòng lặp Python; cách làm đó gọi là phép toán vector. where giữ giá trị khi điều kiện True, thay bằng giá trị thứ hai khi False. “Vector hóa” không có nghĩa mọi thao tác đều có cùng tốc độ; vẫn phải đo với dữ liệu thực."
+        "text": "Phép nhân cột xử lý các hàng cùng lúc và rõ hơn một vòng lặp Python; cách làm đó gọi là phép toán vector. where giữ giá trị khi điều kiện `True`, thay bằng giá trị thứ hai khi `False`. “Vector hóa” không có nghĩa mọi thao tác đều có cùng tốc độ; vẫn phải đo với dữ liệu thực."
        },
        {
         "type": "code",
@@ -16373,7 +16373,7 @@
       [
        {
         "type": "paragraph",
-        "text": "cut dùng các mốc bạn đặt; mặc định các khoảng mở trái, đóng phải, nên 10 thuộc nhóm đầu (0,10]. Các giá trị ngoài khoảng thành thiếu. Dùng include_lowest=True nếu cần nhận cả mốc thấp nhất."
+        "text": "cut dùng các mốc bạn đặt; mặc định các khoảng mở trái, đóng phải, nên 10 thuộc nhóm đầu (0,10]. Các giá trị ngoài khoảng thành thiếu. Dùng `include_lowest=True` nếu cần nhận cả mốc thấp nhất."
        },
        {
         "type": "code",
@@ -16383,7 +16383,7 @@
        },
        {
         "type": "paragraph",
-        "text": "qcut chọn ranh giới theo phân vị để số quan sát trong nhóm gần nhau khi dữ liệu cho phép; nhiều giá trị trùng có thể khiến không tạo đủ khoảng. observed=True chỉ báo cáo nhóm category thực sự có mặt. Ghi rõ observed giúp tránh phụ thuộc mặc định giữa các phiên bản."
+        "text": "qcut chọn ranh giới theo phân vị để số quan sát trong nhóm gần nhau khi dữ liệu cho phép; nhiều giá trị trùng có thể khiến không tạo đủ khoảng. `observed=True` chỉ báo cáo nhóm category thực sự có mặt. Ghi rõ observed giúp tránh phụ thuộc mặc định giữa các phiên bản."
        }
       ]
      ],
@@ -16869,7 +16869,7 @@
       [
        {
         "type": "paragraph",
-        "text": "deep=True tính cả phần bộ nhớ chứa các đối tượng chữ. Ở dãy chỉ có hai mã quầy lặp nhiều lần này, category dùng ít bộ nhớ hơn và giữ các giá trị. Kết quả cụ thể phụ thuộc dữ liệu, nên hãy đo thay vì mặc định mọi category đều có lợi."
+        "text": "`deep=True` tính cả phần bộ nhớ chứa các đối tượng chữ. Ở dãy chỉ có hai mã quầy lặp nhiều lần này, category dùng ít bộ nhớ hơn và giữ các giá trị. Kết quả cụ thể phụ thuộc dữ liệu, nên hãy đo thay vì mặc định mọi category đều có lợi."
        },
        {
         "type": "code",
@@ -19779,7 +19779,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Các khoảng thường lấy cận trái và bỏ cận phải; khoảng cuối lấy cả cận phải. Đổi bins có thể làm hình trông khác, nên cần kiểm tra vài cách chia khoảng thay vì chỉ giữ hình đẹp nhất. density=True chuyển chiều cao thành mật độ: tổng diện tích cột bằng 1, chứ tổng chiều cao không nhất thiết bằng 1."
+        "text": "Các khoảng thường lấy cận trái và bỏ cận phải; khoảng cuối lấy cả cận phải. Đổi bins có thể làm hình trông khác, nên cần kiểm tra vài cách chia khoảng thay vì chỉ giữ hình đẹp nhất. `density=True` chuyển chiều cao thành mật độ: tổng diện tích cột bằng 1, chứ tổng chiều cao không nhất thiết bằng 1."
        },
        {
         "type": "code",
@@ -21455,7 +21455,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Trục đã đặt đúng ở bài trước, giờ xếp nhiều hình của quán lên một trang. Bạn muốn so sánh lượng bán của hai cửa hàng trên cùng trang. Hai subplot đặt cạnh nhau giúp giảm số đường chồng lên một vùng vẽ. sharey=True giữ chung thang đứng để một đường cao hơn thật sự có nghĩa là lượng bán lớn hơn."
+        "text": "Trục đã đặt đúng ở bài trước, giờ xếp nhiều hình của quán lên một trang. Bạn muốn so sánh lượng bán của hai cửa hàng trên cùng trang. Hai subplot đặt cạnh nhau giúp giảm số đường chồng lên một vùng vẽ. `sharey=True` giữ chung thang đứng để một đường cao hơn thật sự có nghĩa là lượng bán lớn hơn."
        },
        {
         "type": "code",
@@ -22113,7 +22113,7 @@
       [
        {
         "type": "paragraph",
-        "text": "PNG phù hợp cho ảnh chèn nhanh, SVG giữ nét vector cho đường và chữ khi phóng to. transparent=True cho nền trong suốt; hãy kiểm tra lại màu chữ trên nền nơi hình sẽ được đặt. bbox_inches=\"tight\" có thể thay đổi kích thước pixel vì nó cắt theo nội dung, nên không dùng công thức inch nhân dpi để khẳng định kích thước sau cắt."
+        "text": "PNG phù hợp cho ảnh chèn nhanh, SVG giữ nét vector cho đường và chữ khi phóng to. `transparent=True` cho nền trong suốt; hãy kiểm tra lại màu chữ trên nền nơi hình sẽ được đặt. bbox_inches=\"tight\" có thể thay đổi kích thước pixel vì nó cắt theo nội dung, nên không dùng công thức inch nhân dpi để khẳng định kích thước sau cắt."
        },
        {
         "type": "code",
@@ -22996,7 +22996,7 @@
       [
        {
         "type": "paragraph",
-        "text": "lineplot thường tổng hợp các dòng có cùng giá trị x. Với hai lần đo ở mỗi ngày, đường mặc định mô tả trung bình chứ không phải nối từng dòng. Khi muốn xem từng cá nhân hoặc cửa hàng, dùng units cho đơn vị quan sát và estimator=None để không gộp."
+        "text": "lineplot thường tổng hợp các dòng có cùng giá trị x. Với hai lần đo ở mỗi ngày, đường mặc định mô tả trung bình chứ không phải nối từng dòng. Khi muốn xem từng cá nhân hoặc cửa hàng, dùng units cho đơn vị quan sát và `estimator=None` để không gộp."
        },
        {
         "type": "code",
@@ -23666,7 +23666,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn cần gửi một biểu đồ tương tác cho người khác mở khi không có mạng. write_html với include_plotlyjs=True nhúng mã JavaScript của Plotly vào file, nên không cần tải thư viện từ CDN. File lớn hơn nhưng người nhận có thể mở trực tiếp trong trình duyệt."
+        "text": "Bạn cần gửi một biểu đồ tương tác cho người khác mở khi không có mạng. write_html với `include_plotlyjs=True` nhúng mã JavaScript của Plotly vào file, nên không cần tải thư viện từ CDN. File lớn hơn nhưng người nhận có thể mở trực tiếp trong trình duyệt."
        },
        {
         "type": "code",
@@ -23677,7 +23677,7 @@
       [
        {
         "type": "paragraph",
-        "text": "include_plotlyjs=\"cdn\" giảm dung lượng nhưng cần mạng để tải thư viện, trừ khi trình duyệt đã có cache phù hợp. full_html=False tạo một đoạn nhúng, không phải cả trang. Các đoạn HTML cần được đặt vào trang có mã Plotly được nạp một lần; không giả định một đoạn nhúng sẽ tự mở giống một file hoàn chỉnh."
+        "text": "include_plotlyjs=\"cdn\" giảm dung lượng nhưng cần mạng để tải thư viện, trừ khi trình duyệt đã có cache phù hợp. `full_html=False` tạo một đoạn nhúng, không phải cả trang. Các đoạn HTML cần được đặt vào trang có mã Plotly được nạp một lần; không giả định một đoạn nhúng sẽ tự mở giống một file hoàn chỉnh."
        },
        {
         "type": "code",
@@ -27092,7 +27092,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`S` là chữ phải có; `\\d{3}` là ba chữ số; `\\b` đánh dấu ranh giới từ. Chữ r trước dấu nháy tạo raw string, giúp dấu gạch chéo được truyền đúng vào regex. `search` tìm khớp đầu tiên và trả Match; không thấy thì trả None."
+        "text": "`S` là chữ phải có; `\\d{3}` là ba chữ số; `\\b` đánh dấu ranh giới từ. Chữ r trước dấu nháy tạo raw string, giúp dấu gạch chéo được truyền đúng vào regex. `search` tìm khớp đầu tiên và trả Match; không thấy thì trả `None`."
        },
        {
         "type": "code",
@@ -28546,7 +28546,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`sorted` tạo danh sách mới theo quy tắc so sánh. Ở đây quy tắc là số cốc. `NotImplemented` cho biết method không xử lý loại object kia; nó khác việc tự nhận mọi trường hợp không biết là False."
+        "text": "`sorted` tạo danh sách mới theo quy tắc so sánh. Ở đây quy tắc là số cốc. `NotImplemented` cho biết method không xử lý loại object kia; nó khác việc tự nhận mọi trường hợp không biết là `False`."
        },
        {
         "type": "code",
@@ -31630,7 +31630,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Trong RAM, biến thường mất khi tiến trình (process) kết thúc. File đã ghi và đóng có thể được đọc ở lần chạy sau; lưu bền không có nghĩa file không thể bị xóa hoặc hỏng. Vòng đời thông thường là open → đọc hoặc ghi → close. Sau close, `f.closed` là True và gọi read/write trên handle đó gây ValueError."
+        "text": "Trong RAM, biến thường mất khi tiến trình (process) kết thúc. File đã ghi và đóng có thể được đọc ở lần chạy sau; lưu bền không có nghĩa file không thể bị xóa hoặc hỏng. Vòng đời thông thường là open → đọc hoặc ghi → close. Sau close, `f.closed` là `True` và gọi read/write trên handle đó gây ValueError."
        },
        {
         "type": "paragraph",
@@ -32342,7 +32342,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Symlink lưu liên kết tới một đường dẫn; nó không chứa bản sao dữ liệu đích. Xóa link không xóa target. Tạo symlink trên Windows có thể cần Developer Mode hoặc quyền phù hợp; nếu môi trường từ chối, đó là giới hạn lab, không phải kết quả False để học thuộc. Shell (chương trình nhận câu lệnh bạn gõ) review trong nguồn có ls để liệt kê, cat để đọc và grep để lọc dòng. Bạn có thể làm tác vụ tương đương bằng code Python theo dòng."
+        "text": "Symlink lưu liên kết tới một đường dẫn; nó không chứa bản sao dữ liệu đích. Xóa link không xóa target. Tạo symlink trên Windows có thể cần Developer Mode hoặc quyền phù hợp; nếu môi trường từ chối, đó là giới hạn lab, không phải kết quả `False` để học thuộc. Shell (chương trình nhận câu lệnh bạn gõ) review trong nguồn có ls để liệt kê, cat để đọc và grep để lọc dòng. Bạn có thể làm tác vụ tương đương bằng code Python theo dòng."
        },
        {
         "type": "paragraph",
@@ -35627,7 +35627,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Ở class RecipeLine trên, set_amount kiểm lượng rồi mới cập nhật self.amount. Mỗi lần đổi lượng cũng đi qua method này: nếu dữ liệu mới sai, lượng cũ vẫn còn. Kiểm kiểu trước khi gọi math.isfinite để không coi True là 1 gam; chỉ lưu số hữu hạn trong 0..50, sau đó mới floor một chữ số. Đây là một cách đóng gói quy tắc mà PW2/PW3 yêu cầu."
+        "text": "Ở class RecipeLine trên, set_amount kiểm lượng rồi mới cập nhật self.amount. Mỗi lần đổi lượng cũng đi qua method này: nếu dữ liệu mới sai, lượng cũ vẫn còn. Kiểm kiểu trước khi gọi math.isfinite để không coi `True` là 1 gam; chỉ lưu số hữu hạn trong 0..50, sau đó mới floor một chữ số. Đây là một cách đóng gói quy tắc mà PW2/PW3 yêu cầu."
        },
        {
         "type": "paragraph",
@@ -39068,7 +39068,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`check_output` trả output khi thành công; nó không trả mã thoát. Với mã lỗi, nó gây CalledProcessError. run có check=True cũng báo lỗi theo cách này."
+        "text": "`check_output` trả output khi thành công; nó không trả mã thoát. Với mã lỗi, nó gây CalledProcessError. run có `check=True` cũng báo lỗi theo cách này."
        },
        {
         "type": "paragraph",
@@ -39240,7 +39240,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Popen trả về sau khi khởi tạo, không chờ toàn bộ công việc xong như run. Với text=True, communicate nhận chuỗi; ở chế độ nhị phân, nó nhận bytes. communicate giúp gửi đầu vào, đọc đầu ra và chờ kết thúc mà không tự viết các lần đọc/ghi dễ làm đầy pipe."
+        "text": "Popen trả về sau khi khởi tạo, không chờ toàn bộ công việc xong như run. Với `text=True`, communicate nhận chuỗi; ở chế độ nhị phân, nó nhận bytes. communicate giúp gửi đầu vào, đọc đầu ra và chờ kết thúc mà không tự viết các lần đọc/ghi dễ làm đầy pipe."
        },
        {
         "type": "code",
@@ -40260,7 +40260,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Lock thông thường không cho thread đang giữ tự lấy lại lần nữa. Ví dụ dùng blocking=False để quan sát thất bại mà không treo. Nếu A giữ khóa X chờ Y trong khi B giữ Y chờ X, cả hai có thể deadlock. Dùng thứ tự lấy khóa nhất quán, thu nhỏ vùng tới hạn và tránh giữ khóa khi chờ lâu. CPython build có GIL dùng một khóa của interpreter, nhưng khóa đó không bảo vệ trọn quy tắc chuyển tiền hay cập nhật nhiều giá trị của ứng dụng. EX05 giải thích riêng mô hình GIL này."
+        "text": "Lock thông thường không cho thread đang giữ tự lấy lại lần nữa. Ví dụ dùng `blocking=False` để quan sát thất bại mà không treo. Nếu A giữ khóa X chờ Y trong khi B giữ Y chờ X, cả hai có thể deadlock. Dùng thứ tự lấy khóa nhất quán, thu nhỏ vùng tới hạn và tránh giữ khóa khi chờ lâu. CPython build có GIL dùng một khóa của interpreter, nhưng khóa đó không bảo vệ trọn quy tắc chuyển tiền hay cập nhật nhiều giá trị của ứng dụng. EX05 giải thích riêng mô hình GIL này."
        },
        {
         "type": "paragraph",
@@ -40932,7 +40932,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Parser giữ \"two words\" thành một argument rồi chia lệnh thành các stage. File projects/shell_lab.py đi kèm triển khai vòng nhập, argv, chuyển hướng hai phía và pipeline. Nó không gọi shell=True: bộ ký hiệu hỗ trợ được xử lý trực tiếp."
+        "text": "Parser giữ \"two words\" thành một argument rồi chia lệnh thành các stage. File projects/shell_lab.py đi kèm triển khai vòng nhập, argv, chuyển hướng hai phía và pipeline. Nó không gọi `shell=True`: bộ ký hiệu hỗ trợ được xử lý trực tiếp."
        },
        {
         "type": "paragraph",
@@ -42173,7 +42173,7 @@
       [
        {
         "type": "paragraph",
-        "text": "command=calculate truyền hàm. Viết calculate() sẽ chạy ngay và thường trả None, khiến nút không còn callback mong muốn. invoke ở ví dụ là cách gọi callback bằng code; nó chưa kiểm tra cú bấm chuột thật."
+        "text": "command=calculate truyền hàm. Viết calculate() sẽ chạy ngay và thường trả `None`, khiến nút không còn callback mong muốn. invoke ở ví dụ là cách gọi callback bằng code; nó chưa kiểm tra cú bấm chuột thật."
        },
        {
         "type": "code",
@@ -44408,7 +44408,7 @@
       [
        {
         "type": "paragraph",
-        "text": "dtype=None cho phép suy luận kiểu của từng field; encoding=\"utf-8\" giữ phần tên dưới dạng chuỗi. table[\"luong\"] chọn một field, khác với table[0] chọn bản ghi đầu tiên. Đừng mặc định shape có hai chiều chỉ vì nguồn có hai cột."
+        "text": "`dtype=None` cho phép suy luận kiểu của từng field; encoding=\"utf-8\" giữ phần tên dưới dạng chuỗi. table[\"luong\"] chọn một field, khác với table[0] chọn bản ghi đầu tiên. Đừng mặc định shape có hai chiều chỉ vì nguồn có hai cột."
        },
        {
         "type": "code",
@@ -46032,7 +46032,7 @@
       [
        {
         "type": "paragraph",
-        "text": "np.load đọc mảng đã lưu trong file NumPy, khác với đọc bảng text. matplotlib.cbook.get_sample_data tìm dữ liệu mẫu đi kèm bản Matplotlib. Ví dụ dưới trước hết lưu/nạp mảng của chính mình; sau đó dùng asfileobj=False để lấy đường dẫn mẫu topobathy.npz rồi mở bằng np.load. Archive này có các mảng topo, longitude và latitude. Tên bivariate_normal.npy trong slide cũ không có ở mọi phiên bản; nếu thiếu file mẫu, kiểm danh sách mẫu hoặc dùng mảng tự tạo thay vì cài lại thư viện cũ chỉ để giữ tên file."
+        "text": "np.load đọc mảng đã lưu trong file NumPy, khác với đọc bảng text. matplotlib.cbook.get_sample_data tìm dữ liệu mẫu đi kèm bản Matplotlib. Ví dụ dưới trước hết lưu/nạp mảng của chính mình; sau đó dùng `asfileobj=False` để lấy đường dẫn mẫu topobathy.npz rồi mở bằng np.load. Archive này có các mảng topo, longitude và latitude. Tên bivariate_normal.npy trong slide cũ không có ở mọi phiên bản; nếu thiếu file mẫu, kiểm danh sách mẫu hoặc dùng mảng tự tạo thay vì cài lại thư viện cũ chỉ để giữ tên file."
        },
        {
         "type": "code",
@@ -47383,7 +47383,7 @@
       [
        {
         "type": "paragraph",
-        "text": "replace=True cho phép cùng một đơn được chọn nhiều lần. replace=False không cho lặp một vị trí; lấy ba vị trí trong bảng ba đơn phải giữ đủ ba đơn, chỉ khác thứ tự. Bootstrap dùng mẫu có hoàn lại để xem một thống kê thay đổi thế nào khi lấy mẫu lại."
+        "text": "`replace=True` cho phép cùng một đơn được chọn nhiều lần. `replace=False` không cho lặp một vị trí; lấy ba vị trí trong bảng ba đơn phải giữ đủ ba đơn, chỉ khác thứ tự. Bootstrap dùng mẫu có hoàn lại để xem một thống kê thay đổi thế nào khi lấy mẫu lại."
        },
        {
         "type": "code",

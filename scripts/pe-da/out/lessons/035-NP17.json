@@ -70,7 +70,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Với điểm có trọng số, khi bỏ một điểm thiếu, bạn phải bỏ cả tín chỉ của môn đó bằng cùng một mask. `np.isnan(a)` đánh dấu ô thiếu; thêm `~` ở trước để đảo True/False, nên `~np.isnan(a)` đánh dấu các ô không thiếu. Ngoài ra, bỏ NaN không đồng nghĩa bỏ mọi giá trị vô hạn; đó là hai điều kiện kiểm tra khác nhau."
+      "text": "Với điểm có trọng số, khi bỏ một điểm thiếu, bạn phải bỏ cả tín chỉ của môn đó bằng cùng một mask. `np.isnan(a)` đánh dấu ô thiếu; thêm `~` ở trước để đảo `True`/`False`, nên `~np.isnan(a)` đánh dấu các ô không thiếu. Ngoài ra, bỏ NaN không đồng nghĩa bỏ mọi giá trị vô hạn; đó là hai điều kiện kiểm tra khác nhau."
      }
     ]
    ],

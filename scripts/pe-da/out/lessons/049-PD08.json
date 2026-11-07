@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`isna` nhận biết giá trị thiếu. Trung bình mặc định bỏ các ô thiếu, nên 21 được tính từ hai buổi có số thật. Dùng == None hoặc == NaN không phải cách tổng quát để tìm các ô này."
+      "text": "`isna` nhận biết giá trị thiếu. Trung bình mặc định bỏ các ô thiếu, nên 21 được tính từ hai buổi có số thật. Dùng == `None` hoặc == NaN không phải cách tổng quát để tìm các ô này."
      },
      {
       "type": "code",

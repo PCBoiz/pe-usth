@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Nhãn đã căn đúng rồi, giờ bạn chỉ muốn xem một phần các đơn của quán thay vì cả bảng, chẳng hạn các đơn lớn. Bạn cần xem các đơn từ 100 nghìn trở lên để kiểm tra chương trình khuyến mại. So sánh một cột với 100 tạo ra một dãy True/False; dãy này quyết định giữ hàng nào."
+      "text": "Nhãn đã căn đúng rồi, giờ bạn chỉ muốn xem một phần các đơn của quán thay vì cả bảng, chẳng hạn các đơn lớn. Bạn cần xem các đơn từ 100 nghìn trở lên để kiểm tra chương trình khuyến mại. So sánh một cột với 100 tạo ra một dãy `True`/`False`; dãy này quyết định giữ hàng nào."
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "True giữ hàng, False bỏ hàng khỏi kết quả lọc. Với nhiều điều kiện, dùng & cho “và”, | cho “hoặc”, rồi đặt từng phép so sánh trong ngoặc. Không dùng and/or để nối hai Series."
+      "text": "`True` giữ hàng, `False` bỏ hàng khỏi kết quả lọc. Với nhiều điều kiện, dùng & cho “và”, | cho “hoặc”, rồi đặt từng phép so sánh trong ngoặc. Không dùng and/or để nối hai Series."
      },
      {
       "type": "code",

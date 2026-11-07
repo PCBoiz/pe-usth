@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn cần gửi một biểu đồ tương tác cho người khác mở khi không có mạng. write_html với include_plotlyjs=True nhúng mã JavaScript của Plotly vào file, nên không cần tải thư viện từ CDN. File lớn hơn nhưng người nhận có thể mở trực tiếp trong trình duyệt."
+      "text": "Bạn cần gửi một biểu đồ tương tác cho người khác mở khi không có mạng. write_html với `include_plotlyjs=True` nhúng mã JavaScript của Plotly vào file, nên không cần tải thư viện từ CDN. File lớn hơn nhưng người nhận có thể mở trực tiếp trong trình duyệt."
      },
      {
       "type": "code",
@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "include_plotlyjs=\"cdn\" giảm dung lượng nhưng cần mạng để tải thư viện, trừ khi trình duyệt đã có cache phù hợp. full_html=False tạo một đoạn nhúng, không phải cả trang. Các đoạn HTML cần được đặt vào trang có mã Plotly được nạp một lần; không giả định một đoạn nhúng sẽ tự mở giống một file hoàn chỉnh."
+      "text": "include_plotlyjs=\"cdn\" giảm dung lượng nhưng cần mạng để tải thư viện, trừ khi trình duyệt đã có cache phù hợp. `full_html=False` tạo một đoạn nhúng, không phải cả trang. Các đoạn HTML cần được đặt vào trang có mã Plotly được nạp một lần; không giả định một đoạn nhúng sẽ tự mở giống một file hoàn chỉnh."
      },
      {
       "type": "code",

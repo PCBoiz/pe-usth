@@ -38,7 +38,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Array True/False dùng để đánh dấu các vị trí như vậy được gọi là mask. Mask giữ số vị trí và thứ tự giống dữ liệu mà bạn vừa so sánh."
+      "text": "Array `True`/`False` dùng để đánh dấu các vị trí như vậy được gọi là mask. Mask giữ số vị trí và thứ tự giống dữ liệu mà bạn vừa so sánh."
      },
      {
       "type": "paragraph",

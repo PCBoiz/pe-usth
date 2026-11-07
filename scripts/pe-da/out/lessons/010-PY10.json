@@ -62,7 +62,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Năm thao tác dưới đây hay dùng khi dọn một dãy đếm nháp. `remove(x)` xoá lần xuất hiện đầu tiên khớp `x`. `pop()` xoá và trả về phần tử cuối, còn `pop(index)` chọn vị trí cần lấy. `del` xoá theo vị trí hoặc theo lát cắt. `sort` sắp tại chỗ và `reverse` đảo tại chỗ; cả hai trả None chứ không trả list đã đổi."
+      "text": "Năm thao tác dưới đây hay dùng khi dọn một dãy đếm nháp. `remove(x)` xoá lần xuất hiện đầu tiên khớp `x`. `pop()` xoá và trả về phần tử cuối, còn `pop(index)` chọn vị trí cần lấy. `del` xoá theo vị trí hoặc theo lát cắt. `sort` sắp tại chỗ và `reverse` đảo tại chỗ; cả hai trả `None` chứ không trả list đã đổi."
      },
      {
       "type": "paragraph",

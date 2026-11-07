@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trục đã đặt đúng ở bài trước, giờ xếp nhiều hình của quán lên một trang. Bạn muốn so sánh lượng bán của hai cửa hàng trên cùng trang. Hai subplot đặt cạnh nhau giúp giảm số đường chồng lên một vùng vẽ. sharey=True giữ chung thang đứng để một đường cao hơn thật sự có nghĩa là lượng bán lớn hơn."
+      "text": "Trục đã đặt đúng ở bài trước, giờ xếp nhiều hình của quán lên một trang. Bạn muốn so sánh lượng bán của hai cửa hàng trên cùng trang. Hai subplot đặt cạnh nhau giúp giảm số đường chồng lên một vùng vẽ. `sharey=True` giữ chung thang đứng để một đường cao hơn thật sự có nghĩa là lượng bán lớn hơn."
      },
      {
       "type": "code",

@@ -55,7 +55,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`check_output` trả output khi thành công; nó không trả mã thoát. Với mã lỗi, nó gây CalledProcessError. run có check=True cũng báo lỗi theo cách này."
+      "text": "`check_output` trả output khi thành công; nó không trả mã thoát. Với mã lỗi, nó gây CalledProcessError. run có `check=True` cũng báo lỗi theo cách này."
      },
      {
       "type": "paragraph",

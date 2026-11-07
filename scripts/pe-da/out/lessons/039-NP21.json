@@ -70,7 +70,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ô sau dấu phẩy ở dòng `1,` bị thiếu, nên được đọc thành NaN với cách dùng mặc định ở đây. `np.isnan(a)` đánh dấu ô thiếu; `.sum()` đếm số ô được đánh dấu vì True được tính là 1 và False là 0."
+      "text": "Ô sau dấu phẩy ở dòng `1,` bị thiếu, nên được đọc thành NaN với cách dùng mặc định ở đây. `np.isnan(a)` đánh dấu ô thiếu; `.sum()` đếm số ô được đánh dấu vì `True` được tính là 1 và `False` là 0."
      },
      {
       "type": "paragraph",

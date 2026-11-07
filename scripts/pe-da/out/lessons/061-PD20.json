@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "crosstab đếm tổ hợp phân loại. normalize=\"index\" chia trong từng hàng: web có một đơn đã thanh toán trên hai đơn, nên tỷ lệ là 0.5. margins=True có thể thêm hàng và cột tổng."
+      "text": "crosstab đếm tổ hợp phân loại. normalize=\"index\" chia trong từng hàng: web có một đơn đã thanh toán trên hai đơn, nên tỷ lệ là 0.5. `margins=True` có thể thêm hàng và cột tổng."
      },
      {
       "type": "code",

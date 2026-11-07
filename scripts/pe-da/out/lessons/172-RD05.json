@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "replace=True cho phép cùng một đơn được chọn nhiều lần. replace=False không cho lặp một vị trí; lấy ba vị trí trong bảng ba đơn phải giữ đủ ba đơn, chỉ khác thứ tự. Bootstrap dùng mẫu có hoàn lại để xem một thống kê thay đổi thế nào khi lấy mẫu lại."
+      "text": "`replace=True` cho phép cùng một đơn được chọn nhiều lần. `replace=False` không cho lặp một vị trí; lấy ba vị trí trong bảng ba đơn phải giữ đủ ba đơn, chỉ khác thứ tự. Bootstrap dùng mẫu có hoàn lại để xem một thống kê thay đổi thế nào khi lấy mẫu lại."
      },
      {
       "type": "code",

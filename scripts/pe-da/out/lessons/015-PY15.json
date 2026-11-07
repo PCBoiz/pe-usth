@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`while` kiểm điều kiện trước mỗi lượt. Dòng `luot += 1` là thứ làm điều kiện cuối cùng thành False, nên vòng dừng sau lượt thứ ba. Nếu bạn quên đổi trạng thái mà điều kiện luôn đúng, chương trình lặp mãi và máy pha không bao giờ được nghỉ."
+      "text": "`while` kiểm điều kiện trước mỗi lượt. Dòng `luot += 1` là thứ làm điều kiện cuối cùng thành `False`, nên vòng dừng sau lượt thứ ba. Nếu bạn quên đổi trạng thái mà điều kiện luôn đúng, chương trình lặp mãi và máy pha không bao giờ được nghỉ."
      },
      {
       "type": "code",

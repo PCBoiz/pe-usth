@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`S` là chữ phải có; `\\d{3}` là ba chữ số; `\\b` đánh dấu ranh giới từ. Chữ r trước dấu nháy tạo raw string, giúp dấu gạch chéo được truyền đúng vào regex. `search` tìm khớp đầu tiên và trả Match; không thấy thì trả None."
+      "text": "`S` là chữ phải có; `\\d{3}` là ba chữ số; `\\b` đánh dấu ranh giới từ. Chữ r trước dấu nháy tạo raw string, giúp dấu gạch chéo được truyền đúng vào regex. `search` tìm khớp đầu tiên và trả Match; không thấy thì trả `None`."
      },
      {
       "type": "code",

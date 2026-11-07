@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Mã đơn của quán cũng là một chuỗi, nên cùng mấy phép đọc đó áp được. Trong `ma[start:stop:step]`, điểm dừng không được lấy: `ma[1:5:2]` lấy chỉ số 1 và 3, nên được `\"F3\"`. Bước -1 đọc ngược cả chuỗi. `in` kiểm có chuỗi con, `not in` kiểm không có. Phép kiểm này phân biệt hoa thường, nên `\"CF\" in ma` là True còn `\"cf\" in ma` là False."
+      "text": "Mã đơn của quán cũng là một chuỗi, nên cùng mấy phép đọc đó áp được. Trong `ma[start:stop:step]`, điểm dừng không được lấy: `ma[1:5:2]` lấy chỉ số 1 và 3, nên được `\"F3\"`. Bước -1 đọc ngược cả chuỗi. `in` kiểm có chuỗi con, `not in` kiểm không có. Phép kiểm này phân biệt hoa thường, nên `\"CF\" in ma` là `True` còn `\"cf\" in ma` là `False`."
      },
      {
       "type": "code",

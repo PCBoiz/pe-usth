@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "axis=0 là mặc định và nối theo hàng. ignore_index=True tạo nhãn hàng mới. Nó không bỏ đơn trùng: nếu file của một ngày bị đọc hai lần, các dòng vẫn lặp."
+      "text": "axis=0 là mặc định và nối theo hàng. `ignore_index=True` tạo nhãn hàng mới. Nó không bỏ đơn trùng: nếu file của một ngày bị đọc hai lần, các dòng vẫn lặp."
      },
      {
       "type": "code",

@@ -83,13 +83,13 @@ học nó.
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **143 bài tập được chấm / 480 ca**, 2 440 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 154 bài, 420 đoạn code, **0 hỏng**, **0 cảnh báo**, ~32 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 143 bài, **480 ca đạt**, 773 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, **pha 4: 2 372 ca trượt / 0 ca im lặng / 7 nhánh phản hồi**, ~12 s |
-| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **98 lỗi · 649 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 31 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 98 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
+| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **97 lỗi · 596 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 31 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 97 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 359 khối đủ điều kiện** (303 bỏ qua — bảng từng ghi 356/300, đã CŨ từ trước 04/11: dựng lại từ HEAD cũng ra 359/303, và `check-moc-nen` không đối chiếu hàng này; phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **17 mục, 14 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **14 CSS module trong `src/`** |
-| Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 152/179 khớp, 27 bài đã đổi sau lần nạp cuối** — VZ24, SY24, SY26, EX01, EX08 từ `80dee65` (mở khoá SY24 + `goi_can_tai` quét mã bài đọc), PY01 (bài tập đầu tiên của khoá), SY11 (math.floor), RC01 (đếm process/thread) và GU12 (trung bình có trọng số) cùng 04/11, CT03 + GU01 + CT01 + CT15 + PY09 + SY18 (câu nhồi mệnh đề thành BẢNG / bọc backtick) 07/11, và SY05 + SY07 + SY09 + SY10 + SY23 + SY28 + CT09 + CT10 + GU06 + EX05 + EX08 (L11: thôi gọi cùng một thứ bằng hai tên) cùng 07/11, cộng PD07 + CT11 (L4/L5/L6: bỏ danh-từ-hoá, sao phỏng, từ cấm hành chính) cùng 07/11; đỏ cho tới khi chủ dự án nạp. Biên nhận 03/11/2026 18:48 UTC. Hàng này từng ghi "179/179, 0 lỗi" suốt lúc cổng đỏ; nay `check-moc-nen` đối chiếu nó — nạp xong thì SỬA số ở đây, không thì cổng đó đỏ |
+| Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 118/179 khớp, 61 bài đã đổi sau lần nạp cuối** — đợt 04/11 (mở khoá SY24, `goi_can_tai` quét mã bài đọc, bài tập PY01, math.floor SY11, đếm process RC01, trung bình có trọng số GU12) cộng đợt 07/11 (câu nhồi mệnh đề thành BẢNG · L11 thôi gọi một thứ bằng hai tên · L4/L5/L6 bỏ danh-từ-hoá và từ cấm · §4-A bọc backtick 54 hằng Python). Danh sách mã in ra ở đầu ra của cổng, KHÔNG liệt kê lại ở đây — một danh sách 61 mã trong bảng là thứ sẽ trôi. Biên nhận 03/11/2026 18:48 UTC; đỏ cho tới khi chủ dự án nạp. Nạp xong thì SỬA số ở đây, không thì `check-moc-nen` đỏ |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
 | Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **30 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
@@ -3033,6 +3033,49 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   ×36 · `True` ×25 · `False` ×21 · `Figure` ×18 · `tuple` ×12…), và chúng vẫn đang thổi mật
   độ L8 lên — bọc backtick sẽ hạ cả §4-A lẫn L8, vì backtick bị thay bằng `◆` trước khi
   quét. Đó là việc NỘI DUNG, chưa làm.
+
+- **BỌC BACKTICK 54 HẰNG PYTHON — và nó làm TB BẤT KHẢ, vì TB đòi đúng cái §4-A cấm.**
+  §4-A còn 228 cảnh báo / 31 định danh. Làm đúng lời tự dặn vòng trước ("in ngữ cảnh trước
+  khi bọc hàng loạt, đừng sửa mù"): in **toàn bộ 54 ngữ cảnh** của `True`/`False`/`None` và
+  **không một chỗ nào** là chữ "none"/"true" tiếng Anh dùng như từ thường — tất cả là hằng
+  Python. Đó là lý do chọn đúng cụm này: nó không có một phán xét nào.
+  **HAI HÌNH DẠNG, phải phân biệt:** đối số từ khoá (`ignore_index=True`, `dropna=False`,
+  `header=None`, 23 cụm) thì bọc CẢ CỤM vì tên đối số cũng là code đứng trần; hằng đứng một
+  mình ("cả hai trả None", "True được tính là 1 và False là 0") thì bọc riêng. Phép biến đổi
+  đi theo từng khoảng NGOÀI backtick và `assert` hai bất biến sau mỗi đoạn: số backtick CHẴN
+  và không có `` `` `` kề nhau.
+  **TB ĐỎ 3, và đó là một luật tự nói ngược một luật khác — lần thứ ba trong bộ này.**
+  Bọc xong thì ba hằng không còn xuất hiện TRẦN ở đâu, nên TB báo *"khai `baiDauTien`=PY04
+  nhưng KHÔNG xuất hiện ở đâu trong corpus (ngoài backtick)"*. Tức TB **đòi một định danh
+  code phải đứng trần ở đâu đó**, đúng thứ §4-A tồn tại để xoá — và yêu cầu đó thành BẤT KHẢ
+  chính vào lúc §4-A được thoả hoàn toàn.
+  **Phép sửa, và phép đo chọn nó chứ không phải khẩu vị:** cho nhóm A tính lần-đầu trên văn
+  bản RAW (còn backtick), nhóm B/C giữ nguyên phần TRẦN. Đo trước khi sửa: chuyển sang raw
+  thì **chỉ 3 mục đổi giá trị** (`print` PY03→PY01 · `float` PY05→PY04 · `Thread` CT11→CT10)
+  và **ba hằng vừa bọc GIỮ NGUYÊN giá trị cũ** (PY04/PY04/PY10) — một phép sửa mà các giá
+  trị đang có tự khớp lại là dấu hiệu ngữ nghĩa đó đúng.
+  **Vì sao KHÔNG làm ngược (cho cả B/C đọc raw):** `baiDauTien` của nhóm B/C phải là lần đầu
+  ĐỨNG TRẦN, vì đó mới là chỗ L10 đòi chú giải và L11/L13 miễn khuôn chú giải — một thuật
+  ngữ nằm trong backtick thì không ai đi đòi chú giải cho nó. Ablate chứng minh phép chia
+  theo nhóm CÓ TẢI: cho cả B/C đọc raw → **5 lỗi TB**, đúng tên `index` (NP02 → PY10),
+  `object` (PY04 → PY03), `value` (PY14 → PY04).
+  **`Thread` đổi giá trị LẦN THỨ HAI trong hai vòng, và lần này nó đúng vì lý do đúng:**
+  vòng trước sửa PY17 → CT11 dưới luật "chỉ đếm phần trần"; nay là CT10 dưới luật đúng. Hai
+  lần đổi một con số trong hai vòng là dấu hiệu luật tính nó còn đang sai, không phải dấu
+  hiệu con số khó.
+  **SỐ ĐÃ ĐO:** §4-A **228 → 176 cảnh báo** (−52) · L8 lỗi **31 → 30** · L2 cảnh báo 16 → 15
+  · tổng khoá 98 → **97 lỗi**, 649 → **596 cảnh báo** (−53). Lợi kép đúng như dự đoán: bọc
+  backtick vừa hạ §4-A vừa hạ mật độ L8, vì backtick bị thay bằng `◆` TRƯỚC khi quét.
+  Ablate 5 chiều: trả TB về chỉ-đọc-phần-trần cho nhóm A → **6 lỗi TB** (3 "không xuất hiện"
+  + 3 lệch giá trị) · cho cả B/C đọc raw → **5 lỗi TB** · gieo hằng `True` đứng trần → §4-A
+  **1** (còn răng) · nguyên bản → 0 · `check.py --strict` 0 lỗi 0 cảnh báo.
+  **GIÁ PHẢI TRẢ, và nó lớn:** bài chờ nạp DB **27 → 61**. Hàng "Đã nạp DB chưa" nay KHÔNG
+  liệt kê mã bài nữa — một danh sách 61 mã trong bảng là thứ sẽ trôi, và cổng đã in đúng
+  danh sách đó mỗi lần chạy.
+  **CÒN LẠI của §4-A: 176 cảnh báo / 28 định danh**, dẫn đầu `list` ×29 · `tuple` ×13 ·
+  `bytes` ×11 · `DataFrame` ×11 · `Figure` ×11. Cụm `list`/`tuple`/`dict`/`set`/`bytes`/
+  `int`/`float`/`str` là TÊN KIỂU Python nên cũng không có phán xét nào — ứng viên rõ cho
+  lát sau, và mỗi lát sẽ lại đẩy số bài chờ nạp lên.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

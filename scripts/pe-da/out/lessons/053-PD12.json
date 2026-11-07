@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "comment bỏ phần bắt đầu bằng ký tự được chỉ định; header=0 dùng hàng dữ liệu đầu còn lại làm tên cột. nrows chỉ đọc một số hàng, còn usecols chỉ chọn cột cần thiết. File không có tên cột có thể dùng header=None và names=[...]."
+      "text": "comment bỏ phần bắt đầu bằng ký tự được chỉ định; header=0 dùng hàng dữ liệu đầu còn lại làm tên cột. nrows chỉ đọc một số hàng, còn usecols chỉ chọn cột cần thiết. File không có tên cột có thể dùng `header=None` và names=[...]."
      },
      {
       "type": "code",
@@ -105,7 +105,7 @@
      },
      {
       "type": "paragraph",
-      "text": "index=False tránh ghi thêm cột số thứ tự khi index không phải dữ liệu nghiệp vụ. Sau khi đọc, vẫn cần kiểm tra shape, kiểu cột, ô thiếu và mã đơn; đọc được file chưa có nghĩa là đã hiểu đúng dữ liệu."
+      "text": "`index=False` tránh ghi thêm cột số thứ tự khi index không phải dữ liệu nghiệp vụ. Sau khi đọc, vẫn cần kiểm tra shape, kiểu cột, ô thiếu và mã đơn; đọc được file chưa có nghĩa là đã hiểu đúng dữ liệu."
      }
     ]
    ],

@@ -54,7 +54,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Trong phép kiểm tra, `(a >= 1) & (a <= 6)` tạo mask cho các số nằm trong khoảng hợp lệ. `.all()` trả True nếu mọi vị trí trong mask đều là True."
+      "text": "Trong phép kiểm tra, `(a >= 1) & (a <= 6)` tạo mask cho các số nằm trong khoảng hợp lệ. `.all()` trả `True` nếu mọi vị trí trong mask đều là `True`."
      },
      {
       "type": "paragraph",

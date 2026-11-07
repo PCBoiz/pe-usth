@@ -883,7 +883,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Ở class RecipeLine trên, set_amount kiểm lượng rồi mới cập nhật self.amount. Mỗi lần đổi lượng cũng đi qua method này: nếu dữ liệu mới sai, lượng cũ vẫn còn. Kiểm kiểu trước khi gọi math.isfinite để không coi True là 1 gam; chỉ lưu số hữu hạn trong 0..50, sau đó mới floor một chữ số. Đây là một cách đóng gói quy tắc mà PW2/PW3 yêu cầu."
+      "text": "Ở class RecipeLine trên, set_amount kiểm lượng rồi mới cập nhật self.amount. Mỗi lần đổi lượng cũng đi qua method này: nếu dữ liệu mới sai, lượng cũ vẫn còn. Kiểm kiểu trước khi gọi math.isfinite để không coi `True` là 1 gam; chỉ lưu số hữu hạn trong 0..50, sau đó mới floor một chữ số. Đây là một cách đóng gói quy tắc mà PW2/PW3 yêu cầu."
      },
      {
       "type": "paragraph",

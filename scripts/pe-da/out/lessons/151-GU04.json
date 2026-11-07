@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "command=calculate truyền hàm. Viết calculate() sẽ chạy ngay và thường trả None, khiến nút không còn callback mong muốn. invoke ở ví dụ là cách gọi callback bằng code; nó chưa kiểm tra cú bấm chuột thật."
+      "text": "command=calculate truyền hàm. Viết calculate() sẽ chạy ngay và thường trả `None`, khiến nút không còn callback mong muốn. invoke ở ví dụ là cách gọi callback bằng code; nó chưa kiểm tra cú bấm chuột thật."
      },
      {
       "type": "code",

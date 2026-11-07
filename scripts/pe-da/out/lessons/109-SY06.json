@@ -454,7 +454,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`sorted` tạo danh sách mới theo quy tắc so sánh. Ở đây quy tắc là số cốc. `NotImplemented` cho biết method không xử lý loại object kia; nó khác việc tự nhận mọi trường hợp không biết là False."
+      "text": "`sorted` tạo danh sách mới theo quy tắc so sánh. Ở đây quy tắc là số cốc. `NotImplemented` cho biết method không xử lý loại object kia; nó khác việc tự nhận mọi trường hợp không biết là `False`."
      },
      {
       "type": "code",

@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "deep=True tính cả phần bộ nhớ chứa các đối tượng chữ. Ở dãy chỉ có hai mã quầy lặp nhiều lần này, category dùng ít bộ nhớ hơn và giữ các giá trị. Kết quả cụ thể phụ thuộc dữ liệu, nên hãy đo thay vì mặc định mọi category đều có lợi."
+      "text": "`deep=True` tính cả phần bộ nhớ chứa các đối tượng chữ. Ở dãy chỉ có hai mã quầy lặp nhiều lần này, category dùng ít bộ nhớ hơn và giữ các giá trị. Kết quả cụ thể phụ thuộc dữ liệu, nên hãy đo thay vì mặc định mọi category đều có lợi."
      },
      {
       "type": "code",

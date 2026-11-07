@@ -39,7 +39,7 @@
     [
      {
       "type": "paragraph",
-      "text": "PNG phù hợp cho ảnh chèn nhanh, SVG giữ nét vector cho đường và chữ khi phóng to. transparent=True cho nền trong suốt; hãy kiểm tra lại màu chữ trên nền nơi hình sẽ được đặt. bbox_inches=\"tight\" có thể thay đổi kích thước pixel vì nó cắt theo nội dung, nên không dùng công thức inch nhân dpi để khẳng định kích thước sau cắt."
+      "text": "PNG phù hợp cho ảnh chèn nhanh, SVG giữ nét vector cho đường và chữ khi phóng to. `transparent=True` cho nền trong suốt; hãy kiểm tra lại màu chữ trên nền nơi hình sẽ được đặt. bbox_inches=\"tight\" có thể thay đổi kích thước pixel vì nó cắt theo nội dung, nên không dùng công thức inch nhân dpi để khẳng định kích thước sau cắt."
      },
      {
       "type": "code",

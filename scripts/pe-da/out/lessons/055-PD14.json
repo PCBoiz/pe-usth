@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "as_index=False giữ store thành cột thông thường. size đếm số hàng của nhóm; count chỉ đếm ô không thiếu trong cột được chọn. Nếu khóa nhóm bị thiếu, mặc định nhóm đó bị bỏ; dropna=False giữ nó để bạn kiểm tra."
+      "text": "`as_index=False` giữ store thành cột thông thường. size đếm số hàng của nhóm; count chỉ đếm ô không thiếu trong cột được chọn. Nếu khóa nhóm bị thiếu, mặc định nhóm đó bị bỏ; `dropna=False` giữ nó để bạn kiểm tra."
      },
      {
       "type": "code",

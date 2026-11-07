@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "dtype=None cho phép suy luận kiểu của từng field; encoding=\"utf-8\" giữ phần tên dưới dạng chuỗi. table[\"luong\"] chọn một field, khác với table[0] chọn bản ghi đầu tiên. Đừng mặc định shape có hai chiều chỉ vì nguồn có hai cột."
+      "text": "`dtype=None` cho phép suy luận kiểu của từng field; encoding=\"utf-8\" giữ phần tên dưới dạng chuỗi. table[\"luong\"] chọn một field, khác với table[0] chọn bản ghi đầu tiên. Đừng mặc định shape có hai chiều chỉ vì nguồn có hai cột."
      },
      {
       "type": "code",

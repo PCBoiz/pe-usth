@@ -62,7 +62,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bốn phép kiểm quan hệ nói về hai nhóm chứ không về một món. `da_ban.issubset(menu)` hay `da_ban <= menu` hỏi mọi món đã bán có nằm trong bảng giá không — nếu False thì ai đó đã bán một món ngoài bảng. `menu.issuperset(da_ban)` hay `menu >= da_ban` hỏi điều ngược lại. `isdisjoint` hỏi hai nhóm có món chung nào không. Còn `x in da_ban` hỏi về đúng một thành viên."
+      "text": "Bốn phép kiểm quan hệ nói về hai nhóm chứ không về một món. `da_ban.issubset(menu)` hay `da_ban <= menu` hỏi mọi món đã bán có nằm trong bảng giá không — nếu `False` thì ai đó đã bán một món ngoài bảng. `menu.issuperset(da_ban)` hay `menu >= da_ban` hỏi điều ngược lại. `isdisjoint` hỏi hai nhóm có món chung nào không. Còn `x in da_ban` hỏi về đúng một thành viên."
      },
      {
       "type": "paragraph",

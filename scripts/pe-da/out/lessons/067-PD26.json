@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "cut dùng các mốc bạn đặt; mặc định các khoảng mở trái, đóng phải, nên 10 thuộc nhóm đầu (0,10]. Các giá trị ngoài khoảng thành thiếu. Dùng include_lowest=True nếu cần nhận cả mốc thấp nhất."
+      "text": "cut dùng các mốc bạn đặt; mặc định các khoảng mở trái, đóng phải, nên 10 thuộc nhóm đầu (0,10]. Các giá trị ngoài khoảng thành thiếu. Dùng `include_lowest=True` nếu cần nhận cả mốc thấp nhất."
      },
      {
       "type": "code",
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "qcut chọn ranh giới theo phân vị để số quan sát trong nhóm gần nhau khi dữ liệu cho phép; nhiều giá trị trùng có thể khiến không tạo đủ khoảng. observed=True chỉ báo cáo nhóm category thực sự có mặt. Ghi rõ observed giúp tránh phụ thuộc mặc định giữa các phiên bản."
+      "text": "qcut chọn ranh giới theo phân vị để số quan sát trong nhóm gần nhau khi dữ liệu cho phép; nhiều giá trị trùng có thể khiến không tạo đủ khoảng. `observed=True` chỉ báo cáo nhóm category thực sự có mặt. Ghi rõ observed giúp tránh phụ thuộc mặc định giữa các phiên bản."
      }
     ]
    ],

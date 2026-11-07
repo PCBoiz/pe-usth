@@ -17,7 +17,7 @@
       "thuatNgu": "print",
       "nhom": "A",
       "nguCanh": "ham-dung-san",
-      "baiDauTien": "PY03"
+      "baiDauTien": "PY01"
     },
     {
       "thuatNgu": "list",
@@ -65,7 +65,7 @@
       "thuatNgu": "float",
       "nhom": "A",
       "nguCanh": "kieu-python",
-      "baiDauTien": "PY05"
+      "baiDauTien": "PY04"
     },
     {
       "thuatNgu": "str",
@@ -217,7 +217,7 @@
       "thuatNgu": "Thread",
       "nhom": "A",
       "nguCanh": "lop-threading",
-      "baiDauTien": "CT11"
+      "baiDauTien": "CT10"
     },
     {
       "thuatNgu": "Popen",

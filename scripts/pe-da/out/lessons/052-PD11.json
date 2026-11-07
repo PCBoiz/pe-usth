@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "ascending=False xếp giảm dần; nlargest chỉ lấy một số hàng lớn nhất. Nếu cần sắp xếp theo nhãn index thay vì giá trị cột, dùng sort_index. Với cột phân loại, đếm số lần xuất hiện thường hữu ích hơn sắp xếp."
+      "text": "`ascending=False` xếp giảm dần; nlargest chỉ lấy một số hàng lớn nhất. Nếu cần sắp xếp theo nhãn index thay vì giá trị cột, dùng sort_index. Với cột phân loại, đếm số lần xuất hiện thường hữu ích hơn sắp xếp."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "value_counts mặc định bỏ ô thiếu; thêm dropna=False nếu cần đếm cả chúng. count đếm giá trị không thiếu, còn size đếm tất cả phần tử. Với cột số, describe cho các thống kê như count, mean, std, min, các tứ phân vị và max."
+      "text": "value_counts mặc định bỏ ô thiếu; thêm `dropna=False` nếu cần đếm cả chúng. count đếm giá trị không thiếu, còn size đếm tất cả phần tử. Với cột số, describe cho các thống kê như count, mean, std, min, các tứ phân vị và max."
      },
      {
       "type": "code",

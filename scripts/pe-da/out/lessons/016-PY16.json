@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một hàm chỉ `print` thì không trả lại con số vừa hiện. Nếu không `return` một giá trị, kết quả lời gọi là None, nên `result` ở đây không cộng được vào doanh thu ngày. Muốn đưa kết quả sang bước sau, dùng `return`."
+      "text": "Một hàm chỉ `print` thì không trả lại con số vừa hiện. Nếu không `return` một giá trị, kết quả lời gọi là `None`, nên `result` ở đây không cộng được vào doanh thu ngày. Muốn đưa kết quả sang bước sau, dùng `return`."
      },
      {
       "type": "code",

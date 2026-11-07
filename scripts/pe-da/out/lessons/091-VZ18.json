@@ -38,7 +38,7 @@
     [
      {
       "type": "paragraph",
-      "text": "lineplot thường tổng hợp các dòng có cùng giá trị x. Với hai lần đo ở mỗi ngày, đường mặc định mô tả trung bình chứ không phải nối từng dòng. Khi muốn xem từng cá nhân hoặc cửa hàng, dùng units cho đơn vị quan sát và estimator=None để không gộp."
+      "text": "lineplot thường tổng hợp các dòng có cùng giá trị x. Với hai lần đo ở mỗi ngày, đường mặc định mô tả trung bình chứ không phải nối từng dòng. Khi muốn xem từng cá nhân hoặc cửa hàng, dùng units cho đơn vị quan sát và `estimator=None` để không gộp."
      },
      {
       "type": "code",

@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bốn kiểu dữ liệu sau đủ cho sổ của quán lúc này. `int` là số nguyên, dùng cho số cốc. `float` là số thực, dùng cho khối lượng cà phê đã xay. `str` là chuỗi, dùng cho tên món. `bool` chỉ có True hoặc False, dùng cho câu hỏi kiểu đơn đã thanh toán hay chưa."
+      "text": "Bốn kiểu dữ liệu sau đủ cho sổ của quán lúc này. `int` là số nguyên, dùng cho số cốc. `float` là số thực, dùng cho khối lượng cà phê đã xay. `str` là chuỗi, dùng cho tên món. `bool` chỉ có `True` hoặc `False`, dùng cho câu hỏi kiểu đơn đã thanh toán hay chưa."
      },
      {
       "type": "paragraph",

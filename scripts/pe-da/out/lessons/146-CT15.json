@@ -81,7 +81,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Parser giữ \"two words\" thành một argument rồi chia lệnh thành các stage. File projects/shell_lab.py đi kèm triển khai vòng nhập, argv, chuyển hướng hai phía và pipeline. Nó không gọi shell=True: bộ ký hiệu hỗ trợ được xử lý trực tiếp."
+      "text": "Parser giữ \"two words\" thành một argument rồi chia lệnh thành các stage. File projects/shell_lab.py đi kèm triển khai vòng nhập, argv, chuyển hướng hai phía và pipeline. Nó không gọi `shell=True`: bộ ký hiệu hỗ trợ được xử lý trực tiếp."
      },
      {
       "type": "paragraph",

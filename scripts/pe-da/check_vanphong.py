@@ -355,19 +355,32 @@ def kiem_termbank(bank: list[Muc], bai: list[dict]) -> None:
         if n > 1:
             loi('TB', f'{khoa[0]}/{khoa[1]}: {n} mục cùng khoá (thuật ngữ, ngữ cảnh)')
 
+    # NHÓM A đọc RAW, hai nhóm kia đọc bản đã bỏ backtick — và đó không phải
+    # tiện tay. `baiDauTien` của nhóm B/C phải là lần đầu ĐỨNG TRẦN, vì đó mới
+    # là chỗ L10/L11/L13 cần (một thuật ngữ nằm trong backtick thì không ai đi
+    # đòi chú giải cho nó). Nhưng chỗ ĐÚNG của nhóm A LÀ trong backtick, nên
+    # tính lần-đầu chỉ trên phần trần làm bất biến này ĐÒI đúng cái §4-A CẤM —
+    # và nó thành bất khả đúng vào lúc §4-A được thoả hoàn toàn. Đo được: vừa
+    # bọc backtick cho 54 hằng `True`/`False`/`None` là TB đỏ 3 lỗi "KHÔNG xuất
+    # hiện ở đâu trong corpus". Đổi sang tính cả trong backtick thì chỉ 3 mục
+    # phải sửa giá trị (print PY03→PY01, float PY05→PY04, Thread CT11→CT10) và
+    # ba hằng vừa bọc GIỮ NGUYÊN giá trị cũ — dấu hiệu ngữ nghĩa này mới đúng.
     thuc = {}
     for l in bai:
-        for d in doan_cua(l):
-            for m in bank:
-                if m.khoa in thuc or not m.trong_bai(l['id']):
-                    continue
-                if m.re_tn.search(d):
-                    thuc[m.khoa] = l['id']
+        tho = [k['text'] for k in (l.get('reading') or [])
+               if k.get('type') == 'paragraph' and (k.get('text') or '').strip()]
+        for m in bank:
+            if m.khoa in thuc or not m.trong_bai(l['id']):
+                continue
+            nguon = tho if m.nhom == 'A' else doan_cua(l)
+            if any(m.re_tn.search(d) for d in nguon):
+                thuc[m.khoa] = l['id']
     for m in bank:
         that = thuc.get(m.khoa)
         if that is None:
             loi('TB', f'{m.tn}/{m.nguc}: khai `baiDauTien`={m.bai_dau} nhưng '
-                      'KHÔNG xuất hiện ở đâu trong corpus (ngoài backtick)')
+                      f'KHÔNG xuất hiện ở đâu trong corpus'
+                      + ('' if m.nhom == 'A' else ' (ngoài backtick)'))
         elif that != m.bai_dau:
             loi('TB', f'{m.tn}/{m.nguc}: `baiDauTien`={m.bai_dau} nhưng corpus '
                       f'dùng lần đầu ở {that}')
