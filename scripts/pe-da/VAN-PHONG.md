@@ -457,14 +457,14 @@ Format phải đồng nhất `N lỗi · N cb` cho MỌI hàng; bản cũ viết
 | L15 | Đoạn mở bài phải nối với bài trước | CẢNH BÁO | 0 lỗi · 0 cb |
 | TB | Bất biến termbank: `baiDauTien` khớp corpus | LỖI | 0 lỗi · 0 cb |
 | TL | Số đo trong đặc tả phải khớp số đo thật (§1 · §2 · §8 · §12 · bảng này) | LỖI | 0 lỗi · 0 cb |
-| §4-A | Định danh nhóm A phải nằm trong backtick | CẢNH BÁO | 0 lỗi · 39 cb |
+| §4-A | Định danh nhóm A phải nằm trong backtick | CẢNH BÁO | 0 lỗi · 30 cb |
 | **M1** | **3 phương án mặc định** | **LỖI** | — (do `check.py --strict`) |
 | **M2** | **Trộn vị trí có phân tầng** | **LỖI** | — (do `check.py --strict`) |
 | M3 | Nhiễu phải có lý do lưu kèm | LỖI | — (do `check.py --strict`) |
 | M4 | Không bài nào 3 câu cùng một ô Block Model | LỖI | — (do `check.py --strict`) |
 | M5 | Một lần trả lời, rồi đi tiếp | LỖI | — (do `check.py --strict`) |
 
-**Tổng trên corpus thật: 91 lỗi · 449 cảnh báo.**
+**Tổng trên corpus thật: 91 lỗi · 440 cảnh báo.**
 
 **Nếu chỉ làm được một việc:** L10. Cụ thể: `py -I scripts/pe-da/check_vanphong.py
 --luat L10 --chi-tiet 0` in ra đúng danh sách bài + câu phải sửa.

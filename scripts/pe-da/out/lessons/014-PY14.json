@@ -62,7 +62,7 @@
      },
      {
       "type": "paragraph",
-      "text": "List comprehension như `[x * 2 for x in values if x >= 2]` tạo một `list` mới: điều kiện chọn phần tử, còn biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt của đầu vào (input). Nếu phép tính cần nhiều bước, một vòng lặp thường dễ đọc hơn."
+      "text": "`list` comprehension như `[x * 2 for x in values if x >= 2]` tạo một `list` mới: điều kiện chọn phần tử, còn biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt của đầu vào (input). Nếu phép tính cần nhiều bước, một vòng lặp thường dễ đọc hơn."
      }
     ]
    ],

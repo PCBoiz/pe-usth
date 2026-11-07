@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Tuple ở bài trước giữ được một dòng bán hàng. Nhưng khi khách gọi \"latte\", bạn cần số của món đó ngay, không phải đi tìm nó nằm ô thứ mấy. Dictionary (kiểu từ điển lưu các cặp khoá–giá trị) cho bạn tra theo tên món:"
+      "text": "`tuple` ở bài trước giữ được một dòng bán hàng. Nhưng khi khách gọi \"latte\", bạn cần số của món đó ngay, không phải đi tìm nó nằm ô thứ mấy. Dictionary (kiểu từ điển lưu các cặp khoá–giá trị) cho bạn tra theo tên món:"
      },
      {
       "type": "code",

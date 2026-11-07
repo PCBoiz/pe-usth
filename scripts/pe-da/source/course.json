@@ -1220,7 +1220,7 @@
         },
         {
           "type": "paragraph",
-          "text": "List có thứ tự, cho phép giá trị trùng — hai ngày bán đúng 12 cốc là chuyện thường — và sửa được sau khi tạo. `append` thêm đúng một phần tử. Khi muốn nối nhiều con số từ một dãy khác, dùng `extend`:"
+          "text": "`list` có thứ tự, cho phép giá trị trùng — hai ngày bán đúng 12 cốc là chuyện thường — và sửa được sau khi tạo. `append` thêm đúng một phần tử. Khi muốn nối nhiều con số từ một dãy khác, dùng `extend`:"
         },
         {
           "type": "code",
@@ -1336,7 +1336,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Tuple có thứ tự và đọc theo chỉ số như `list`, nên `dong[0]` là 10 cốc. Nó không cho gán lại các vị trí, vì vậy một dòng đã chốt không bị sửa nhầm. Nếu một phần tử trỏ tới một `list` thì `list` đó vẫn đổi được; tính bất biến của `tuple` không tự đóng băng object con."
+          "text": "`tuple` có thứ tự và đọc theo chỉ số như `list`, nên `dong[0]` là 10 cốc. Nó không cho gán lại các vị trí, vì vậy một dòng đã chốt không bị sửa nhầm. Nếu một phần tử trỏ tới một `list` thì `list` đó vẫn đổi được; tính bất biến của `tuple` không tự đóng băng object con."
         },
         {
           "type": "paragraph",
@@ -1349,11 +1349,11 @@
         },
         {
           "type": "paragraph",
-          "text": "Collection là cách gom nhiều object vào một cấu trúc, và quán cần vài kiểu gom khác nhau. List phù hợp khi còn thêm và sửa, như số cốc mỗi ngày. Tuple phù hợp cho bản ghi đã chốt, như một dòng hoá đơn. String, `list`, `tuple` và range đều là sequence: có thứ tự và đọc theo vị trí."
+          "text": "Collection là cách gom nhiều object vào một cấu trúc, và quán cần vài kiểu gom khác nhau. `list` phù hợp khi còn thêm và sửa, như số cốc mỗi ngày. `tuple` phù hợp cho bản ghi đã chốt, như một dòng hoá đơn. String, `list`, `tuple` và range đều là sequence: có thứ tự và đọc theo vị trí."
         },
         {
           "type": "paragraph",
-          "text": "Hai cấu trúc còn lại trả lời câu hỏi khác. Set giữ các thành viên không trùng và không có chỉ số, như tập món đã bán trong ngày. Còn `dict` tra giá trị theo khóa, như bảng giá tra theo tên món. Bạn chọn theo thao tác cần làm, không theo cách nó được in ra."
+          "text": "Hai cấu trúc còn lại trả lời câu hỏi khác. `set` giữ các thành viên không trùng và không có chỉ số, như tập món đã bán trong ngày. Còn `dict` tra giá trị theo khóa, như bảng giá tra theo tên món. Bạn chọn theo thao tác cần làm, không theo cách nó được in ra."
         },
         {
           "type": "code",
@@ -1429,7 +1429,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Tuple ở bài trước giữ được một dòng bán hàng. Nhưng khi khách gọi \"latte\", bạn cần số của món đó ngay, không phải đi tìm nó nằm ô thứ mấy. Dictionary (kiểu từ điển lưu các cặp khoá–giá trị) cho bạn tra theo tên món:"
+          "text": "`tuple` ở bài trước giữ được một dòng bán hàng. Nhưng khi khách gọi \"latte\", bạn cần số của món đó ngay, không phải đi tìm nó nằm ô thứ mấy. Dictionary (kiểu từ điển lưu các cặp khoá–giá trị) cho bạn tra theo tên món:"
         },
         {
           "type": "code",
@@ -1535,7 +1535,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Set chỉ giữ các phần tử khác nhau và không có chỉ số vị trí, nên nó trả lời \"có hay không\" rất gọn. Phép hiệu `menu - da_ban` giữ món thuộc bảng giá nhưng không thuộc nhóm đã bán. Ví dụ gọi `sorted` lúc in để thứ tự ổn định giữa các lần chạy, vì bản thân `set` không giữ thứ tự nào."
+          "text": "`set` chỉ giữ các phần tử khác nhau và không có chỉ số vị trí, nên nó trả lời \"có hay không\" rất gọn. Phép hiệu `menu - da_ban` giữ món thuộc bảng giá nhưng không thuộc nhóm đã bán. Ví dụ gọi `sorted` lúc in để thứ tự ổn định giữa các lần chạy, vì bản thân `set` không giữ thứ tự nào."
         },
         {
           "type": "code",
@@ -1649,7 +1649,7 @@
         },
         {
           "type": "paragraph",
-          "text": "List comprehension như `[x * 2 for x in values if x >= 2]` tạo một `list` mới: điều kiện chọn phần tử, còn biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt của đầu vào (input). Nếu phép tính cần nhiều bước, một vòng lặp thường dễ đọc hơn."
+          "text": "`list` comprehension như `[x * 2 for x in values if x >= 2]` tạo một `list` mới: điều kiện chọn phần tử, còn biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt của đầu vào (input). Nếu phép tính cần nhiều bước, một vòng lặp thường dễ đọc hơn."
         }
       ],
       "drills": [
@@ -6294,7 +6294,7 @@
         },
         {
           "type": "paragraph",
-          "text": "MultiIndex có các tầng nhãn. Tuple (\"A\", \"Feb\") chỉ rõ hai tầng cho cùng một hàng. sort_index giúp các thao tác chọn khoảng theo nhãn có thứ tự dễ dự đoán."
+          "text": "MultiIndex có các tầng nhãn. Một `tuple` như `(\"A\", \"Feb\")` chỉ rõ hai tầng cho cùng một hàng. sort_index giúp các thao tác chọn khoảng theo nhãn có thứ tự dễ dự đoán."
         },
         {
           "type": "code",

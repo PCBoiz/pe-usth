@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "List có thứ tự, cho phép giá trị trùng — hai ngày bán đúng 12 cốc là chuyện thường — và sửa được sau khi tạo. `append` thêm đúng một phần tử. Khi muốn nối nhiều con số từ một dãy khác, dùng `extend`:"
+      "text": "`list` có thứ tự, cho phép giá trị trùng — hai ngày bán đúng 12 cốc là chuyện thường — và sửa được sau khi tạo. `append` thêm đúng một phần tử. Khi muốn nối nhiều con số từ một dãy khác, dùng `extend`:"
      },
      {
       "type": "code",

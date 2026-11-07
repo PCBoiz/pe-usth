@@ -83,13 +83,13 @@ học nó.
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **143 bài tập được chấm / 480 ca**, 2 440 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 154 bài, 420 đoạn code, **0 hỏng**, **0 cảnh báo**, ~32 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 143 bài, **480 ca đạt**, 773 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, **pha 4: 2 372 ca trượt / 0 ca im lặng / 7 nhánh phản hồi**, ~12 s |
-| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **91 lỗi · 449 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 24 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **18 luật, 0 lỗi**; nó KHÔNG đỏ vì 91 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
+| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **91 lỗi · 440 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 24 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **18 luật, 0 lỗi**; nó KHÔNG đỏ vì 91 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 359 khối đủ điều kiện** (303 bỏ qua — bảng từng ghi 356/300, đã CŨ từ trước 04/11: dựng lại từ HEAD cũng ra 359/303, và `check-moc-nen` không đối chiếu hàng này; phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **17 mục, 14 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **14 CSS module trong `src/`** |
-| Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 76/179 khớp, 103 bài đã đổi sau lần nạp cuối** — đợt 04/11 (mở khoá SY24, `goi_can_tai` quét mã bài đọc, bài tập PY01, math.floor SY11, đếm process RC01, trung bình có trọng số GU12) cộng đợt 07/11 (câu nhồi mệnh đề thành BẢNG · L11 thôi gọi một thứ bằng hai tên · L4/L5/L6 bỏ danh-từ-hoá và từ cấm · §4-A bọc backtick 54 hằng Python rồi 85 tên kiểu Python, rồi 22 chỗ gọi `plt`/`ax`/`fig`, rồi 50 chỗ tên class pandas/matplotlib, rồi 21 chỗ tên thư viện và lớp). Danh sách mã in ra ở đầu ra của cổng, KHÔNG liệt kê lại ở đây — một danh sách 61 mã trong bảng là thứ sẽ trôi. Biên nhận 03/11/2026 18:48 UTC; đỏ cho tới khi chủ dự án nạp. Nạp xong thì SỬA số ở đây, không thì `check-moc-nen` đỏ |
+| Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 75/179 khớp, 104 bài đã đổi sau lần nạp cuối** — đợt 04/11 (mở khoá SY24, `goi_can_tai` quét mã bài đọc, bài tập PY01, math.floor SY11, đếm process RC01, trung bình có trọng số GU12) cộng đợt 07/11 (câu nhồi mệnh đề thành BẢNG · L11 thôi gọi một thứ bằng hai tên · L4/L5/L6 bỏ danh-từ-hoá và từ cấm · §4-A bọc backtick 54 hằng Python rồi 85 tên kiểu Python, rồi 22 chỗ gọi `plt`/`ax`/`fig`, rồi 50 chỗ tên class pandas/matplotlib, rồi 21 chỗ tên thư viện và lớp, rồi 9 chỗ viết hoa tên kiểu). Danh sách mã in ra ở đầu ra của cổng, KHÔNG liệt kê lại ở đây — một danh sách 61 mã trong bảng là thứ sẽ trôi. Biên nhận 03/11/2026 18:48 UTC; đỏ cho tới khi chủ dự án nạp. Nạp xong thì SỬA số ở đây, không thì `check-moc-nen` đỏ |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
 | Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **32 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
@@ -3525,6 +3525,43 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `pip` 4 · `exec` 4 · `mainloop` 4 · `print` 3 · `Thread` 3 · `stack` 2 · `pipe` 1, cộng
   **10 ngoại lệ đã khai** (9 chỗ viết hoa tên kiểu + `int 64 bit`) — mà mục trên vừa cho
   thấy 9 chỗ ấy KHÔNG còn bất khả.
+
+- **9 NGOẠI LỆ "BẤT KHẢ" CỦA §4-A NGHỈ HẾT — danh sách khai đi từ 10 xuống 1, và bằng chứng
+  mạnh nhất nằm NGAY TRONG chính các đoạn đó.** Lát tên kiểu (07/11) giữ 9 chỗ viết hoa đầu
+  câu (`List`/`Tuple`/`Set`) với lý lẽ *"bọc xong là hiện ra code SAI, vì kiểu Python là chữ
+  thường"*. Lát trước đã đính chính: lý lẽ ấy chỉ đúng nếu bọc mà KHÔNG sửa chính tả.
+  **Nhưng lý do THẬT để sửa không phải §4-A — nó là L11 ở dạng người đọc thấy được.** Chính
+  những đoạn ấy đã viết tên kiểu bọc backtick chữ thường ở chỗ khác, trong CÙNG MỘT ĐOẠN.
+  PY11#3 là chỗ rõ nhất: *"**List** phù hợp khi còn thêm và sửa… **Tuple** phù hợp cho bản
+  ghi đã chốt. String, `list`, `tuple` và range đều là sequence."* — cùng một kiểu, hai cách
+  viết, cách nhau ba dòng.
+  **L11 KHÔNG bắt, và lý do đáng biết:** mục `list` trong termbank là chữ thường nên nó khớp
+  `IGNORECASE`, tức L11 coi `List` và `list` là MỘT. Đúng về THUẬT NGỮ, mù về CHÍNH TẢ hiện
+  ra trên màn hình. Nên chỗ này chỉ có §4-A nhìn thấy, mà §4-A thì đang bị khai ngoại lệ.
+  **Tám chỗ chỉ cần hạ chữ + bọc. Hai chỗ cần hơn thế:**
+  · **PY14#4** mở đầu bằng `List comprehension` — "list comprehension" là TÊN một cấu trúc
+    ngôn ngữ, không phải tham chiếu tới kiểu. Termbank KHÔNG có mục cho cụm đó (đã tra), chỉ
+    có `list`, nên bọc phần là kiểu và giữ nguyên chữ "comprehension" là đúng;
+  · **PD27#1** viết `Tuple ("A", "Feb") chỉ rõ hai tầng`. Bọc thẳng ra
+    `` `tuple` ("A", "Feb") `` sẽ bị đọc thành một **LỜI GỌI** `tuple(...)`, mà đây là một
+    GIÁ TRỊ tuple. Nên tách: *Một `tuple` như `("A", "Feb")`*. Đây là chỗ phép bọc máy móc
+    tạo ra một nghĩa SAI, không chỉ một nghĩa xấu — và nó là lý do phải in ngữ cảnh từng chỗ
+    thay vì thay hàng loạt.
+  **SỐ ĐÃ ĐO:** §4-A **39 → 30** (−9) · tổng khoá giữ **91 lỗi**, 449 → **440 cảnh báo**.
+  L8 · L9 · L10 · L11 · TB · TL đều KHÔNG động — `baiDauTien` của nhóm A tính trên văn bản
+  RAW nên bọc backtick không dịch chuyển lần-đầu, đúng như bản sửa TB đã thiết kế.
+  **DANH SÁCH NGOẠI LỆ CÒN ĐÚNG MỘT MỤC: `int 64 bit`** (EX07) — và nó là ngoại lệ THẬT,
+  không phải chỗ chưa làm: đó là int của C/máy, còn cả câu đang nói rằng `int` của Python
+  KHÔNG có giới hạn đó. Bọc nó là dạy ngược.
+  Ablate: gỡ bản sửa nội dung ra → ratchet **3 LỖI**, exit 1 — *"§4-A: TỔNG TĂNG 30 → 39"*
+  cộng hàng §4-A và dòng tổng của bảng §11.
+  **VÀ CỔNG §11 BẮT ĐÚNG HAI LẦN TRONG HAI VÒNG LIỀN**, trên hai thay đổi nội dung khác
+  nhau. Đó là mức bằng chứng mà một cổng chống trôi tài liệu hiếm khi có.
+  **GIÁ PHẢI TRẢ:** bài chờ nạp DB **103 → 104**.
+  **MỘT CHỖ CÙNG HỌ MÀ §4-A KHÔNG BẮT, khai ra để không ai tưởng đã hết:** PY11#3 còn viết
+  `String` và `range` đứng trần cạnh `` `list` ``/`` `tuple` `` đã bọc. Termbank không có mục
+  cho hai chữ đó (`str` thì có, `String` thì không), nên không cổng nào thấy. Đó là một
+  quyết định về TERMBANK, không phải về nội dung — và nó thuộc chủ dự án.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

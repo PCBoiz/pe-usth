@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "MultiIndex có các tầng nhãn. Tuple (\"A\", \"Feb\") chỉ rõ hai tầng cho cùng một hàng. sort_index giúp các thao tác chọn khoảng theo nhãn có thứ tự dễ dự đoán."
+      "text": "MultiIndex có các tầng nhãn. Một `tuple` như `(\"A\", \"Feb\")` chỉ rõ hai tầng cho cùng một hàng. sort_index giúp các thao tác chọn khoảng theo nhãn có thứ tự dễ dự đoán."
      },
      {
       "type": "code",
