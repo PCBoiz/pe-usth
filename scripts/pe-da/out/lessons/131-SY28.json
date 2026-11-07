@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ba file ở bước trước lưu được dữ liệu, nhưng mỗi lần đọc lại phải tự ghép. PW5 đã đọc được dữ liệu text. Ở PW6, bạn giữ chức năng chương trình nhưng thay cách lưu bằng pickle có nén. Bắt đầu từ bộ dữ liệu của quán, gồm cả thông tin định danh và phiên bản cấu trúc (version):"
+      "text": "Ba file ở bước trước lưu được dữ liệu, nhưng mỗi lần đọc lại phải tự ghép. PW5 đã đọc được dữ liệu text. Ở PW6, bạn giữ chức năng chương trình nhưng thay cách lưu bằng pickle có nén. Bắt đầu từ bộ dữ liệu của quán, gồm cả thông tin định danh và phiên bản cấu trúc:"
      },
      {
       "type": "code",

@@ -83,13 +83,13 @@ học nó.
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **143 bài tập được chấm / 480 ca**, 2 440 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 154 bài, 420 đoạn code, **0 hỏng**, **0 cảnh báo**, ~32 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 143 bài, **480 ca đạt**, 773 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, **pha 4: 2 372 ca trượt / 0 ca im lặng / 7 nhánh phản hồi**, ~12 s |
-| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **135 lỗi · 699 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 35 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 139 lỗi đang tồn, chỉ đỏ khi một luật TĂNG |
+| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **116 lỗi · 694 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 32 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 116 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 359 khối đủ điều kiện** (303 bỏ qua — bảng từng ghi 356/300, đã CŨ từ trước 04/11: dựng lại từ HEAD cũng ra 359/303, và `check-moc-nen` không đối chiếu hàng này; phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **17 mục, 14 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **14 CSS module trong `src/`** |
-| Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 164/179 khớp, 15 bài đã đổi sau lần nạp cuối** — VZ24, SY24, SY26, EX01, EX08 từ `80dee65` (mở khoá SY24 + `goi_can_tai` quét mã bài đọc), PY01 (bài tập đầu tiên của khoá), SY11 (math.floor), RC01 (đếm process/thread) và GU12 (trung bình có trọng số) cùng 04/11, CT03 + GU01 + CT01 + CT15 + PY09 + SY18 (câu nhồi mệnh đề thành BẢNG / bọc backtick) 07/11; đỏ cho tới khi chủ dự án nạp. Biên nhận 03/11/2026 18:48 UTC. Hàng này từng ghi "179/179, 0 lỗi" suốt lúc cổng đỏ; nay `check-moc-nen` đối chiếu nó — nạp xong thì SỬA số ở đây, không thì cổng đó đỏ |
+| Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 154/179 khớp, 25 bài đã đổi sau lần nạp cuối** — VZ24, SY24, SY26, EX01, EX08 từ `80dee65` (mở khoá SY24 + `goi_can_tai` quét mã bài đọc), PY01 (bài tập đầu tiên của khoá), SY11 (math.floor), RC01 (đếm process/thread) và GU12 (trung bình có trọng số) cùng 04/11, CT03 + GU01 + CT01 + CT15 + PY09 + SY18 (câu nhồi mệnh đề thành BẢNG / bọc backtick) 07/11, và SY05 + SY07 + SY09 + SY10 + SY23 + SY28 + CT09 + CT10 + GU06 + EX05 + EX08 (L11: thôi gọi cùng một thứ bằng hai tên) cùng 07/11; đỏ cho tới khi chủ dự án nạp. Biên nhận 03/11/2026 18:48 UTC. Hàng này từng ghi "179/179, 0 lỗi" suốt lúc cổng đỏ; nay `check-moc-nen` đối chiếu nó — nạp xong thì SỬA số ở đây, không thì cổng đó đỏ |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
 | Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **30 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
@@ -2800,6 +2800,57 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   trường): bảng ghi 70 chạy ra 65 → **1 đỏ** · đổi CHỮ của hàng → 1 kèm câu "KHÔNG CÒN DÒNG" ·
   tham số lạ → 1 · bảng ghi "36 bộ, 520 ca" → **2 đỏ**, mỗi trường một lỗi · lệnh trỏ vào file
   không có → 1 kèm "spawn hỏng". Sổ ngưỡng 27 → **30** (thêm sàn 501 · 35 · 65).
+
+- **L11 "GỌI CÙNG MỘT THỨ BẰNG HAI TÊN": 16 lỗi → 0, và BA trong số đó là CỔNG tự nói
+  ngược chính nó.** Bảng xếp hạng đã hết mục vòng lặp làm được, và ba vòng liền chỉ dựng
+  cổng — tức đang tối ưu BỘ ĐO chứ không phải sản phẩm. Cụm có bằng chứng người thử mạnh
+  nhất là văn phong: *"văn phong hơi lủng củng"*, *"mấy đứa bạn e đọc có những chỗ nó ko
+  hiểu"*. L11 đúng hình dạng đó — một đoạn dùng CẢ `thread` lẫn `luồng` cho cùng một thứ,
+  nên người mới không có cách nào biết chúng là một.
+  **VÌ SAO CHỌN L11 chứ không L3 (39) hay L8 (35), tuy chúng lớn hơn:** L11 là cụm DUY
+  NHẤT có thẩm quyền nằm NGOÀI khẩu vị của tôi. `thuatngu.json` đã chốt từng từ (nhóm B →
+  dùng tiếng Việt) và chốt BÀI chú giải đầu tiên, nên mỗi phép sửa là tra sổ chứ không
+  phải chọn. Còn L1/L3 thì VAN-PHONG.md §2 **cấm** chiến dịch rút câu hàng loạt.
+  **BA MIS-FIRE, và cả ba cùng một họ: cổng đọc tiếng ANH trong khi luật đòi tiếng VIỆT.**
+  · **biên từ không loại dấu nối.** `(?<![\w])string(?![\w])` khớp chữ "string" TRONG
+    `f-string`, vì `-` không thuộc `\w`. SY24 bị L11 báo *"gọi cùng một thứ bằng hai tên —
+    string và chuỗi"* cho một đoạn **KHÔNG dùng chữ "string" lần nào**. Cùng lớp lỗi với
+    `thread-safe`, `single-thread`. Sửa đúng HAI dòng regex của THUẬT NGỮ — các luật tiếng
+    Việt (L5/L6/L7/HEDGE) dùng cùng khuôn nhưng KHÔNG được đụng: chúng là cụm từ, không
+    nằm trong từ ghép gạch nối. Đo: L11 16 → 15, L8 cb 31 → 30, L13 221 → 220, và **không
+    luật nào khác động** — tức phép sửa không quá tay;
+  · **dấu hiệu B của L15 chỉ khớp `re_tn`.** L13 đòi dùng tiếng Việt cho nhóm B; làm đúng
+    điều đó thì L15 THÔI THẤY khái niệm được mang sang. Đo được: sửa CT09/CT10 từ `thread`
+    sang `luồng` làm L15 đi **0 → 1 cảnh báo**, trong khi CT09 nói về luồng suốt cả bài.
+    Hai luật của cùng một bộ đánh nhau. Nay B khớp theo CẢ HAI tên đã chốt;
+  · **ratchet so TỪNG BẬC nên nó phạt đúng lúc văn phong tốt lên.** Sửa L11 làm **EX05,
+    EX08, SY09** rời bậc LỖI của L8 sang bậc cảnh báo ⇒ `lỗi` 35 → 32 nhưng `cảnh báo`
+    31 → 33, và `--doi-chieu` ĐỎ vì cột cảnh báo tăng, còn `--ghi-so` thì từ chối ghi khi
+    còn luật tăng. Nay luật là HAI điều kiện: `lỗi` không được tăng, VÀ `lỗi + cảnh báo`
+    không được tăng. Nó **KHÔNG lỏng hơn bản cũ ở chiều nguy hiểm** — cảnh báo chỉ được
+    tăng khi lỗi giảm ít nhất bằng mức đó, nên không ai đổi được 1 lỗi thành 10 cảnh báo.
+    Ablate 4 chiều: lỗi tăng → **1 lỗi** · cảnh báo tăng mà lỗi KHÔNG đổi → 1 · đổi 1 lỗi
+    thành 13 cảnh báo (tổng phình) → 1 · chiều đang dùng (lỗi giảm, tổng giảm) → **0**.
+  **15 LỖI NỘI DUNG, và phép sửa không đồng nhất — ba kiểu, mỗi kiểu một lý do:**
+  · từ đó là ĐỊNH DANH CODE ⇒ bọc backtick, và §4-A vốn đã đòi thế: `cups.value` (SY10),
+    `.value` (SY23), cả đoạn `for name, value in values.items(): …` (SY23), `value`/`text`
+    của Tkinter (GU06), `Thread` (CT10). Bọc backtick làm L11 im vì backtick được thay
+    bằng `◆` TRƯỚC khi quét — nhưng nó chỉ hợp lệ khi từ đó THẬT là định danh; dùng
+    backtick cho một từ văn xuôi nhóm B là nới phép kiểm cho xanh;
+  · bài đang CHÚ GIẢI LẠI một thuật ngữ đã chú giải ở bài trước ⇒ bỏ cái ngoặc:
+    "(version)" ở SY28 (chốt ở PD10), ", gọi là snapshot" ở GU12 (CT13), "Thread là một
+    luồng thực thi" ở CT09 (PY17). Khuôn chú giải đặt hai tên cạnh nhau là ĐÚNG — nhưng
+    chỉ ở bài đầu tiên, và L11 miễn đúng bài đó;
+  · còn lại là văn xuôi thuần ⇒ dùng tiếng Việt: `object` → đối tượng · `class` → lớp ·
+    `thread` → luồng · `array` → mảng.
+  **MỘT CÂU SỐNG Ở HAI CHỖ, và phép thay đòi khớp DUY NHẤT đã bắt được:** câu GIL của EX05
+  có cả ở `reading[4]` lẫn `reviewExercises[0].answer` — cùng người đọc, nên sửa cả hai.
+  Phép thay dừng lại và không ghi gì cho tới khi mỗi chuỗi khớp đúng một lần.
+  **SỐ ĐÃ ĐO:** **135 → 116 lỗi** (−19) · 699 → 694 cảnh báo. L11 **16 → 0** · L8 lỗi
+  35 → 32 · §4-A 256 → 250 · L13 221 → 220 · L15 0 → 0. `check.py --strict` 0 lỗi 0 cảnh
+  báo. Sổ `van-phong-moc.json` đã ghi 4 mục siết.
+  **GIÁ PHẢI TRẢ:** bài chờ nạp DB **15 → 25**. Nội dung đọc từ DB, nên 11 bài này chưa
+  tới người học cho tới khi chủ dự án chạy `update-lesson-content.ts`.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

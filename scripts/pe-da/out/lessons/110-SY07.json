@@ -58,7 +58,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Đây không phải overload theo chữ ký như Java: def sau gán lại cùng tên render trong class. Muốn nhận nhiều cách gọi, dùng tham số mặc định hoặc một cơ chế chọn cách xử lý theo đối số (dispatch) được thiết kế rõ. Override ở lớp con và hai def trùng tên trong cùng class là hai chuyện khác nhau."
+      "text": "Đây không phải overload theo chữ ký như Java: def sau gán lại cùng tên render trong lớp. Muốn nhận nhiều cách gọi, dùng tham số mặc định hoặc một cơ chế chọn cách xử lý theo đối số (dispatch) được thiết kế rõ. Override ở lớp con và hai def trùng tên trong cùng một lớp là hai chuyện khác nhau."
      },
      {
       "type": "paragraph",

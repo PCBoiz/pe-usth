@@ -532,7 +532,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Property cho cú pháp cups.value trong khi vẫn gọi getter/setter. Kiểm tra trước khi gán giúp trạng thái cũ còn nguyên nếu dữ liệu sai. Trong bài thực tế, bổ sung quy tắc kiểu và số hữu hạn nếu đầu vào có thể chứa bool, NaN (giá trị “không phải số”) hoặc giá trị vô cực."
+      "text": "Property cho cú pháp `cups.value` trong khi vẫn gọi getter/setter. Kiểm tra trước khi gán giúp trạng thái cũ còn nguyên nếu dữ liệu sai. Trong bài thực tế, bổ sung quy tắc kiểu và số hữu hạn nếu đầu vào có thể chứa bool, NaN (giá trị “không phải số”) hoặc giá trị vô cực."
      },
      {
       "type": "paragraph",

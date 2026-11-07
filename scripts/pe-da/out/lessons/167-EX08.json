@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "np.load đọc array đã lưu trong file NumPy, khác với đọc bảng text. matplotlib.cbook.get_sample_data tìm dữ liệu mẫu đi kèm bản Matplotlib. Ví dụ dưới trước hết lưu/nạp array của chính mình; sau đó dùng asfileobj=False để lấy đường dẫn mẫu topobathy.npz rồi mở bằng np.load. Archive này có các mảng topo, longitude và latitude. Tên bivariate_normal.npy trong slide cũ không có ở mọi phiên bản; nếu thiếu file mẫu, kiểm danh sách mẫu hoặc dùng array tự tạo thay vì cài lại thư viện cũ chỉ để giữ tên file."
+      "text": "np.load đọc mảng đã lưu trong file NumPy, khác với đọc bảng text. matplotlib.cbook.get_sample_data tìm dữ liệu mẫu đi kèm bản Matplotlib. Ví dụ dưới trước hết lưu/nạp mảng của chính mình; sau đó dùng asfileobj=False để lấy đường dẫn mẫu topobathy.npz rồi mở bằng np.load. Archive này có các mảng topo, longitude và latitude. Tên bivariate_normal.npy trong slide cũ không có ở mọi phiên bản; nếu thiếu file mẫu, kiểm danh sách mẫu hoặc dùng mảng tự tạo thay vì cài lại thư viện cũ chỉ để giữ tên file."
      },
      {
       "type": "code",

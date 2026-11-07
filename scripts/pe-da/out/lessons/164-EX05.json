@@ -221,7 +221,7 @@
     [
      {
       "type": "paragraph",
-      "text": "GIL (Global Interpreter Lock) là khóa của interpreter. Trong CPython build có GIL, chỉ một thread thực thi Python bytecode tại một thời điểm. Khóa này giúp bảo vệ trạng thái nội bộ; nó không làm mọi quy tắc cập nhật dữ liệu ứng dụng trở thành nguyên tử. Khi một thread chờ I/O, thread khác có thể tiếp tục. Với tính toán Python thuần nặng CPU, nhiều process thường là cách dùng nhiều lõi trong mô hình này. Một số code native, tức code biên dịch như C/C++, có thể nhả GIL; không phải mọi thao tác NumPy đều làm vậy. Bỏ GIL còn đòi hỏi thay cách đồng bộ và quản lý tham chiếu, xét hiệu năng đơn luồng và khả năng tương thích với thư viện mở rộng C. CPython cũng có bản free-threaded với mô hình khác, nên khi so sánh cần ghi rõ trình thông dịch và loại bản dựng đang dùng."
+      "text": "GIL (Global Interpreter Lock) là khóa của interpreter. Trong CPython build có GIL, chỉ một luồng thực thi Python bytecode tại một thời điểm. Khóa này giúp bảo vệ trạng thái nội bộ; nó không làm mọi quy tắc cập nhật dữ liệu ứng dụng trở thành nguyên tử. Khi một luồng chờ I/O, luồng khác có thể tiếp tục. Với tính toán Python thuần nặng CPU, nhiều process thường là cách dùng nhiều lõi trong mô hình này. Một số code native, tức code biên dịch như C/C++, có thể nhả GIL; không phải mọi thao tác NumPy đều làm vậy. Bỏ GIL còn đòi hỏi thay cách đồng bộ và quản lý tham chiếu, xét hiệu năng đơn luồng và khả năng tương thích với thư viện mở rộng C. CPython cũng có bản free-threaded với mô hình khác, nên khi so sánh cần ghi rõ trình thông dịch và loại bản dựng đang dùng."
      },
      {
       "type": "code",
@@ -314,7 +314,7 @@
     },
     {
      "prompt": "GIL là gì? Vì sao không thể kết luận mọi chương trình Python hoặc mọi phép NumPy đều chỉ chạy trên một core?",
-     "answer": "GIL là Global Interpreter Lock. Trong CPython build có GIL, mỗi thời điểm chỉ một thread thực thi Python bytecode. Một thread chờ I/O có thể nhường cho thread khác; một số native code nhả GIL và có thể chạy song song, nhưng phải kiểm từng thao tác thay vì mặc định mọi phép NumPy đều làm vậy. Nhiều process có interpreter riêng; free-threaded build có mô hình khác. Vì thế cần nói rõ interpreter, build và loại tác vụ."
+     "answer": "GIL là Global Interpreter Lock. Trong CPython build có GIL, mỗi thời điểm chỉ một luồng thực thi Python bytecode. Một luồng chờ I/O có thể nhường cho luồng khác; một số native code nhả GIL và có thể chạy song song, nhưng phải kiểm từng thao tác thay vì mặc định mọi phép NumPy đều làm vậy. Nhiều process có interpreter riêng; free-threaded build có mô hình khác. Vì thế cần nói rõ interpreter, build và loại tác vụ."
     }
    ]
   },

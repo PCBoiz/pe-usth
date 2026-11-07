@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`f[\"scores\"]` là dataset handle còn gắn với file. `[()]` đọc giá trị ra array; dùng array này sau khi file đóng được. Group meta chứa dataset source, truy cập theo key. Không dùng thuộc tính .value cũ của h5py trong cheat sheet."
+      "text": "`f[\"scores\"]` là dataset handle còn gắn với file. `[()]` đọc giá trị ra array; dùng array này sau khi file đóng được. Group meta chứa dataset source, truy cập theo key. Không dùng thuộc tính `.value` cũ của h5py trong cheat sheet."
      },
      {
       "type": "code",
@@ -59,7 +59,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Với dictionary nhận từ loadmat, keys() xem tên biến, values() xem các giá trị và items() duyệt từng cặp tên/giá trị, chẳng hạn for name, value in values.items(): print(name, type(value).__name__). Những mục như __header__ mô tả file; đừng đưa tất cả values() vào cùng một phép tính rồi coi đó là bảng dữ liệu."
+      "text": "Với dictionary nhận từ loadmat, keys() xem tên biến, values() xem các giá trị và items() duyệt từng cặp tên/giá trị, chẳng hạn `for name, value in values.items(): print(name, type(value).__name__)`. Những mục như __header__ mô tả file; đừng đưa tất cả values() vào cùng một phép tính rồi coi đó là bảng dữ liệu."
      }
     ]
    ],

@@ -180,7 +180,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`Item` là class mô tả cách tạo hồ sơ món; item là một đối tượng cụ thể được tạo từ class, gọi là instance. Khi viết `Item(...)`, Python tạo object và gọi `__init__` để khởi tạo dữ liệu cho nó. Constructor là thao tác dựng object; nói chính xác, `__init__` là bước khởi tạo chứ không tự cấp phát object. `self` nhận instance đang được gọi method, nên self.name đọc tên món đó."
+      "text": "`Item` là class mô tả cách tạo hồ sơ món; item là một đối tượng cụ thể được tạo từ class, gọi là instance. Khi viết `Item(...)`, Python tạo đối tượng và gọi `__init__` để khởi tạo dữ liệu cho nó. Constructor là thao tác dựng đối tượng; nói chính xác, `__init__` là bước khởi tạo chứ không tự cấp phát đối tượng. `self` nhận instance đang được gọi method, nên self.name đọc tên món đó."
      },
      {
       "type": "code",

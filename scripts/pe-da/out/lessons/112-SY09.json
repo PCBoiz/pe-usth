@@ -237,7 +237,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ở ví dụ cuối, ReportService chỉ cần object có method export phù hợp, thường gọi là duck typing. Trong câu hỏi Java của slide, static type là kiểu khai báo của biến; dynamic type là class thực của object lúc chạy. Biến kiểu cha có thể tham chiếu object lớp con. Python không bắt buộc khai báo kiểu cho tên; type annotation mô tả kỳ vọng cho công cụ kiểm tra, không tự ép kiểu lúc chạy."
+      "text": "Ở ví dụ cuối, ReportService chỉ cần object có method export phù hợp, thường gọi là duck typing. Trong câu hỏi Java của slide, static type là kiểu khai báo của biến; dynamic type là lớp thực của object lúc chạy. Biến kiểu cha có thể tham chiếu object lớp con. Python không bắt buộc khai báo kiểu cho tên; type annotation mô tả kỳ vọng cho công cụ kiểm tra, không tự ép kiểu lúc chạy."
      },
      {
       "type": "paragraph",

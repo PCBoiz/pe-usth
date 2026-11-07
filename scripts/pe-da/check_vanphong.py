@@ -288,8 +288,15 @@ class Muc:
         # sẽ bắt cả những tiếng Việt không dấu tình cờ trùng. Còn lại khớp lỏng
         # vì thuật ngữ đứng đầu câu bị viết hoa ("Stack giữ khung lời gọi hàm").
         co = 0 if self.tn.isupper() else re.IGNORECASE
-        self.re_tn = re.compile(r'(?<![\w])' + re.escape(self.tn) + r'(?![\w])', co)
-        self.re_tv = (re.compile(r'(?<![\w])' + re.escape(self.tv) + r'(?![\w])',
+        # Biên từ của THUẬT NGỮ phải loại cả dấu nối (các luật tiếng Việt ở dưới
+        # thì KHÔNG — chúng là cụm từ, không nằm trong từ ghép gạch nối). `-`
+        # không thuộc `\w`, nên biên cũ khớp chữ "string" TRONG "f-string" — mà
+        # `f-string` là tên một cơ chế của Python, không phải chữ "string" nói về
+        # kiểu chuỗi. Đo được: SY24 bị L11 báo "gọi cùng một thứ bằng hai tên —
+        # string và chuỗi" cho một đoạn KHÔNG dùng chữ "string" lần nào. Cùng lớp
+        # lỗi với "thread-safe", "single-thread". Cổng báo oan sẽ bị tắt.
+        self.re_tn = re.compile(r'(?<![\w-])' + re.escape(self.tn) + r'(?![\w-])', co)
+        self.re_tv = (re.compile(r'(?<![\w-])' + re.escape(self.tv) + r'(?![\w-])',
                                  re.IGNORECASE) if self.tv else None)
 
     @property
@@ -854,9 +861,19 @@ def kiem_noi_bai(bai: list[dict], bank: list[Muc]) -> None:
         # Termbank lọc theo phạm vi của TỪNG bài: một thuật ngữ chỉ tính là
         # "mang sang" khi nghĩa đó áp cho cả hai bài.
         truoc_van = ' '.join(doan_cua(truoc))
-        if any(m.re_tn.search(dau) and m.trong_bai(l['id'])
-               and m.re_tn.search(truoc_van) and m.trong_bai(truoc['id'])
-               for m in bank):
+        # Khớp theo CẢ HAI tên, không chỉ tên tiếng Anh. Bản đầu chỉ dùng
+        # `re_tn`, nên nó đi NGƯỢC L13: L13 đòi dùng tiếng Việt cho nhóm B, mà
+        # làm đúng điều đó thì L15 thôi thấy khái niệm được mang sang. Đo được:
+        # sửa CT09/CT10 từ "thread" sang "luồng" (đúng termbank) làm L15 đi
+        # 0 → 1 cảnh báo, trong khi CT09 nói về luồng suốt cả bài. Một khái niệm
+        # mang sang là mang sang bất kể nó được gọi bằng tên nào trong hai tên
+        # đã chốt.
+        def mang_sang(m) -> bool:
+            res = [m.re_tn] + ([m.re_tv] if m.re_tv is not None else [])
+            return (any(r.search(dau) for r in res)
+                    and any(r.search(truoc_van) for r in res)
+                    and m.trong_bai(l['id']) and m.trong_bai(truoc['id']))
+        if any(mang_sang(m) for m in bank):
             continue
         canh_bao('L15', f'{l["id"]}: đoạn mở bài không nối gì với {truoc["id"]} — '
                         f'không cụm nối, không khái niệm mang sang · {goi(dau)}')
@@ -915,12 +932,27 @@ def doi_chieu_moc(dem_lo: Counter, dem_cb: Counter, thu_tu: list[str],
                           f'bao giờ được canh (đo được: {nay[t]["loi"]} lỗi · '
                           f'{nay[t]["cb"]} cb)')
             continue
+        # MỘT LỖI THÀNH MỘT CẢNH BÁO LÀ TỐT LÊN, mà phép so TỪNG BẬC không nói
+        # được điều đó. Đo được: sửa L11 làm EX05, EX08, SY09 rời bậc LỖI của L8
+        # sang bậc cảnh báo ⇒ `lỗi` 35 → 32 nhưng `cảnh báo` 31 → 33, và bản đầu
+        # của hàm này ĐỎ vì cột cảnh báo tăng — tức nó phạt đúng lúc văn phong
+        # vừa tốt lên, cùng lớp lỗi với hai cổng khác đã sửa trong vòng đó.
+        # Luật nay là HAI điều kiện, và nó KHÔNG lỏng hơn bản cũ ở chiều nguy
+        # hiểm: cảnh báo chỉ được tăng khi `lỗi` giảm ÍT NHẤT bằng mức đó, vì
+        # TỔNG cũng không được tăng. Nên không đổi được 1 lỗi thành 10 cảnh báo.
+        tong_truoc = int(cu[t].get('loi', 0)) + int(cu[t].get('cb', 0))
+        tong_gio = nay[t]['loi'] + nay[t]['cb']
+        if nay[t]['loi'] > int(cu[t].get('loi', 0)):
+            loi_ra.append(f'{t}: lỗi TĂNG ' + str(cu[t].get('loi', 0)) + ' → '
+                          + str(nay[t]['loi']) + '. Văn phong xấu đi; sửa chữ, '
+                          'đừng nới sổ.')
+        elif tong_gio > tong_truoc:
+            loi_ra.append(f'{t}: TỔNG (lỗi + cảnh báo) TĂNG ' + str(tong_truoc)
+                          + ' → ' + str(tong_gio) + '. Một lỗi đổi thành một cảnh '
+                          'báo thì được, nhưng tổng không được phình ra.')
         for khoa, ten in (('loi', 'lỗi'), ('cb', 'cảnh báo')):
             truoc, gio = int(cu[t].get(khoa, 0)), nay[t][khoa]
-            if gio > truoc:
-                loi_ra.append(f'{t}: {ten} TĂNG {truoc} → {gio}. Văn phong xấu '
-                              f'đi; sửa chữ, đừng nới sổ.')
-            elif gio < truoc:
+            if gio < truoc:
                 siet.append(f'{t} {ten} {truoc} → {gio}')
     for t in cu:
         if t not in nay:

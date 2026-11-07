@@ -366,7 +366,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi lưu, giao diện tạo một bản chụp dữ liệu nhất quán, gọi là snapshot, rồi giao cho worker. Worker ghi pickle nén gzip vào file tạm, thay thế file đích khi ghi xong và gửi kết quả qua queue. Giao diện dùng after để đọc kết quả. Chỉ nạp pickle từ nguồn mà ứng dụng và người dùng tin cậy, vì quá trình nạp có thể thực thi code."
+      "text": "Khi lưu, giao diện tạo một bản chụp dữ liệu nhất quán rồi giao cho worker. Worker ghi pickle nén gzip vào file tạm, thay thế file đích khi ghi xong và gửi kết quả qua queue. Giao diện dùng after để đọc kết quả. Chỉ nạp pickle từ nguồn mà ứng dụng và người dùng tin cậy, vì quá trình nạp có thể thực thi code."
      },
      {
       "type": "paragraph",

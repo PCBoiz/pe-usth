@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "StringVar giữ giá trị mà các widget có thể cùng theo dõi. value là dữ liệu lưu khi chọn nút, còn text chỉ là nhãn hiển thị; chúng không cần giống nhau."
+      "text": "StringVar giữ giá trị mà các widget có thể cùng theo dõi. `value` là dữ liệu lưu khi chọn nút, còn `text` chỉ là nhãn hiển thị; chúng không cần giống nhau."
      },
      {
       "type": "code",

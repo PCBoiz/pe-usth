@@ -27644,7 +27644,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`Item` là class mô tả cách tạo hồ sơ món; item là một đối tượng cụ thể được tạo từ class, gọi là instance. Khi viết `Item(...)`, Python tạo object và gọi `__init__` để khởi tạo dữ liệu cho nó. Constructor là thao tác dựng object; nói chính xác, `__init__` là bước khởi tạo chứ không tự cấp phát object. `self` nhận instance đang được gọi method, nên self.name đọc tên món đó."
+        "text": "`Item` là class mô tả cách tạo hồ sơ món; item là một đối tượng cụ thể được tạo từ class, gọi là instance. Khi viết `Item(...)`, Python tạo đối tượng và gọi `__init__` để khởi tạo dữ liệu cho nó. Constructor là thao tác dựng đối tượng; nói chính xác, `__init__` là bước khởi tạo chứ không tự cấp phát đối tượng. `self` nhận instance đang được gọi method, nên self.name đọc tên món đó."
        },
        {
         "type": "code",
@@ -28942,7 +28942,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Đây không phải overload theo chữ ký như Java: def sau gán lại cùng tên render trong class. Muốn nhận nhiều cách gọi, dùng tham số mặc định hoặc một cơ chế chọn cách xử lý theo đối số (dispatch) được thiết kế rõ. Override ở lớp con và hai def trùng tên trong cùng class là hai chuyện khác nhau."
+        "text": "Đây không phải overload theo chữ ký như Java: def sau gán lại cùng tên render trong lớp. Muốn nhận nhiều cách gọi, dùng tham số mặc định hoặc một cơ chế chọn cách xử lý theo đối số (dispatch) được thiết kế rõ. Override ở lớp con và hai def trùng tên trong cùng một lớp là hai chuyện khác nhau."
        },
        {
         "type": "paragraph",
@@ -29583,7 +29583,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ở ví dụ cuối, ReportService chỉ cần object có method export phù hợp, thường gọi là duck typing. Trong câu hỏi Java của slide, static type là kiểu khai báo của biến; dynamic type là class thực của object lúc chạy. Biến kiểu cha có thể tham chiếu object lớp con. Python không bắt buộc khai báo kiểu cho tên; type annotation mô tả kỳ vọng cho công cụ kiểm tra, không tự ép kiểu lúc chạy."
+        "text": "Ở ví dụ cuối, ReportService chỉ cần object có method export phù hợp, thường gọi là duck typing. Trong câu hỏi Java của slide, static type là kiểu khai báo của biến; dynamic type là lớp thực của object lúc chạy. Biến kiểu cha có thể tham chiếu object lớp con. Python không bắt buộc khai báo kiểu cho tên; type annotation mô tả kỳ vọng cho công cụ kiểm tra, không tự ép kiểu lúc chạy."
        },
        {
         "type": "paragraph",
@@ -30299,7 +30299,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Property cho cú pháp cups.value trong khi vẫn gọi getter/setter. Kiểm tra trước khi gán giúp trạng thái cũ còn nguyên nếu dữ liệu sai. Trong bài thực tế, bổ sung quy tắc kiểu và số hữu hạn nếu đầu vào có thể chứa bool, NaN (giá trị “không phải số”) hoặc giá trị vô cực."
+        "text": "Property cho cú pháp `cups.value` trong khi vẫn gọi getter/setter. Kiểm tra trước khi gán giúp trạng thái cũ còn nguyên nếu dữ liệu sai. Trong bài thực tế, bổ sung quy tắc kiểu và số hữu hạn nếu đầu vào có thể chứa bool, NaN (giá trị “không phải số”) hoặc giá trị vô cực."
        },
        {
         "type": "paragraph",
@@ -33781,7 +33781,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`f[\"scores\"]` là dataset handle còn gắn với file. `[()]` đọc giá trị ra array; dùng array này sau khi file đóng được. Group meta chứa dataset source, truy cập theo key. Không dùng thuộc tính .value cũ của h5py trong cheat sheet."
+        "text": "`f[\"scores\"]` là dataset handle còn gắn với file. `[()]` đọc giá trị ra array; dùng array này sau khi file đóng được. Group meta chứa dataset source, truy cập theo key. Không dùng thuộc tính `.value` cũ của h5py trong cheat sheet."
        },
        {
         "type": "code",
@@ -33807,7 +33807,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Với dictionary nhận từ loadmat, keys() xem tên biến, values() xem các giá trị và items() duyệt từng cặp tên/giá trị, chẳng hạn for name, value in values.items(): print(name, type(value).__name__). Những mục như __header__ mô tả file; đừng đưa tất cả values() vào cùng một phép tính rồi coi đó là bảng dữ liệu."
+        "text": "Với dictionary nhận từ loadmat, keys() xem tên biến, values() xem các giá trị và items() duyệt từng cặp tên/giá trị, chẳng hạn `for name, value in values.items(): print(name, type(value).__name__)`. Những mục như __header__ mô tả file; đừng đưa tất cả values() vào cùng một phép tính rồi coi đó là bảng dữ liệu."
        }
       ]
      ],
@@ -36270,7 +36270,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ba file ở bước trước lưu được dữ liệu, nhưng mỗi lần đọc lại phải tự ghép. PW5 đã đọc được dữ liệu text. Ở PW6, bạn giữ chức năng chương trình nhưng thay cách lưu bằng pickle có nén. Bắt đầu từ bộ dữ liệu của quán, gồm cả thông tin định danh và phiên bản cấu trúc (version):"
+        "text": "Ba file ở bước trước lưu được dữ liệu, nhưng mỗi lần đọc lại phải tự ghép. PW5 đã đọc được dữ liệu text. Ở PW6, bạn giữ chức năng chương trình nhưng thay cách lưu bằng pickle có nén. Bắt đầu từ bộ dữ liệu của quán, gồm cả thông tin định danh và phiên bản cấu trúc:"
        },
        {
         "type": "code",
@@ -39421,7 +39421,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ở bài trước mỗi lệnh gọi tạo thêm một lần thực thi riêng, và bên trong nó còn chia nhỏ được nữa. Một ứng dụng đọc file lâu nhưng vẫn cần nhận thao tác từ người dùng. Bạn có thể đặt việc đọc vào một thread khác. Thread là một luồng thực thi thuộc process; nhiều thread có thể cùng tiến triển trong một chương trình."
+        "text": "Ở bài trước mỗi lệnh gọi tạo thêm một lần thực thi riêng, và bên trong nó còn chia nhỏ được nữa. Một ứng dụng đọc file lâu nhưng vẫn cần nhận thao tác từ người dùng. Bạn có thể đặt việc đọc vào một luồng khác. Mỗi luồng là một dòng thực thi thuộc process; nhiều luồng có thể cùng tiến triển trong một chương trình."
        },
        {
         "type": "code",
@@ -39432,7 +39432,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Single-threaded process có một luồng thực thi, với một stack và một ngữ cảnh CPU. Khi có nhiều thread, mỗi thread có stack, stack pointer (SP: vị trí hiện tại trên stack), program counter, thanh ghi và trạng thái điều phối riêng. Code, dữ liệu toàn cục, heap và file descriptors được dùng chung, nên worker truy cập được list result. Descriptor có thể trỏ tới file đang mở, TCP/UNIX socket hoặc thiết bị. Slide còn nhắc signals: đây là cơ chế thông báo của hệ điều hành, không phải dữ liệu Python riêng tự sao chép vào mỗi thread. Quy tắc xử lý signal tùy hệ điều hành; bài này không dạy socket API."
+        "text": "Single-threaded process có một luồng thực thi, với một stack và một ngữ cảnh CPU. Khi có nhiều luồng, mỗi luồng có stack, stack pointer (SP: vị trí hiện tại trên stack), program counter, thanh ghi và trạng thái điều phối riêng. Code, dữ liệu toàn cục, heap và file descriptors được dùng chung, nên worker truy cập được list result. Descriptor có thể trỏ tới file đang mở, TCP/UNIX socket hoặc thiết bị. Slide còn nhắc signals: đây là cơ chế thông báo của hệ điều hành, không phải dữ liệu Python riêng tự sao chép vào mỗi luồng. Quy tắc xử lý signal tùy hệ điều hành; bài này không dạy socket API."
        },
        {
         "type": "code",
@@ -39677,7 +39677,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn muốn tính một kết quả ở thread nền rồi dùng kết quả sau khi nó hoàn thành. Truyền hàm vào target, gọi start để tạo luồng thực thi và join để chờ:"
+        "text": "Bạn muốn tính một kết quả ở luồng nền rồi dùng kết quả sau khi nó hoàn thành. Truyền hàm vào target, gọi start để tạo luồng thực thi và join để chờ:"
        },
        {
         "type": "code",
@@ -39699,7 +39699,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Gọi trực tiếp run chỉ là gọi một method trên thread hiện tại, không tạo thread mới. start mới sắp xếp chạy run trên luồng mới. Mỗi đối tượng Thread chỉ được start một lần."
+        "text": "Gọi trực tiếp run chỉ là gọi một method trên luồng hiện tại, không tạo luồng mới. start mới sắp xếp chạy run trên luồng mới. Mỗi đối tượng `Thread` chỉ được start một lần."
        },
        {
         "type": "code",
@@ -42533,7 +42533,7 @@
       [
        {
         "type": "paragraph",
-        "text": "StringVar giữ giá trị mà các widget có thể cùng theo dõi. value là dữ liệu lưu khi chọn nút, còn text chỉ là nhãn hiển thị; chúng không cần giống nhau."
+        "text": "StringVar giữ giá trị mà các widget có thể cùng theo dõi. `value` là dữ liệu lưu khi chọn nút, còn `text` chỉ là nhãn hiển thị; chúng không cần giống nhau."
        },
        {
         "type": "code",
@@ -43958,7 +43958,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Khi lưu, giao diện tạo một bản chụp dữ liệu nhất quán, gọi là snapshot, rồi giao cho worker. Worker ghi pickle nén gzip vào file tạm, thay thế file đích khi ghi xong và gửi kết quả qua queue. Giao diện dùng after để đọc kết quả. Chỉ nạp pickle từ nguồn mà ứng dụng và người dùng tin cậy, vì quá trình nạp có thể thực thi code."
+        "text": "Khi lưu, giao diện tạo một bản chụp dữ liệu nhất quán rồi giao cho worker. Worker ghi pickle nén gzip vào file tạm, thay thế file đích khi ghi xong và gửi kết quả qua queue. Giao diện dùng after để đọc kết quả. Chỉ nạp pickle từ nguồn mà ứng dụng và người dùng tin cậy, vì quá trình nạp có thể thực thi code."
        },
        {
         "type": "paragraph",
@@ -45148,7 +45148,7 @@
       [
        {
         "type": "paragraph",
-        "text": "GIL (Global Interpreter Lock) là khóa của interpreter. Trong CPython build có GIL, chỉ một thread thực thi Python bytecode tại một thời điểm. Khóa này giúp bảo vệ trạng thái nội bộ; nó không làm mọi quy tắc cập nhật dữ liệu ứng dụng trở thành nguyên tử. Khi một thread chờ I/O, thread khác có thể tiếp tục. Với tính toán Python thuần nặng CPU, nhiều process thường là cách dùng nhiều lõi trong mô hình này. Một số code native, tức code biên dịch như C/C++, có thể nhả GIL; không phải mọi thao tác NumPy đều làm vậy. Bỏ GIL còn đòi hỏi thay cách đồng bộ và quản lý tham chiếu, xét hiệu năng đơn luồng và khả năng tương thích với thư viện mở rộng C. CPython cũng có bản free-threaded với mô hình khác, nên khi so sánh cần ghi rõ trình thông dịch và loại bản dựng đang dùng."
+        "text": "GIL (Global Interpreter Lock) là khóa của interpreter. Trong CPython build có GIL, chỉ một luồng thực thi Python bytecode tại một thời điểm. Khóa này giúp bảo vệ trạng thái nội bộ; nó không làm mọi quy tắc cập nhật dữ liệu ứng dụng trở thành nguyên tử. Khi một luồng chờ I/O, luồng khác có thể tiếp tục. Với tính toán Python thuần nặng CPU, nhiều process thường là cách dùng nhiều lõi trong mô hình này. Một số code native, tức code biên dịch như C/C++, có thể nhả GIL; không phải mọi thao tác NumPy đều làm vậy. Bỏ GIL còn đòi hỏi thay cách đồng bộ và quản lý tham chiếu, xét hiệu năng đơn luồng và khả năng tương thích với thư viện mở rộng C. CPython cũng có bản free-threaded với mô hình khác, nên khi so sánh cần ghi rõ trình thông dịch và loại bản dựng đang dùng."
        },
        {
         "type": "code",
@@ -45241,7 +45241,7 @@
       },
       {
        "prompt": "GIL là gì? Vì sao không thể kết luận mọi chương trình Python hoặc mọi phép NumPy đều chỉ chạy trên một core?",
-       "answer": "GIL là Global Interpreter Lock. Trong CPython build có GIL, mỗi thời điểm chỉ một thread thực thi Python bytecode. Một thread chờ I/O có thể nhường cho thread khác; một số native code nhả GIL và có thể chạy song song, nhưng phải kiểm từng thao tác thay vì mặc định mọi phép NumPy đều làm vậy. Nhiều process có interpreter riêng; free-threaded build có mô hình khác. Vì thế cần nói rõ interpreter, build và loại tác vụ."
+       "answer": "GIL là Global Interpreter Lock. Trong CPython build có GIL, mỗi thời điểm chỉ một luồng thực thi Python bytecode. Một luồng chờ I/O có thể nhường cho luồng khác; một số native code nhả GIL và có thể chạy song song, nhưng phải kiểm từng thao tác thay vì mặc định mọi phép NumPy đều làm vậy. Nhiều process có interpreter riêng; free-threaded build có mô hình khác. Vì thế cần nói rõ interpreter, build và loại tác vụ."
       }
      ]
     },
@@ -46032,7 +46032,7 @@
       [
        {
         "type": "paragraph",
-        "text": "np.load đọc array đã lưu trong file NumPy, khác với đọc bảng text. matplotlib.cbook.get_sample_data tìm dữ liệu mẫu đi kèm bản Matplotlib. Ví dụ dưới trước hết lưu/nạp array của chính mình; sau đó dùng asfileobj=False để lấy đường dẫn mẫu topobathy.npz rồi mở bằng np.load. Archive này có các mảng topo, longitude và latitude. Tên bivariate_normal.npy trong slide cũ không có ở mọi phiên bản; nếu thiếu file mẫu, kiểm danh sách mẫu hoặc dùng array tự tạo thay vì cài lại thư viện cũ chỉ để giữ tên file."
+        "text": "np.load đọc mảng đã lưu trong file NumPy, khác với đọc bảng text. matplotlib.cbook.get_sample_data tìm dữ liệu mẫu đi kèm bản Matplotlib. Ví dụ dưới trước hết lưu/nạp mảng của chính mình; sau đó dùng asfileobj=False để lấy đường dẫn mẫu topobathy.npz rồi mở bằng np.load. Archive này có các mảng topo, longitude và latitude. Tên bivariate_normal.npy trong slide cũ không có ở mọi phiên bản; nếu thiếu file mẫu, kiểm danh sách mẫu hoặc dùng mảng tự tạo thay vì cài lại thư viện cũ chỉ để giữ tên file."
        },
        {
         "type": "code",
