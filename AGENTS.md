@@ -2598,6 +2598,53 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **Còn lại là quyết định thiết kế:** 39 quầng sáng `breathe` + 54 bóng đèn `twk` là
   chính cảnh; mỗi nhóm một mình vẫn ăn ~45–60% nhịp trống.
 
+- **"GIẬT LAG LIÊN TỤC" KHÔNG TÁI HIỆN ĐƯỢC TRÊN CHÍNH MÁY ĐÓ — bảy hướng, bảy số, và
+  hướng thứ bảy suýt thành một bản sửa SAI.** Chủ dự án báo 07/11/2026: *"tôi đang vào thử
+  trang, và giật lag liên tục, có vẻ nó rất tốn RAM và phần cứng"*. Đo bằng Chrome 157
+  THẬT trên đúng máy đó (GTX 1660 Ti · 16 GB · 12 lõi · dpr 1,25 · KHÔNG throttle):
+  · **trang chủ rơi 0 khung / 180**, trung vị 16,7 ms · p99 17,0 · max 17,1. Tạm dừng CẢ
+    147 hoạt ảnh rồi đo lại: vẫn **0 / 180**, không một con số nào đổi. Nhịp trống 64 455
+    (chạy) so 72 220 (dừng hết) ⇒ hoạt ảnh ăn **10,8%** — không phải 98% như trên điện
+    thoại CPU 4×, nên nền cảnh KHÔNG phải cổ chai trên GPU rời;
+  · **trang bài rơi 3 khung / 1 399** trong 14 giây, 1 hoạt ảnh, heap 6,4 MB;
+  · texture GPU **19,3 MB / 163 lớp** đã đề cử (tính w×h×dpr²×4 trên mọi phần tử đang đổi
+    transform/opacity, khai `will-change`, hoặc có `mask`); blur chỉ **4** phần tử =
+    **0,01** diện tích màn; `backdrop-filter` **0**. Cả ba đều thấp;
+  · **trang không cuộn được một pixel nào** (`scrollHeight == innerHeight == 732`) ⇒ "tạm
+    dừng hoạt ảnh khi ra khỏi màn" là BẤT KHẢ với trang này, không phải chưa làm;
+  · **không rò worker**: `dispose()` → `kill()` chạy ở cleanup effect của `useCodeRunner`;
+    đo bằng cách bọc `globalThis.Worker` → **1 tạo / 0 dừng / 1 sống** mỗi lần mở bài;
+  · `prefers-reduced-motion` **đã làm xong từ trước**, cả hai nửa: `scene.css` 598–602 tạm
+    dừng `.wisp/.mote/.bulb i/.city/.drops/.star/.snote/.glowi`, và nút trong trang BẤM
+    TỚI ĐƯỢC — bánh răng "Tùy chỉnh khung cảnh" (38×38, góc trên phải) → "Giảm chuyển
+    động", bật lên tạm dừng **127/131** hoạt ảnh. Đừng dựng lại.
+  **HƯỚNG THỨ BẢY LÀ BÀI HỌC, vì nó suýt thành một bản sửa sai.** Mở bài nào cũng tải
+  `pyodide.asm.wasm` **9,15 MB** + `python_stdlib.zip` **2,43 MB** = **11,58 MB**, xác nhận
+  bằng danh sách request — fetch của worker KHÔNG hiện trong
+  `performance.getEntriesByType('resource')` của luồng chính, nên đọc ở đó ra "0 byte
+  Pyodide" là đọc sai. Quét gói dựng thì **24/179 bài** không có `step_4.tests` lẫn ô chạy
+  thử ở màn luyện tập (`answerCode && answerExpected`), gồm cả PY02 và PY03 — bài thứ hai
+  và thứ ba của người mới. Trông như 24 lần nạp runtime vô ích, và tôi đã định siết
+  `shouldPrewarm`. **Đọc renderer thì nó SAI:** `buildScreens` đẩy màn sandbox khi có
+  `step_4.task.body` — **cả 179 bài đều có** — và `SandboxScreen` dòng 244–245 nói nguyên
+  văn *"ô này để bạn thử lại ví dụ trong bài. Gõ rồi bấm Chạy thử"*. Mọi bài ĐỀU có ô
+  chạy, nên siết cổng chỉ làm lần chạy đầu của 24 bài chậm thêm ~2,7 s mà không đổi lấy
+  gì. **Phép quét DỮ LIỆU không thay được việc đọc RENDERER** — cùng bài học "61 chỗ là
+  con số của grep, không phải con số của người học", lần này theo chiều ngược.
+  Siết `shouldPrewarm` cũng KHÔNG cứu được byte dù giả thuyết có đúng: cổng trả `true`
+  ngay khi `lesson === null`, nên prewarm đã bắn trước lúc nội dung về.
+  **MỘT PHÉP ĐO KHÔNG KẾT LUẬN ĐƯỢC, phải nói ra:** working set của Chrome đo bằng
+  PowerShell ra **666,4 MB ở `about:blank`** so với **623 MB khi đang mở bài** — nhiễu (số
+  tiến trình 7→8, working set lười) lớn hơn tín hiệu, nên câu "runtime Pyodide giữ bao
+  nhiêu RAM" vẫn CHƯA có số. Muốn số đó thì cần
+  `performance.measureUserAgentSpecificMemory()` (đòi cross-origin isolation, trang này
+  không có) hoặc Task Manager của Chrome.
+  **Kết luận trung thực: số trong trình duyệt KHÔNG cho thấy cái giật mà người dùng cảm
+  nhận**, nên nguyên nhân còn lại nằm NGOÀI trang — máy này chạy song song nhiều dự án
+  (ghi chú `tai-nguyen-may`), 16 GB, và một dev server cộng vài agent là đủ.
+  **Lead DUY NHẤT còn sống cho nhánh #96:** trang khoá học ở 390×844 + CPU 4× có LCP
+  **1 626 ms** mà **render delay 1 098 ms = 67%** — chưa ai sửa, và nó là việc của vòng sau.
+
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
 Hai đường, chọn sai là xoá tiến độ của người đang học:
