@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "`astype` phù hợp khi đã biết dữ liệu tương thích với kiểu đích. Việc đổi 1.0 và 2.0 sang Int64 ở đây không làm mất phần lẻ vì chúng đều là giá trị nguyên. Không mặc định ép mọi cột số thực về số nguyên."
+      "text": "`astype` phù hợp khi đã biết dữ liệu tương thích với kiểu đích. Đổi 1.0 và 2.0 sang Int64 ở đây không làm mất phần lẻ vì chúng đều là giá trị nguyên. Không mặc định ép mọi cột số thực về số nguyên."
      }
     ]
    ],

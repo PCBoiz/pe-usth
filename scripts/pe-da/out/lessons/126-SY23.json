@@ -44,7 +44,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Không đoán dataset đầu tiên là dữ liệu cần dùng. Tìm đúng tên và kiểm shape/dtype để tránh tính nhầm mảng metadata. Việc liệt kê keys ở HDF5 và ở dictionary MATLAB đều giúp khám phá cấu trúc, nhưng hai object này không có cùng kiểu tài nguyên."
+      "text": "Không đoán dataset đầu tiên là dữ liệu cần dùng. Tìm đúng tên và kiểm shape/dtype để tránh tính nhầm mảng metadata. Liệt kê keys ở HDF5 và ở dictionary MATLAB đều giúp khám phá cấu trúc, nhưng hai object này không có cùng kiểu tài nguyên."
      },
      {
       "type": "code",

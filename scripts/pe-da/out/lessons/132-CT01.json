@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Program là mô tả lệnh được lưu; process là một lần thực thi cùng trạng thái của nó. CPU context gồm program counter (vị trí lệnh đang thực hiện hoặc sẽ tiếp tục) và các thanh ghi giữ dữ liệu/trạng thái tính toán của CPU. Stack (khung lời gọi hàm đang mở) giữ biến cục bộ; data section giữ dữ liệu tĩnh/toàn cục. Heap (bộ nhớ xin thêm lúc chạy) phục vụ cấp phát động. File descriptor là số nhận diện tài nguyên I/O đang mở, chẳng hạn file hoặc thiết bị. Process cần các phần này để tiếp tục đúng công việc sau khi tạm nhường CPU."
+      "text": "Program là mô tả lệnh được lưu; process là một lần thực thi cùng trạng thái của nó. CPU context gồm program counter (vị trí lệnh đang chạy hoặc sẽ chạy tiếp) và các thanh ghi giữ dữ liệu/trạng thái tính toán của CPU. Stack (khung lời gọi hàm đang mở) giữ biến cục bộ; data section giữ dữ liệu tĩnh/toàn cục. Heap (bộ nhớ xin thêm lúc chạy) phục vụ cấp phát động. File descriptor là số nhận diện tài nguyên I/O đang mở, chẳng hạn file hoặc thiết bị. Process cần các phần này để tiếp tục đúng công việc sau khi tạm nhường CPU."
      },
      {
       "type": "code",

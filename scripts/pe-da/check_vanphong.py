@@ -89,10 +89,10 @@ khớp một con số không đứng được:
     447 hedge (so với 703 của §6, danh sách hedge hẹp hơn), 47 câu ≥2 và 4 câu
     ≥3. Ngưỡng lỗi đặt ở 3 theo §6 ("cấm là CHỒNG", không cấm `có thể`).
   · L6 — ra ĐÚNG 11 như §11, nhưng phân rã là `thực hiện` 3 + `một cách` 8, và
-    ít nhất 4 trong 8 ca `một cách` là DƯƠNG TÍNH GIẢ: "một cách truy cập",
+    CẢ 7 ca `một cách` (đo lại 07/11) là DƯƠNG TÍNH GIẢ: "một cách truy cập",
     "một cách gom", "một cách nêu" là danh ngữ ("một cách để…"), không phải
     trạng ngữ "một cách + tính từ" mà §6 cấm. Phân biệt hai nghĩa đó cần biết
-    từ loại của từ đứng sau, tức cần tách từ — thứ §10 nói rõ là đừng cài. Con
+    từ loại của từ đứng sau — NHƯNG kể TÊN đúng khuôn thì không cần, xem Con
     số 11 khớp đặc tả có lẽ vì đặc tả cũng đo bằng đúng phép dò này.
 
 L14 VÀ L15 — bối cảnh và sự nối bài (thêm 29/10/2026)
@@ -479,6 +479,12 @@ DANH_TU_HOA = re.compile(
 # danh-từ-hoá một động từ: "Việc này…", "Sự kiện chuột…", "Khả năng đọc…".
 SAU_KHONG_PHAI_DONG_TU = {
     'này', 'đó', 'ấy', 'kiện', 'thật', 'việc', 'kia', 'nào', 'gì',
+    # `trung` (trong "trung bình"): "Tính trung bình từ hai điểm đã có:" là động từ
+    # RA LỆNH, không phải danh-từ-hoá. Đo trên 807 đoạn: `Tính` mở câu đúng MỘT lần
+    # và đó chính là câu này — khuôn `Tính` hiện 0 tín hiệu / 1 nhiễu. Giữ `Tính`
+    # (nó CÓ nghĩa danh-từ-hoá: "Tính chính xác của phép đo…") và loại đúng chỗ nó
+    # là động từ, bằng CƠ CHẾ ĐÃ CÓ chứ không thêm khái niệm mới.
+    'trung',
 }
 
 # L5: ĐỪNG viết bộ dò câu bị động tiếng Việt. §6: giới ngôn ngữ học chưa thống
@@ -495,7 +501,19 @@ TU_CAM = [
     (re.compile(r'(?<![\w])thông qua việc(?![\w])', re.I), 'thông qua việc'),
     (re.compile(r'(?<![\w])vui lòng(?![\w])', re.I), 'vui lòng'),
     (re.compile(r'(?<![\w])thực hiện(?![\w])', re.I), 'thực hiện'),
-    (re.compile(r'(?<![\w])một cách\s+[^\W\d_]+', re.I | re.U), 'một cách + tính từ'),
+    # DANH SÁCH ĐÓNG, không phải `một cách\s+<từ nào cũng được>`. Đo trên 807 đoạn:
+    # khuôn cũ khớp 7 lần và CẢ 7 ĐỀU BÁO OAN — chúng là danh từ "cách" (= phương
+    # thức): "một cách truy cập", "một cách gom", "một cách nêu", "một cách nén",
+    # "một cách archive", "một cách thấy", "một cách đóng gói". Thứ §6 nhắm tới là
+    # TRẠNG NGỮ ("một cách hiệu quả" = "hiệu quả"). Docstring đầu file từng kết luận
+    # là phải TÁCH TỪ mới phân biệt được, và §10 nói đừng cài — nhưng kể TÊN đúng
+    # khuôn thì không cần từ loại nào. Danh sách CHỈ ĐƯỢC DÀI THÊM: dài thêm là
+    # siết, ngắn đi là nới. Hôm nay nó khớp 0 chỗ, và 0 là số ĐÚNG.
+    (re.compile(r'(?<![\w])một cách\s+('
+                r'hiệu quả|nhanh chóng|dễ dàng|chính xác|rõ ràng|tự động|an toàn|'
+                r'đơn giản|trực tiếp|hoàn toàn|đáng kể|linh hoạt|thủ công|tường minh|'
+                r'tối ưu|triệt để|độc lập|song song|tuần tự|ngầm định'
+                r')(?![\w])', re.I | re.U), 'một cách + tính từ'),
 ]
 
 # L7: chỉ "bạn". `người dùng` CHỈ cảnh báo — nó có nghĩa thứ hai hợp lệ (người

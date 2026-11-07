@@ -44,7 +44,7 @@
     [
      {
       "type": "paragraph",
-      "text": "delay thuộc instance, nên mỗi worker có thể nhận thời gian chờ khác nhau. sleep được thực hiện bên trong run, tức trên worker khi gọi start."
+      "text": "delay thuộc instance, nên mỗi worker có thể nhận thời gian chờ khác nhau. sleep chạy bên trong run, tức trên worker khi gọi start."
      },
      {
       "type": "code",

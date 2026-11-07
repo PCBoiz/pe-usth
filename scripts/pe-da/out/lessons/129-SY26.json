@@ -879,7 +879,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Đây là sơ đồ file cần tạo, không phải một package đã tự được sinh ra bởi dictionary. PW4 đặt class trong domains, nhập liệu trong input.py, curses output trong output.py và main.py nối các phần. Sau khi tách, chạy lại đúng những ca PW1 để kiểm việc đổi cấu trúc không làm mất chức năng."
+      "text": "Đây là sơ đồ file cần tạo, không phải một package do dictionary tự sinh ra. PW4 đặt class trong domains, nhập liệu trong input.py, curses output trong output.py và main.py nối các phần. Sau khi tách, chạy lại đúng những ca PW1 để kiểm việc đổi cấu trúc không làm mất chức năng."
      },
      {
       "type": "paragraph",

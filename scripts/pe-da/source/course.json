@@ -4774,7 +4774,7 @@
         },
         {
           "type": "paragraph",
-          "text": "`astype` phù hợp khi đã biết dữ liệu tương thích với kiểu đích. Việc đổi 1.0 và 2.0 sang Int64 ở đây không làm mất phần lẻ vì chúng đều là giá trị nguyên. Không mặc định ép mọi cột số thực về số nguyên."
+          "text": "`astype` phù hợp khi đã biết dữ liệu tương thích với kiểu đích. Đổi 1.0 và 2.0 sang Int64 ở đây không làm mất phần lẻ vì chúng đều là giá trị nguyên. Không mặc định ép mọi cột số thực về số nguyên."
         }
       ],
       "drills": [
@@ -11662,7 +11662,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Không đoán dataset đầu tiên là dữ liệu cần dùng. Tìm đúng tên và kiểm shape/dtype để tránh tính nhầm mảng metadata. Việc liệt kê keys ở HDF5 và ở dictionary MATLAB đều giúp khám phá cấu trúc, nhưng hai object này không có cùng kiểu tài nguyên."
+          "text": "Không đoán dataset đầu tiên là dữ liệu cần dùng. Tìm đúng tên và kiểm shape/dtype để tránh tính nhầm mảng metadata. Liệt kê keys ở HDF5 và ở dictionary MATLAB đều giúp khám phá cấu trúc, nhưng hai object này không có cùng kiểu tài nguyên."
         },
         {
           "type": "code",
@@ -11933,7 +11933,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Đây là sơ đồ file cần tạo, không phải một package đã tự được sinh ra bởi dictionary. PW4 đặt class trong domains, nhập liệu trong input.py, curses output trong output.py và main.py nối các phần. Sau khi tách, chạy lại đúng những ca PW1 để kiểm việc đổi cấu trúc không làm mất chức năng."
+          "text": "Đây là sơ đồ file cần tạo, không phải một package do dictionary tự sinh ra. PW4 đặt class trong domains, nhập liệu trong input.py, curses output trong output.py và main.py nối các phần. Sau khi tách, chạy lại đúng những ca PW1 để kiểm việc đổi cấu trúc không làm mất chức năng."
         },
         {
           "type": "paragraph",
@@ -12218,7 +12218,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Program là mô tả lệnh được lưu; process là một lần thực thi cùng trạng thái của nó. CPU context gồm program counter (vị trí lệnh đang thực hiện hoặc sẽ tiếp tục) và các thanh ghi giữ dữ liệu/trạng thái tính toán của CPU. Stack (khung lời gọi hàm đang mở) giữ biến cục bộ; data section giữ dữ liệu tĩnh/toàn cục. Heap (bộ nhớ xin thêm lúc chạy) phục vụ cấp phát động. File descriptor là số nhận diện tài nguyên I/O đang mở, chẳng hạn file hoặc thiết bị. Process cần các phần này để tiếp tục đúng công việc sau khi tạm nhường CPU."
+          "text": "Program là mô tả lệnh được lưu; process là một lần thực thi cùng trạng thái của nó. CPU context gồm program counter (vị trí lệnh đang chạy hoặc sẽ chạy tiếp) và các thanh ghi giữ dữ liệu/trạng thái tính toán của CPU. Stack (khung lời gọi hàm đang mở) giữ biến cục bộ; data section giữ dữ liệu tĩnh/toàn cục. Heap (bộ nhớ xin thêm lúc chạy) phục vụ cấp phát động. File descriptor là số nhận diện tài nguyên I/O đang mở, chẳng hạn file hoặc thiết bị. Process cần các phần này để tiếp tục đúng công việc sau khi tạm nhường CPU."
         },
         {
           "type": "code",
@@ -13305,7 +13305,7 @@
         },
         {
           "type": "paragraph",
-          "text": "delay thuộc instance, nên mỗi worker có thể nhận thời gian chờ khác nhau. sleep được thực hiện bên trong run, tức trên worker khi gọi start."
+          "text": "delay thuộc instance, nên mỗi worker có thể nhận thời gian chờ khác nhau. sleep chạy bên trong run, tức trên worker khi gọi start."
         },
         {
           "type": "code",

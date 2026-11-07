@@ -83,13 +83,13 @@ học nó.
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **143 bài tập được chấm / 480 ca**, 2 440 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 154 bài, 420 đoạn code, **0 hỏng**, **0 cảnh báo**, ~32 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 143 bài, **480 ca đạt**, 773 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, **pha 4: 2 372 ca trượt / 0 ca im lặng / 7 nhánh phản hồi**, ~12 s |
-| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **116 lỗi · 694 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 32 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 116 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
+| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **103 lỗi · 693 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 32 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 103 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 359 khối đủ điều kiện** (303 bỏ qua — bảng từng ghi 356/300, đã CŨ từ trước 04/11: dựng lại từ HEAD cũng ra 359/303, và `check-moc-nen` không đối chiếu hàng này; phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **17 mục, 14 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **14 CSS module trong `src/`** |
-| Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 154/179 khớp, 25 bài đã đổi sau lần nạp cuối** — VZ24, SY24, SY26, EX01, EX08 từ `80dee65` (mở khoá SY24 + `goi_can_tai` quét mã bài đọc), PY01 (bài tập đầu tiên của khoá), SY11 (math.floor), RC01 (đếm process/thread) và GU12 (trung bình có trọng số) cùng 04/11, CT03 + GU01 + CT01 + CT15 + PY09 + SY18 (câu nhồi mệnh đề thành BẢNG / bọc backtick) 07/11, và SY05 + SY07 + SY09 + SY10 + SY23 + SY28 + CT09 + CT10 + GU06 + EX05 + EX08 (L11: thôi gọi cùng một thứ bằng hai tên) cùng 07/11; đỏ cho tới khi chủ dự án nạp. Biên nhận 03/11/2026 18:48 UTC. Hàng này từng ghi "179/179, 0 lỗi" suốt lúc cổng đỏ; nay `check-moc-nen` đối chiếu nó — nạp xong thì SỬA số ở đây, không thì cổng đó đỏ |
+| Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 152/179 khớp, 27 bài đã đổi sau lần nạp cuối** — VZ24, SY24, SY26, EX01, EX08 từ `80dee65` (mở khoá SY24 + `goi_can_tai` quét mã bài đọc), PY01 (bài tập đầu tiên của khoá), SY11 (math.floor), RC01 (đếm process/thread) và GU12 (trung bình có trọng số) cùng 04/11, CT03 + GU01 + CT01 + CT15 + PY09 + SY18 (câu nhồi mệnh đề thành BẢNG / bọc backtick) 07/11, và SY05 + SY07 + SY09 + SY10 + SY23 + SY28 + CT09 + CT10 + GU06 + EX05 + EX08 (L11: thôi gọi cùng một thứ bằng hai tên) cùng 07/11, cộng PD07 + CT11 (L4/L5/L6: bỏ danh-từ-hoá, sao phỏng, từ cấm hành chính) cùng 07/11; đỏ cho tới khi chủ dự án nạp. Biên nhận 03/11/2026 18:48 UTC. Hàng này từng ghi "179/179, 0 lỗi" suốt lúc cổng đỏ; nay `check-moc-nen` đối chiếu nó — nạp xong thì SỬA số ở đây, không thì cổng đó đỏ |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
 | Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **30 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
@@ -2851,6 +2851,51 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   báo. Sổ `van-phong-moc.json` đã ghi 4 mục siết.
   **GIÁ PHẢI TRẢ:** bài chờ nạp DB **15 → 25**. Nội dung đọc từ DB, nên 11 bài này chưa
   tới người học cho tới khi chủ dự án chạy `update-lesson-content.ts`.
+
+- **L4 + L5 + L6 về 0, nhưng 8/13 "lỗi" là CỔNG BÁO OAN — và một vòng trước đã ĐO ra điều
+  đó rồi để nguyên vì tin là không sửa được.** Cụm này được chọn vì nó là cụm văn phong
+  nhỏ nhất KHÔNG đòi phán xét độ dài (VAN-PHONG.md §2 cấm chiến dịch rút câu hàng loạt,
+  nên L1 21 và L3 39 phải để riêng).
+  **ĐO TRƯỚC KHI SỬA, trên 807 đoạn:**
+
+  | Khuôn | Khớp | Lỗi THẬT | Báo oan |
+  |---|---|---|---|
+  | `một cách + tính từ` (L6) | 7 | **0** | **7** |
+  | `Tính` mở câu (L4) | 1 | **0** | **1** |
+  | `Việc` mở câu (L4) | 2 | 2 | 0 |
+  | `thực hiện` (L6) | 2 | 2 | 0 |
+  | `được/bị + V + bởi` (L5) | 1 | 1 | 0 |
+
+  Cả 7 chỗ "một cách X" là DANH TỪ *cách* (= phương thức): *một cách truy cập · một cách
+  gom · một cách nêu · một cách nén · một cách archive · một cách thấy · một cách đóng
+  gói*. Không chỗ nào là trạng ngữ kiểu "một cách hiệu quả" mà §6 nhắm tới. Và
+  `Tính trung bình từ hai điểm đã có:` là động từ RA LỆNH, không phải danh-từ-hoá.
+  **PHẦN ĐÁNG GHI NHẤT: docstring của chính file đó đã ghi phát hiện này từ 29/10** —
+  *"ít nhất 4 trong 8 ca `một cách` là DƯƠNG TÍNH GIẢ"* — rồi kết luận *"phân biệt hai
+  nghĩa đó cần biết từ loại của từ đứng sau, tức cần tách từ — thứ §10 nói rõ là đừng
+  cài"*, và để nguyên khuôn lỏng. Phản bác đó đúng với cách tiếp cận NÓ đang nghĩ tới
+  (tách từ), nhưng **kể TÊN đúng khuôn thì không cần từ loại nào**: danh sách ĐÓNG 20 tính
+  từ thật (`hiệu quả|nhanh chóng|dễ dàng|…`) cho 0 báo oan mà vẫn bắt được thứ luật cấm.
+  Bài học rộng hơn: *"không sửa được"* trong một chú thích là lời khai về MỘT cách làm, không
+  phải về bài toán — đọc nó như điều thứ hai là tự đóng một cửa còn mở.
+  Danh sách CHỈ ĐƯỢC DÀI THÊM (dài thêm là siết, ngắn đi là nới), và hôm nay nó khớp 0 chỗ
+  — **0 là số ĐÚNG**, không phải dấu hiệu luật đã chết.
+  `Tính` thì KHÔNG bỏ khỏi danh sách (nó CÓ nghĩa danh-từ-hoá: "Tính chính xác của phép
+  đo…"); chỉ thêm `trung` vào `SAU_KHONG_PHAI_DONG_TU` — dùng CƠ CHẾ ĐÃ CÓ, không thêm
+  khái niệm mới.
+  **5 LỖI NỘI DUNG THẬT, mỗi cái một kiểu:** bỏ "Việc" đầu câu để động từ đứng thẳng
+  (PD07, SY23) · đổi sao phỏng `được sinh ra bởi dictionary` sang chủ động `do dictionary
+  tự sinh ra` (SY26) · `thực hiện` → `chạy` ở hai chỗ mà nghĩa thật đúng là "chạy" (CT01
+  "vị trí lệnh đang chạy hoặc sẽ chạy tiếp", CT11 "sleep chạy bên trong run" — chỗ này bỏ
+  luôn cả thể bị động).
+  **Ablate 6 chiều, gieo câu vào một bản SAO qua cờ `--nguon`** (sàn riêng: L6 2, L4 2):
+  gieo "một cách hiệu quả" → L6 **3** · "một cách tường minh" → 3 · gieo DANH NGỮ "một
+  cách truy cập" → **2, im đúng chiều báo oan** · gieo "Tính chính xác của…" → L4 **3** ·
+  gieo "Tính trung bình…" → **2, im** · gieo "Việc đọc file…" → 3.
+  **SỐ ĐÃ ĐO:** 116 → **103 lỗi** (−13) · 694 → 693 cảnh báo. L4 3 → 0 · L5 1 → 0 ·
+  L6 9 → 0 · L1 cảnh báo 89 → 88 (một câu ngắn lại nhờ bỏ "Việc"). Ba luật nay ở 0.
+  `check.py --strict` 0 lỗi 0 cảnh báo. Sổ đã ghi 4 mục siết.
+  **GIÁ PHẢI TRẢ:** bài chờ nạp DB 25 → **27** (thêm PD07, CT11).
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
