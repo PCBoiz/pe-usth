@@ -249,6 +249,22 @@
       "chieu": "nang",
       "moc": 65,
       "vi": "Cổng `check-moc-chay.mjs` CHẠY bộ test và bắt \"số trong bảng SAI\"; mục sổ này bắt \"ai đó HẠ số trong bảng cho khớp một bộ đã bị cắt bớt\" — ablate đã đo trên con số frontend: skip một ca rồi sửa bảng 573 → 572 thì cổng chạy-bộ-test XANH, chỉ sổ đỏ. Hai lỗi khác nhau, cần cả hai. Số phép kiểm của bộ ghi vết (nút \"Xem từng bước\" của /ide)."
+    },
+    {
+      "ten": "san-chip-code-noi-tuyen-ngay",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\[':root', '--edu-panel-bg-solid', ([\\d.]+)\\]",
+      "chieu": "nang",
+      "moc": 1.35,
+      "vi": "Sàn tương phản của NỀN chip `code nội tuyến` so với nền thẻ, chế độ NGÀY. Lần thứ TƯ của họ lỗi \"trắng trên trắng\": `.inlineCode` từng dùng `--edu-card-bg` (nền THẺ, nửa trong suốt) nên đo được 1,003:1 — chip không có nền gì, và viền chỉ 1,252:1, thấp hơn cả mức 1,42 mà hai thanh sticky đã phải nâng lên. Số đo thật là 1,381; sàn đặt thấp hơn một nhịp để đổi một màu không làm đỏ oan."
+    },
+    {
+      "ten": "san-chip-code-noi-tuyen-dem",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['body\\.dark', '--edu-panel-bg-solid', ([\\d.]+)\\]",
+      "chieu": "nang",
+      "moc": 1.4,
+      "vi": "Sàn tương phản của NỀN chip `code nội tuyến` so với nền thẻ, chế độ ĐÊM. Lần thứ TƯ của họ lỗi \"trắng trên trắng\": `.inlineCode` từng dùng `--edu-card-bg` (nền THẺ, nửa trong suốt) nên đo được 1,003:1 — chip không có nền gì, và viền chỉ 1,252:1, thấp hơn cả mức 1,42 mà hai thanh sticky đã phải nâng lên. Số đo thật là 1,436; sàn đặt thấp hơn một nhịp để đổi một màu không làm đỏ oan."
     }
   ]
 }

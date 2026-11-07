@@ -530,6 +530,19 @@ const docToken = (ten) => {
   assert.ok(m, `${ten} ở khối NGÀY khai "${sau.split(';')[0].trim()}" — không phải mã màu`);
   return m[1];
 };
+
+/** Token của edu-theme.css ở MỘT chế độ. `:root` đọc phần NGÀY (trước `body.dark`),
+    `body.dark` đọc đúng khối đêm — gộp hai khối là trộn hai chế độ. */
+const DEM = THEME.slice(THEME.indexOf('body.dark {'));
+const docThemeToken = (che, ten) => {
+  const than = che === ':root' ? NGAY : DEM;
+  const i = than.indexOf(ten + ':');
+  assert.ok(i >= 0, `khối ${che} của edu-theme.css không khai ${ten}`);
+  const sau = than.slice(i + ten.length + 1, i + ten.length + 40);
+  const m = /^\s*(#[0-9a-fA-F]{6})\s*;/.exec(sau);
+  assert.ok(m, `${ten} ở ${che} khai "${sau.split(';')[0].trim()}" — không phải mã màu`);
+  return m[1];
+};
 /** Sàn của t3–t6: [thẻ, giấy]. CHỈ ĐƯỢC NÂNG — xem scripts/nguong-mot-chieu.json. */
 const SAN_THANG_NGAY = [
   // Sàn đặt THẤP HƠN số đo thật một nhịp, cố ý. Bản đầu ghim đúng con số cũ
@@ -573,4 +586,53 @@ test('thang chữ BAN NGÀY: t3–t6 vượt sàn CŨ trên cả thẻ trắng v
     else if (g < sanGiay) duoi.push(`${ten} ${mau} trên giấy ${g.toFixed(2)}:1 < sàn ${sanGiay}`);
   }
   assert.deepEqual(duoi, [], duoi.join('\n'));
+});
+
+/**
+ * Chip `code nội tuyến` phải CÓ NỀN, và nền đó phải ẤM.
+ *
+ * Lần thứ TƯ của họ lỗi "trắng trên trắng" trong repo này (sau --edu-card-border,
+ * --edu-panel-border, hai thanh sticky). `.inlineCode` từng dùng --edu-card-bg —
+ * một token nền THẺ, cố ý nửa trong suốt để nổi trên nền KHÔNG-trắng của các
+ * trang di sản. Đặt nó lên thẻ bài học TRẮNG thì đo được **1,003:1**: chip không
+ * có nền gì cả, và viền --edu-sidebar-border chỉ 1,252:1 — thấp hơn cả mức 1,42
+ * mà hai thanh sticky đã phải nâng lên. Dấu "đây là code" khi đó chỉ còn font
+ * monospace và cỡ 0,92em, trên MỌI code nội tuyến của 565 màn đọc.
+ *
+ * Ca này ghim hai thứ: nền phải TÁCH khỏi thẻ (sàn, chỉ được NÂNG) và nó phải ẤM
+ * (kênh đỏ >= kênh xanh dương) — một bản "chỉnh lại cho hợp tông" sẽ qua được
+ * phép kiểm tương phản mà vẫn phá đúng thứ bảng lofi mang lại.
+ */
+const SAN_CHIP = [
+  // [chế độ, nền thẻ, sàn tương phản] — sàn thấp hơn số đo thật một nhịp, theo
+  // đúng bài học đã ghi: ghim đúng số thật thì đổi một màu là đỏ oan.
+  [':root', '--edu-panel-bg-solid', 1.35],
+  ['body.dark', '--edu-panel-bg-solid', 1.4],
+];
+
+test('chip `code nội tuyến` phải CÓ NỀN tách khỏi thẻ, và nền đó ẤM', () => {
+  const loi = [];
+  // Bậc QUAN TRỌNG NHẤT, và bản đầu của ca này THIẾU nó: kiểm giá trị token mà
+  // không kiểm ai DÙNG token. Ablate đã đo — trả `.inlineCode` về `--edu-card-bg`
+  // cho **0 ca đỏ**, tức cổng rỗng đúng ở chỗ nó phải canh. Cùng hình dạng lỗi
+  // mà bản đầu của `check-duong-toi.mjs` đã mắc.
+  const CSS_CHIP = readFileSync(
+    join(__dirname, '..', '..', 'src', 'lib', 'inline-code.module.css'), 'utf8');
+  assert.match(
+    CSS_CHIP.replace(/\/\*[\s\S]*?\*\//g, ''), /background:\s*var\(--edu-code-inline-bg\)/,
+    '.inlineCode phải vẽ nền bằng --edu-code-inline-bg. Đổi tên lớp hay đổi file thì '
+      + 'SỬA CA NÀY — im lặng xanh ở đây là cổng rỗng.');
+  for (const [che, tenThe, san] of SAN_CHIP) {
+    const nen = docThemeToken(che, '--edu-code-inline-bg');
+    const the = docThemeToken(che, tenThe);
+    const chu = docThemeToken(che, '--edu-t1');
+    const r = tiSo(nen, the);
+    if (r < san) loi.push(`${che}: nền chip ${nen} chỉ ${r.toFixed(3)}:1 so với thẻ ${the} < sàn ${san}`);
+    const hex = nen.replace('#', '');
+    const [kr, , kb] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    if (kr < kb) loi.push(`${che}: nền chip ${nen} có đỏ ${kr} < xanh dương ${kb} — bảng lofi là ẤM`);
+    const rc = tiSo(chu, nen);
+    if (rc < AA) loi.push(`${che}: chữ ${chu} trên nền chip chỉ ${rc.toFixed(2)}:1 — DƯỚI AA ${AA}`);
+  }
+  assert.deepEqual(loi, [], loi.join(' | '));
 });

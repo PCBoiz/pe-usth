@@ -151,6 +151,14 @@
   --edu-track-bg: rgba(133,148,178,.2);
   --edu-sidebar-bg: rgba(255,255,255,.5);
   --edu-sidebar-border: rgba(152,165,188,.28);
+  /* Nền của `code nội tuyến`. KHÔNG tái dùng --edu-card-bg: nó là nền của một
+     THẺ (rgba(255,255,255,.55), cố ý nửa trong suốt để nổi trên nền KHÔNG-trắng
+     của các trang di sản). Đặt nó lên thẻ bài học TRẮNG thì đo được 1,003:1 —
+     chip không có nền gì cả, và viền --edu-sidebar-border chỉ 1,252:1, thấp hơn
+     cả mức 1,42 mà hai thanh sticky đã phải nâng lên. Lần thứ TƯ của họ lỗi
+     "trắng trên trắng" trong repo này. Chip nhỏ nên cần RÕ HƠN một đường kẻ.
+     Sàn chỉ được NÂNG — xem scripts/nguong-mot-chieu.json. */
+  --edu-code-inline-bg: #E8D9C0;   /* 1,381:1 trên thẻ · chữ --edu-t1 trên nó 11,47:1 */
   --edu-nav-bg: rgba(255,255,255,.72);
   --edu-accent-soft: rgba(63,125,240,.10);
   --edu-accent-soft-strong: rgba(63,125,240,.14);
@@ -273,6 +281,7 @@ body.dark {
   --edu-track-bg: rgba(255,255,255,.13);
   --edu-sidebar-bg: rgba(255,255,255,.03);
   --edu-sidebar-border: rgba(255,255,255,.09);
+  --edu-code-inline-bg: #4A392B;   /* 1,436:1 trên thẻ #1d232d · chữ --edu-t1 đêm 9,45:1 */
   --edu-nav-bg: rgba(16,19,25,.82);
   --edu-accent-soft: rgba(63,125,240,.14);
   --edu-accent-soft-strong: rgba(63,125,240,.18);

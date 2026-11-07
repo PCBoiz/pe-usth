@@ -77,7 +77,7 @@ học nó.
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **146 cảnh báo** (+7 = `goc-hoc/engine.js`, vào cùng 4d5f86d) |
-| Frontend unit test | `cd frontend && npm run test:unit` → **573 ca** / 48 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **574 ca** / 48 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **143 bài tập được chấm / 480 ca**, 2 440 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
@@ -91,7 +91,7 @@ học nó.
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **14 CSS module trong `src/`** |
 | Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 118/179 khớp, 61 bài đã đổi sau lần nạp cuối** — đợt 04/11 (mở khoá SY24, `goi_can_tai` quét mã bài đọc, bài tập PY01, math.floor SY11, đếm process RC01, trung bình có trọng số GU12) cộng đợt 07/11 (câu nhồi mệnh đề thành BẢNG · L11 thôi gọi một thứ bằng hai tên · L4/L5/L6 bỏ danh-từ-hoá và từ cấm · §4-A bọc backtick 54 hằng Python). Danh sách mã in ra ở đầu ra của cổng, KHÔNG liệt kê lại ở đây — một danh sách 61 mã trong bảng là thứ sẽ trôi. Biên nhận 03/11/2026 18:48 UTC; đỏ cho tới khi chủ dự án nạp. Nạp xong thì SỬA số ở đây, không thì `check-moc-nen` đỏ |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
-| Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **30 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
+| Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **32 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
 | Wheel vendored | `node scripts/check-wheel.mjs` → **16 wheel · 5 gói bài khai · 16 sau đóng bao phụ thuộc**, 0 lỗi |
 | Mốc phải CHẠY mới biết | `node scripts/check-moc-chay.mjs` → **3 mục** (frontend 573 · backend 35 bộ/501 · tracer 65), 0 trượt, 0 lỗi; nó CHẠY chính ba lệnh đó nên THAY cả ba bước trong CI — MỘT THAM SỐ mỗi job, vì chúng ở ba job chạy song song. Hai con số LINT cố ý ngoài tầm: chúng phải đi XUỐNG |
@@ -115,8 +115,10 @@ mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 
 read-diagram 12 ·
 read-guess 19 · read-trace 16 · recap-recall 7 · read-try-it 20 · review-quiz 34 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 15 · feedback-rank 3 · goc-hoc-khung-cho 6 · goc-hoc-lo-trinh 9 · goc-hoc-man-con 3 · o-nhap-nhieu-dong 2 · ide-output-scroll 6 · lien-ket-noi-bo 3 · goc-hoc-cho-so 7 = 573.
-Mốc trước là 571; ds-contrast 13 → 15 (THANG CHỮ BAN NGÀY: đợt warm lofi dừng ở t2 nên t3–t6
+worker-csp 7 · ds-contrast 16 · feedback-rank 3 · goc-hoc-khung-cho 6 · goc-hoc-lo-trinh 9 · goc-hoc-man-con 3 · o-nhap-nhieu-dong 2 · ide-output-scroll 6 · lien-ket-noi-bo 3 · goc-hoc-cho-so 7 = 574.
+Mốc trước là 573; ds-contrast 15 → 16 (CHIP `code nội tuyến` KHÔNG CÓ NỀN: `--edu-card-bg` trên
+thẻ trắng đo được 1,003:1, viền 1,252 — lần thứ TƯ của họ "trắng trên trắng").
+Trước đó 571 → 573; ds-contrast 13 → 15 (THANG CHỮ BAN NGÀY: đợt warm lofi dừng ở t2 nên t3–t6
 còn xanh lạnh, và t5 `#62718c` chỉ 4,27:1 trên giấy kem — DƯỚI AA 4,5).
 Trước đó 570 → 571; read-trace 15 → 16 (BẢNG TỪNG BƯỚC ở điện thoại: cột "Sau đó" bị bóp còn ~50px, một hàng cao 621px).
 Trước đó 569 → 570; inline-code 3 → 4 (Ý CHÍNH MÀN TỔNG KẾT vỡ cột: withInlineCode đặt thẳng trong <li> flex — 82/179 bài).
@@ -3076,6 +3078,50 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `bytes` ×11 · `DataFrame` ×11 · `Figure` ×11. Cụm `list`/`tuple`/`dict`/`set`/`bytes`/
   `int`/`float`/`str` là TÊN KIỂU Python nên cũng không có phán xét nào — ứng viên rõ cho
   lát sau, và mỗi lát sẽ lại đẩy số bài chờ nạp lên.
+
+- **CHIP `code nội tuyến` KHÔNG CÓ NỀN — 1,003:1 so với thẻ, lần thứ TƯ của họ "trắng trên
+  trắng".** Vòng này mở ra để đóng một rủi ro tôi tự khai: cụm backtick dài nằm giữa câu có
+  ngắt dòng xấu không. **Rủi ro đó ĐÃ ĐÓNG bằng phép đo** — `inline-code.module.css` có
+  `overflow-wrap: anywhere`, nên token dài chỉ ngắt dòng chứ không tràn. Nhưng cùng khối CSS
+  đó lộ ra lỗi thật:
+
+  | Đo | Giá trị |
+  |---|---|
+  | giấy | `#F4EEE3` |
+  | thẻ bài học (`--edu-panel-bg` .96 trên giấy) | `#FFFEFE` |
+  | **NỀN chip** (`--edu-card-bg` = `rgba(255,255,255,.55)`) | `#FFFFFE` — **1,003:1** |
+  | VIỀN chip (`--edu-sidebar-border` .28) | `#E2E5EB` — **1,252:1** |
+  | chữ trong chip (`--edu-t1`) | 15,89:1 — đạt |
+
+  Chip **không có nền gì cả**, và viền 1,252 còn thấp hơn mức **1,42** mà chính repo đã phải
+  nâng hai thanh sticky lên. Dấu "đây là code" khi đó chỉ còn font monospace và cỡ 0,92em,
+  trên MỌI code nội tuyến của 565 màn đọc cộng 54 chỗ vừa bọc backtick vòng trước.
+  **Nguyên nhân là TÁI DÙNG TOKEN SAI VAI**, đúng khuôn ba lần trước: `--edu-card-bg` là nền
+  của một THẺ, cố ý nửa trong suốt để nổi trên nền KHÔNG-trắng của các trang di sản. Đặt nó
+  lên một thẻ TRẮNG thì nó biến mất. Nên bản sửa là token MỚI `--edu-code-inline-bg`, không
+  phải sửa `--edu-card-bg` (thứ 7 chỗ khác đang dùng đúng vai).
+  **Giá trị do phép đo chọn, và hai chế độ đi NGƯỢC nhau:** ngày `#E8D9C0` → 1,381:1 trên
+  thẻ, chữ 11,47:1, ấm (R−B 40). Đêm thì mọi nâu ĐẬM đều TỆ HƠN mức cũ 1,139 (`#2A2018` chỉ
+  1,009 · `#32261C` 1,074 · `#3A2C20` 1,173) vì nâu đậm gần luminance với thẻ tối — phải đi
+  SÁNG hơn: `#4A392B` → **1,436:1**, chữ 9,45:1. Đo trước khi gán, đừng gán rồi mới đo —
+  cùng bài học đã ghi cho `--edu-card-line` ban đêm.
+  **CỔNG RỖNG Ở BẬC QUAN TRỌNG NHẤT, và chỉ ablate lộ ra:** bản đầu của ca chỉ kiểm GIÁ TRỊ
+  token, không kiểm ai DÙNG nó. Trả `.inlineCode` về `--edu-card-bg` cho **0 ca đỏ** — cổng
+  rỗng đúng ở chỗ nó phải canh, cùng hình dạng lỗi mà bản đầu của `check-duong-toi.mjs` đã
+  mắc. Nay ca đọc `inline-code.module.css` và đòi `background: var(--edu-code-inline-bg)`.
+  Ablate lại 5 chiều, mỗi chiều **1 đỏ**: trả `.inlineCode` về token cũ · nền ngày về gần
+  trắng (`#FBF7F1`) · nền ngày sang XANH LẠNH (`#C0D4E8`) · nền đêm về mức cũ (`#272D36`) ·
+  đổi TÊN token (ca nói thẳng "sửa ca này", không im lặng xanh).
+  **SỐ ĐÃ ĐO:** `ds-contrast` 15 → **16 ca**; frontend unit 573 → **574**; sổ ngưỡng 30 →
+  **32** (hai sàn 1.35 / 1.4, đặt thấp hơn số đo thật một nhịp). `ASSET_VERSION` →
+  `2026-11-07b` vì `edu-theme.css` nằm trong `public/`.
+  **ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC:** mọi `code nội tuyến` nay có nền kem ấm, nhìn ra ngay
+  là code. Bài chờ nạp DB **vẫn 61** — không nội dung nào đổi.
+  **GIỚI HẠN, nói ra vì nó là chỗ tôi dừng có chủ đích:** viền chip vẫn là
+  `--edu-sidebar-border` = `rgba(152,165,188,.28)`, một màu XANH LẠNH (|R−B| 10 sau hợp
+  thành) trên một trang giấy kem. Với một nền ấm đã thấy rõ thì viền 1px đó không còn gánh
+  việc gì, nên tôi để nguyên thay vì mở thêm một token — nhưng nó là thứ còn lại của bảng
+  cũ, và nếu có vòng dọn viền thì đây là một mục.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
