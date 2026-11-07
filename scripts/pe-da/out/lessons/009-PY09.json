@@ -22,7 +22,32 @@
     [
      {
       "type": "paragraph",
-      "text": "Sổ đã sạch sau bước trước, giờ để chương trình tự quyết một việc nhỏ thay bạn. Bạn muốn nó nhắc theo số cốc còn pha được trong bình. Từ 8 trở lên là đủ hàng; từ 5 đến dưới 8 là sắp hết; dưới 5 thì phải pha thêm ngay:"
+      "text": "Sổ đã sạch sau bước trước, giờ để chương trình tự quyết một việc nhỏ thay bạn. Bạn muốn nó nhắc theo số cốc còn pha được trong bình:"
+     },
+     {
+      "type": "table",
+      "headers": [
+       "Số cốc còn",
+       "Nhắc gì"
+      ],
+      "rows": [
+       [
+        "từ 8 trở lên",
+        "đủ hàng"
+       ],
+       [
+        "từ 5 đến dưới 8",
+        "sắp hết"
+       ],
+       [
+        "dưới 5",
+        "phải pha thêm ngay"
+       ]
+      ]
+     },
+     {
+      "type": "paragraph",
+      "text": "Ba mức đó viết thành điều kiện:"
      },
      {
       "type": "code",

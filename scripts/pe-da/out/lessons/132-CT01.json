@@ -45,7 +45,40 @@
     [
      {
       "type": "paragraph",
-      "text": "Đây là mô phỏng trạng thái trên slide. new là mới tạo; ready đã sẵn sàng nhưng chưa được CPU; running đang chạy; waiting chờ sự kiện như I/O; terminated đã kết thúc. Một interrupt có thể đưa running về ready. I/O hoàn thành thường đưa waiting về ready, không đảm bảo được chạy ngay."
+      "text": "Đây là mô phỏng trạng thái trên slide. Năm trạng thái của một process:"
+     },
+     {
+      "type": "table",
+      "headers": [
+       "Trạng thái",
+       "Nghĩa là"
+      ],
+      "rows": [
+       [
+        "new",
+        "mới tạo"
+       ],
+       [
+        "ready",
+        "đã sẵn sàng nhưng chưa được CPU"
+       ],
+       [
+        "running",
+        "đang chạy"
+       ],
+       [
+        "waiting",
+        "chờ một sự kiện, chẳng hạn I/O"
+       ],
+       [
+        "terminated",
+        "đã kết thúc"
+       ]
+      ]
+     },
+     {
+      "type": "paragraph",
+      "text": "Một interrupt có thể đưa running về ready. I/O hoàn thành thường đưa waiting về ready, không đảm bảo được chạy ngay."
      },
      {
       "type": "code",

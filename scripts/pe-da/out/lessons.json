@@ -1774,7 +1774,32 @@
       [
        {
         "type": "paragraph",
-        "text": "Sổ đã sạch sau bước trước, giờ để chương trình tự quyết một việc nhỏ thay bạn. Bạn muốn nó nhắc theo số cốc còn pha được trong bình. Từ 8 trở lên là đủ hàng; từ 5 đến dưới 8 là sắp hết; dưới 5 thì phải pha thêm ngay:"
+        "text": "Sổ đã sạch sau bước trước, giờ để chương trình tự quyết một việc nhỏ thay bạn. Bạn muốn nó nhắc theo số cốc còn pha được trong bình:"
+       },
+       {
+        "type": "table",
+        "headers": [
+         "Số cốc còn",
+         "Nhắc gì"
+        ],
+        "rows": [
+         [
+          "từ 8 trở lên",
+          "đủ hàng"
+         ],
+         [
+          "từ 5 đến dưới 8",
+          "sắp hết"
+         ],
+         [
+          "dưới 5",
+          "phải pha thêm ngay"
+         ]
+        ]
+       },
+       {
+        "type": "paragraph",
+        "text": "Ba mức đó viết thành điều kiện:"
        },
        {
         "type": "code",
@@ -32325,7 +32350,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Thử đổi thư mục trong một khối nhỏ rồi trả về chỗ cũ, kể cả khi có lỗi: old = os.getcwd(); try: os.chdir(folder); ... finally: os.chdir(old). Chỉ đổi vào thư mục tạm đã tạo cho bài, và khôi phục trước khi thư mục tạm bị xóa. Đường dẫn tương đối sau chdir được hiểu theo nơi mới; các file không tự di chuyển."
+        "text": "Thử đổi thư mục trong một khối nhỏ rồi trả về chỗ cũ, kể cả khi có lỗi: `old = os.getcwd(); try: os.chdir(folder); ... finally: os.chdir(old)`. Chỉ đổi vào thư mục tạm đã tạo cho bài, và khôi phục trước khi thư mục tạm bị xóa. Đường dẫn tương đối sau chdir được hiểu theo nơi mới; các file không tự di chuyển."
        }
       ]
      ],
@@ -36695,7 +36720,40 @@
       [
        {
         "type": "paragraph",
-        "text": "Đây là mô phỏng trạng thái trên slide. new là mới tạo; ready đã sẵn sàng nhưng chưa được CPU; running đang chạy; waiting chờ sự kiện như I/O; terminated đã kết thúc. Một interrupt có thể đưa running về ready. I/O hoàn thành thường đưa waiting về ready, không đảm bảo được chạy ngay."
+        "text": "Đây là mô phỏng trạng thái trên slide. Năm trạng thái của một process:"
+       },
+       {
+        "type": "table",
+        "headers": [
+         "Trạng thái",
+         "Nghĩa là"
+        ],
+        "rows": [
+         [
+          "new",
+          "mới tạo"
+         ],
+         [
+          "ready",
+          "đã sẵn sàng nhưng chưa được CPU"
+         ],
+         [
+          "running",
+          "đang chạy"
+         ],
+         [
+          "waiting",
+          "chờ một sự kiện, chẳng hạn I/O"
+         ],
+         [
+          "terminated",
+          "đã kết thúc"
+         ]
+        ]
+       },
+       {
+        "type": "paragraph",
+        "text": "Một interrupt có thể đưa running về ready. I/O hoàn thành thường đưa waiting về ready, không đảm bảo được chạy ngay."
        },
        {
         "type": "code",
@@ -40815,7 +40873,32 @@
       [
        {
         "type": "paragraph",
-        "text": "Quán gọi công cụ ngoài bằng mấy hàm ở bài trước; một shell thì tự nối chúng lại. Một shell nhận lệnh, chạy chương trình và hiển thị kết quả. Khi có dấu >, output đi vào file; dấu < lấy input từ file; dấu | nối hai chương trình. Trước hết xem việc ghi output vào file mà không nhờ shell hệ điều hành:"
+        "text": "Quán gọi công cụ ngoài bằng mấy hàm ở bài trước; một shell thì tự nối chúng lại. Một shell nhận lệnh, chạy chương trình và hiển thị kết quả. Ba dấu mà shell hiểu:"
+       },
+       {
+        "type": "table",
+        "headers": [
+         "Dấu",
+         "Shell làm gì"
+        ],
+        "rows": [
+         [
+          "`>`",
+          "đưa output vào file"
+         ],
+         [
+          "`<`",
+          "lấy input từ file"
+         ],
+         [
+          "`|`",
+          "nối output chương trình này vào input chương trình kia"
+         ]
+        ]
+       },
+       {
+        "type": "paragraph",
+        "text": "Trước hết xem việc ghi output vào file mà không nhờ shell hệ điều hành:"
        },
        {
         "type": "code",

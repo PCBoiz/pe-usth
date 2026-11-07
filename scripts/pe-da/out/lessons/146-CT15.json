@@ -22,7 +22,32 @@
     [
      {
       "type": "paragraph",
-      "text": "Quán gọi công cụ ngoài bằng mấy hàm ở bài trước; một shell thì tự nối chúng lại. Một shell nhận lệnh, chạy chương trình và hiển thị kết quả. Khi có dấu >, output đi vào file; dấu < lấy input từ file; dấu | nối hai chương trình. Trước hết xem việc ghi output vào file mà không nhờ shell hệ điều hành:"
+      "text": "Quán gọi công cụ ngoài bằng mấy hàm ở bài trước; một shell thì tự nối chúng lại. Một shell nhận lệnh, chạy chương trình và hiển thị kết quả. Ba dấu mà shell hiểu:"
+     },
+     {
+      "type": "table",
+      "headers": [
+       "Dấu",
+       "Shell làm gì"
+      ],
+      "rows": [
+       [
+        "`>`",
+        "đưa output vào file"
+       ],
+       [
+        "`<`",
+        "lấy input từ file"
+       ],
+       [
+        "`|`",
+        "nối output chương trình này vào input chương trình kia"
+       ]
+      ]
+     },
+     {
+      "type": "paragraph",
+      "text": "Trước hết xem việc ghi output vào file mà không nhờ shell hệ điều hành:"
      },
      {
       "type": "code",

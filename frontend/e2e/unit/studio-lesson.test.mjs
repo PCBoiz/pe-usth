@@ -915,11 +915,11 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
   // còn lại, nên +1 table và +1 paragraph. Đo sau khi chuyển: L3 43 → 41 lỗi,
   // L2 cảnh báo 17 → 16, không luật nào tăng.
   assert.deepEqual(count, {
-    paragraph: 813,
+    paragraph: 816,
     code: 508,
     terminal: 17,
     figure: 80,
-    table: 4,
+    table: 7,
     diagram: 3,
   });
   // Câu luyện tập là câu MỞ kèm lời giải mẫu — không có phương án sai nào để

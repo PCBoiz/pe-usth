@@ -65,7 +65,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Thử đổi thư mục trong một khối nhỏ rồi trả về chỗ cũ, kể cả khi có lỗi: old = os.getcwd(); try: os.chdir(folder); ... finally: os.chdir(old). Chỉ đổi vào thư mục tạm đã tạo cho bài, và khôi phục trước khi thư mục tạm bị xóa. Đường dẫn tương đối sau chdir được hiểu theo nơi mới; các file không tự di chuyển."
+      "text": "Thử đổi thư mục trong một khối nhỏ rồi trả về chỗ cũ, kể cả khi có lỗi: `old = os.getcwd(); try: os.chdir(folder); ... finally: os.chdir(old)`. Chỉ đổi vào thư mục tạm đã tạo cho bài, và khôi phục trước khi thư mục tạm bị xóa. Đường dẫn tương đối sau chdir được hiểu theo nơi mới; các file không tự di chuyển."
      }
     ]
    ],
