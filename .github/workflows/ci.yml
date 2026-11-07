@@ -319,6 +319,20 @@ jobs:
 
       - run: python scripts/pe-da/check.py --strict
 
+      # VĂN PHONG — chế độ RATCHET, không phải bản tuyệt đối.
+      #
+      # LOOP.md bậc 4 đã đòi "không luật nào được TĂNG" từ lâu, nhưng mốc từng
+      # luật chỉ sống trong §11 của VAN-PHONG.md: văn xuôi, đo 29/10 trên 172
+      # bài, và không gì đối chiếu nó — tức một luật ratchet không có gì để so.
+      # Nay mốc nằm ở scripts/pe-da/van-phong-moc.json và bước này thi hành nó.
+      #
+      # KHÔNG chạy bản tuyệt đối ở đây: corpus đang có 139 lỗi văn phong, cắm
+      # nó vào CI là đỏ vĩnh viễn vì một việc chỉ người soạn giáo trình làm
+      # được — mà đỏ vĩnh viễn thì dạy người ta quen với màu đỏ (bài học đã ghi
+      # cho DAP_AN_MAU_KHONG_CHAY và check-da-nap). Bước này chỉ đỏ khi văn
+      # phong xấu ĐI; siết thì nó in GHI SỔ và vẫn xanh.
+      - run: python scripts/pe-da/check_vanphong.py --doi-chieu
+
       # Trang khoá học đọc file tĩnh curricula.json, nội dung bài đọc từ DB —
       # quên bước chép là hai con số trên cùng một màn hình nói khác nhau.
       - name: curricula.json phải khớp bản dựng

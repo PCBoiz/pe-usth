@@ -395,23 +395,33 @@ VnCoreNLP (F1 ~97%, nhiễu ~3%), và mọi ngưỡng ở trên đã hiệu chu�
 
 ## 11. Bảng tra nhanh
 
+**Cột "Corpus hiện trượt" là BẢN CHÉP, không phải thẩm quyền.** Số thật nằm ở
+`scripts/pe-da/van-phong-moc.json`, và `check_vanphong.py --doi-chieu` thi hành
+luật "không luật nào được TĂNG" của LOOP.md bậc 4 bằng chính sổ đó (CI chạy nó).
+Trước 07/11/2026 bảng này là chỗ DUY NHẤT giữ mốc — tức một luật ratchet không
+có gì để đối chiếu — và nó đã trôi theo CẢ HAI chiều: số đo hồi 29/10 trên 172
+bài (L10 khi đó 65, nay 0), còn L14 và L15 thì có trong mã mà không có dòng nào
+ở đây. Số dưới đo ngày 07/11/2026 trên 179 bài.
+
 | | Luật | Mức | Corpus hiện trượt |
 |---|---|---|---|
-| L1 | Câu > 25 tiếng cảnh báo, > 30 lỗi | CB/LỖI | 25 lỗi · 94 cb |
-| L2 | Đoạn > 90 tiếng hoặc > 6 câu | CB/LỖI | 7 lỗi · 19 cb |
-| **L3** | **Câu ≥ 3 dấu `,`/`;` và ≥ 20 tiếng → bảng** | **LỖI** | **48 câu** |
-| L4 | Không mở câu bằng danh-từ-hoá | LỖI | 6 |
-| L5 | Cấm `được/bị + V + bởi` | LỖI | 2 |
-| L6 | Từ cấm hành chính (≥4/11 là dương tính giả) | LỖI | 11 |
-| L7 | Chỉ "bạn" | LỖI | 0 lỗi · 19 cb |
-| **L8** | **Mật độ thuật ngữ ≤ 40/1000 tiếng** | CB/LỖI | **43 lỗi · 30 cb** |
+| L1 | Câu > 25 tiếng cảnh báo, > 30 lỗi | CB/LỖI | 21 lỗi · 89 cb |
+| L2 | Đoạn > 90 tiếng hoặc > 6 câu | CB/LỖI | 7 lỗi · 17 cb |
+| **L3** | **Câu ≥ 3 dấu `,`/`;` và ≥ 20 tiếng → bảng** | **LỖI** | **43 câu** |
+| L4 | Không mở câu bằng danh-từ-hoá | LỖI | 3 |
+| L5 | Cấm `được/bị + V + bởi` | LỖI | 1 |
+| L6 | Từ cấm hành chính (≥4/11 là dương tính giả) | LỖI | 9 |
+| L7 | Chỉ "bạn" | LỖI | 0 lỗi · 17 cb |
+| **L8** | **Mật độ thuật ngữ ≤ 40/1000 tiếng** | CB/LỖI | **35 lỗi · 31 cb** |
 | L9 | ≤ 3 thuật ngữ mới mỗi màn — *hàng rào* | CB/LỖI | **0** (max đo được 3) |
-| **L10** | **Thuật ngữ lần đầu phải có chú giải** | **LỖI** | **65** |
+| L10 | Thuật ngữ lần đầu phải có chú giải | LỖI | 0 (29/10 là 65) |
 | L11 | Một thuật ngữ một cách gọi, khoá (thuật ngữ, ngữ cảnh) | LỖI | 16 |
-| L12 | ≤ 1 hedge/câu (lỗi ở ≥3) | LỖI | 4 lỗi · 43 cb |
-| L13 | Ưu tiên thuần Việt theo danh sách | CẢNH BÁO | 0 lỗi · 247 cb |
+| L12 | ≤ 1 hedge/câu (lỗi ở ≥3) | LỖI | 4 lỗi · 39 cb |
+| L13 | Ưu tiên thuần Việt theo danh sách | CẢNH BÁO | 0 lỗi · 221 cb |
+| L14 | Bối cảnh bài phải thuộc `boi-canh.json` | CẢNH BÁO | 0 lỗi · 30 cb |
+| L15 | Đoạn mở bài phải nối với bài trước | CẢNH BÁO | 0 |
 | TB | Bất biến termbank: `baiDauTien` khớp corpus | LỖI | 0 |
-| §4-A | Định danh nhóm A phải nằm trong backtick | CẢNH BÁO | 266 |
+| §4-A | Định danh nhóm A phải nằm trong backtick | CẢNH BÁO | 256 |
 | **M1** | **3 phương án mặc định** | **LỖI** | 0 (đang đúng) |
 | **M2** | **Trộn vị trí có phân tầng** | **LỖI** | **1 032/1 032** |
 | M3 | Nhiễu phải có lý do lưu kèm | LỖI | 1 032 |

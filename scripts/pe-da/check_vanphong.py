@@ -204,6 +204,12 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 SOURCE = HERE / 'source' / 'course.json'
+# Sổ mốc TỪNG LUẬT. LOOP.md bậc 4 đòi "không luật nào được TĂNG", nhưng trước
+# bản này con số chỉ sống trong §11 của VAN-PHONG.md — tức VĂN XUÔI, đo hồi
+# 29/10 trên 172 bài, và không gì đối chiếu nó. Một luật ratchet không có mốc
+# máy đọc được thì không phải ratchet: nó là một câu dặn. Cùng lý lẽ đã dựng
+# `scripts/nguong-mot-chieu.json` cho 18 ngưỡng một chiều.
+MOC = HERE / 'van-phong-moc.json'
 TERMBANK = HERE / 'thuatngu.json'
 BOI_CANH = HERE / 'boi-canh.json'
 
@@ -865,6 +871,88 @@ def canh_bao(luat: str, msg: str) -> None:
     CANH_BAO.append((luat, msg))
 
 
+def doi_chieu_moc(dem_lo: Counter, dem_cb: Counter, thu_tu: list[str],
+                  so_bai: int, ghi_so: bool) -> int:
+    """So số trượt TỪNG LUẬT với sổ, và thi hành "không luật nào được TĂNG".
+
+    BA CHIỀU, và chiều thứ ba là chiều hay bị quên:
+      · luật TĂNG            → LỖI (văn phong xấu đi);
+      · luật GIẢM            → chỉ in `GHI SỔ`, KHÔNG đỏ. Bắt đỏ khi người ta
+        vừa làm tốt lên là dạy người ta thôi sửa văn phong — cùng lý lẽ đã ghi
+        cho `check-nguong.mjs`;
+      · luật có trong MÃ mà sổ chưa khai → LỖI, và sổ khai một luật MÃ không
+        còn → cũng LỖI. Thiếu chiều này thì thêm một luật mới là nó không bao
+        giờ được canh (L14 đã sống như vậy: có trong mã, không có dòng nào
+        trong §11 của VAN-PHONG.md).
+    """
+    # KHỞI TẠO khác THIẾU MỤC, và gộp hai thứ làm cờ tự từ chối chính nó: lần
+    # chạy đầu không có sổ thì MỌI luật đều "chưa khai" ⇒ `loi_ra` đầy ⇒ nhánh
+    # `--ghi-so` thấy lỗi và không ghi gì. Đã vấp đúng vậy khi tạo sổ lần đầu.
+    khoi_tao = not MOC.is_file()
+    if khoi_tao:
+        if not ghi_so:
+            print(f'LỖI: chưa có {MOC.name}. Chạy kèm --ghi-so để tạo lần đầu.',
+                  file=sys.stderr)
+            return 1
+        so = {'_doc': 'Mốc TỪNG LUẬT của check_vanphong.py. LOOP.md bậc 4: '
+                      '"không luật nào được TĂNG". Siết thì chạy --ghi-so; '
+                      'nới thì sửa CHỮ, đừng sửa sổ.',
+              'luat': {}}
+    else:
+        so = json.loads(MOC.read_text(encoding='utf-8'))
+
+    cu = so.get('luat') or {}
+    nay = {t: {'loi': dem_lo[t], 'cb': dem_cb[t]} for t in thu_tu}
+
+    loi_ra: list[str] = []
+    siet: list[str] = []
+    for t in thu_tu:
+        if t not in cu:
+            if khoi_tao:
+                continue
+            loi_ra.append(f'{t}: luật có trong mã mà SỔ CHƯA KHAI — thêm một '
+                          f'luật thì phải ghi mốc cho nó, không thì nó không '
+                          f'bao giờ được canh (đo được: {nay[t]["loi"]} lỗi · '
+                          f'{nay[t]["cb"]} cb)')
+            continue
+        for khoa, ten in (('loi', 'lỗi'), ('cb', 'cảnh báo')):
+            truoc, gio = int(cu[t].get(khoa, 0)), nay[t][khoa]
+            if gio > truoc:
+                loi_ra.append(f'{t}: {ten} TĂNG {truoc} → {gio}. Văn phong xấu '
+                              f'đi; sửa chữ, đừng nới sổ.')
+            elif gio < truoc:
+                siet.append(f'{t} {ten} {truoc} → {gio}')
+    for t in cu:
+        if t not in nay:
+            loi_ra.append(f'{t}: SỔ KHAI một luật mã không còn — mục lỗi thời, '
+                          f'bỏ nó đi, không thì sổ thành chỗ giấu rác.')
+
+    for m in loi_ra:
+        print(f'LỖI: {m}', file=sys.stderr)
+    if siet:
+        print(f'\nGHI SỔ — {len(siet)} mục đã SIẾT, chạy kèm --ghi-so để ghi lại:')
+        for m in siet:
+            print(f'   {m}')
+
+    if ghi_so:
+        if loi_ra:
+            print('\n--ghi-so TỪ CHỐI: đang có luật TĂNG. Sửa chữ trước.',
+                  file=sys.stderr)
+            return 1
+        if not siet and cu and so.get('soBai') == so_bai:
+            print('\nSổ đã đúng — không ghi gì.')
+            return 0
+        so['luat'] = nay
+        so['soBai'] = so_bai
+        MOC.write_text(json.dumps(so, ensure_ascii=False, indent=2) + '\n',
+                       encoding='utf-8')
+        print(f'\nĐã ghi {MOC.name}: {len(nay)} luật · {so_bai} bài.')
+        return 0
+
+    print(f'\nĐối chiếu sổ: {len(nay)} luật · {so_bai} bài · {len(loi_ra)} lỗi')
+    return 1 if loi_ra else 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--strict', action='store_true',
@@ -879,6 +967,13 @@ def main() -> int:
     # thật — `source/course.json` là nguồn duy nhất build.py đọc.
     ap.add_argument('--nguon', default=str(SOURCE),
                     help='bản sao corpus để ablate (mặc định: source/course.json)')
+    ap.add_argument('--doi-chieu', action='store_true',
+                    help='so TỪNG LUẬT với van-phong-moc.json; ĐỎ khi một luật '
+                         'TĂNG. Đây là chế độ CI chạy — nó KHÔNG đỏ vì 139 lỗi '
+                         'đang tồn, chỉ đỏ khi văn phong xấu ĐI.')
+    ap.add_argument('--ghi-so', action='store_true',
+                    help='ghi lại sổ sau khi đã SIẾT. Từ chối chạy khi đang có '
+                         'luật tăng — nếu không nó là cái nút TẮT cổng.')
     args = ap.parse_args()
 
     src = Path(args.nguon)
@@ -936,6 +1031,19 @@ def main() -> int:
     print(f'\n{len(bai)} bài · {len(bank)} thuật ngữ · {len(lo)} lỗi · '
           f'{len(cb)} cảnh báo'
           f'{" (strict: cảnh báo tính là lỗi)" if args.strict else ""}')
+
+    # Chế độ CI. Mã thoát ở đây nói về RATCHET, không về 139 lỗi đang tồn: cắm
+    # bản tuyệt đối vào CI là đỏ vĩnh viễn vì một việc chỉ người soạn giáo
+    # trình làm được, mà đỏ vĩnh viễn thì dạy người ta quen với màu đỏ (bài học
+    # đã ghi cho `DAP_AN_MAU_KHONG_CHAY` và `check-da-nap`).
+    if args.doi_chieu or args.ghi_so:
+        if chon:
+            print('LỖI: --doi-chieu không đi với --luat — lọc luật thì phép so '
+                  'chỉ thấy một phần sổ và mọi luật bị lọc trông như đã biến '
+                  'mất.', file=sys.stderr)
+            return 1
+        return doi_chieu_moc(dem_lo, dem_cb, thu_tu, len(bai), args.ghi_so)
+
     return 1 if hong else 0
 
 
