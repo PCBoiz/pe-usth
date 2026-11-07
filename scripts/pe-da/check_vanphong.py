@@ -527,13 +527,33 @@ XUNG_HO = [
 ]
 
 # L12: KHÔNG cấm `có thể` — nhiều chỗ nó đúng và cần. Cấm là CHỒNG.
+# `khoảng` KHÔNG đứng trần trong danh sách này: nó là HOMOGRAPH. Đo trên corpus:
+# 61 lần dùng và ~59 là DANH TỪ (khoảng trắng · khoảng cách · khoảng thời gian ·
+# khoảng tin cậy · khoảng tứ phân vị · các khoảng · trong khoảng); chỉ ~2 là nghĩa
+# "xấp xỉ". Nên nó chỉ tính là hedge khi đứng trước một SỐ, và chính nó gây 3
+# trong 4 lỗi L12 trước bản này.
 HEDGE = [re.compile(r'(?<![\w])' + p + r'(?![\w])', re.I) for p in [
     r'có thể', r'có lẽ', r'thường', r'thường xuyên', r'đôi khi', r'có khi',
-    r'nhiều khi', r'thỉnh thoảng', r'khoảng', r'hầu như', r'gần như',
+    r'nhiều khi', r'thỉnh thoảng', r'khoảng(?=\s+(?:\d+|một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười|vài|dăm)(?![\w-]))', r'hầu như', r'gần như',
     r'phần lớn', r'nói chung', r'thông thường', r'dường như', r'có vẻ',
     r'tương đối', r'khá', r'chưa hẳn', r'không hẳn', r'chưa chắc',
     r'không nhất thiết', r'ít nhiều', r'tuỳ', r'tùy',
 ]]
+
+
+def dem_hedge(c: str) -> int:
+    """Đếm hedge theo SPAN, bỏ span bị CHỨA trong span khác.
+
+    `sum(len(rx.findall(c)) for rx in HEDGE)` cộng từng khuôn độc lập, mà
+    `thường` khớp BÊN TRONG `thông thường` và `thường xuyên` — nên một cụm bị
+    đếm thành HAI. Đo được: PD17 bị báo "3 hedge chồng" cho một câu chỉ có 2
+    (`thông thường` + `có thể`), tức cổng tự đẩy câu đó từ bậc cảnh báo lên bậc
+    lỗi. Giữ span DÀI NHẤT là cách duy nhất không cần biết khuôn nào chứa khuôn
+    nào.
+    """
+    span = sorted({(m.start(), m.end()) for rx in HEDGE for m in rx.finditer(c)})
+    return sum(1 for s in span
+               if not any(t != s and t[0] <= s[0] and s[1] <= t[1] for t in span))
 
 
 def kiem_khuon_chu(bai: list[dict]) -> None:
@@ -554,7 +574,7 @@ def kiem_khuon_chu(bai: list[dict]) -> None:
                     if rx.search(c):
                         (loi if nang else canh_bao)(
                             'L7', f'{ma}: xưng hô "{ten}" — chỉ dùng "bạn" · {goi(c)}')
-                n_hedge = sum(len(rx.findall(c)) for rx in HEDGE)
+                n_hedge = dem_hedge(c)
                 # ≥3 là LỖI vì đó là con số §6 đã đo (10 câu, nặng nhất 4); 2 là
                 # cảnh báo. Ngưỡng ở 2 mà tính lỗi thì luật đi cấm cả những câu
                 # mà §6 nói rõ là vô tội.

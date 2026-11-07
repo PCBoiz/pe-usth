@@ -83,7 +83,7 @@ học nó.
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **143 bài tập được chấm / 480 ca**, 2 440 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 154 bài, 420 đoạn code, **0 hỏng**, **0 cảnh báo**, ~32 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 143 bài, **480 ca đạt**, 773 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, **pha 4: 2 372 ca trượt / 0 ca im lặng / 7 nhánh phản hồi**, ~12 s |
-| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **103 lỗi · 693 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 32 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 103 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
+| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **99 lỗi · 671 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 32 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 99 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 359 khối đủ điều kiện** (303 bỏ qua — bảng từng ghi 356/300, đã CŨ từ trước 04/11: dựng lại từ HEAD cũng ra 359/303, và `check-moc-nen` không đối chiếu hàng này; phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
@@ -2896,6 +2896,43 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   L6 9 → 0 · L1 cảnh báo 89 → 88 (một câu ngắn lại nhờ bỏ "Việc"). Ba luật nay ở 0.
   `check.py --strict` 0 lỗi 0 cảnh báo. Sổ đã ghi 4 mục siết.
   **GIÁ PHẢI TRẢ:** bài chờ nạp DB 25 → **27** (thêm PD07, CT11).
+
+- **L12 "hedge chồng": CẢ 4 lỗi là cổng báo oan, và đây là lần thứ TƯ LIỀN một luật văn
+  phong bắt HOMOGRAPH hoặc SUBSTRING.** Vòng này không sửa một chữ nội dung nào.
+  **HAI nguyên nhân khác nhau, cùng nằm trong 4 ca:**
+  · **`khoảng` là HOMOGRAPH.** Đo trên corpus: **61 lần dùng, ~59 là DANH TỪ** — khoảng
+    trắng · khoảng cách · khoảng thời gian · khoảng tin cậy · khoảng tứ phân vị · các
+    khoảng · trong khoảng. Chỉ ~2 là nghĩa "xấp xỉ" (CT03 "tỷ lệ khoảng 96.2%", VZ07
+    "chứa khoảng một nửa"). Tỉ lệ báo oan **~97%**, và một mình nó gây **3 trong 4** lỗi:
+    VZ06 `['thường','khoảng','khoảng']` · VZ13 `['có thể','khoảng','khoảng']` ·
+    GU03 `['thường','thường','khoảng']`;
+  · **SPAN TRÙNG bị đếm hai lần.** `sum(len(rx.findall(c)) for rx in HEDGE)` cộng từng
+    khuôn độc lập, mà `thường` khớp BÊN TRONG `thông thường` và `thường xuyên`. PD17 bị báo
+    `['có thể','thường','thông thường']` = 3 cho một câu chỉ có **2** hedge thật — cổng tự
+    đẩy câu đó từ bậc cảnh báo lên bậc LỖI.
+  **Cách sửa:** `khoảng` chỉ tính là hedge khi đứng trước một SỐ
+  (`khoảng(?=\s+(?:\d+|một|hai|…))`), và phép đếm chuyển sang GIỮ SPAN DÀI NHẤT —
+  `dem_hedge()` bỏ mọi span bị chứa trong span khác, nên không cần biết khuôn nào chứa
+  khuôn nào.
+  **ABLATE BẮT ĐƯỢC LỖI TRONG CHÍNH BẢN SỬA, và đó là chiều dễ bỏ qua nhất:** bản đầu viết
+  `(?:\d|một|…)` nên lookahead TRƯỢT ở "khoảng 10" — `\d` khớp đúng một chữ số rồi
+  `(?![\w-])` thấy chữ số thứ hai và trả về False. Tức phép siết đã siết QUÁ TAY và bỏ mất
+  đúng nghĩa hedge mà nó phải giữ; chiều "gieo nghĩa xấp xỉ, cổng phải BẮT" là chiều duy
+  nhất lộ ra chuyện đó. Nay là `\d+`.
+  Ablate 7 chiều (gieo câu vào bản SAO qua `--nguon`): 3 hedge thật → **1 lỗi** ·
+  "khoảng 10" + 2 hedge → **1 lỗi** · "khoảng một nửa" + 2 → **1 lỗi** · "khoảng trắng"
+  (danh từ) + 2 → **0 lỗi, +1 cảnh báo** · "khoảng cách" + 2 → 0 lỗi, +1 cảnh báo ·
+  "thông thường" + "có thể" → 0 lỗi, +1 cảnh báo (đếm 2, không 3) · "thường xuyên" +
+  "có thể" → 0 lỗi, +1 cảnh báo.
+  **SỐ ĐÃ ĐO:** 103 → **99 lỗi** · 693 → **671 cảnh báo**. L12 lỗi 4 → 0, cảnh báo
+  39 → **17** (22 cảnh báo kia cũng là báo oan của hai nguyên nhân trên). Bốn luật nay ở 0
+  lỗi: L4, L5, L6, L12. Bài chờ nạp DB **vẫn 27** — không nội dung nào đổi.
+  **BỐN LẦN LIỀN, và đó là một khuôn chứ không phải trùng hợp:** `f-string` chứa `string` ·
+  "một cách truy cập" là danh ngữ · `Tính trung bình` là động từ ra lệnh · `khoảng cách` là
+  danh từ. Luật văn phong dò bằng CHỮ trong tiếng Việt thì mặc định sẽ bắt homograph, vì
+  tiếng Việt không có hình thái để phân biệt từ loại. **Phép thử trước khi tin một con số
+  của bộ này: in ra ĐÚNG chuỗi nào đã khớp, rồi đọc nghĩa của nó trong câu.** Đếm mà không
+  in chuỗi khớp là đếm một con số không ai kiểm được.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
