@@ -3388,6 +3388,57 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   phải việc phải làm."* Nên đó là một việc mà đặc tả CẤM mở thành chiến dịch, và tôi đã nêu
   nó vì đọc bảng số thay vì đọc câu.
 
+- **BẢNG §11 CỦA ĐẶC TẢ LÀ MỘT BẢN CHÉP SỐ LỖI TỪNG LUẬT, và nó trôi gần hết — 10/17 hàng
+  sai cùng lúc, dòng tổng lệch 2,4 LẦN.** Vòng trước dựng luật TL cho bảng §2 và tự nêu rằng
+  trích dẫn trần lint ở §12 còn là một bản sao không ai canh. Đo rộng hơn thì §11 tệ hơn hẳn:
+
+  | Hàng | §11 ghi | Đo được |
+  |---|---|---|
+  | L1 | 21 lỗi · 89 cb | 21 · **86** |
+  | L2 | 7 lỗi · 17 cb | 7 · **14** |
+  | L3 | **43 câu** | **39** |
+  | L4 · L5 · L6 | 3 · 1 · 9 | **0 · 0 · 0** |
+  | L8 | **35 lỗi · 31 cb** | **26 · 24** |
+  | L11 | 16 | **0** |
+  | L12 | 4 lỗi · 39 cb | **0 · 17** |
+  | L13 | 0 · 221 cb | 0 · **220** |
+  | §4-A | **256** | **59** |
+  | **TỔNG** | **227 lỗi · 718 cb** | **93 · 467** |
+
+  Bảy hàng còn lại (L7, L9, L10, L14, L15, TB) đúng; TL thì chưa có hàng nào.
+  **VÌ SAO NÓ SỐNG ĐƯỢC LÂU: format mỗi hàng một kiểu.** Bản cũ viết "43 câu" · "3" ·
+  "0 (29/10 là 65)" · "0 (max đo được 3)" — không regex nào đọc nổi, và **một bảng không
+  đọc được là một bảng không ai canh**. Format nay đồng nhất `N lỗi · N cb` cho MỌI hàng;
+  đó không phải thẩm mỹ, nó là điều kiện để có cổng.
+  **PHÉP ĐỐI CHIẾU PHẢI NẰM TRONG RATCHET, không trong luật TL** — và đó là một ràng buộc
+  thật, không phải chỗ để tuỳ: bảng §11 nói về số lỗi của TỪNG LUẬT, mà con số ấy chỉ có
+  sau khi MỌI luật đã chạy. TL chạy GIỮA pass nên nó không thể biết. `doi_chieu_moc` thì có
+  sẵn `nay[t]` cho từng luật.
+  **VÀ NÓ VÀO `so_sach`, KHÔNG VÀO `loi_ra`:** một bản sửa nội dung làm L8 đi 26 → 25 thì
+  bảng §11 phải cập nhật, mà chặn `--ghi-so` ở đó là dựng lại ĐÚNG thế bế tắc vừa phải sửa
+  khi thêm luật TL một vòng trước. Ablate đã kiểm: lệch bảng §11 → `--doi-chieu` **exit 1**
+  nhưng `--ghi-so` **vẫn ghi được**.
+  **TL nhận thêm hai bản sao KHÔNG phụ thuộc số lỗi:** độ lớn termbank (§1 ghi **110 mục**
+  khi `thuatngu.json` có **112** — và §1 dùng con số đó để biện minh câu "mọi con số xấp xỉ
+  gấp đôi", nên lệch nó là lệch cả lời biện minh), và **trần lint backend** — nay so với
+  CHÍNH `ci.yml`, cùng tệp mà `scripts/nguong-mot-chieu.json` đọc trần ấy từ. Ablate chiều
+  đó đặc biệt đáng: đổi `const TRAN` trong `ci.yml` thành 150 mà giữ trích dẫn 115 → TL đỏ
+  với *"§12 trích 115, `ci.yml` đặt 150. Sửa trích dẫn, đừng sửa trần."* Tức nó đọc NGUỒN,
+  không đọc bản sao.
+  **§12 CŨNG ĐƯỢC VIẾT LẠI, không chỉ sửa số.** Nó đề xuất "đặt trần ở 227, hạ dần" — một
+  kế hoạch đã được THAY bằng thứ chặt hơn: ratchet giữ mốc TỪNG LUẬT, nên một luật xấu đi
+  không núp được sau một luật khác vừa tốt lên. Để nguyên câu cũ là để đặc tả khuyên một
+  việc kém hơn việc đã làm.
+  Ablate 8 chiều, mỗi chiều đỏ: đổi một hàng (L8 26 → 25) → *"bảng §11 hàng L8"* · trả một
+  hàng về format cũ ("43 câu") → *"hàng L3 khớp 0 chỗ, đòi ĐÚNG MỘT và đúng format"* · đổi
+  dòng tổng → 1 · đổi "hôm nay cho 93 lỗi" → 1 · đổi độ lớn termbank → TL đỏ · đổi trích dẫn
+  trần lint → TL đỏ · đổi `ci.yml` (nguồn) → TL đỏ · lệch §11 + `--ghi-so` → vẫn ghi được.
+  **GIỚI HẠN, hai cái.** (1) Một lỗi TL gieo vào làm **cascade**: nó đổi hàng TL của §11 và
+  cả hai dòng tổng, nên một khiếm khuyết sinh ~4 thông điệp. Ồn nhưng không sai — cứ sửa cái
+  gốc. (2) Năm hàng **M1–M5** của §11 (luật trắc nghiệm) do `check.py` thi hành, không do
+  `check_vanphong.py`, nên `doi_chieu_moc` KHÔNG đo được chúng và chúng **vẫn trôi được**.
+  Đã khai ra ở đây thay vì để im lặng.
+
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
 Hai đường, chọn sai là xoá tiến độ của người đang học:

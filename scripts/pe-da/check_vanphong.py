@@ -952,7 +952,7 @@ BANG_S2 = [
 TI_LE_S2 = r'\| Câu > 30 tiếng \| \*\*\d+ câu\*\* \((\d+,\d)%\) \|'
 
 
-def kiem_tai_lieu(bai: list[dict]) -> None:
+def kiem_tai_lieu(bai: list[dict], bank: list[Muc]) -> None:
     """TL — bảng §2 của VAN-PHONG.md phải khớp số đo thật.
 
     VÌ SAO LUẬT NÀY PHẢI TỒN TẠI, và nó là một lỗi đã xảy ra HAI LẦN trong chính
@@ -1028,6 +1028,33 @@ def kiem_tai_lieu(bai: list[dict]) -> None:
         thuc = f'{100 * that["số câu > 30 tiếng"] / len(do):.1f}'.replace('.', ',')
         if ms[0] != thuc:
             loi('TL', f'tỉ lệ câu > 30 tiếng: §2 ghi {ms[0]}%, đo được {thuc}%')
+
+    # ĐỘ LỚN TERMBANK. §1 dùng con số này để nói "mọi con số xấp xỉ gấp đôi" so
+    # với phép đo bằng 40 từ thông dụng nhất, nên nó không phải trang trí: lệch
+    # nó là lệch cả lời biện minh. Đã trôi: ghi 110 khi thật là 112.
+    ms = re.findall(r'`thuatngu\.json` khai \*\*(\d+) mục\*\*', van)
+    if len(ms) != 1:
+        loi('TL', f'§1: regex "thuatngu.json khai N mục" khớp {len(ms)} chỗ, đòi ĐÚNG MỘT')
+    elif int(ms[0]) != len(bank):
+        loi('TL', f'độ lớn termbank: đặc tả ghi {ms[0]} mục, `thuatngu.json` có '
+                  f'{len(bank)}')
+
+    # TRẦN LINT BACKEND là một BẢN SAO của `ci.yml`, và §12 tự ghi rằng trích dẫn
+    # ở đó "từng ghi 245 suốt nhiều tháng". Nay nó được so với CHÍNH nguồn —
+    # cùng tệp mà `scripts/nguong-mot-chieu.json` đọc trần ấy từ.
+    ci = HERE.parent.parent / '.github' / 'workflows' / 'ci.yml'
+    if not ci.is_file():
+        loi('TL', 'không tìm thấy .github/workflows/ci.yml — không đối chiếu được '
+                  'trần lint mà §12 trích')
+    else:
+        nguon = re.findall(r'const TRAN = (\d+);', ci.read_text(encoding='utf-8'))
+        trich = re.findall(r'mốc trần trong CI là \*\*(\d+)\*\*', van)
+        if len(nguon) != 1 or len(trich) != 1:
+            loi('TL', f'trần lint: ci.yml khớp {len(nguon)} chỗ, đặc tả khớp '
+                      f'{len(trich)} chỗ — mỗi bên đòi ĐÚNG MỘT')
+        elif nguon[0] != trich[0]:
+            loi('TL', f'trần lint backend: §12 trích {trich[0]}, `ci.yml` đặt '
+                      f'{nguon[0]}. Sửa trích dẫn, đừng sửa trần.')
 
 
 def kiem_noi_bai(bai: list[dict], bank: list[Muc]) -> None:
@@ -1173,6 +1200,53 @@ def doi_chieu_moc(dem_lo: Counter, dem_cb: Counter, thu_tu: list[str],
             so_sach.append(f'{t}: SỔ KHAI một luật mã không còn — mục lỗi thời, '
                            f'bỏ nó đi, không thì sổ thành chỗ giấu rác.')
 
+    # ── Bảng §11 của VAN-PHONG.md ────────────────────────────────────────
+    # Nó LIỆT KÊ số lỗi/cảnh báo của TỪNG luật, tức là một bản CHÉP của đúng
+    # những con số `nay` đang giữ. Phải đối chiếu Ở ĐÂY chứ không trong luật TL:
+    # chỉ đến bước này mọi luật mới chạy xong, nên chỉ ở đây mới có con số cuối.
+    #
+    # Nó đã trôi, và trôi gần hết bảng: 10 trong 17 hàng sai cùng lúc, dòng tổng
+    # ghi 227 lỗi · 718 cảnh báo khi số thật là 93 · 467 — lệch 2,4 lần. Sống
+    # được vì bản cũ viết mỗi hàng một kiểu ("43 câu", "3", "0 (29/10 là 65)"),
+    # nên không regex nào đọc nổi; một bảng không đọc được là một bảng không ai
+    # canh. Format nay đồng nhất `N lỗi · N cb`.
+    #
+    # Mục này vào `so_sach`, KHÔNG vào `loi_ra`: một bản sửa nội dung làm L8 đi
+    # 26 → 25 thì bảng §11 phải cập nhật, và chặn `--ghi-so` ở đó là dựng lại
+    # đúng thế bế tắc đã phải sửa khi thêm luật TL.
+    if SPEC.is_file():
+        van11 = SPEC.read_text(encoding='utf-8')
+        for t in thu_tu:
+            ten = re.escape(t)
+            ms = re.findall(r'\|\s*\*{0,2}' + ten + r'\*{0,2}\s*\|[^|\n]*\|[^|\n]*\|'
+                            r'\s*\*{0,2}(\d+) lỗi · (\d+) cb\*{0,2}\s*\|', van11)
+            if len(ms) != 1:
+                so_sach.append(f'bảng §11: hàng "{t}" khớp {len(ms)} chỗ, đòi ĐÚNG '
+                               f'MỘT và đúng format `N lỗi · N cb` — một hàng không '
+                               f'đọc được là một hàng không ai canh')
+                continue
+            gl, gc = int(ms[0][0]), int(ms[0][1])
+            if (gl, gc) != (nay[t]['loi'], nay[t]['cb']):
+                so_sach.append(f'bảng §11 hàng "{t}": ghi {gl} lỗi · {gc} cb, đo '
+                               f'được {nay[t]["loi"]} lỗi · {nay[t]["cb"]} cb')
+        tong_l = sum(v['loi'] for v in nay.values())
+        tong_c = sum(v['cb'] for v in nay.values())
+        for nhan, pat, that in (
+            ('§11 dòng tổng',
+             r'Tổng trên corpus thật: (\d+) lỗi · (\d+) cảnh báo', (tong_l, tong_c)),
+        ):
+            ms = re.findall(pat, van11)
+            if len(ms) != 1:
+                so_sach.append(f'{nhan}: regex khớp {len(ms)} chỗ, đòi ĐÚNG MỘT')
+            elif (int(ms[0][0]), int(ms[0][1])) != that:
+                so_sach.append(f'{nhan}: ghi {ms[0][0]} lỗi · {ms[0][1]} cảnh báo, '
+                               f'đo được {that[0]} lỗi · {that[1]} cảnh báo')
+        ms = re.findall(r'hôm nay cho \*\*(\d+) lỗi\*\*', van11)
+        if len(ms) != 1:
+            so_sach.append(f'§12 "hôm nay cho N lỗi": regex khớp {len(ms)} chỗ')
+        elif int(ms[0]) != tong_l:
+            so_sach.append(f'§12 "hôm nay cho N lỗi": ghi {ms[0]}, đo được {tong_l}')
+
     # HAI LOẠI MỤC, và chỉ MỘT loại được chặn `--ghi-so`.
     #
     # `loi_ra` là HỒI QUY: một luật TĂNG, tức văn phong xấu đi. Ghi sổ lúc đó là
@@ -1257,7 +1331,7 @@ def main() -> int:
     kiem_thuat_ngu(bai, bank)
     kiem_boi_canh(bai, mien, tru)
     kiem_noi_bai(bai, bank)
-    kiem_tai_lieu(bai)
+    kiem_tai_lieu(bai, bank)
 
     chon = {t.strip().upper() for t in args.luat.split(',') if t.strip()}
     def loc(xs: list[tuple[str, str]]) -> list[tuple[str, str]]:

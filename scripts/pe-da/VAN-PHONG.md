@@ -61,7 +61,7 @@ bẫy "so bản dựng với chính nó" mà AGENTS.md đã ghi cho bộ trắc 
 
 ⚠️ **Số tuyệt đối của L8 và L10 tỉ lệ với ĐỘ LỚN TERMBANK**, nên đừng so thẳng hai
 phép đo dùng hai danh sách khác nhau. Các con số ở §1 đo bằng danh sách **40 từ
-thông dụng nhất**; `thuatngu.json` khai **110 mục**, nên mọi con số xấp xỉ gấp đôi.
+thông dụng nhất**; `thuatngu.json` khai **112 mục**, nên mọi con số xấp xỉ gấp đôi.
 
 Giới hạn lại cho so được thì chúng **khớp**: với đúng 40 thuật ngữ thông dụng nhất,
 bộ kiểm báo **27/31** thuật ngữ thiếu chú giải, so với "23/40" của §1 — cùng hiện
@@ -417,32 +417,40 @@ có gì để đối chiếu — và nó đã trôi theo CẢ HAI chiều: số 
 bài (L10 khi đó 65, nay 0), còn L14 và L15 thì có trong mã mà không có dòng nào
 ở đây. Số dưới đo ngày 07/11/2026 trên 179 bài.
 
+⚠️ **Cột cuối do luật TL đối chiếu với số đo mỗi lần chạy — đừng sửa nó bằng tay.**
+Bảng này từng là một bản CHÉP tay và nó đã trôi: **10 trong 17 hàng** sai cùng lúc, và
+dòng tổng ghi **227 lỗi · 718 cảnh báo** khi số thật là **93 · 467** — lệch **2,4 lần**.
+Format phải đồng nhất `N lỗi · N cb` cho MỌI hàng; bản cũ viết mỗi hàng một kiểu
+("43 câu", "3", "0 (29/10 là 65)") nên không regex nào đọc nổi, tức không cổng nào canh
+được, tức nó trôi.
+
 | | Luật | Mức | Corpus hiện trượt |
 |---|---|---|---|
-| L1 | Câu > 25 tiếng cảnh báo, > 30 lỗi | CB/LỖI | 21 lỗi · 89 cb |
-| L2 | Đoạn > 90 tiếng hoặc > 6 câu | CB/LỖI | 7 lỗi · 17 cb |
-| **L3** | **Câu ≥ 3 dấu `,`/`;` và ≥ 20 tiếng → bảng** | **LỖI** | **43 câu** |
-| L4 | Không mở câu bằng danh-từ-hoá | LỖI | 3 |
-| L5 | Cấm `được/bị + V + bởi` | LỖI | 1 |
-| L6 | Từ cấm hành chính (≥4/11 là dương tính giả) | LỖI | 9 |
+| L1 | Câu > 25 tiếng cảnh báo, > 30 lỗi | CB/LỖI | 21 lỗi · 86 cb |
+| L2 | Đoạn > 90 tiếng hoặc > 6 câu | CB/LỖI | 7 lỗi · 14 cb |
+| **L3** | **Câu ≥ 3 dấu `,`/`;` và ≥ 20 tiếng → bảng** | **LỖI** | **39 lỗi · 0 cb** |
+| L4 | Không mở câu bằng danh-từ-hoá | LỖI | 0 lỗi · 0 cb |
+| L5 | Cấm `được/bị + V + bởi` | LỖI | 0 lỗi · 0 cb |
+| L6 | Từ cấm hành chính (danh sách ĐÓNG 20 tính từ) | LỖI | 0 lỗi · 0 cb |
 | L7 | Chỉ "bạn" | LỖI | 0 lỗi · 17 cb |
-| **L8** | **Mật độ thuật ngữ ≤ 40/1000 tiếng** | CB/LỖI | **35 lỗi · 31 cb** |
-| L9 | ≤ 3 thuật ngữ mới mỗi màn — *hàng rào* | CB/LỖI | **0** (max đo được 3) |
-| L10 | Thuật ngữ lần đầu phải có chú giải | LỖI | 0 (29/10 là 65) |
-| L11 | Một thuật ngữ một cách gọi, khoá (thuật ngữ, ngữ cảnh) | LỖI | 16 |
-| L12 | ≤ 1 hedge/câu (lỗi ở ≥3) | LỖI | 4 lỗi · 39 cb |
-| L13 | Ưu tiên thuần Việt theo danh sách | CẢNH BÁO | 0 lỗi · 221 cb |
+| **L8** | **Mật độ thuật ngữ ≤ 40/1000 tiếng** | CB/LỖI | **26 lỗi · 24 cb** |
+| L9 | ≤ 3 thuật ngữ mới mỗi màn — *hàng rào* | CB/LỖI | 0 lỗi · 0 cb |
+| L10 | Thuật ngữ lần đầu phải có chú giải | LỖI | 0 lỗi · 0 cb |
+| L11 | Một thuật ngữ một cách gọi, khoá (thuật ngữ, ngữ cảnh) | LỖI | 0 lỗi · 0 cb |
+| L12 | ≤ 1 hedge/câu (lỗi ở ≥3) | LỖI | 0 lỗi · 17 cb |
+| L13 | Ưu tiên thuần Việt theo danh sách | CẢNH BÁO | 0 lỗi · 220 cb |
 | L14 | Bối cảnh bài phải thuộc `boi-canh.json` | CẢNH BÁO | 0 lỗi · 30 cb |
-| L15 | Đoạn mở bài phải nối với bài trước | CẢNH BÁO | 0 |
-| TB | Bất biến termbank: `baiDauTien` khớp corpus | LỖI | 0 |
-| §4-A | Định danh nhóm A phải nằm trong backtick | CẢNH BÁO | 256 |
+| L15 | Đoạn mở bài phải nối với bài trước | CẢNH BÁO | 0 lỗi · 0 cb |
+| TB | Bất biến termbank: `baiDauTien` khớp corpus | LỖI | 0 lỗi · 0 cb |
+| TL | Bảng §2 và bảng này phải khớp số đo | LỖI | 0 lỗi · 0 cb |
+| §4-A | Định danh nhóm A phải nằm trong backtick | CẢNH BÁO | 0 lỗi · 59 cb |
 | **M1** | **3 phương án mặc định** | **LỖI** | 0 (đang đúng) |
 | **M2** | **Trộn vị trí có phân tầng** | **LỖI** | **1 032/1 032** |
 | M3 | Nhiễu phải có lý do lưu kèm | LỖI | 1 032 |
 | M4 | Không bài nào 3 câu cùng một ô Block Model | LỖI | 172/172 |
 | M5 | Một lần trả lời, rồi đi tiếp | LỖI | toàn bộ |
 
-**Tổng trên corpus thật: 227 lỗi · 718 cảnh báo.**
+**Tổng trên corpus thật: 93 lỗi · 467 cảnh báo.**
 
 **Nếu chỉ làm được một việc:** L10. Cụ thể: `py -I scripts/pe-da/check_vanphong.py
 --luat L10 --chi-tiet 0` in ra đúng danh sách bài + câu phải sửa.
@@ -452,9 +460,12 @@ bài (L10 khi đó 65, nay 0), còn L14 và L15 thì có trong mã mà không c�
 
 ## 12. Đừng bật `--strict` trong CI ngày đầu
 
-`check_vanphong.py` hôm nay cho **227 lỗi**. Nối thẳng vào `check.py --strict` là
+`check_vanphong.py` hôm nay cho **93 lỗi**. Nối thẳng vào `check.py --strict` là
 làm CI đỏ ngay, và một CI đỏ thường trực thì không ai đọc nữa.
 
 Dùng đúng khuôn mà repo đã có cho lint backend: **một mốc trần, CHỈ ĐƯỢC HẠ**
-(AGENTS.md: "mốc trần trong CI là **115**, chỉ được hạ" — con số đó đã hạ từ 245 xuống 115 qua bốn đợt dọn `any`; trích dẫn ở đây từng ghi 245 suốt nhiều tháng, đúng họ bẫy "một con số cũ không phải chú thích lỗi thời vô hại"). Đặt trần ở 227, hạ dần theo
-từng đợt sửa.
+(AGENTS.md: "mốc trần trong CI là **115**, chỉ được hạ" — con số đó đã hạ từ 245 xuống 115 qua bốn đợt dọn `any`; trích dẫn ở đây từng ghi 245 suốt nhiều tháng, đúng họ bẫy "một con số cũ không phải chú thích lỗi thời vô hại"). Và **đó là việc đã làm xong, theo một cách CHẶT HƠN một con số trần duy nhất**:
+`--doi-chieu` giữ mốc TỪNG LUẬT trong `van-phong-moc.json`, nên một luật xấu đi
+không còn núp được sau một luật khác vừa tốt lên. Luật của nó là HAI điều kiện —
+`lỗi` không được tăng, VÀ `lỗi + cảnh báo` không được tăng — nên một LỖI đổi thành
+một CẢNH BÁO tính là siết, mà không ai đổi được 1 lỗi thành 10 cảnh báo.
