@@ -83,7 +83,7 @@ học nó.
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **143 bài tập được chấm / 480 ca**, 2 440 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 154 bài, 420 đoạn code, **0 hỏng**, **0 cảnh báo**, ~32 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 143 bài, **480 ca đạt**, 773 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, **pha 4: 2 372 ca trượt / 0 ca im lặng / 7 nhánh phản hồi**, ~12 s |
-| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **99 lỗi · 671 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 32 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 99 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
+| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **98 lỗi · 671 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 31 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 98 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 359 khối đủ điều kiện** (303 bỏ qua — bảng từng ghi 356/300, đã CŨ từ trước 04/11: dựng lại từ HEAD cũng ra 359/303, và `check-moc-nen` không đối chiếu hàng này; phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
@@ -2933,6 +2933,52 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   tiếng Việt không có hình thái để phân biệt từ loại. **Phép thử trước khi tin một con số
   của bộ này: in ra ĐÚNG chuỗi nào đã khớp, rồi đọc nghĩa của nó trong câu.** Đếm mà không
   in chuỗi khớp là đếm một con số không ai kiểm được.
+
+- **L8 ĐẾM MỖI CHỮ "thread" HAI LẦN, và dấu hiệu lộ ra đúng lúc in từng từ.** Vòng trước
+  tự dặn: trước khi tin con số của L3/L8, in ra ĐÚNG chuỗi nào đã khớp. Làm thế thì thấy
+  ngay — số luôn BẰNG NHAU: RC01 `Thread×7, thread×7` · CT14/EX06/CT11/GU11 `Thread×3,
+  thread×3` · toàn khoá **`Thread ×40` và `thread ×40`**. Hai con số bằng nhau là CHỮ KÝ
+  của đếm trùng, không phải của hai cách dùng khác nhau.
+  **NGUYÊN NHÂN:** termbank có HAI mục cùng chính tả — `Thread` (nhóm A, ngữ cảnh
+  `lop-threading`) và `thread` (nhóm B, `da-luong`) — và **cả hai KHÔNG có `phamVi`**, tức
+  áp cho mọi bài. Khớp nhóm A là `re.IGNORECASE` (vì `"Thread".isupper()` là False), nên
+  hai mục khớp CÙNG một chữ, mà L8 thì `sum(n for _, n in thuat_ngu_trong(...))` — cộng
+  từng mục độc lập.
+  **BẢY cặp trùng chính tả, nhưng chỉ MỘT cặp hỏng:** `fork · stack · pipe · index ·
+  method · kernel` đều có `phamVi` rời nhau (ví dụ `stack` nhóm A cho PD/RD là
+  `DataFrame.stack()`, nhóm C cho CT/RC/EX/SY là call stack), nên `trong_bai()` đã lọc
+  chúng. Chỉ `Thread`/`thread` toàn khoá. Đừng "dọn" sáu cặp kia — khoá hai trường
+  (thuật ngữ, ngữ cảnh) đang làm đúng việc của nó ở đó.
+  **Phép sửa là đếm VỊ TRÍ, không phải cộng số lần khớp của từng mục:** một chữ "thread"
+  là MỘT lần người đọc gặp một thuật ngữ, bất kể termbank có mấy mục trùng chính tả.
+  `so_lan_thuat_ngu()` thu span rồi bỏ span bị chứa trong span khác — cùng kỹ thuật
+  `dem_hedge()` của vòng L12. **`thuat_ngu_trong()` KHÔNG đổi hợp đồng**: L9/L10/L11/L13/
+  §4-A vẫn cần (mục, số lần) theo TỪNG mục, nên hàm mới là hàm thứ hai, không phải bản
+  sửa của hàm cũ.
+  **SỐ ĐÃ ĐO — 11 bài có mật độ SAI, lệch tới −27:**
+
+  | Bài | Cũ | Đúng | | Bài | Cũ | Đúng |
+  |---|---|---|---|---|---|---|
+  | RC01 | 137 | **110** | | EX06 | 128 | **113** |
+  | CT11 | 127 | **104** | | GU11 | 116 | **101** |
+  | CT14 | 133 | **123** | | CT09 | 104 | **81** |
+  | CT02 | 83 | 78 | | CT13 | 74 | 64 |
+  | SY28 | 90 | 86 | | CT10 | 68 | **55** |
+  | EX05 | 53 | 51 | | CT12 | >40 | <40 |
+
+  CT10 rời bậc LỖI (68 → 55) và CT12 rời cả bậc cảnh báo, nên L8 lỗi **32 → 31** và cảnh
+  báo giữ 33 (CT10 vào, CT12 ra). Tổng khoá 99 → **98 lỗi**. Con số LỚN nhất của bảng
+  (RC01 "137/1000") từng là một con số sai 25%.
+  Ablate 6 chiều, so bản CŨ với bản MỚI trên cùng corpus: 4 chữ "thread" → cũ **8**, mới
+  **4** · 20 chữ "thread" → cũ **40**, mới **20** · **4 thuật ngữ KHÁC nhau → cả hai bản
+  ra 4** (chiều ngược: phép dedup không nuốt thuật ngữ khác nhau) · "stack" ×3 trong phạm
+  vi CT → 3 · "stack" ×3 trong phạm vi PD → 3 · 0 thuật ngữ → không báo gì.
+  **GHI KÈM, ĐO ĐƯỢC NHƯNG KHÔNG LÀM VÒNG NÀY:** L3 cũng có mis-fire cùng họ, và nguồn
+  của nó nằm ở luật KHÁC. PD13 bị L3 đếm 3 dấu phân cách, nhưng một trong số đó là dấu
+  phẩy BÊN TRONG `pd.read_excel(book, sheet_name=0)` — code đứng trần ngoài backtick, tức
+  đúng một trong 250 cảnh báo §4-A. GU09 thì "x, y" và "width, height" là liệt kê ĐỊNH
+  DANH, không phải mệnh đề. Nên dọn §4-A sẽ hạ L3 như một tác dụng kèm; sửa L3 trước là
+  sửa sai đầu.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

@@ -601,6 +601,29 @@ def thuat_ngu_trong(d: str, bank: list[Muc], ma: str) -> list[tuple[Muc, int]]:
     return ra
 
 
+def so_lan_thuat_ngu(d: str, bank: list[Muc], ma: str) -> int:
+    """Số LẦN NGƯỜI ĐỌC GẶP một thuật ngữ trong đoạn — đếm theo VỊ TRÍ, không
+    phải tổng số lần khớp của từng mục termbank.
+
+    Vì sao không dùng `sum(n for _, n in thuat_ngu_trong(...))`: termbank có
+    BẢY cặp mục trùng chính tả, và `Thread` (nhóm A, `lop-threading`) với
+    `thread` (nhóm B, `da-luong`) là cặp DUY NHẤT không có `phamVi` — tức cả hai
+    áp cho mọi bài. Khớp nhóm A là IGNORECASE (`"Thread".isupper()` là False),
+    nên cả hai mục khớp CÙNG một chữ và phép cộng đếm nó HAI lần. Dấu hiệu lộ
+    ra khi in từng từ: RC01 `Thread×7, thread×7`, toàn khoá `Thread ×40` và
+    `thread ×40` — hai con số BẰNG NHAU là chữ ký của đếm trùng, không phải của
+    hai cách dùng khác nhau.
+
+    Một chữ "thread" là MỘT lần người đọc gặp một thuật ngữ, bất kể termbank có
+    mấy mục trùng chính tả. Giữ span DÀI NHẤT, cùng kỹ thuật `dem_hedge()`.
+    """
+    span = sorted({(m.start(), m.end())
+                   for mc in bank if mc.trong_bai(ma)
+                   for m in mc.re_tn.finditer(d)})
+    return sum(1 for s in span
+               if not any(t != s and t[0] <= s[0] and s[1] <= t[1] for t in span))
+
+
 def kiem_thuat_ngu(bai: list[dict], bank: list[Muc]) -> None:
     """L8 (mật độ) + L9 (thuật ngữ mới mỗi màn) + L10 (chú giải lần đầu)
     + L11 (một cách gọi) + L13 (ưu tiên thuần Việt) + §4-A (backtick).
@@ -618,7 +641,7 @@ def kiem_thuat_ngu(bai: list[dict], bank: list[Muc]) -> None:
         # L8 — mật độ tính trên CẢ BÀI: một đoạn ngắn toàn thuật ngữ nằm cạnh
         # một đoạn dài không có gì vẫn là một bài người học đọc liền mạch.
         tong_tieng = sum(len(tieng(d)) for d in doan)
-        tong_tn = sum(n for d in doan for _, n in thuat_ngu_trong(d, bank, ma))
+        tong_tn = sum(so_lan_thuat_ngu(d, bank, ma) for d in doan)
         if tong_tieng >= 50:
             mat_do = tong_tn * 1000 / tong_tieng
             if mat_do > 60:
