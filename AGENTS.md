@@ -35,6 +35,7 @@ node scripts/check-duong-toi.mjs --json  # bản máy đọc
 node scripts/check-tai-nguyen-chet.mjs  # TỆP/COMPONENT nào KHÔNG ai tới được
 node scripts/check-da-nap.mjs           # BÀI nào đã dựng mà CHƯA nạp vào DB
 node scripts/check-moc-nen.mjs          # BẢNG MỐC NỀN dưới đây có nói đúng không
+node scripts/check-so-ca-test.mjs       # SỐ CA test frontend trong bảng có đúng không (chạy bộ test)
 node scripts/check-doi-hoi.mjs          # KHỐI CODE màn đọc nào chưa có lời đòi
 node scripts/check-nguong.mjs           # NGƯỠNG một chiều có ai nới ngược không
 node scripts/check-wheel.mjs            # WHEEL vendored: thừa megabyte chết / thiếu gói bài cần
@@ -90,9 +91,10 @@ học nó.
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **14 CSS module trong `src/`** |
 | Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 164/179 khớp, 15 bài đã đổi sau lần nạp cuối** — VZ24, SY24, SY26, EX01, EX08 từ `80dee65` (mở khoá SY24 + `goi_can_tai` quét mã bài đọc), PY01 (bài tập đầu tiên của khoá), SY11 (math.floor), RC01 (đếm process/thread) và GU12 (trung bình có trọng số) cùng 04/11, CT03 + GU01 + CT01 + CT15 + PY09 + SY18 (câu nhồi mệnh đề thành BẢNG / bọc backtick) 07/11; đỏ cho tới khi chủ dự án nạp. Biên nhận 03/11/2026 18:48 UTC. Hàng này từng ghi "179/179, 0 lỗi" suốt lúc cổng đỏ; nay `check-moc-nen` đối chiếu nó — nạp xong thì SỬA số ở đây, không thì cổng đó đỏ |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
-| Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **26 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
+| Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **27 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
 | Wheel vendored | `node scripts/check-wheel.mjs` → **16 wheel · 5 gói bài khai · 16 sau đóng bao phụ thuộc**, 0 lỗi |
+| Số ca test frontend | `node scripts/check-so-ca-test.mjs` → bảng **573** / chạy ra **573** · 0 trượt, 0 lỗi; nó CHẠY `npm run test:unit` nên THAY bước test trong CI. Số ca backend vẫn NGOÀI TẦM |
 | Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **18 mục đối chiếu được** (thêm hàng "Đã nạp DB chưa", gọi `check-da-nap --json`), 0 lỗi; 3 nhóm khai NGOÀI TẦM |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
@@ -183,6 +185,9 @@ done
 Dòng này từng ghi **204** trong khi cây mã chỉ có 134 — một con số cũ trong bảng không phải
 chú thích lỗi thời vô hại, nó là 70 ca test tưởng có mà không có. Thêm/bớt ca ⇒ chạy lệnh,
 lấy số thật, sửa bảng TRONG CÙNG commit.
+
+Nay `node scripts/check-so-ca-test.mjs` làm đúng phép so đó bằng MỘT lệnh, và nó có trong
+CI — vòng lặp lấy TỔNG thì dùng nó, vòng `sed` ở trên chỉ còn để lấy số TỪNG FILE.
 
 Backend chạy riêng mới ra số đúng: chạy `npx jest --ci` song song với bộ test frontend thì
 15/15 bộ báo trượt với 0 ca chạy — tranh CPU, không phải lỗi thật (xem bẫy "Test
@@ -2696,6 +2701,63 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `ASSET_VERSION` bump theo (`2026-11-07a`) vì `edu-theme.css` nằm trong `public/`.
   **ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC:** mọi chữ phụ trên mọi trang đổi từ xanh xám sang
   nâu ấm, và chữ ở bậc t5 đọc rõ hơn trên giấy kem.
+
+- **SỐ CA TEST là con số ĐÃ TRÔI 70 ĐƠN VỊ, và nó vẫn chưa có ai canh cho tới hôm nay.**
+  Hàng đợi `todo` rỗng nên vòng này tự chọn mục **7(b)+8(c)** của bảng xếp hạng; hai mục
+  đó gặp nhau ở một chỗ trống đo được bằng ba con số:
+  · `grep` cả `scripts/*.mjs`: **0 cổng nào đếm ca test**;
+  · `check-moc-nen.mjs` ĐỌC đúng dòng ấy, nhưng regex của nó là
+    `/\*\*\d+ ca\*\* \/ (\d+) tệp/` — bắt số **TỆP** (48) và **BỎ QUA** số CA. Chính nó
+    khai số ca là "NGOÀI TẦM", vì cổng đó cố ý không chạy bộ test nào (nó phải nhanh);
+  · mà `npm run test:unit` chạy MỘT tiến trình và in sẵn `tests 573 / pass 573 / fail 0`.
+    Con số có sẵn, miễn phí, và không ai đọc.
+  Đây không phải lo xa: mục mốc nền ở trên ghi rằng nó **từng là 204 trong khi cây mã chỉ
+  có 134**, sống sót vì phép đếm tay dùng `grep -E "^. pass"` và bẫy `ℹ` multibyte trả
+  RỖNG mà không báo lỗi. ImpossibleBench đo được các mô hình Claude **>79% số lần SỬA
+  TEST** khi nhiệm vụ không làm được, nên đây đúng là chỗ cần một tín hiệu máy đọc.
+  **HAI CỔNG, VÀ ABLATE CHỨNG MINH KHÔNG CÁI NÀO THAY ĐƯỢC CÁI KIA.** Đó là phần đáng ghi
+  nhất của vòng này, vì trước khi đo thì một cái trông như đủ:
+
+  | Chiều ablate | `check-so-ca-test` | `check-nguong` |
+  |---|---|---|
+  | nguyên bản | 0 | 0 |
+  | 1. bảng ghi 580, bộ test vẫn 573 | **1** | 0 |
+  | 2. một ca → `test.skip`, bảng GIỮ 573 | **1** | 0 |
+  | 3. ca bị skip **và** bảng hạ xuống 572 | **0** | **1** |
+  | 4. đổi CHỮ của hàng ("573 phep kiem") | **1** | **1** |
+  | 5. THÊM một ca thật + bảng lên 574 | 0 | 0 + dòng `GHI SỔ` |
+
+  Chiều **3** là lý do phải có cả hai: hạ con số trong bảng cho khớp một bộ đã bị cắt bớt
+  thì cổng chạy-bộ-test **XANH** — nó chỉ biết "bảng khớp bộ test", không biết "bộ test đã
+  nhỏ đi". Chỉ sổ ngưỡng (`san-so-ca-test-frontend`, sàn 573, 26 → **27 ngưỡng**) đỏ. Và
+  ngược lại, chiều **1** và **2** thì sổ im lặng vì con số trong bảng không hề bị HẠ.
+  Chiều **4** đỏ ở cả hai, mỗi bên một lý do khác nhau, và đó là hành vi đúng: regex hết
+  khớp phải là LỖI chứ không phải im lặng xanh — mục mốc nền đã dặn đúng câu đó.
+  **CỔNG THAY BƯỚC TEST TRONG CI, không chạy thêm một lượt.** Nó tự gọi
+  `npm run test:unit`, nên để cả hai là chạy 48 file hai lần cho cùng một kết quả. Nó đỏ
+  khi `fail > 0` VÀ khi không đọc được dòng tổng kết — fail-closed cả hai chiều, nên thay
+  bước cũ không làm mất lớp nào.
+  **BA LỖI CỦA CHÍNH CỔNG NÀY, cả ba chỉ lộ khi CHẠY THẬT, và hai cái đầu là cùng một dòng:**
+  · `spawnSync('npm', ['run','test:unit'], { shell: true })` làm Node ném
+    **DeprecationWarning DEP0190** (args không được thoát, chỉ nối chuỗi) — một cảnh báo
+    đổ vào log CI mỗi lần chạy;
+  · sửa thành `spawnSync('npm.cmd', [...])` không kèm shell thì trên Git Bash/Windows nó
+    **ENOENT** và `r.status` ra **`null`** — cổng đỏ với câu "không đọc được dòng tổng kết",
+    tức nó tố oan BỘ TEST trong khi thứ hỏng là LỆNH. Bản đúng là MỘT chuỗi lệnh
+    (`spawnSync('npm run test:unit', { shell: true })`): hết DEP0190, vẫn qua được `.cmd`;
+  · và thông điệp lỗi nay NÓI RA chuyện đó — in `r.error.message` cộng câu "mã thoát
+    `null` nghĩa là không chạy được LỆNH, không phải bộ test hỏng". Thiếu câu ấy thì người
+    đọc đi tìm sai chỗ, đúng bệnh "một dữ kiện ĐÚNG mà im lặng về giới hạn của nó".
+  **HÀNG MỚI TRONG BẢNG CHỨA CHỮ `test:unit`, và đó là một bẫy suýt tự gài.** Ba regex
+  đang neo vào hàng đó (`check-so-ca-test`, mục sổ ngưỡng, `tepTest` của `check-moc-nen`),
+  và sổ ngưỡng đòi khớp ĐÚNG MỘT LẦN. Đã đếm lại sau khi thêm hàng: **1 / 1 / 1** — thoát
+  được chỉ vì `[^|\n]*?` dừng ở dấu `|` của ô bảng. Thêm chữ vào bảng mốc nền thì đếm lại
+  số lần khớp, đừng tin là còn một.
+  **GIỚI HẠN PHẢI NÓI RA, và cổng tự in nó mỗi lần chạy:** nó chỉ canh bộ FRONTEND. Số ca
+  **backend (501)** vẫn NGOÀI TẦM — `npx jest --ci --runInBand` chạy lâu hơn nhiều và máy
+  dự án chạy song song việc khác. Đó là một lát riêng, không phải bỏ sót. Và con số 573
+  hôm nay không có dấu cách ngăn nhóm nghìn; ngày nó vượt 1000 thì regex `(\d+)` của sổ
+  hết khớp — sửa regex, đừng bỏ mục.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

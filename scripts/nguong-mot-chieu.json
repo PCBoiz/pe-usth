@@ -217,6 +217,14 @@
       "chieu": "nang",
       "moc": 5.7,
       "vi": "Sàn tương phản trên GIẤY KEM #F4EEE3 của bậc --edu-t6. Đây là mặt thứ hai chữ được vẽ lên, và nó mới là mặt bắt lỗi: t5 cũ (#62718c) đo được 4,27:1 trên giấy — DƯỚI AA 4,5 — trong khi trên thẻ vẫn 4,93. Sàn của t5 giữ ĐÚNG 4.5 vì đó là AA, không phải một mốc cũ."
+    },
+    {
+      "ten": "san-so-ca-test-frontend",
+      "tep": "AGENTS.md",
+      "re": "test:unit[^|\\n]*?\\*\\*(\\d+) ca\\*\\*",
+      "chieu": "nang",
+      "moc": 573,
+      "vi": "Số ca test frontend trong bảng mốc nền. Hai cổng canh con số này vì chúng bắt HAI lỗi khác nhau: `check-so-ca-test.mjs` CHẠY bộ test và bắt \"số trong bảng SAI\" (nó từng ghi 204 trong khi cây mã chỉ có 134), còn mục sổ này bắt \"ai đó HẠ số trong bảng cho khớp một bộ đã bị cắt bớt\" — ablate đã đo: xoá một ca thật rồi sửa bảng từ 573 xuống 572 thì cổng chạy-bộ-test XANH, chỉ sổ này đỏ. Khi nào con số vượt 1000 thì nó sẽ mang dấu cách ngăn nhóm nghìn kiểu Việt và regex `(\\d+)` hết khớp — lúc đó sửa cả regex, đừng bỏ mục này."
     }
   ]
 }
