@@ -98,14 +98,12 @@ if (process.argv.includes('--ghi-so')) {
     for (const m of loi) console.error(`LỖI: ${m}`);
     process.exit(1);
   }
-  let doi = 0;
+  const doiMuc = [];
   for (const n of so.nguong) {
     const h = bang.find((b) => b[0] === n.ten);
-    if (h && h[3] !== Number(n.moc)) {
-      n.moc = h[3];
-      doi += 1;
-    }
+    if (h && h[3] !== Number(n.moc)) doiMuc.push([n.ten, n.moc, h[3]]);
   }
+  const doi = doiMuc.length;
   // KHÔNG GHI KHI KHÔNG CÓ GÌ ĐỔI. Cả giá trị của sổ này nằm ở chỗ "một dòng
   // diff ở đây là một câu hỏi to tiếng" — nên một lần ghi vô ích làm hỏng đúng
   // tín hiệu đó. Đo được ngay lần chạy ĐẦU TIÊN của cờ này (tôi giao nó ở vòng
@@ -116,7 +114,36 @@ if (process.argv.includes('--ghi-so')) {
     console.log('Sổ đã đúng — không ghi gì.');
     process.exit(0);
   }
-  writeFileSync(SO, `${JSON.stringify(so, null, 2)}\n`, 'utf8');
+  // GHI TỪNG DÒNG `moc`, KHÔNG stringify lại cả sổ. Bản trước ghi lại cả file,
+  // nên một lần cập nhật ĐÚNG MỘT ngưỡng vẫn làm bẩn 4 dòng khác —
+  // `JSON.stringify` chuẩn hoá `12.0` thành `12`. Nhánh `doi === 0` ở trên chỉ
+  // chặn trường hợp KHÔNG có gì đổi; chỗ này chặn trường hợp CÓ, và nó là
+  // trường hợp đã xảy ra: 07/11/2026, lần đầu cờ này có việc thật để ghi (sàn
+  // ca test frontend 573 → 574), `git diff --stat` ra **5 thêm / 5 xoá** cho
+  // một ngưỡng. Vô hại về SỐ, có hại về đúng thứ sổ này bán — "một dòng diff ở
+  // đây là một câu hỏi to tiếng".
+  //
+  // Phép thay neo vào `"ten"` rồi lấy `"moc"` ĐẦU TIÊN sau nó (phần giữa là
+  // lazy nên nó không vượt sang mục sau), và nó ĐÒI giá trị cũ khớp — thiếu
+  // phép đòi đó thì một sổ đã đổi định dạng sẽ bị ghi sai trong im lặng.
+  let van = readFileSync(SO, 'utf8');
+  for (const [ten, truoc, nay] of doiMuc) {
+    const re = new RegExp(
+      '("ten":\\s*"' +
+        ten.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
+        '"[\\s\\S]*?"moc":\\s*)(-?[\\d.]+)',
+    );
+    const m = van.match(re);
+    if (!m || Number(m[2]) !== Number(truoc)) {
+      console.error(
+        `LỖI: không đặt được \`moc\` mới cho "${ten}" — sổ không còn hình dạng ` +
+          'mà phép thay này biết đọc. Sửa bằng tay rồi chạy lại.',
+      );
+      process.exit(1);
+    }
+    van = van.replace(re, `$1${nay}`);
+  }
+  writeFileSync(SO, van, 'utf8');
   console.log(`Đã ghi sổ: ${doi} ngưỡng cập nhật.`);
   process.exit(0);
 }

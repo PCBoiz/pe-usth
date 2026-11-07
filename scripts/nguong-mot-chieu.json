@@ -223,7 +223,7 @@
       "tep": "AGENTS.md",
       "re": "test:unit[^|\\n]*?\\*\\*(\\d+) ca\\*\\*",
       "chieu": "nang",
-      "moc": 573,
+      "moc": 574,
       "vi": "Số ca test frontend trong bảng mốc nền. Hai cổng canh con số này vì chúng bắt HAI lỗi khác nhau: `check-moc-chay.mjs` CHẠY bộ test và bắt \"số trong bảng SAI\" (nó từng ghi 204 trong khi cây mã chỉ có 134), còn mục sổ này bắt \"ai đó HẠ số trong bảng cho khớp một bộ đã bị cắt bớt\" — ablate đã đo: xoá một ca thật rồi sửa bảng từ 573 xuống 572 thì cổng chạy-bộ-test XANH, chỉ sổ này đỏ. Khi nào con số vượt 1000 thì nó sẽ mang dấu cách ngăn nhóm nghìn kiểu Việt và regex `(\\d+)` hết khớp — lúc đó sửa cả regex, đừng bỏ mục này."
     },
     {

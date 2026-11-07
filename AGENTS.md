@@ -3169,6 +3169,61 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   không có phán xét, nhưng 9 chỗ viết hoa ở trên nhắc rằng phải in ngữ cảnh trước, vì tên
   class VIẾT HOA là chính tả ĐÚNG của nó nên không có phép thử "chữ thường" nào để lọc.
 
+- **MỘT BÀI TẬP ĐƯỢC CHẤM BIẾN MẤT KHỎI NGUỒN THÌ CẢ BẬC THANG IM LẶNG — và cổng duy
+  nhất thấy nó thì tự dặn "Sửa AGENTS.md".** Đo ngày 07/11/2026 bằng cách xoá
+  `exercises` của TH01 khỏi `source/practice.json` rồi chạy cả bậc thang:
+  · `py scripts/pe-da/build.py` → **exit 0, KHÔNG MỘT DÒNG NÀO**;
+  · `py scripts/pe-da/check.py --strict` → **0 lỗi, 0 cảnh báo**;
+  · thứ DUY NHẤT đỏ là `check-moc-nen` so con số trong bảng (143/480 → 142/477), và câu
+    nó in ra là *"Sửa AGENTS.md"*. **Hạ hai con số đó là hai hàng ấy XANH** — chỗ đỏ còn
+    lại chỉ là hàng biên nhận DB (92 → 91), một hàng hôm nay ĐÃ đỏ sẵn vì 87 bài chờ nạp,
+    nên nó không mang tín hiệu nào về bài tập vừa mất. Không có mục nào trong
+    `scripts/nguong-mot-chieu.json` canh 143 hay 480.
+  Tức lối thoát rẻ nhất của một vòng lặp là sửa BẢNG chứ không là trả bài tập về — đúng
+  cách THỨ NHẤT một vòng lặp nói dối mà LOOP.md gọi tên, và đúng chỗ ImpossibleBench đo
+  được các mô hình Claude **>79% số lần là SỬA TEST**.
+  **NGUYÊN NHÂN, một dòng:** `kiem_bai_tap_doi_nguon` mở đầu bằng
+  `for b in nguon['lessons']: ex = b.get('exercises') or []; if ex:` — nên bài MẤT
+  `exercises` **biến khỏi `ca_nguon`** và cả ba luật của nó không chạy tới, kể cả luật 3
+  (tổng ca) vì `tong` co lại cho khớp. Luật tự nhất quán với bất kỳ thứ gì nguồn tình cờ
+  chứa: nó bắt "nguồn CÓ mà build đánh rơi", không bắt được "nguồn MẤT".
+  Nay có **luật 4 — THÀNH VIÊN, hai chiều** cộng bảng khai `KHONG_CO_BAI_TAP` (23 mục):
+  bài hết `exercises` mà không có tên trong bảng là LỖI, và mục khai mà nguồn ĐÃ có bài
+  tập cũng LỖI ("NGOẠI LỆ ĐÃ LỖI THỜI") — thiếu chiều sau thì danh sách chỉ dài ra rồi
+  thành chỗ giấu rác, đúng bài học `DAP_AN_MAU_KHONG_CHAY`.
+  **ĐO TRƯỚC KHI VIẾT LÝ DO, và phép đo bác bỏ lý do hiển nhiên:** `local` KHÔNG phải lý
+  do — bảng chéo mode × trạng thái cho **2 bài `local` và 5 bài `mixed` VẪN có ca chấm**,
+  nên câu "bài chạy trên máy nên không chấm được" là một câu SAI, và thông điệp lỗi của
+  luật 4 nói thẳng là đừng viết nó. Bốn nhóm thật: **11 bài** thiếu thư viện WASM (SY14
+  `curses`; GU02–GU11 `tkinter` — hai module duy nhất còn thiếu ở Pyodide 314, nên ở đây
+  chấm là BẤT KHẢ) · **7 bài** thủ tục/khái niệm, không có giá trị trả về để hỏi (PY02,
+  PY03, SY04, SY12, GU01, EX03, EX05) · **1 bài** mà CHÍNH VĂN nói không chấm (TH07) ·
+  **4 bài CHẤM ĐƯỢC mà nguồn chưa soạn** (CT01, CT02, CT14, CT15).
+  **Nhóm thứ tư là phần bảng này mang THÔNG TIN MỚI.** Bốn bài đó nói về process/shell, mà
+  CT07–CT13 ĐÃ được chấm nhờ `cho_mo_phong=True` và `check-practice.mjs` đã chạy thật 9
+  lời giải ấy — nên "không thể" là sai, đây là việc NỘI DUNG chưa ai làm, cỡ đo được
+  **4 bài × 3 ca**. Trước bản này, sự thật đó không nằm ở đâu cả. Quyết định của chủ dự
+  án, không của vòng lặp.
+  **MỘT MỤC TIÊU ĐÃ ĐO RỒI BỎ, đừng dựng lại:** vòng này mở ra để làm mục 4 của bảng xếp
+  hạng ("cho bài 1 một thành công máy chấm được"), và phép đo GIẾT nó theo hai nhịp. Nhịp
+  một: phép đếm đầu của tôi in `tests=0` cho **cả 12 bài đầu** — sai vì đọc nhầm tầng
+  (`step_4` nằm trong `content_json`, không ở cấp bài). **PY01 CÓ bài tập được chấm**, nên
+  tiền đề "bài 1 không có gì để chấm" đã lỗi thời. Một con số 0 là thứ phải nghi ngờ
+  trước nhất — cùng bẫy đã ghi ở mục bảng kỷ luật git. Nhịp hai: ứng viên còn lại là TH07,
+  bài CUỐI khoá, và chính văn bài nói *"Bài này không có ca chấm nào. Bạn tự chọn câu hỏi
+  và tự bảo vệ câu trả lời."* — soạn ca chấm cho nó là bắt NỘI DUNG chiều một phép kiểm,
+  đúng thứ "Luật 6 của cổng INSERT" cấm.
+  Ablate 4 chiều: xoá `exercises` của TH01 → **1 lỗi** đúng tên bài (trước bản sửa: **0**)
+  · gán `exercises` cho PY02 (đang khai là không có) → **1 lỗi** "NGOẠI LỆ ĐÃ LỖI THỜI" ·
+  gỡ một mã khỏi bảng (GU02) → 1 lỗi · xoá `exercises` của TH01 **cộng** hạ bảng mốc nền
+  xuống 142/477, tức đi đúng lối thoát rẻ → `check.py` **VẪN ĐỎ**, nên lối thoát đó không
+  còn chạy.
+  **GIỚI HẠN PHẢI NÓI RA, hai cái.** Bảng canh THÀNH VIÊN, không canh việc câu lý do có
+  ĐÚNG không — một dòng lý do sai vẫn qua cửa. Và con số `480` còn sống ở HAI hàng của
+  bảng mốc nền ("143 bài tập được chấm / 480 ca" và "480 ca đạt"), mà `check-moc-nen` chỉ
+  đối chiếu hàng ĐẦU: hàng thứ hai trôi độc lập được. Chưa làm, và đó là lựa chọn chứ
+  không phải bỏ sót — nó là một con số khác, không phải lỗ hở này.
+
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
 Hai đường, chọn sai là xoá tiến độ của người đang học:

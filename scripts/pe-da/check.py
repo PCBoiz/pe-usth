@@ -397,6 +397,74 @@ def kiem_vet(bai: list[dict]) -> None:
             'tới người học (xem traces.json và gen_traces.py)')
 
 
+# Bài mà GÓI NGUỒN không soạn bài tập nào — phải KHAI, và `kiem_bai_tap_doi_nguon`
+# kiểm HAI CHIỀU.
+#
+# Vì sao bảng này phải tồn tại, bằng một phép đo. Ba luật đầu của
+# `kiem_bai_tap_doi_nguon` chỉ duyệt bài nguồn CÓ `exercises`, nên một bài MẤT
+# `exercises` biến khỏi `ca_nguon` và cả ba luật im lặng — luật tự nhất quán với
+# bất kỳ thứ gì nguồn tình cờ chứa. Ablate ngày 07/11/2026: xoá `exercises` của
+# TH01 khỏi nguồn rồi chạy cả bậc thang → `build.py` exit 0 KHÔNG MỘT DÒNG NÀO,
+# `check.py --strict` 0 lỗi, và thứ DUY NHẤT đỏ là `check-moc-nen` so con số
+# trong bảng mốc nền (143/480 → 142/477) — mà câu nó in ra là "Sửa AGENTS.md".
+# Hạ hai con số đó là hai hàng ấy XANH, nên lối thoát rẻ nhất của một vòng lặp
+# là sửa bảng chứ không là trả bài tập về. Đúng cách THỨ NHẤT một vòng lặp nói
+# dối mà LOOP.md gọi tên, và đúng chỗ ImpossibleBench đo được các mô hình Claude
+# >79% số lần là SỬA TEST.
+#
+# Thứ bảng này canh là THÀNH VIÊN, không phải câu văn: một bài hết `exercises`
+# mà không có tên ở đây là LỖI, nên không ai đánh rơi được nó trong im lặng.
+#
+# LÝ DO PHẢI THẬT. Đã đo trước khi viết: `local` KHÔNG phải lý do — 2 bài local
+# và 5 bài mixed VẪN có ca chấm, nên "bài chạy trên máy nên không chấm được" là
+# một câu sai. Bốn nhóm dưới đây mỗi nhóm có một lý do kiểm được, và nhóm cuối
+# nói thẳng rằng nó là việc NỘI DUNG chưa làm chứ không phải điều bất khả.
+KHONG_CO_BAI_TAP: dict[str, str] = {
+    # WASM thiếu thư viện THẬT (không phải thiếu wheel): `curses` và `tkinter`
+    # là hai module duy nhất còn thiếu ở Pyodide 314 — xem mục bẫy "Danh sách
+    # module đổi theo bản Pyodide" trong AGENTS.md. Lời giải nào cũng tắc ở
+    # dòng `import`, nên ở đây chấm là bất khả, không phải chưa làm.
+    'SY14': 'curses không có trong WASM',
+    'GU02': 'tkinter không có trong WASM',
+    'GU03': 'tkinter không có trong WASM',
+    'GU04': 'tkinter không có trong WASM',
+    'GU05': 'tkinter không có trong WASM',
+    'GU06': 'tkinter không có trong WASM',
+    'GU07': 'tkinter không có trong WASM',
+    'GU08': 'tkinter không có trong WASM',
+    'GU09': 'tkinter không có trong WASM',
+    'GU10': 'tkinter không có trong WASM',
+    'GU11': 'tkinter không có trong WASM',
+    # THỦ TỤC hoặc KHÁI NIỆM: bài dạy một việc làm bằng tay (cài Python, gõ
+    # trong REPL, chạy lệnh git, mở notebook) hoặc một phép so sánh — không có
+    # giá trị trả về nào để một ca chấm hỏi. Đây là lớp 24 bài `procedure` mà
+    # AGENTS.md đã ghi.
+    'PY02': 'thủ tục: chọn bản Python và tách môi trường, làm bằng tay',
+    'PY03': 'thủ tục: cách gõ trong REPL và notebook',
+    'SY04': 'thủ tục: lệnh git chạy ở shell, không phải hàm Python',
+    'SY12': 'thủ tục: dựng cây thư mục package rồi chạy bằng `python -m`',
+    'GU01': 'khái niệm: so GUI với CLI và chọn toolkit',
+    'EX03': 'thủ tục: mở notebook bằng đúng Python của môi trường',
+    'EX05': 'khái niệm: GIL và reference counting, không có hàm để chấm',
+    # CHÍNH VĂN BÀI NÓI THẲNG. TH07 là bài cuối khoá và nội dung của nó viết
+    # "Bài này không có ca chấm nào. Bạn tự chọn câu hỏi và tự bảo vệ câu trả
+    # lời." Soạn ca chấm cho nó là bắt NỘI DUNG chiều một phép kiểm — đúng thứ
+    # mục "Luật 6 của cổng INSERT" trong AGENTS.md cấm. Sửa cổng, đừng sửa nội
+    # dung.
+    'TH07': 'dự án cuối khoá, chính văn bài nói là không có ca chấm nào',
+    # CHẤM ĐƯỢC MÀ NGUỒN CHƯA SOẠN — bốn bài, và đây là phần bảng này mang
+    # thông tin mới. Chúng nói về process/shell, mà CT07–CT13 ĐÃ được chấm nhờ
+    # `cho_mo_phong=True` (harness mô phỏng `threading`/`subprocess`, và
+    # `check-practice.mjs` đã chạy thật 9 lời giải ấy: đạt hết ca). Nên lý do ở
+    # đây KHÔNG phải "không thể" — là việc NỘI DUNG chưa ai làm, cỡ đo được:
+    # 4 bài × 3 ca. Quyết định của chủ dự án, không của vòng lặp.
+    'CT01': 'gói nguồn chưa soạn; chấm được về nguyên tắc như CT07–CT13',
+    'CT02': 'gói nguồn chưa soạn; chấm được về nguyên tắc như CT07–CT13',
+    'CT14': 'gói nguồn chưa soạn; chấm được về nguyên tắc như CT07–CT13',
+    'CT15': 'gói nguồn chưa soạn; chấm được về nguyên tắc như CT07–CT13',
+}
+
+
 def kiem_bai_tap_doi_nguon(bai: list[dict]) -> None:
     """Mọi bài tập của gói nguồn phải hoặc ĐƯỢC CHẤM, hoặc có LÝ DO ghi lại.
 
@@ -453,6 +521,23 @@ def kiem_bai_tap_doi_nguon(bai: list[dict]) -> None:
     tong = sum(ca_nguon.values())
     if da_dung + bi_loai != tong:
         loi(f'ca chấm: dựng {da_dung} + loại {bi_loai} ≠ nguồn {tong}')
+
+    # Luật 4 — THÀNH VIÊN, hai chiều. Ba luật trên chỉ duyệt `ca_nguon`, tức chỉ
+    # bài nguồn CÓ `exercises`; bài MẤT `exercises` rơi ra ngoài cả ba. Xem phép
+    # đo ở chú thích của KHONG_CO_BAI_TAP.
+    khong_co = {b['id'] for b in nguon['lessons']
+                if not (b.get('exercises') or [])}
+    for ma in sorted(khong_co - set(KHONG_CO_BAI_TAP)):
+        loi(f'{ma}: gói nguồn KHÔNG có bài tập nào và bài này CHƯA ĐƯỢC KHAI '
+            f'trong KHONG_CO_BAI_TAP. Nếu bài tập vừa bị đánh rơi khỏi nguồn '
+            f'thì trả nó về; nếu bài này cố ý không chấm thì khai một dòng kèm '
+            f'lý do THẬT (đừng viết "chạy trên máy" — 2 bài local và 5 bài '
+            f'mixed vẫn có ca chấm)')
+    # Chiều NGƯỢC là nửa hay bị quên: thiếu nó thì danh sách chỉ dài ra rồi
+    # thành chỗ giấu rác — đúng bài học của `DAP_AN_MAU_KHONG_CHAY`.
+    for ma in sorted(set(KHONG_CO_BAI_TAP) - khong_co):
+        loi(f'{ma}: khai trong KHONG_CO_BAI_TAP nhưng gói nguồn ĐÃ có bài tập '
+            f'(hoặc bài đã bị xoá) — NGOẠI LỆ ĐÃ LỖI THỜI, gỡ dòng đó đi')
 
 
 def kiem_thu_trong_ide(bai: list[dict]) -> None:
