@@ -153,6 +153,70 @@
       "chieu": "ha",
       "moc": 24,
       "vi": "Trần |R-B| cho mọi màu của --edu-bg-image. Giấy lofi lệch 6-16; đỏ brand lệch 145, xanh brand lệch 176. Ablate đã đo: nới nó lên 200 rồi trả mesh đỏ vào nền thì 0 ca đỏ — tức đây đúng là con số một vòng lặp sẽ nới để được xanh."
+    },
+    {
+      "ten": "san-chu-ngay-edu-t3-the",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--edu-t3', ([\\d.]+), ",
+      "chieu": "nang",
+      "moc": 5.4,
+      "vi": "Sàn tương phản trên THẺ TRẮNG của bậc --edu-t3 trong thang chữ ban ngày. Đợt warm lofi trước dừng ở t2 nên t3–t6 còn xanh lạnh; giá trị mới nằm trên đường ấm t1→t2. Ablate đã đo: nới chính con số này rồi trả màu cũ về → ds-contrast 0 ca đỏ, nên nó PHẢI nằm trong sổ."
+    },
+    {
+      "ten": "san-chu-ngay-edu-t3-giay",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--edu-t3', [\\d.]+, ([\\d.]+)\\]",
+      "chieu": "nang",
+      "moc": 4.7,
+      "vi": "Sàn tương phản trên GIẤY KEM #F4EEE3 của bậc --edu-t3. Đây là mặt thứ hai chữ được vẽ lên, và nó mới là mặt bắt lỗi: t5 cũ (#62718c) đo được 4,27:1 trên giấy — DƯỚI AA 4,5 — trong khi trên thẻ vẫn 4,93. Sàn của t5 giữ ĐÚNG 4.5 vì đó là AA, không phải một mốc cũ."
+    },
+    {
+      "ten": "san-chu-ngay-edu-t4-the",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--edu-t4', ([\\d.]+), ",
+      "chieu": "nang",
+      "moc": 5.6,
+      "vi": "Sàn tương phản trên THẺ TRẮNG của bậc --edu-t4 trong thang chữ ban ngày. Đợt warm lofi trước dừng ở t2 nên t3–t6 còn xanh lạnh; giá trị mới nằm trên đường ấm t1→t2. Ablate đã đo: nới chính con số này rồi trả màu cũ về → ds-contrast 0 ca đỏ, nên nó PHẢI nằm trong sổ."
+    },
+    {
+      "ten": "san-chu-ngay-edu-t4-giay",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--edu-t4', [\\d.]+, ([\\d.]+)\\]",
+      "chieu": "nang",
+      "moc": 4.85,
+      "vi": "Sàn tương phản trên GIẤY KEM #F4EEE3 của bậc --edu-t4. Đây là mặt thứ hai chữ được vẽ lên, và nó mới là mặt bắt lỗi: t5 cũ (#62718c) đo được 4,27:1 trên giấy — DƯỚI AA 4,5 — trong khi trên thẻ vẫn 4,93. Sàn của t5 giữ ĐÚNG 4.5 vì đó là AA, không phải một mốc cũ."
+    },
+    {
+      "ten": "san-chu-ngay-edu-t5-the",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--edu-t5', ([\\d.]+), ",
+      "chieu": "nang",
+      "moc": 4.9,
+      "vi": "Sàn tương phản trên THẺ TRẮNG của bậc --edu-t5 trong thang chữ ban ngày. Đợt warm lofi trước dừng ở t2 nên t3–t6 còn xanh lạnh; giá trị mới nằm trên đường ấm t1→t2. Ablate đã đo: nới chính con số này rồi trả màu cũ về → ds-contrast 0 ca đỏ, nên nó PHẢI nằm trong sổ."
+    },
+    {
+      "ten": "san-chu-ngay-edu-t5-giay",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--edu-t5', [\\d.]+, ([\\d.]+)\\]",
+      "chieu": "nang",
+      "moc": 4.5,
+      "vi": "Sàn tương phản trên GIẤY KEM #F4EEE3 của bậc --edu-t5. Đây là mặt thứ hai chữ được vẽ lên, và nó mới là mặt bắt lỗi: t5 cũ (#62718c) đo được 4,27:1 trên giấy — DƯỚI AA 4,5 — trong khi trên thẻ vẫn 4,93. Sàn của t5 giữ ĐÚNG 4.5 vì đó là AA, không phải một mốc cũ."
+    },
+    {
+      "ten": "san-chu-ngay-edu-t6-the",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--edu-t6', ([\\d.]+), ",
+      "chieu": "nang",
+      "moc": 6.6,
+      "vi": "Sàn tương phản trên THẺ TRẮNG của bậc --edu-t6 trong thang chữ ban ngày. Đợt warm lofi trước dừng ở t2 nên t3–t6 còn xanh lạnh; giá trị mới nằm trên đường ấm t1→t2. Ablate đã đo: nới chính con số này rồi trả màu cũ về → ds-contrast 0 ca đỏ, nên nó PHẢI nằm trong sổ."
+    },
+    {
+      "ten": "san-chu-ngay-edu-t6-giay",
+      "tep": "frontend/e2e/unit/ds-contrast.test.mjs",
+      "re": "\\['--edu-t6', [\\d.]+, ([\\d.]+)\\]",
+      "chieu": "nang",
+      "moc": 5.7,
+      "vi": "Sàn tương phản trên GIẤY KEM #F4EEE3 của bậc --edu-t6. Đây là mặt thứ hai chữ được vẽ lên, và nó mới là mặt bắt lỗi: t5 cũ (#62718c) đo được 4,27:1 trên giấy — DƯỚI AA 4,5 — trong khi trên thẻ vẫn 4,93. Sàn của t5 giữ ĐÚNG 4.5 vì đó là AA, không phải một mốc cũ."
     }
   ]
 }

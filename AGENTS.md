@@ -76,7 +76,7 @@ học nó.
 | Backend lint | 104 lỗi, 2 cảnh báo — **mốc trần trong CI là 115, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, **146 cảnh báo** (+7 = `goc-hoc/engine.js`, vào cùng 4d5f86d) |
-| Frontend unit test | `cd frontend && npm run test:unit` → **571 ca** / 48 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **573 ca** / 48 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **143 bài tập được chấm / 480 ca**, 2 440 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
@@ -90,7 +90,7 @@ học nó.
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **14 CSS module trong `src/`** |
 | Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 164/179 khớp, 15 bài đã đổi sau lần nạp cuối** — VZ24, SY24, SY26, EX01, EX08 từ `80dee65` (mở khoá SY24 + `goi_can_tai` quét mã bài đọc), PY01 (bài tập đầu tiên của khoá), SY11 (math.floor), RC01 (đếm process/thread) và GU12 (trung bình có trọng số) cùng 04/11, CT03 + GU01 + CT01 + CT15 + PY09 + SY18 (câu nhồi mệnh đề thành BẢNG / bọc backtick) 07/11; đỏ cho tới khi chủ dự án nạp. Biên nhận 03/11/2026 18:48 UTC. Hàng này từng ghi "179/179, 0 lỗi" suốt lúc cổng đỏ; nay `check-moc-nen` đối chiếu nó — nạp xong thì SỬA số ở đây, không thì cổng đó đỏ |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
-| Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **18 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
+| Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **26 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
 | Wheel vendored | `node scripts/check-wheel.mjs` → **16 wheel · 5 gói bài khai · 16 sau đóng bao phụ thuộc**, 0 lỗi |
 | Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **18 mục đối chiếu được** (thêm hàng "Đã nạp DB chưa", gọi `check-da-nap --json`), 0 lỗi; 3 nhóm khai NGOÀI TẦM |
@@ -113,8 +113,10 @@ mcq-next-after-wrong 23 · phan-bai 8 · practice-contract 15 · practice-run 9 
 read-diagram 12 ·
 read-guess 19 · read-trace 16 · recap-recall 7 · read-try-it 20 · review-quiz 34 · run-stale 15 ·
 session-marker 5 · spaced-review 14 · studio-lesson 44 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 · ds-contrast 13 · feedback-rank 3 · goc-hoc-khung-cho 6 · goc-hoc-lo-trinh 9 · goc-hoc-man-con 3 · o-nhap-nhieu-dong 2 · ide-output-scroll 6 · lien-ket-noi-bo 3 · goc-hoc-cho-so 7 = 571.
-Mốc trước là 570; read-trace 15 → 16 (BẢNG TỪNG BƯỚC ở điện thoại: cột "Sau đó" bị bóp còn ~50px, một hàng cao 621px).
+worker-csp 7 · ds-contrast 15 · feedback-rank 3 · goc-hoc-khung-cho 6 · goc-hoc-lo-trinh 9 · goc-hoc-man-con 3 · o-nhap-nhieu-dong 2 · ide-output-scroll 6 · lien-ket-noi-bo 3 · goc-hoc-cho-so 7 = 573.
+Mốc trước là 571; ds-contrast 13 → 15 (THANG CHỮ BAN NGÀY: đợt warm lofi dừng ở t2 nên t3–t6
+còn xanh lạnh, và t5 `#62718c` chỉ 4,27:1 trên giấy kem — DƯỚI AA 4,5).
+Trước đó 570 → 571; read-trace 15 → 16 (BẢNG TỪNG BƯỚC ở điện thoại: cột "Sau đó" bị bóp còn ~50px, một hàng cao 621px).
 Trước đó 569 → 570; inline-code 3 → 4 (Ý CHÍNH MÀN TỔNG KẾT vỡ cột: withInlineCode đặt thẳng trong <li> flex — 82/179 bài).
 Trước đó 566 → 569; lesson-back 12 → 15 (BÀI ĐÃ HOÀN THÀNH: thanh tiến độ vẽ 15/15 đoạn đầy mà chỉ 2 đoạn bấm được).
 Trước đó 559 → 566; thêm goc-hoc-cho-so 7 (SỐ VỀ MUỘN BỊ VỨT: /api/enrolled 3 087 ms > trần 3 000 ⇒ trang chủ nói "chưa có phiên học" cả phiên với người đã xong 2 bài).
@@ -2644,6 +2646,56 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   (ghi chú `tai-nguyen-may`), 16 GB, và một dev server cộng vài agent là đủ.
   **Lead DUY NHẤT còn sống cho nhánh #96:** trang khoá học ở 390×844 + CPU 4× có LCP
   **1 626 ms** mà **render delay 1 098 ms = 67%** — chưa ai sửa, và nó là việc của vòng sau.
+
+- **THANG CHỮ BAN NGÀY BỊ CHIA ĐÔI: t1/t2 đã nâu, t3–t6 còn xanh lạnh — và t5 trượt AA
+  trên giấy.** Đợt warm lofi trước đổi `--edu-t1` (#2A2018) và `--edu-t2` (#4A3B2E) rồi
+  DỪNG. Bốn bậc còn lại không có chú thích tỉ số nào — đó là dấu hiệu bản port dừng giữa
+  đường. Đo bằng cách quét phần tử ĐANG VẼ ra màu trong Chrome, trên màn "Đang tải bài
+  học…" (07/11/2026): tiêu đề nâu `#2A2018` ở **25 phần tử**, ngay cạnh chữ phụ XANH LẠNH
+  `#5b6a85` (t3, 4 phần tử) và `#62718c` (t5, 4 phần tử). Cùng một màn, hai họ màu.
+  Số chỗ dùng: t1 139 · t2 63 · **t3 108 · t4 31 · t5 18 · t6 7**.
+  **VÀ MỘT LỖI THẬT, KHÔNG CHỈ LỆCH BẢNG MÀU:** giấy nay là kem `#F4EEE3`, nên phải đo
+  trên CẢ HAI mặt chữ được vẽ lên. Trên thẻ trắng t5 là 4,93:1 (đạt AA), nhưng **trên giấy
+  chỉ 4,27:1 — DƯỚI AA 4,5**. Đo một mặt thôi là bỏ sót đúng bậc đang trượt.
+  Giá trị mới nằm trên ĐÚNG đường ấm t1→t2 (delta +32,+27,+22 mỗi bậc), chọn bậc NHẠT NHẤT
+  còn vượt mốc cũ trên cả hai mặt: t3 `#7C6551` 5,47/4,74 · t4 `#7A634F` 5,64/4,88 ·
+  t5 `#806853` **5,22/4,52** (cũ 4,93/4,27) · t6 `#6D5846` 6,70/5,80. Mọi bậc NÂNG, không
+  hạ một con số nào.
+  **BAN ĐÊM CỐ Ý KHÔNG ĐỔI, và đó là phép đo chứ không phải bỏ sót:** cả sáu bậc ban đêm
+  lạnh ĐỒNG NHẤT (t1 `#e8eefb` cũng lạnh) và đều vượt AA trên thẻ `#1d232d` — 13,57 · 9,59
+  · 5,86 · 5,24 · 4,84 · 6,92. Warm riêng t3–t6 ban đêm là TẠO ra đúng cái lệch ban ngày
+  vừa xoá. Port cả thang đêm là lát sau.
+  **SÀN PHẢI THẤP HƠN SỐ ĐO THẬT MỘT NHỊP — ablate dạy điều đó.** Bản đầu ghim đúng con số
+  cũ (t3 5.46) và phép ablate ra kết quả KHÔNG NHẤT QUÁN: trả t3 về chính `#5b6a85` — màu
+  vẫn đạt sàn của nó — vẫn **2 ca đỏ** thay vì 1, còn t6 cùng tình huống lại **1**. Nguyên
+  nhân là làm tròn float ở phép so bằng. Một cổng đỏ không nhất quán là cổng sẽ bị tắt.
+  Nay sàn là 5.4 / 5.6 / 4.9 / 6.6 (thẻ) và 4.7 / 4.85 / 4.5 / 5.7 (giấy); riêng t5 giữ
+  ĐÚNG 4.5 vì đó là AA, không phải một mốc cũ.
+  **LẠI VẤP ĐÚNG HAI BẪY FILE NÀY ĐÃ GHI, trong cùng một vòng:**
+  · dựng regex từ chuỗi — `new RegExp(`${ten}:\s*…`)` trong một template literal biến
+    `\s` thành CHỮ `s`, nên pattern thành `--edu-t1:s*…` và không khớp gì. Cổng ĐỎ oan với
+    câu "không có --edu-t1 dạng mã màu" trong khi file khai đúng. Nay dùng `indexOf` cộng
+    một regex viết THẲNG;
+  · đếm ca đỏ bằng `grep -E "^. fail"` — dòng tổng kết của `node --test` mở đầu bằng `ℹ`
+    (multibyte) nên `^.` không khớp, và cả bảy phép ablate trả RỖNG mà không báo lỗi. Đọc
+    bảng rỗng đó như "chưa chạy" thì may; đọc như "0 đỏ" thì đã commit một cổng rỗng.
+    Dùng `sed -n 's/.*fail \([0-9]\+\)[[:space:]]*$/\1/p'`.
+  **Ablate 7 chiều:** t3 về xanh lạnh → **1 đỏ** · t5 về `#62718c` → **2** (ấm + giấy dưới
+  AA, tức chiều thứ hai bắt đúng lỗi AA) · t6 về xanh lạnh → 1 · t3 ấm nhưng hạ dưới sàn →
+  1 · đổi TÊN token → **2** (cổng nói thẳng "khối NGÀY không khai --edu-t3", không im lặng
+  xanh) · trả regex về bản dựng-từ-chuỗi → 2.
+  **Chiều thứ bảy ra 0 đỏ, và nó là lý do tám con số này phải vào SỔ:** nới chính cái sàn
+  (t5 giấy 4.5 → 4.0) rồi trả màu cũ về → `ds-contrast` **0 đỏ**. Đúng cách THỨ NHẤT một
+  vòng lặp nói dối mà LOOP.md gọi tên. Nay 8 mục trong `scripts/nguong-mot-chieu.json`
+  (18 → **26 ngưỡng**); ablate lại qua sổ: nới 4.5 → 4.0 thì `check-nguong` **1 lỗi, exit
+  1**, còn siết 4.5 → 4.52 thì **0 lỗi** kèm dòng `GHI SỔ`.
+  **`DA_SANG_LOFI` KHÔNG dài thêm vòng này, và đó là đúng:** danh sách đó quét một file
+  xem còn `var(--edu-accent)` không, mà `edu-theme.css` là chỗ ĐỊNH NGHĨA token — thêm nó
+  vào là tự tạo một cổng báo oan. Luật "chỉ được dài thêm" là luật CẤM BỚT, không phải
+  hạn ngạch mỗi vòng.
+  `ASSET_VERSION` bump theo (`2026-11-07a`) vì `edu-theme.css` nằm trong `public/`.
+  **ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC:** mọi chữ phụ trên mọi trang đổi từ xanh xám sang
+  nâu ấm, và chữ ở bậc t5 đọc rõ hơn trên giấy kem.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

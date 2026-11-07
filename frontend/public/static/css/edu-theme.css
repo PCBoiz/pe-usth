@@ -92,10 +92,19 @@
   --edu-bg-solid: #F4EEE3;
   --edu-t1: #2A2018;   /* mực nâu đen · 13,80:1 trên giấy, 15,93:1 trên thẻ */
   --edu-t2: #4A3B2E;   /* 8,52:1 trên thẻ */
-  --edu-t3: #5b6a85;
-  --edu-t4: #5a6883;
-  --edu-t5: #62718c;
-  --edu-t6: #4d5d7a;
+  /* t3–t6 CŨNG phải ấm: đợt port trước dừng ở t2, nên một màn vẽ tiêu đề nâu
+     (#2A2018, 25 phần tử) ngay cạnh chữ phụ XANH LẠNH (#5b6a85 và #62718c, 4+4
+     phần tử) — đo trên màn "Đang tải bài học…" ngày 07/11/2026. Giá trị mới nằm
+     trên ĐÚNG đường ấm t1→t2 (delta +32,+27,+22 mỗi bậc), và mỗi bậc vượt mốc CŨ
+     trên cả hai mặt nó được vẽ lên: thẻ #FFFFFF và giấy kem #F4EEE3.
+     t5 là lỗi THẬT chứ không chỉ lệch bảng màu: #62718c chỉ 4,27:1 trên giấy —
+     DƯỚI AA 4,5 — còn #806853 là 4,52. Ban đêm KHÔNG đổi: cả sáu bậc ở đó lạnh
+     đồng nhất (t1 #e8eefb cũng lạnh) và đều vượt AA, nên warm riêng t3–t6 ban đêm
+     là TẠO ra đúng cái lệch vừa xoá. Sàn trong ds-contrast.test.mjs CHỈ ĐƯỢC NÂNG. */
+  --edu-t3: #7C6551;   /* 5,47:1 trên thẻ · 4,74:1 trên giấy (cũ 5,46 / 4,73) */
+  --edu-t4: #7A634F;   /* 5,64:1 trên thẻ · 4,88:1 trên giấy (cũ 5,61 / 4,86) */
+  --edu-t5: #806853;   /* 5,22:1 trên thẻ · 4,52:1 trên giấy (cũ 4,93 / 4,27 ✗AA) */
+  --edu-t6: #6D5846;   /* 6,70:1 trên thẻ · 5,80:1 trên giấy (cũ 6,64 / 5,75) */
   --edu-card-bg: rgba(255,255,255,.55);
   --edu-card-border: rgba(255,255,255,.85);
   /* ĐƯỜNG KẺ của thẻ, KHÁC --edu-card-border ở trên.

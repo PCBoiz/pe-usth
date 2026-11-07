@@ -495,3 +495,82 @@ test('bề mặt đã sang lofi: lớp tương tác không còn token brand xanh
   }
   }
 });
+
+/**
+ * Thang chữ BAN NGÀY phải ẤM cả sáu bậc — và đây là ca bắt lỗi của đợt port.
+ *
+ * Đợt warm trước đổi t1 (#2A2018) và t2 (#4A3B2E) rồi DỪNG. Hệ quả đo được trên
+ * màn "Đang tải bài học…" ngày 07/11/2026, bằng cách quét phần tử ĐANG VẼ ra màu
+ * trong Chrome (grep đã sai 6:1 một lần, xem AGENTS.md): tiêu đề nâu #2A2018 ở
+ * 25 phần tử, ngay cạnh chữ phụ XANH LẠNH #5b6a85 (t3, 4 phần tử) và #62718c
+ * (t5, 4 phần tử). Cùng một màn, hai họ màu.
+ *
+ * Ca này ghim QUYẾT ĐỊNH (kênh đỏ >= kênh xanh dương), không ghim mã màu — cùng
+ * khuôn ca "bảng code là NÂU ẤM" ở trên. Một bản "chỉnh lại cho hợp tông xanh"
+ * sẽ qua hết mọi phép kiểm tương phản mà vẫn phá đúng thứ nhánh lofi mang lại.
+ *
+ * SÀN thì tính từ CHÍNH file CSS, không giữ bảng giá trị thứ hai (bài học
+ * da-nap-hash-sync.spec.ts: bản đầu tự chép hàm băm vào spec rồi ablate vẫn
+ * xanh). Mỗi bậc phải vượt mốc CŨ trên CẢ HAI mặt nó được vẽ lên — thẻ trắng và
+ * giấy kem — vì t5 cũ chỉ 4,27:1 trên giấy, tức DƯỚI AA 4,5.
+ *
+ * BAN ĐÊM cố ý KHÔNG bị ca này kiểm: ở đó cả sáu bậc lạnh đồng nhất (t1 #e8eefb
+ * cũng lạnh) và đều vượt AA (4,84–13,57 trên thẻ #1d232d), nên warm riêng t3–t6
+ * ban đêm là TẠO ra đúng cái lệch mà ban ngày vừa xoá.
+ */
+const NGAY = THEME.slice(0, THEME.indexOf('body.dark {'));
+const docToken = (ten) => {
+  // Regex viết THẲNG, không dựng từ chuỗi: `new RegExp(`${ten}:\s*…`)` trong một
+  // template literal biến `\s` thành chữ `s`, nên pattern thành `--edu-t1:s*…` và
+  // KHÔNG khớp gì — đúng bẫy đã ghi ở ca thanh sticky và ca chip trang chủ.
+  const i = NGAY.indexOf(ten + ':');
+  assert.ok(i >= 0, `khối NGÀY của edu-theme.css không khai ${ten}`);
+  const sau = NGAY.slice(i + ten.length + 1, i + ten.length + 40);
+  const m = /^\s*(#[0-9a-fA-F]{6})\s*;/.exec(sau);
+  assert.ok(m, `${ten} ở khối NGÀY khai "${sau.split(';')[0].trim()}" — không phải mã màu`);
+  return m[1];
+};
+/** Sàn của t3–t6: [thẻ, giấy]. CHỈ ĐƯỢC NÂNG — xem scripts/nguong-mot-chieu.json. */
+const SAN_THANG_NGAY = [
+  // Sàn đặt THẤP HƠN số đo thật một nhịp, cố ý. Bản đầu ghim đúng con số cũ
+  // (t3 5.46) và phép ablate cho thấy nó đỏ vì LÀM TRÒN float: trả t3 về chính
+  // #5b6a85 — màu vẫn đạt sàn của nó — vẫn ra 2 ca đỏ thay vì 1, còn t6 cùng
+  // tình huống lại ra 1. Một cổng đỏ không nhất quán là cổng sẽ bị tắt.
+  // Riêng t5 giữ ĐÚNG 4.5: đó là AA, không phải một mốc cũ, và #806853 đo được
+  // 4,52 nên vẫn còn biên.
+  ['--edu-t3', 5.4, 4.7],
+  ['--edu-t4', 5.6, 4.85],
+  ['--edu-t5', 4.9, 4.5],
+  ['--edu-t6', 6.6, 5.7],
+];
+
+test('thang chữ BAN NGÀY: cả sáu bậc ẤM (kênh đỏ >= kênh xanh dương)', () => {
+  const lanh = [];
+  for (const n of [1, 2, 3, 4, 5, 6]) {
+    const hex = docToken(`--edu-t${n}`).replace('#', '');
+    const [r, , b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    if (r < b) lanh.push(`--edu-t${n} #${hex} có đỏ ${r} < xanh dương ${b}`);
+  }
+  assert.deepEqual(
+    lanh, [],
+    `${lanh.join('\n')}\nThang chữ ban ngày phải cùng một họ: đợt port trước dừng `
+      + 'ở t2 và để t3–t6 xanh lạnh, nên một màn vẽ tiêu đề nâu ngay cạnh chữ phụ '
+      + 'xanh. Giá trị mới nằm trên đường ấm t1→t2 (delta +32,+27,+22 mỗi bậc).',
+  );
+});
+
+test('thang chữ BAN NGÀY: t3–t6 vượt sàn CŨ trên cả thẻ trắng và giấy kem', () => {
+  const the = docToken('--edu-panel-bg-solid');
+  const giay = docToken('--edu-bg-solid');
+  const duoi = [];
+  for (const [ten, sanThe, sanGiay] of SAN_THANG_NGAY) {
+    const mau = docToken(ten);
+    const a = tiSo(mau, the);
+    const g = tiSo(mau, giay);
+    if (a < AA) duoi.push(`${ten} ${mau} trên thẻ ${the} chỉ ${a.toFixed(2)}:1 — DƯỚI AA ${AA}`);
+    else if (a < sanThe) duoi.push(`${ten} ${mau} trên thẻ ${a.toFixed(2)}:1 < sàn ${sanThe}`);
+    if (g < AA) duoi.push(`${ten} ${mau} trên giấy ${giay} chỉ ${g.toFixed(2)}:1 — DƯỚI AA ${AA}`);
+    else if (g < sanGiay) duoi.push(`${ten} ${mau} trên giấy ${g.toFixed(2)}:1 < sàn ${sanGiay}`);
+  }
+  assert.deepEqual(duoi, [], duoi.join('\n'));
+});
