@@ -198,6 +198,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import statistics
 import sys
 from collections import Counter
 from pathlib import Path
@@ -234,6 +235,7 @@ TEN_LUAT = {
     'L14': 'bối cảnh bài phải thuộc danh sách đã chốt (boi-canh.json)',
     'L15': 'đoạn mở bài phải nối với bài trước (CẢNH BÁO, xem docstring)',
     'TB': 'bất biến của chính termbank',
+    'TL': 'bảng §2 của VAN-PHONG.md phải khớp số đo thật',
     '§4-A': 'định danh trong code phải nằm trong backtick',
 }
 
@@ -929,6 +931,105 @@ CUM_NOI = [re.compile(p, re.IGNORECASE) for p in [
 ]]
 
 
+# ── TL: bảng §2 của chính đặc tả ──────────────────────────────────────────
+SPEC = HERE / 'VAN-PHONG.md'
+
+# Mỗi mục: (nhãn trong thông điệp, regex NEO vào đúng hàng của bảng §2, hàm đo).
+# Regex phải khớp ĐÚNG MỘT LẦN — "nhiều chỗ khớp" là LỖI, không phải lấy chỗ đầu
+# tiên; cùng luật mà `check-nguong.mjs` đã phải đặt sau khi một regex mơ hồ báo
+# oan một ngưỡng đang đúng.
+BANG_S2 = [
+    ('tổng số câu phần giảng', r'Đo thật trên \*\*([\d  ]+)\*\* câu phần giảng'),
+    ('trung vị số tiếng/câu', r'\| Trung vị \| \*\*(\d+) tiếng\*\* \|'),
+    ('p90 số tiếng/câu', r'\| p90 \| (\d+) tiếng \|'),
+    ('câu dài nhất', r'\| Dài nhất cả bộ \| (\d+) tiếng \|'),
+    ('số câu > 30 tiếng', r'\| Câu > 30 tiếng \| \*\*(\d+) câu\*\*'),
+    ('số câu L3 bắt', r'\| Câu L3 bắt \| \*\*(\d+) câu\*\* \|'),
+]
+# Tỉ lệ đi riêng vì nó là SỐ THẬP PHÂN kiểu Việt (dấu phẩy). Nó suy ra được từ
+# hai con số trên, nhưng một con số suy ra được vẫn trôi được — nó đã trôi
+# (1,2% khi số thật là 1,3%), nên nó cũng phải có người canh.
+TI_LE_S2 = r'\| Câu > 30 tiếng \| \*\*\d+ câu\*\* \((\d+,\d)%\) \|'
+
+
+def kiem_tai_lieu(bai: list[dict]) -> None:
+    """TL — bảng §2 của VAN-PHONG.md phải khớp số đo thật.
+
+    VÌ SAO LUẬT NÀY PHẢI TỒN TẠI, và nó là một lỗi đã xảy ra HAI LẦN trong chính
+    tệp đặc tả này, không phải một mối lo xa:
+      · §11 từng trích AGENTS.md là "mốc trần lint trong CI là 245" trong khi trần
+        thật là 115 — đã hạ qua bốn đợt dọn `any`, và dòng đính chính ngay tại đó
+        ghi là nó sai "suốt nhiều tháng";
+      · §2 ghi "Corpus hiện chỉ 14 câu và vài đoạn vi phạm" trong khi đo được
+        **32** câu > 30 tiếng.
+    `check-moc-nen.mjs` chỉ đọc AGENTS.md nên nó MÙ với tệp này — một con số sống
+    trong đặc tả mà không cổng nào đối chiếu sẽ trôi, đúng như đã trôi.
+
+    VÀ BẢNG §2 CÒN SAI VÌ MỘT LÝ DO NẶNG HƠN "cũ": nó được đo bằng MỘT PHÉP CHẺ
+    CÂU KHÁC. Chính §2 khai phép chẻ chuẩn là `.!?…` và chỉ ở đó, rồi nói ra rằng
+    bản đầu của đặc tả mang ba con số câu từ ba phép chẻ (2 182 · 2 750 · 3 059) —
+    mà 3 059 chính là con số §2 đang dùng. Nên bảng ấy không đến từ định nghĩa của
+    chính nó. Đo lại bằng `cau_cua` + `tieng` (hàm mà MỌI luật đếm câu dùng) ra
+    **2 549** câu.
+
+    GIỚI HẠN PHẢI NÓI RA: luật này canh SÁU con số của bảng §2, không canh mọi con
+    số trong tệp. §3 (các chỉ số độ khó đọc), §7 và các bảng văn liệu là trích dẫn
+    NGOÀI repo — không hàm nào ở đây đo lại được chúng, nên chúng vẫn trôi được.
+    """
+    if not SPEC.is_file():
+        loi('TL', 'không tìm thấy VAN-PHONG.md — không đối chiếu được bảng §2')
+        return
+    van = SPEC.read_text(encoding='utf-8')
+
+    do = []
+    l3 = 0
+    for l in bai:
+        for d in doan_cua(l):
+            for s in cau_cua(d):
+                n = len(tieng(s))
+                if not n:
+                    continue
+                do.append(n)
+                if sum(s.count(x) for x in ',;') >= 3 and n >= 20:
+                    l3 += 1
+    if not do:
+        loi('TL', 'không đo được câu nào — corpus rỗng?')
+        return
+    sap = sorted(do)
+    that = {
+        'tổng số câu phần giảng': len(do),
+        'trung vị số tiếng/câu': int(statistics.median(do)),
+        'p90 số tiếng/câu': sap[int(len(do) * 0.9)],
+        'câu dài nhất': max(do),
+        'số câu > 30 tiếng': sum(1 for n in do if n > 30),
+        'số câu L3 bắt': l3,
+    }
+    for nhan, pat in BANG_S2:
+        ms = re.findall(pat, van)
+        if not ms:
+            loi('TL', f'bảng §2 KHÔNG CÒN DÒNG nào khai "{nhan}" — đổi chữ hàng '
+                      f'đó thì phải sửa BANG_S2, im lặng xanh ở đây là cách con '
+                      f'số 3 059 sống sót')
+            continue
+        if len(ms) > 1:
+            loi('TL', f'"{nhan}": regex khớp {len(ms)} chỗ trong VAN-PHONG.md, '
+                      f'đòi ĐÚNG MỘT — neo thêm chữ xung quanh')
+            continue
+        ghi = int(str(ms[0]).replace(' ', '').replace(' ', ''))
+        if ghi != that[nhan]:
+            loi('TL', f'{nhan}: §2 ghi {ghi}, đo được {that[nhan]}. Sửa bảng §2 '
+                      f'của VAN-PHONG.md (số đo là thẩm quyền, không phải văn xuôi)')
+
+    ms = re.findall(TI_LE_S2, van)
+    if len(ms) != 1:
+        loi('TL', f'bảng §2: regex tỉ lệ "câu > 30 tiếng" khớp {len(ms)} chỗ, '
+                  f'đòi ĐÚNG MỘT')
+    else:
+        thuc = f'{100 * that["số câu > 30 tiếng"] / len(do):.1f}'.replace('.', ',')
+        if ms[0] != thuc:
+            loi('TL', f'tỉ lệ câu > 30 tiếng: §2 ghi {ms[0]}%, đo được {thuc}%')
+
+
 def kiem_noi_bai(bai: list[dict], bank: list[Muc]) -> None:
     """L15 — CẢNH BÁO, và đọc giới hạn của nó ở docstring đầu file trước khi tin.
 
@@ -1034,15 +1135,16 @@ def doi_chieu_moc(dem_lo: Counter, dem_cb: Counter, thu_tu: list[str],
     nay = {t: {'loi': dem_lo[t], 'cb': dem_cb[t]} for t in thu_tu}
 
     loi_ra: list[str] = []
+    so_sach: list[str] = []
     siet: list[str] = []
     for t in thu_tu:
         if t not in cu:
             if khoi_tao:
                 continue
-            loi_ra.append(f'{t}: luật có trong mã mà SỔ CHƯA KHAI — thêm một '
-                          f'luật thì phải ghi mốc cho nó, không thì nó không '
-                          f'bao giờ được canh (đo được: {nay[t]["loi"]} lỗi · '
-                          f'{nay[t]["cb"]} cb)')
+            so_sach.append(f'{t}: luật có trong mã mà SỔ CHƯA KHAI — thêm một '
+                           f'luật thì phải ghi mốc cho nó, không thì nó không '
+                           f'bao giờ được canh (đo được: {nay[t]["loi"]} lỗi · '
+                           f'{nay[t]["cb"]} cb)')
             continue
         # MỘT LỖI THÀNH MỘT CẢNH BÁO LÀ TỐT LÊN, mà phép so TỪNG BẬC không nói
         # được điều đó. Đo được: sửa L11 làm EX05, EX08, SY09 rời bậc LỖI của L8
@@ -1068,10 +1170,24 @@ def doi_chieu_moc(dem_lo: Counter, dem_cb: Counter, thu_tu: list[str],
                 siet.append(f'{t} {ten} {truoc} → {gio}')
     for t in cu:
         if t not in nay:
-            loi_ra.append(f'{t}: SỔ KHAI một luật mã không còn — mục lỗi thời, '
-                          f'bỏ nó đi, không thì sổ thành chỗ giấu rác.')
+            so_sach.append(f'{t}: SỔ KHAI một luật mã không còn — mục lỗi thời, '
+                           f'bỏ nó đi, không thì sổ thành chỗ giấu rác.')
 
-    for m in loi_ra:
+    # HAI LOẠI MỤC, và chỉ MỘT loại được chặn `--ghi-so`.
+    #
+    # `loi_ra` là HỒI QUY: một luật TĂNG, tức văn phong xấu đi. Ghi sổ lúc đó là
+    # đúng nghĩa "nới phép kiểm cho xanh", nên nó phải bị chặn.
+    #
+    # `so_sach` là SỔ SÁCH của chính cái sổ: một luật mới chưa khai, hay một mục
+    # khai một luật mã không còn. Ghi sổ CHÍNH LÀ cách sửa chúng, nên chặn ở đây
+    # là một thế bế tắc — và đó là thế đã xảy ra: thêm luật TL thì `--doi-chieu`
+    # đỏ với "SỔ CHƯA KHAI", rồi `--ghi-so` từ chối kèm câu "đang có luật TĂNG"
+    # trong khi KHÔNG luật nào tăng. Thông điệp vừa chặn vừa nói sai, nên không
+    # có đường nào thêm được một luật mới.
+    #
+    # Cả hai loại VẪN là LỖI ở lần chạy thường: để một luật mới không được canh
+    # thì nó im lặng mãi, đúng lỗi mà chính nó ra đời để bắt.
+    for m in loi_ra + so_sach:
         print(f'LỖI: {m}', file=sys.stderr)
     if siet:
         print(f'\nGHI SỔ — {len(siet)} mục đã SIẾT, chạy kèm --ghi-so để ghi lại:')
@@ -1080,10 +1196,10 @@ def doi_chieu_moc(dem_lo: Counter, dem_cb: Counter, thu_tu: list[str],
 
     if ghi_so:
         if loi_ra:
-            print('\n--ghi-so TỪ CHỐI: đang có luật TĂNG. Sửa chữ trước.',
+            print(f'\n--ghi-so TỪ CHỐI: {len(loi_ra)} luật TĂNG. Sửa chữ trước.',
                   file=sys.stderr)
             return 1
-        if not siet and cu and so.get('soBai') == so_bai:
+        if not siet and not so_sach and cu and so.get('soBai') == so_bai:
             print('\nSổ đã đúng — không ghi gì.')
             return 0
         so['luat'] = nay
@@ -1093,8 +1209,14 @@ def doi_chieu_moc(dem_lo: Counter, dem_cb: Counter, thu_tu: list[str],
         print(f'\nĐã ghi {MOC.name}: {len(nay)} luật · {so_bai} bài.')
         return 0
 
-    print(f'\nĐối chiếu sổ: {len(nay)} luật · {so_bai} bài · {len(loi_ra)} lỗi')
-    return 1 if loi_ra else 0
+    # ĐẾM CẢ HAI loại. `so_sach` không chặn `--ghi-so` (ghi CHÍNH LÀ cách sửa
+    # nó), nhưng ở lần chạy thường nó PHẢI đỏ — nếu không thì một luật mới nằm
+    # ngoài sổ sẽ in một dòng LỖI rồi exit 0, tức CI xanh và luật đó không bao
+    # giờ được canh. Đo được đúng vậy ở bản đầu của phép tách này: gỡ mục TL
+    # khỏi sổ → in "SỔ CHƯA KHAI" mà `exit=0`.
+    tong_loi = len(loi_ra) + len(so_sach)
+    print(f'\nĐối chiếu sổ: {len(nay)} luật · {so_bai} bài · {tong_loi} lỗi')
+    return 1 if tong_loi else 0
 
 
 def main() -> int:
@@ -1135,6 +1257,7 @@ def main() -> int:
     kiem_thuat_ngu(bai, bank)
     kiem_boi_canh(bai, mien, tru)
     kiem_noi_bai(bai, bank)
+    kiem_tai_lieu(bai)
 
     chon = {t.strip().upper() for t in args.luat.split(',') if t.strip()}
     def loc(xs: list[tuple[str, str]]) -> list[tuple[str, str]]:
@@ -1143,7 +1266,7 @@ def main() -> int:
     lo, cb = loc(LOI), loc(CANH_BAO)
 
     dem_lo, dem_cb = Counter(l for l, _ in lo), Counter(l for l, _ in cb)
-    thu_tu = [f'L{i}' for i in range(1, 16)] + ['TB', '§4-A']
+    thu_tu = [f'L{i}' for i in range(1, 16)] + ['TB', 'TL', '§4-A']
     # In CẢ luật đang 0. Một luật không bắt được ca nào là THÔNG TIN, không phải
     # chuyện im lặng được: nó có thể là corpus đã đạt, mà cũng có thể là luật
     # không thể trượt — "một luật không thể trượt trông như hàng rào mà không

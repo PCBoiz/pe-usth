@@ -109,23 +109,37 @@ chính là thứ L3 phải đếm BÊN TRONG một câu.
 
 ## 2. Độ dài câu KHÔNG phải vấn đề của bộ này
 
-Đo thật trên 3 059 câu phần giảng:
+Đo thật trên **2 549** câu phần giảng — bằng CHÍNH phép chẻ `.!?…` mà mục trên định
+nghĩa, và `tieng()` của bộ kiểm:
 
 | | |
 |---|---|
-| Trung vị | **13 từ** |
-| p90 | 22 từ |
-| Dài nhất cả bộ | 49 từ |
-| Câu > 30 từ | **1,2%** |
+| Trung vị | **15 tiếng** |
+| p90 | 23 tiếng |
+| Dài nhất cả bộ | 43 tiếng |
+| Câu > 30 tiếng | **32 câu** (1,3%) |
+| Câu L3 bắt | **39 câu** |
 
-**Đừng mở một đợt "chẻ câu cho ngắn".** Nó sẽ sửa đúng thứ không hỏng. Cái sai ở 20 câu dài
-nhất là dấu `;` nhồi mệnh đề (15/20) — đã là L3 ở trên.
+⚠️ **Bảng này từng mang số của MỘT PHÉP CHẺ KHÁC, và đó là lý do luật TL ra đời.** Bản
+trước ghi 3 059 câu · trung vị 13 · p90 22 · dài nhất 49 · 1,2% — mà 3 059 chính là con số
+mà mục trên đã nêu tên như một trong ba phép chẻ KHÔNG được dùng. Nên bảng không đến từ
+định nghĩa của chính nó. Sáu con số của bảng cộng tỉ lệ % nay do **luật TL** đối chiếu với
+số đo mỗi lần chạy; đổi chữ một hàng là TL báo "KHÔNG CÒN DÒNG", không im lặng xanh.
+
+**Đừng mở một đợt "chẻ câu cho ngắn".** Nó sẽ sửa đúng thứ không hỏng. Cái sai ở những câu
+dài nhất là dấu `;` nhồi mệnh đề — đã là L3 ở trên.
 
 ### L1 · Câu > 25 tiếng cảnh báo, > 30 tiếng lỗi
 ### L2 · Đoạn > 90 tiếng hoặc > 6 câu cảnh báo (lỗi: 110 tiếng / 8 câu)
 
-Hai luật này là **hàng rào chống tụt**, không phải việc phải làm. Corpus hiện chỉ 14 câu và
-vài đoạn vi phạm.
+Hai luật này là **hàng rào chống tụt**, không phải việc phải làm.
+
+⚠️ **Con số L1 của bảng tổng kết KHÔNG phải "số câu dài".** Các nhánh trong
+`kiem_do_dai()` loại trừ nhau (`elif`): một câu đã bị L3 bắt thì L1 **không** đếm nữa.
+Không báo trùng là đúng, nhưng nó có nghĩa L1 luôn ≤ số câu dài thật, và chênh lệch bằng
+đúng số câu vừa dài vừa nhồi mệnh đề. Hàng "Câu > 30 tiếng" của bảng trên mới là con số về
+CÂU — và nó CỐ Ý không nhắc lại ở đây: một con số viết hai chỗ thì chỉ một chỗ được canh,
+đúng lỗi mà bản sao "ca test frontend 574/573" trong AGENTS.md đã mắc.
 
 ---
 

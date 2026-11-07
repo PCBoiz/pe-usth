@@ -83,7 +83,7 @@ học nó.
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **143 bài tập được chấm / 480 ca**, 2 440 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 154 bài, 420 đoạn code, **0 hỏng**, **0 cảnh báo**, ~32 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 143 bài, **480 ca đạt**, 773 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, **pha 4: 2 372 ca trượt / 0 ca im lặng / 7 nhánh phản hồi**, ~12 s |
-| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **93 lỗi · 467 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 26 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 93 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
+| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **93 lỗi · 467 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 26 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **18 luật, 0 lỗi**; nó KHÔNG đỏ vì 93 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 359 khối đủ điều kiện** (303 bỏ qua — bảng từng ghi 356/300, đã CŨ từ trước 04/11: dựng lại từ HEAD cũng ra 359/303, và `check-moc-nen` không đối chiếu hàng này; phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
@@ -3340,6 +3340,53 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   kiểu + 1 chỗ `int 64 bit`), nên phần còn làm được là ~49 chỗ rải trên ~15 định danh. Từ đây
   mỗi lát sẽ nhỏ và vụn hơn hẳn ba lát trước — đó là dấu hiệu cụm này gần hết, không phải dấu
   hiệu nên nới luật.
+
+- **ĐẶC TẢ CỦA CHÍNH BỘ KIỂM MANG SỐ CỦA MỘT PHÉP ĐO KHÁC — và nó đã sai HAI LẦN ở hai
+  mục khác nhau.** `VAN-PHONG.md` là tệp mà `check_vanphong.py` thi hành, và nó chứa những
+  con số SỐNG mà `check-moc-nen.mjs` không với tới (cổng đó chỉ đọc AGENTS.md). Hai lần đã
+  xảy ra: §11 từng trích *"mốc trần lint trong CI là 245"* khi trần thật là **115**, và dòng
+  đính chính tại đó tự ghi rằng nó sai *"suốt nhiều tháng"*; §2 ghi *"Corpus hiện chỉ 14 câu
+  và vài đoạn vi phạm"* khi đo được **32** câu > 30 tiếng.
+  **NẶNG HƠN "cũ": bảng §2 không đến từ định nghĩa của chính nó.** §2 khai phép chẻ câu
+  chuẩn là `.!?…` và CHỈ ở đó, rồi tự nói ra rằng bản đầu của đặc tả mang ba con số câu từ
+  ba phép chẻ — **2 182** (`.!?…`) · **2 750** (thêm `;`/`:`) · **3 059** (§2). Mà 3 059
+  chính là con số §2 đang dùng. Đo lại bằng `cau_cua` + `tieng` (hàm mà MỌI luật đếm câu
+  dùng) thì cả năm hàng đều khác: tổng câu 3 059 → **2 549** · trung vị 13 → **15** · p90
+  22 → **23** · dài nhất 49 → **43** · tỉ lệ > 30 tiếng 1,2% → **1,3%** (32 câu).
+  Nay có luật **TL** (17 → **18 luật**): sáu con số của bảng §2 cộng tỉ lệ % được đối chiếu
+  với số đo mỗi lần chạy. Đổi CHỮ một hàng là TL báo "KHÔNG CÒN DÒNG", và một regex khớp
+  **hai** chỗ cũng là LỖI — không lấy chỗ đầu tiên, đúng luật `check-nguong.mjs` đã phải đặt.
+  **PHÁT HIỆN KÈM, và nó giải thích một con số dễ đọc sai:** các nhánh trong `kiem_do_dai()`
+  LOẠI TRỪ NHAU (`elif`), nên một câu đã bị L3 bắt thì L1 **không** đếm nữa. Đo được 32 câu
+  > 30 tiếng mà L1 chỉ báo **21** — 11 câu kia nằm trong 39 lỗi L3. Không báo trùng là đúng,
+  nhưng **"L1 21" KHÔNG phải "21 câu dài"**.
+  **CHÍNH VÒNG NÀY VẤP LẠI LỖI BẢN-SAO vừa sửa hai vòng trước:** bản đầu của tôi viết con số
+  32 ở CẢ hàng bảng lẫn ghi chú ⚠️, mà regex chỉ neo vào hàng bảng — tức bản sao trong ghi
+  chú không ai canh. Lộ ra vì phép gieo ablate khớp 2 chỗ và TRƯỢT. Đã chữa bằng cách BỎ số
+  khỏi ghi chú: ghi chú ấy nói một CƠ CHẾ, nó không cần con số, và ít con số hơn là câu trả
+  lời đúng khi một con số không thêm thông tin nào mà cổng không in ra được.
+  **VÀ THÊM MỘT LUẬT LÀM LỘ MỘT THẾ BẾ TẮC trong nếp của chính ratchet.** `--doi-chieu` đỏ
+  với *"TL: luật có trong mã mà SỔ CHƯA KHAI"*, rồi `--ghi-so` TỪ CHỐI kèm câu *"đang có
+  luật TĂNG"* — trong khi KHÔNG luật nào tăng. Thông điệp vừa chặn vừa nói sai, nên không có
+  đường nào thêm được một luật mới. Nay hai loại mục đi riêng: **HỒI QUY** (một luật TĂNG)
+  chặn `--ghi-so`, vì ghi lúc đó đúng là "nới phép kiểm cho xanh"; **SỔ SÁCH** (luật mới
+  chưa khai, hoặc sổ khai một luật mã không còn) KHÔNG chặn, vì ghi CHÍNH LÀ cách sửa.
+  **Bản đầu của phép tách đó lại hỏng theo chiều ngược, và chỉ ablate thấy:** mục sổ sách in
+  một dòng LỖI rồi `exit 0`, tức CI xanh và luật mới không bao giờ được canh — đúng lỗi nó
+  ra đời để bắt. Mã thoát nay đếm CẢ HAI loại.
+  Ablate 11 chiều. Sáu con số của bảng §2, mỗi con số đổi một đơn vị → **1 lỗi** mỗi chiều ·
+  đổi CHỮ một hàng → 1 lỗi "KHÔNG CÒN DÒNG" · nhân đôi một hàng (regex khớp 2 chỗ) → 1 lỗi
+  "đòi ĐÚNG MỘT" · gỡ mục TL khỏi sổ → `--doi-chieu` **exit 1** nhưng `--ghi-so` **exit 0**
+  và ghi được · khai một luật `L99` mã không còn → 1 lỗi, exit 1 · gieo hồi quy thật (L3 moc
+  38 khi thật là 39) → `--ghi-so` **exit 1**, sổ KHÔNG bị ghi.
+  **GIỚI HẠN PHẢI NÓI RA:** TL canh SÁU con số của bảng §2 cộng tỉ lệ, **không** canh mọi
+  con số trong tệp. §3 (các chỉ số độ khó đọc), §7 và các bảng văn liệu là trích dẫn NGOÀI
+  repo — không hàm nào ở đây đo lại được chúng, nên chúng vẫn trôi được. Và trích dẫn ở §11
+  (trần lint 115) vẫn là một bản sao của AGENTS.md mà không gì đối chiếu.
+  **MỘT VIỆC ĐÃ BỊ ĐẶC TẢ BÁC, đừng mở lại:** vòng trước tôi nêu "7 lỗi L2" làm ứng viên
+  tiếp theo. §2 nói nguyên văn *"Hai luật này [L1 và L2] là **hàng rào chống tụt**, không
+  phải việc phải làm."* Nên đó là một việc mà đặc tả CẤM mở thành chiến dịch, và tôi đã nêu
+  nó vì đọc bảng số thay vì đọc câu.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
