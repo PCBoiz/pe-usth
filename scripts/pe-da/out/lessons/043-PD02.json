@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Cột có nhãn ở bài trước giữ được số cốc, nhưng sổ của quán có nhiều cột. Bảng bán hàng cần cả tên đồ uống và số cốc. DataFrame giữ các cột này trong cùng một bảng; mỗi hàng ở ví dụ dưới là một loại đồ uống."
+      "text": "Cột có nhãn ở bài trước giữ được số cốc, nhưng sổ của quán có nhiều cột. Bảng bán hàng cần cả tên đồ uống và số cốc. `DataFrame` giữ các cột này trong cùng một bảng; mỗi hàng ở ví dụ dưới là một loại đồ uống."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một cặp ngoặc chọn cột thành Series; danh sách tên cột giữ kết quả là DataFrame. Để xem vài hàng đầu hoặc cuối, dùng head và tail. `to_dict(\"records\")` in mỗi hàng thành một dictionary nên dễ đọc trong ví dụ ngắn."
+      "text": "Một cặp ngoặc chọn cột thành `Series`; danh sách tên cột giữ kết quả là `DataFrame`. Để xem vài hàng đầu hoặc cuối, dùng head và tail. `to_dict(\"records\")` in mỗi hàng thành một dictionary nên dễ đọc trong ví dụ ngắn."
      },
      {
       "type": "code",

@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Hai cách chọn ô ở bài trước đã tách nhãn khỏi vị trí; số của quán cũng tính theo nhãn. Doanh thu và chi phí có thể được xuất theo hai thứ tự cửa hàng khác nhau. Khi hai Series có nhãn cửa hàng, pandas ghép các số theo nhãn trước khi tính."
+      "text": "Hai cách chọn ô ở bài trước đã tách nhãn khỏi vị trí; số của quán cũng tính theo nhãn. Doanh thu và chi phí có thể được xuất theo hai thứ tự cửa hàng khác nhau. Khi hai `Series` có nhãn cửa hàng, pandas ghép các số theo nhãn trước khi tính."
      },
      {
       "type": "code",

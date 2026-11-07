@@ -83,13 +83,13 @@ học nó.
 | Giáo trình pe-da (đang chạy) | **179 bài, 11 module**, 565 màn đọc, **537 câu trắc nghiệm**, 669 câu luyện tập, **143 bài tập được chấm / 480 ca**, 2 440 phút; 139 bài chạy trong trình duyệt / 15 hỗn hợp / 25 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 154 bài, 420 đoạn code, **0 hỏng**, **0 cảnh báo**, ~32 s; **pha 2: 52/53 đáp án mẫu màn luyện tập chạy đúng, 1 ngoại lệ đã khai, 10 câu bỏ qua (bài chạy trên máy)** |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 143 bài, **480 ca đạt**, 773 biến thể sai đều trượt, **pha 3 cổng file dữ liệu 7 bài / 0 lỗi**, **pha 4: 2 372 ca trượt / 0 ca im lặng / 7 nhánh phản hồi**, ~12 s |
-| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **94 lỗi · 513 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 27 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 94 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
+| pe-da VĂN PHONG | `py -I scripts/pe-da/check_vanphong.py` → 179 bài, **93 lỗi · 467 cảnh báo**, dồn ở L3 39 (câu ≥ 3 dấu phẩy) · L8 26 (mật độ thuật ngữ) · L1 21 (câu > 30 tiếng) — đúng ba thứ người thử gọi là "văn phong lủng củng" và "bạn em đọc không hiểu". `--doi-chieu` (CI chạy bản này) so TỪNG LUẬT với `scripts/pe-da/van-phong-moc.json` → **17 luật, 0 lỗi**; nó KHÔNG đỏ vì 93 lỗi đang tồn, chỉ đỏ khi một luật TĂNG — và một LỖI đổi thành một CẢNH BÁO tính là siết, miễn TỔNG không phình |
 | pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **56 vết / 359 khối đủ điều kiện** (303 bỏ qua — bảng từng ghi 356/300, đã CŨ từ trước 04/11: dựng lại từ HEAD cũng ra 359/303, và `check-moc-nen` không đối chiếu hàng này; phần lớn vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Bản đồ tính năng | `node scripts/check-duong-toi.mjs` → **17 mục, 14 có đường tới, 3 còn tối (đã khai lý do)**, 0 lỗi |
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **14 CSS module trong `src/`** |
-| Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 86/179 khớp, 93 bài đã đổi sau lần nạp cuối** — đợt 04/11 (mở khoá SY24, `goi_can_tai` quét mã bài đọc, bài tập PY01, math.floor SY11, đếm process RC01, trung bình có trọng số GU12) cộng đợt 07/11 (câu nhồi mệnh đề thành BẢNG · L11 thôi gọi một thứ bằng hai tên · L4/L5/L6 bỏ danh-từ-hoá và từ cấm · §4-A bọc backtick 54 hằng Python rồi 85 tên kiểu Python, rồi 22 chỗ gọi `plt`/`ax`/`fig`). Danh sách mã in ra ở đầu ra của cổng, KHÔNG liệt kê lại ở đây — một danh sách 61 mã trong bảng là thứ sẽ trôi. Biên nhận 03/11/2026 18:48 UTC; đỏ cho tới khi chủ dự án nạp. Nạp xong thì SỬA số ở đây, không thì `check-moc-nen` đỏ |
+| Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 78/179 khớp, 101 bài đã đổi sau lần nạp cuối** — đợt 04/11 (mở khoá SY24, `goi_can_tai` quét mã bài đọc, bài tập PY01, math.floor SY11, đếm process RC01, trung bình có trọng số GU12) cộng đợt 07/11 (câu nhồi mệnh đề thành BẢNG · L11 thôi gọi một thứ bằng hai tên · L4/L5/L6 bỏ danh-từ-hoá và từ cấm · §4-A bọc backtick 54 hằng Python rồi 85 tên kiểu Python, rồi 22 chỗ gọi `plt`/`ax`/`fig`, rồi 50 chỗ tên class pandas/matplotlib). Danh sách mã in ra ở đầu ra của cổng, KHÔNG liệt kê lại ở đây — một danh sách 61 mã trong bảng là thứ sẽ trôi. Biên nhận 03/11/2026 18:48 UTC; đỏ cho tới khi chủ dự án nạp. Nạp xong thì SỬA số ở đây, không thì `check-moc-nen` đỏ |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
 | Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **32 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
@@ -3303,6 +3303,43 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   backtick" đã có sẵn ở đó, không phải của vòng lặp. Hai nhóm GIAO NHAU (`ax.transAxes` chứa
   cả `ax` lẫn `Axes`), nên lát này đã bọc kèm vài chỗ `Axes`/`Figure` như tác dụng phụ đúng —
   đừng đọc "50 lần" như một con số độc lập.
+
+- **BỌC BACKTICK 50 CHỖ TÊN CLASS (`Figure` · `DataFrame` · `Axes` · `Series`) — và phép đo
+  mật độ chip LẦN NÀY TĂNG, đúng như dự đoán, nhưng nó chỉ ra một khiếm khuyết ĐÃ CÓ.**
+  §4-A còn 98 cảnh báo sau lát trước; nhóm tên class là 39 cảnh báo / **50 lần xuất hiện**.
+  In ngữ cảnh đủ 50 chỗ trước khi sửa: **không một ngoại lệ nào** — tất cả là tên class dùng
+  làm danh từ, cộng một chỗ thuộc tính (`Series.plot`) và hai chỗ cặp `Figure/Axes` nối bằng
+  dấu gạch chéo (dấu gạch là chấm câu của VĂN XUÔI, không thuộc tên nào, nên bọc riêng từng
+  tên: `` `Figure`/`Axes` ``).
+  **VÌ SAO LÀM CẢ BỐN TÊN TRONG MỘT LÁT, chứ không chia pandas với matplotlib:** hai chỗ
+  (VZ20#0, VZ21#0) có **cả `Figure` lẫn `DataFrame` trong CÙNG MỘT CÂU** — *"Plotly Express
+  tạo Figure từ DataFrame"*, *"lọc DataFrame trước khi tạo Figure"*. Bọc một nửa là để lại
+  một chỗ trần ngay cạnh một chip, và người học đọc ra sự không nhất quán đó trước khi đọc
+  ra bất cứ ý nghĩa nào.
+  **PHÉP ĐO MẬT ĐỘ: lần này TĂNG, và tôi nói ra trước khi chạy.** Đoạn có ≥ 8 chip **5 → 7**,
+  nhiều nhất **10 → 11** (VZ02#1). NHƯNG đo theo MẬT ĐỘ thì nó không phải đoạn nặng nhất:
+  11/134 tiếng = **8,2%**, thấp hơn PY10#2 (10/74 = **13,5%**) và PY12#5 (10/69 = **14,5%**).
+  VZ02#1 chỉ dẫn đầu về SỐ TUYỆT ĐỐI vì nó là đoạn DÀI nhất — và chính chỗ đó là phát hiện:
+  **`L2 VZ02 đoạn 1: 120 tiếng / 7 câu` đã là một LỖI từ trước**, vượt trần 110 tiếng. Nên
+  đoạn 11 chip chính là đoạn cổng đã bắt vì quá dài; chip không tạo ra lỗi đó, nó chỉ làm nó
+  dễ thấy. Tách đoạn ấy là một lát NỘI DUNG riêng (một trong 7 lỗi L2), chưa làm.
+  **Vẫn KHÔNG dựng trần mật độ chip:** số liệu nói đoạn mới không vượt mật độ đã tồn, và một
+  luật không có bằng chứng là thứ §2 của VAN-PHONG.md cấm.
+  **LÁT TRƯỚC LÀ ĐIỀU KIỆN để lát này không làm vỡ gì:** bản sửa L15 (nhóm A đọc RAW qua
+  `raw_doan()`) vừa vào ở commit trước. Không có nó thì bọc 50 chỗ tên class sẽ làm L15 nổ
+  hàng loạt — `DataFrame` là khái niệm mang sang giữa PD01→PD02, `Figure`/`Axes` giữa chuỗi
+  bài VZ. Đo được: L15 giữ **0**, TB giữ **0**.
+  **SỐ ĐÃ ĐO:** §4-A **98 → 59** (−39) · L8 lỗi 27 → **26** · L8 cảnh báo 31 → **24** (TỔNG
+  L8 58 → **50**, giảm thật chứ không chỉ đổi bậc) · tổng khoá 94 → **93 lỗi**, 513 → **467
+  cảnh báo** (−46). `check.py --strict` 0/0 · `check-pyodide` 154 bài / 420 đoạn / 0 hỏng ·
+  `check-practice` 480 ca đạt / 773 biến thể sai đều trượt. Sổ đã ghi 3 mục siết.
+  **GIÁ PHẢI TRẢ:** bài chờ nạp DB **93 → 101**.
+  **CÒN LẠI của §4-A: 59 cảnh báo**, và hình dạng đã ĐỔI — không còn nhóm nào ≥ 6: `gzip` 6 ·
+  `subprocess` 5 · `groupby` 5 · `curses` 5 · `pip` 4 · `mainloop` 4 · `exec` 4 · `Popen` 4 ·
+  rồi đuôi dài. Mười chỗ trong đó là **ngoại lệ đã cố ý giữ** (9 chỗ viết hoa đầu câu của tên
+  kiểu + 1 chỗ `int 64 bit`), nên phần còn làm được là ~49 chỗ rải trên ~15 định danh. Từ đây
+  mỗi lát sẽ nhỏ và vụn hơn hẳn ba lát trước — đó là dấu hiệu cụm này gần hết, không phải dấu
+  hiệu nên nới luật.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

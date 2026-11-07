@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Báo cáo có thể cho người xem chọn cửa hàng thay vì vẽ mọi đường chồng lên nhau. Có hai cách: lọc DataFrame trước khi tạo Figure, hoặc giữ nhiều trace rồi cho nút chọn thay đổi trace đang hiện. Cách thứ hai vẫn chứa toàn bộ các trace trong file."
+      "text": "Báo cáo có thể cho người xem chọn cửa hàng thay vì vẽ mọi đường chồng lên nhau. Có hai cách: lọc `DataFrame` trước khi tạo `Figure`, hoặc giữ nhiều trace rồi cho nút chọn thay đổi trace đang hiện. Cách thứ hai vẫn chứa toàn bộ các trace trong file."
      },
      {
       "type": "terminal",

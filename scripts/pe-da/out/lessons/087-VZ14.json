@@ -56,7 +56,7 @@
     [
      {
       "type": "paragraph",
-      "text": "savefig lưu hình; show mở hình qua backend tương tác. Trong script, thường lưu trước khi show và đóng Figure sau khi dùng để không giữ nhiều hình trong bộ nhớ. cla xóa nội dung Axes hiện tại, clf xóa nội dung Figure hiện tại, close đóng Figure. Khi đã có `ax` và `fig`, dùng `ax.clear()` hoặc `fig.clear()` sẽ rõ đối tượng hơn các lệnh phụ thuộc trạng thái hiện tại."
+      "text": "savefig lưu hình; show mở hình qua backend tương tác. Trong script, thường lưu trước khi show và đóng `Figure` sau khi dùng để không giữ nhiều hình trong bộ nhớ. cla xóa nội dung `Axes` hiện tại, clf xóa nội dung `Figure` hiện tại, close đóng `Figure`. Khi đã có `ax` và `fig`, dùng `ax.clear()` hoặc `fig.clear()` sẽ rõ đối tượng hơn các lệnh phụ thuộc trạng thái hiện tại."
      },
      {
       "type": "code",

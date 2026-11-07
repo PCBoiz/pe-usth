@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`True` giữ hàng, `False` bỏ hàng khỏi kết quả lọc. Với nhiều điều kiện, dùng & cho “và”, | cho “hoặc”, rồi đặt từng phép so sánh trong ngoặc. Không dùng and/or để nối hai Series."
+      "text": "`True` giữ hàng, `False` bỏ hàng khỏi kết quả lọc. Với nhiều điều kiện, dùng & cho “và”, | cho “hoặc”, rồi đặt từng phép so sánh trong ngoặc. Không dùng and/or để nối hai `Series`."
      },
      {
       "type": "code",

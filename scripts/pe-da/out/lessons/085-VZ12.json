@@ -138,7 +138,7 @@
     [
      {
       "type": "paragraph",
-      "text": "constrained layout tự chừa khoảng cho nhãn và tiêu đề. tight_layout là một lựa chọn bố trí khác; không cần gọi đồng thời cả hai. Nếu tự đặt khoảng bằng subplots_adjust thì tắt cơ chế bố trí tự động để các thiết lập không cạnh tranh nhau. figaspect chọn kích thước dựa trên tỷ lệ cao/rộng, không thay đổi đơn vị dữ liệu trong Axes. wspace/hspace chỉnh khoảng giữa các ô theo chiều ngang/dọc. left/right/top/bottom xác định phần khung Figure dành cho subplot theo tỷ lệ từ 0 đến 1. Không nhầm các tỷ lệ này với tọa độ dữ liệu trong biểu đồ."
+      "text": "constrained layout tự chừa khoảng cho nhãn và tiêu đề. tight_layout là một lựa chọn bố trí khác; không cần gọi đồng thời cả hai. Nếu tự đặt khoảng bằng subplots_adjust thì tắt cơ chế bố trí tự động để các thiết lập không cạnh tranh nhau. figaspect chọn kích thước dựa trên tỷ lệ cao/rộng, không thay đổi đơn vị dữ liệu trong `Axes`. wspace/hspace chỉnh khoảng giữa các ô theo chiều ngang/dọc. left/right/top/bottom xác định phần khung `Figure` dành cho subplot theo tỷ lệ từ 0 đến 1. Không nhầm các tỷ lệ này với tọa độ dữ liệu trong biểu đồ."
      },
      {
       "type": "code",

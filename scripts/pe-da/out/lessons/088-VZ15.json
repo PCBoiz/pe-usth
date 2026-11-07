@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bảng đơn hàng có hai lần bán cà phê và một lần bán trà. Nếu muốn vẽ doanh thu theo loại, cần cộng các dòng của cùng loại trước. pandas chuẩn bị bảng tổng hợp; plot.bar vẽ bảng đó vào Axes bạn đã tạo."
+      "text": "Bảng đơn hàng có hai lần bán cà phê và một lần bán trà. Nếu muốn vẽ doanh thu theo loại, cần cộng các dòng của cùng loại trước. pandas chuẩn bị bảng tổng hợp; plot.bar vẽ bảng đó vào `Axes` bạn đã tạo."
      },
      {
       "type": "code",
@@ -39,7 +39,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Series.plot dùng index làm trục ngang nếu bạn không chỉ định khác. Với thời gian, hãy chuyển cột ngày sang datetime rồi sắp trước khi vẽ. Tên cột có thể trở thành nhãn mặc định nhưng vẫn cần bổ sung đơn vị cho người đọc."
+      "text": "`Series.plot` dùng index làm trục ngang nếu bạn không chỉ định khác. Với thời gian, hãy chuyển cột ngày sang datetime rồi sắp trước khi vẽ. Tên cột có thể trở thành nhãn mặc định nhưng vẫn cần bổ sung đơn vị cho người đọc."
      },
      {
       "type": "code",

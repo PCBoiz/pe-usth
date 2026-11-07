@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một biểu đồ tương tác cho phép bạn đưa chuột vào từng đơn để xem tên cửa hàng và giá trị. Plotly Express tạo Figure từ DataFrame; hover_data chọn thông tin hiện khi rê chuột. Bạn vẫn cần tiêu đề, đơn vị và một câu mô tả vì người đọc có thể xem ảnh chụp hoặc dùng thiết bị không có chuột."
+      "text": "Một biểu đồ tương tác cho phép bạn đưa chuột vào từng đơn để xem tên cửa hàng và giá trị. Plotly Express tạo `Figure` từ `DataFrame`; hover_data chọn thông tin hiện khi rê chuột. Bạn vẫn cần tiêu đề, đơn vị và một câu mô tả vì người đọc có thể xem ảnh chụp hoặc dùng thiết bị không có chuột."
      },
      {
       "type": "terminal",
@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một chuỗi dữ liệu có cách vẽ riêng trên hình Plotly gọi là một trace. Khi chia màu theo cửa hàng, Plotly thường tạo một trace cho mỗi nhóm. Người xem có thể ẩn một trace qua legend. Thao tác đó thay đổi phần hiển thị chứ không xóa dữ liệu khỏi Figure hoặc file HTML (định dạng của trang web)."
+      "text": "Một chuỗi dữ liệu có cách vẽ riêng trên hình Plotly gọi là một trace. Khi chia màu theo cửa hàng, Plotly thường tạo một trace cho mỗi nhóm. Người xem có thể ẩn một trace qua legend. Thao tác đó thay đổi phần hiển thị chứ không xóa dữ liệu khỏi `Figure` hoặc file HTML (định dạng của trang web)."
      },
      {
       "type": "terminal",

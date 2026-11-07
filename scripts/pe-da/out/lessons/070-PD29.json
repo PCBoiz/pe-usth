@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Sổ đơn hàng của quán đã nằm trong một cơ sở dữ liệu. Bạn có thể để SQL chọn các hàng cần thiết, rồi nhận kết quả thành DataFrame để tiếp tục phân tích."
+      "text": "Sổ đơn hàng của quán đã nằm trong một cơ sở dữ liệu. Bạn có thể để SQL chọn các hàng cần thiết, rồi nhận kết quả thành `DataFrame` để tiếp tục phân tích."
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Cơ sở dữ liệu :memory: chỉ tồn tại trong lần chạy này, nên ví dụ không cần máy chủ. to_sql tạo bảng; read_sql_query đưa kết quả truy vấn về DataFrame. Với hệ quản trị khác, pandas thường dùng kết nối hoặc engine SQLAlchemy và driver tương ứng."
+      "text": "Cơ sở dữ liệu :memory: chỉ tồn tại trong lần chạy này, nên ví dụ không cần máy chủ. to_sql tạo bảng; read_sql_query đưa kết quả truy vấn về `DataFrame`. Với hệ quản trị khác, pandas thường dùng kết nối hoặc engine SQLAlchemy và driver tương ứng."
      },
      {
       "type": "code",

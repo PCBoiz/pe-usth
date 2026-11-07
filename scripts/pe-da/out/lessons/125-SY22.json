@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Stata có format nhị phân riêng; read_stata trả DataFrame. SAS7BDAT khác SAS XPORT, dù đều thuộc hệ SAS. Bộ tài liệu có fixture test1.sas7bdat từ bộ test công khai của pandas, kèm CSV đối chiếu và giấy phép. Hai ví dụ tiếp theo chạy từ thư mục gốc dự án PE USTH; khi chuyển dự án, chỉnh đường dẫn fixture tương ứng."
+      "text": "Stata có format nhị phân riêng; read_stata trả `DataFrame`. SAS7BDAT khác SAS XPORT, dù đều thuộc hệ SAS. Bộ tài liệu có fixture test1.sas7bdat từ bộ test công khai của pandas, kèm CSV đối chiếu và giấy phép. Hai ví dụ tiếp theo chạy từ thư mục gốc dự án PE USTH; khi chuyển dự án, chỉnh đường dẫn fixture tương ứng."
      },
      {
       "type": "code",

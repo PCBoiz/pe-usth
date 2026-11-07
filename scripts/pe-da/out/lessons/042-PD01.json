@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bảng số ở phần trước mất tên món ngay khi bạn sắp lại thứ tự. Một quán cà phê ghi số cốc bán được trong ba ngày: 12, 15 và 9. Bạn có thể lưu dãy số này bằng Series. Mỗi giá trị đi cùng một nhãn để xác định nó thuộc ngày nào."
+      "text": "Bảng số ở phần trước mất tên món ngay khi bạn sắp lại thứ tự. Một quán cà phê ghi số cốc bán được trong ba ngày: 12, 15 và 9. Bạn có thể lưu dãy số này bằng `Series`. Mỗi giá trị đi cùng một nhãn để xác định nó thuộc ngày nào."
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi chưa đặt nhãn, pandas dùng các số 0, 1, 2. Đây là index (dãy nhãn của các hàng) của Series. Giá trị 15 nằm ở nhãn 1; số 1 là nhãn, không phải số cốc bán được. Bạn có thể thay các nhãn này bằng tên ngày."
+      "text": "Khi chưa đặt nhãn, pandas dùng các số 0, 1, 2. Đây là index (dãy nhãn của các hàng) của `Series`. Giá trị 15 nằm ở nhãn 1; số 1 là nhãn, không phải số cốc bán được. Bạn có thể thay các nhãn này bằng tên ngày."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`loc` chọn dữ liệu theo nhãn. Vì đã gắn nhãn Tue, bạn lấy được số cốc thứ Ba mà không phải nhớ nó đứng ở vị trí nào. Series cũng có các phép tính cho cả cột."
+      "text": "`loc` chọn dữ liệu theo nhãn. Vì đã gắn nhãn Tue, bạn lấy được số cốc thứ Ba mà không phải nhớ nó đứng ở vị trí nào. `Series` cũng có các phép tính cho cả cột."
      },
      {
       "type": "code",
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Tổng ba ngày là 36 cốc. `len(cups)` cho biết Series có ba phần tử. Trong các bài sau, `tolist()` được dùng để in giá trị gọn thành `list`; dữ liệu ban đầu vẫn là Series."
+      "text": "Tổng ba ngày là 36 cốc. `len(cups)` cho biết `Series` có ba phần tử. Trong các bài sau, `tolist()` được dùng để in giá trị gọn thành `list`; dữ liệu ban đầu vẫn là `Series`."
      }
     ]
    ],

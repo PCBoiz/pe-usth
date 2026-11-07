@@ -44,7 +44,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một Figure có thể chứa dữ liệu trong x, y, customdata, hover và trace đang ẩn. Trước khi gửi HTML, chỉ đưa các cột cần chia sẻ và tổng hợp hoặc ẩn danh theo yêu cầu thực tế. Ví dụ cuối dựng Figure từ số liệu đã cộng; nó không đưa tên khách vào Figure. Kiểm tra file xuất ở kích thước thật và thử zoom, hover, legend sau khi mở."
+      "text": "Một `Figure` có thể chứa dữ liệu trong x, y, customdata, hover và trace đang ẩn. Trước khi gửi HTML, chỉ đưa các cột cần chia sẻ và tổng hợp hoặc ẩn danh theo yêu cầu thực tế. Ví dụ cuối dựng `Figure` từ số liệu đã cộng; nó không đưa tên khách vào `Figure`. Kiểm tra file xuất ở kích thước thật và thử zoom, hover, legend sau khi mở."
      },
      {
       "type": "code",

@@ -39,7 +39,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`ax.text(x, y, ...)` mặc định hiểu x/y theo dữ liệu. `transform=ax.transAxes` đổi sang tỷ lệ Axes: (0,0) là góc dưới trái và (1,1) là góc trên phải. Trong ví dụ, chữ cách trái 5%, cách dưới 95%; va=\"top\" neo cạnh trên của chữ vào vị trí đó."
+      "text": "`ax.text(x, y, ...)` mặc định hiểu x/y theo dữ liệu. `transform=ax.transAxes` đổi sang tỷ lệ `Axes`: (0,0) là góc dưới trái và (1,1) là góc trên phải. Trong ví dụ, chữ cách trái 5%, cách dưới 95%; va=\"top\" neo cạnh trên của chữ vào vị trí đó."
      },
      {
       "type": "code",

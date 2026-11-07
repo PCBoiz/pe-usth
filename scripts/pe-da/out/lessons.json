@@ -9974,7 +9974,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bảng số ở phần trước mất tên món ngay khi bạn sắp lại thứ tự. Một quán cà phê ghi số cốc bán được trong ba ngày: 12, 15 và 9. Bạn có thể lưu dãy số này bằng Series. Mỗi giá trị đi cùng một nhãn để xác định nó thuộc ngày nào."
+        "text": "Bảng số ở phần trước mất tên món ngay khi bạn sắp lại thứ tự. Một quán cà phê ghi số cốc bán được trong ba ngày: 12, 15 và 9. Bạn có thể lưu dãy số này bằng `Series`. Mỗi giá trị đi cùng một nhãn để xác định nó thuộc ngày nào."
        },
        {
         "type": "code",
@@ -9986,7 +9986,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Khi chưa đặt nhãn, pandas dùng các số 0, 1, 2. Đây là index (dãy nhãn của các hàng) của Series. Giá trị 15 nằm ở nhãn 1; số 1 là nhãn, không phải số cốc bán được. Bạn có thể thay các nhãn này bằng tên ngày."
+        "text": "Khi chưa đặt nhãn, pandas dùng các số 0, 1, 2. Đây là index (dãy nhãn của các hàng) của `Series`. Giá trị 15 nằm ở nhãn 1; số 1 là nhãn, không phải số cốc bán được. Bạn có thể thay các nhãn này bằng tên ngày."
        },
        {
         "type": "code",
@@ -9998,7 +9998,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`loc` chọn dữ liệu theo nhãn. Vì đã gắn nhãn Tue, bạn lấy được số cốc thứ Ba mà không phải nhớ nó đứng ở vị trí nào. Series cũng có các phép tính cho cả cột."
+        "text": "`loc` chọn dữ liệu theo nhãn. Vì đã gắn nhãn Tue, bạn lấy được số cốc thứ Ba mà không phải nhớ nó đứng ở vị trí nào. `Series` cũng có các phép tính cho cả cột."
        },
        {
         "type": "code",
@@ -10008,7 +10008,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Tổng ba ngày là 36 cốc. `len(cups)` cho biết Series có ba phần tử. Trong các bài sau, `tolist()` được dùng để in giá trị gọn thành `list`; dữ liệu ban đầu vẫn là Series."
+        "text": "Tổng ba ngày là 36 cốc. `len(cups)` cho biết `Series` có ba phần tử. Trong các bài sau, `tolist()` được dùng để in giá trị gọn thành `list`; dữ liệu ban đầu vẫn là `Series`."
        }
       ]
      ],
@@ -10220,7 +10220,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Cột có nhãn ở bài trước giữ được số cốc, nhưng sổ của quán có nhiều cột. Bảng bán hàng cần cả tên đồ uống và số cốc. DataFrame giữ các cột này trong cùng một bảng; mỗi hàng ở ví dụ dưới là một loại đồ uống."
+        "text": "Cột có nhãn ở bài trước giữ được số cốc, nhưng sổ của quán có nhiều cột. Bảng bán hàng cần cả tên đồ uống và số cốc. `DataFrame` giữ các cột này trong cùng một bảng; mỗi hàng ở ví dụ dưới là một loại đồ uống."
        },
        {
         "type": "code",
@@ -10244,7 +10244,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Một cặp ngoặc chọn cột thành Series; danh sách tên cột giữ kết quả là DataFrame. Để xem vài hàng đầu hoặc cuối, dùng head và tail. `to_dict(\"records\")` in mỗi hàng thành một dictionary nên dễ đọc trong ví dụ ngắn."
+        "text": "Một cặp ngoặc chọn cột thành `Series`; danh sách tên cột giữ kết quả là `DataFrame`. Để xem vài hàng đầu hoặc cuối, dùng head và tail. `to_dict(\"records\")` in mỗi hàng thành một dictionary nên dễ đọc trong ví dụ ngắn."
        },
        {
         "type": "code",
@@ -10827,7 +10827,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Hai cách chọn ô ở bài trước đã tách nhãn khỏi vị trí; số của quán cũng tính theo nhãn. Doanh thu và chi phí có thể được xuất theo hai thứ tự cửa hàng khác nhau. Khi hai Series có nhãn cửa hàng, pandas ghép các số theo nhãn trước khi tính."
+        "text": "Hai cách chọn ô ở bài trước đã tách nhãn khỏi vị trí; số của quán cũng tính theo nhãn. Doanh thu và chi phí có thể được xuất theo hai thứ tự cửa hàng khác nhau. Khi hai `Series` có nhãn cửa hàng, pandas ghép các số theo nhãn trước khi tính."
        },
        {
         "type": "code",
@@ -11077,7 +11077,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`True` giữ hàng, `False` bỏ hàng khỏi kết quả lọc. Với nhiều điều kiện, dùng & cho “và”, | cho “hoặc”, rồi đặt từng phép so sánh trong ngoặc. Không dùng and/or để nối hai Series."
+        "text": "`True` giữ hàng, `False` bỏ hàng khỏi kết quả lọc. Với nhiều điều kiện, dùng & cho “và”, | cho “hoặc”, rồi đặt từng phép so sánh trong ngoặc. Không dùng and/or để nối hai `Series`."
        },
        {
         "type": "code",
@@ -13136,7 +13136,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Sổ quán không chỉ ở dạng CSV như bài trước; nó còn về từ dịch vụ hoặc bảng tính. Một API (tập hàm một dịch vụ mở ra cho bạn gọi) trả danh sách đơn, trong khi đồng nghiệp gửi Excel có nhiều sheet. Danh sách đó ở dạng JSON (định dạng text lưu dữ liệu lồng nhau). Cả hai có thể thành DataFrame, nhưng bạn cần biết cấu trúc dữ liệu trước khi đọc."
+        "text": "Sổ quán không chỉ ở dạng CSV như bài trước; nó còn về từ dịch vụ hoặc bảng tính. Một API (tập hàm một dịch vụ mở ra cho bạn gọi) trả danh sách đơn, trong khi đồng nghiệp gửi Excel có nhiều sheet. Danh sách đó ở dạng JSON (định dạng text lưu dữ liệu lồng nhau). Cả hai có thể thành `DataFrame`, nhưng bạn cần biết cấu trúc dữ liệu trước khi đọc."
        },
        {
         "type": "code",
@@ -17070,7 +17070,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Sổ đơn hàng của quán đã nằm trong một cơ sở dữ liệu. Bạn có thể để SQL chọn các hàng cần thiết, rồi nhận kết quả thành DataFrame để tiếp tục phân tích."
+        "text": "Sổ đơn hàng của quán đã nằm trong một cơ sở dữ liệu. Bạn có thể để SQL chọn các hàng cần thiết, rồi nhận kết quả thành `DataFrame` để tiếp tục phân tích."
        },
        {
         "type": "code",
@@ -17082,7 +17082,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Cơ sở dữ liệu :memory: chỉ tồn tại trong lần chạy này, nên ví dụ không cần máy chủ. to_sql tạo bảng; read_sql_query đưa kết quả truy vấn về DataFrame. Với hệ quản trị khác, pandas thường dùng kết nối hoặc engine SQLAlchemy và driver tương ứng."
+        "text": "Cơ sở dữ liệu :memory: chỉ tồn tại trong lần chạy này, nên ví dụ không cần máy chủ. to_sql tạo bảng; read_sql_query đưa kết quả truy vấn về `DataFrame`. Với hệ quản trị khác, pandas thường dùng kết nối hoặc engine SQLAlchemy và driver tương ứng."
        },
        {
         "type": "code",
@@ -18465,7 +18465,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn cần một hình có tiêu đề, trục và đường bán hàng. `plt.subplots()` trả về hai đối tượng: Figure là toàn bộ hình, Axes là vùng vẽ bên trong. Dùng `fig` để lưu hình và `ax` để thêm dữ liệu hoặc đổi nhãn sẽ giúp bạn biết mình đang sửa phần nào."
+        "text": "Bạn cần một hình có tiêu đề, trục và đường bán hàng. `plt.subplots()` trả về hai đối tượng: `Figure` là toàn bộ hình, `Axes` là vùng vẽ bên trong. Dùng `fig` để lưu hình và `ax` để thêm dữ liệu hoặc đổi nhãn sẽ giúp bạn biết mình đang sửa phần nào."
        },
        {
         "type": "code",
@@ -18482,7 +18482,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Có thể tạo Figure trước rồi thêm vùng vẽ bằng add_subplot(111). Ba chữ số lần lượt chỉ số hàng, số cột và vị trí: 111 nghĩa là một hàng, một cột, ô thứ nhất. add_axes([left, bottom, width, height]) lại đặt vùng vẽ theo phần tỷ lệ của Figure, phù hợp khi bạn cần điều khiển vị trí cụ thể. Lệnh add_axes() thiếu tọa độ trong tờ tóm tắt không đủ để tạo ví dụ hoàn chỉnh. pyplot giữ trạng thái Figure/Axes hiện tại: `plt.plot(...)` vẽ vào Axes hiện tại, còn `ax.plot(...)` chỉ rõ đối tượng cần vẽ. Quy trình thường là chuẩn bị dữ liệu → tạo Figure/Axes → vẽ → chỉnh nhãn và bố trí → lưu nếu cần → show. Nếu có nhiều Axes, viết rõ `ax` giúp tránh vẽ nhầm vùng."
+        "text": "Có thể tạo `Figure` trước rồi thêm vùng vẽ bằng add_subplot(111). Ba chữ số lần lượt chỉ số hàng, số cột và vị trí: 111 nghĩa là một hàng, một cột, ô thứ nhất. add_axes([left, bottom, width, height]) lại đặt vùng vẽ theo phần tỷ lệ của `Figure`, phù hợp khi bạn cần điều khiển vị trí cụ thể. Lệnh add_axes() thiếu tọa độ trong tờ tóm tắt không đủ để tạo ví dụ hoàn chỉnh. pyplot giữ trạng thái `Figure`/`Axes` hiện tại: `plt.plot(...)` vẽ vào `Axes` hiện tại, còn `ax.plot(...)` chỉ rõ đối tượng cần vẽ. Quy trình thường là chuẩn bị dữ liệu → tạo `Figure`/`Axes` → vẽ → chỉnh nhãn và bố trí → lưu nếu cần → show. Nếu có nhiều `Axes`, viết rõ `ax` giúp tránh vẽ nhầm vùng."
        },
        {
         "type": "code",
@@ -21225,7 +21225,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn có thể ẩn viền trên, chỉnh tick hoặc tăng khoảng đệm bằng margins để hình thoáng hơn. Tỷ lệ equal giữ một đơn vị x dài bằng một đơn vị y; điều này cần khi hình học có ý nghĩa. Tránh hai trục y tùy ý chỉ để hai đường trông đi cùng nhau; cùng dữ liệu có thể tạo nhiều cảm giác khác nhau khi đổi giới hạn. margins(x=0.1,y=0.1) thêm đệm dựa trên phạm vi dữ liệu tự co giãn; nó không đặt giới hạn cố định. Khi cần miền x cụ thể, gọi `ax.set_xlim(0, 3)` hoặc `ax.set(xlim=(0, 3))`. set_aspect(\"equal\") kiểm soát độ dài một đơn vị dữ liệu, khác tỷ lệ cao/rộng của cả Figure."
+        "text": "Bạn có thể ẩn viền trên, chỉnh tick hoặc tăng khoảng đệm bằng margins để hình thoáng hơn. Tỷ lệ equal giữ một đơn vị x dài bằng một đơn vị y; điều này cần khi hình học có ý nghĩa. Tránh hai trục y tùy ý chỉ để hai đường trông đi cùng nhau; cùng dữ liệu có thể tạo nhiều cảm giác khác nhau khi đổi giới hạn. margins(x=0.1,y=0.1) thêm đệm dựa trên phạm vi dữ liệu tự co giãn; nó không đặt giới hạn cố định. Khi cần miền x cụ thể, gọi `ax.set_xlim(0, 3)` hoặc `ax.set(xlim=(0, 3))`. set_aspect(\"equal\") kiểm soát độ dài một đơn vị dữ liệu, khác tỷ lệ cao/rộng của cả `Figure`."
        },
        {
         "type": "code",
@@ -21571,7 +21571,7 @@
       [
        {
         "type": "paragraph",
-        "text": "constrained layout tự chừa khoảng cho nhãn và tiêu đề. tight_layout là một lựa chọn bố trí khác; không cần gọi đồng thời cả hai. Nếu tự đặt khoảng bằng subplots_adjust thì tắt cơ chế bố trí tự động để các thiết lập không cạnh tranh nhau. figaspect chọn kích thước dựa trên tỷ lệ cao/rộng, không thay đổi đơn vị dữ liệu trong Axes. wspace/hspace chỉnh khoảng giữa các ô theo chiều ngang/dọc. left/right/top/bottom xác định phần khung Figure dành cho subplot theo tỷ lệ từ 0 đến 1. Không nhầm các tỷ lệ này với tọa độ dữ liệu trong biểu đồ."
+        "text": "constrained layout tự chừa khoảng cho nhãn và tiêu đề. tight_layout là một lựa chọn bố trí khác; không cần gọi đồng thời cả hai. Nếu tự đặt khoảng bằng subplots_adjust thì tắt cơ chế bố trí tự động để các thiết lập không cạnh tranh nhau. figaspect chọn kích thước dựa trên tỷ lệ cao/rộng, không thay đổi đơn vị dữ liệu trong `Axes`. wspace/hspace chỉnh khoảng giữa các ô theo chiều ngang/dọc. left/right/top/bottom xác định phần khung `Figure` dành cho subplot theo tỷ lệ từ 0 đến 1. Không nhầm các tỷ lệ này với tọa độ dữ liệu trong biểu đồ."
        },
        {
         "type": "code",
@@ -22130,7 +22130,7 @@
       [
        {
         "type": "paragraph",
-        "text": "savefig lưu hình; show mở hình qua backend tương tác. Trong script, thường lưu trước khi show và đóng Figure sau khi dùng để không giữ nhiều hình trong bộ nhớ. cla xóa nội dung Axes hiện tại, clf xóa nội dung Figure hiện tại, close đóng Figure. Khi đã có `ax` và `fig`, dùng `ax.clear()` hoặc `fig.clear()` sẽ rõ đối tượng hơn các lệnh phụ thuộc trạng thái hiện tại."
+        "text": "savefig lưu hình; show mở hình qua backend tương tác. Trong script, thường lưu trước khi show và đóng `Figure` sau khi dùng để không giữ nhiều hình trong bộ nhớ. cla xóa nội dung `Axes` hiện tại, clf xóa nội dung `Figure` hiện tại, close đóng `Figure`. Khi đã có `ax` và `fig`, dùng `ax.clear()` hoặc `fig.clear()` sẽ rõ đối tượng hơn các lệnh phụ thuộc trạng thái hiện tại."
        },
        {
         "type": "code",
@@ -22335,7 +22335,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bảng đơn hàng có hai lần bán cà phê và một lần bán trà. Nếu muốn vẽ doanh thu theo loại, cần cộng các dòng của cùng loại trước. pandas chuẩn bị bảng tổng hợp; plot.bar vẽ bảng đó vào Axes bạn đã tạo."
+        "text": "Bảng đơn hàng có hai lần bán cà phê và một lần bán trà. Nếu muốn vẽ doanh thu theo loại, cần cộng các dòng của cùng loại trước. pandas chuẩn bị bảng tổng hợp; plot.bar vẽ bảng đó vào `Axes` bạn đã tạo."
        },
        {
         "type": "code",
@@ -22352,7 +22352,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Series.plot dùng index làm trục ngang nếu bạn không chỉ định khác. Với thời gian, hãy chuyển cột ngày sang datetime rồi sắp trước khi vẽ. Tên cột có thể trở thành nhãn mặc định nhưng vẫn cần bổ sung đơn vị cho người đọc."
+        "text": "`Series.plot` dùng index làm trục ngang nếu bạn không chỉ định khác. Với thời gian, hãy chuyển cột ngày sang datetime rồi sắp trước khi vẽ. Tên cột có thể trở thành nhãn mặc định nhưng vẫn cần bổ sung đơn vị cho người đọc."
        },
        {
         "type": "code",
@@ -22612,7 +22612,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bài trước vẽ thẳng từ bảng của quán; thư viện này nhận cả tên cột. Một cột thời gian chờ trong DataFrame có thể vẽ ngay bằng seaborn.histplot. Bạn đưa tên cột vào x, còn seaborn lấy các giá trị từ data. Cách viết này giữ tên biến trong code rõ hơn khi bảng có nhiều cột."
+        "text": "Bài trước vẽ thẳng từ bảng của quán; thư viện này nhận cả tên cột. Một cột thời gian chờ trong `DataFrame` có thể vẽ ngay bằng seaborn.histplot. Bạn đưa tên cột vào x, còn seaborn lấy các giá trị từ data. Cách viết này giữ tên biến trong code rõ hơn khi bảng có nhiều cột."
        },
        {
         "type": "code",
@@ -23167,7 +23167,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Quan hệ hai cột đã vẽ xong rồi, nhưng mỗi quầy của quán có thể có một dạng riêng. Khi cửa hàng A và B phục vụ hai nhóm khách khác nhau, trộn tất cả điểm vào một hình có thể che khác biệt giữa cửa hàng. Facet chia dữ liệu thành các ô có cùng cách vẽ, mỗi ô cho một nhóm. seaborn.relplot tạo cả Figure và các Axes; bạn không cần tạo `fig`, `ax` trước."
+        "text": "Quan hệ hai cột đã vẽ xong rồi, nhưng mỗi quầy của quán có thể có một dạng riêng. Khi cửa hàng A và B phục vụ hai nhóm khách khác nhau, trộn tất cả điểm vào một hình có thể che khác biệt giữa cửa hàng. Facet chia dữ liệu thành các ô có cùng cách vẽ, mỗi ô cho một nhóm. seaborn.relplot tạo cả `Figure` và các `Axes`; bạn không cần tạo `fig`, `ax` trước."
        },
        {
         "type": "code",
@@ -23348,7 +23348,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Một biểu đồ tương tác cho phép bạn đưa chuột vào từng đơn để xem tên cửa hàng và giá trị. Plotly Express tạo Figure từ DataFrame; hover_data chọn thông tin hiện khi rê chuột. Bạn vẫn cần tiêu đề, đơn vị và một câu mô tả vì người đọc có thể xem ảnh chụp hoặc dùng thiết bị không có chuột."
+        "text": "Một biểu đồ tương tác cho phép bạn đưa chuột vào từng đơn để xem tên cửa hàng và giá trị. Plotly Express tạo `Figure` từ `DataFrame`; hover_data chọn thông tin hiện khi rê chuột. Bạn vẫn cần tiêu đề, đơn vị và một câu mô tả vì người đọc có thể xem ảnh chụp hoặc dùng thiết bị không có chuột."
        },
        {
         "type": "terminal",
@@ -23359,7 +23359,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Một chuỗi dữ liệu có cách vẽ riêng trên hình Plotly gọi là một trace. Khi chia màu theo cửa hàng, Plotly thường tạo một trace cho mỗi nhóm. Người xem có thể ẩn một trace qua legend. Thao tác đó thay đổi phần hiển thị chứ không xóa dữ liệu khỏi Figure hoặc file HTML (định dạng của trang web)."
+        "text": "Một chuỗi dữ liệu có cách vẽ riêng trên hình Plotly gọi là một trace. Khi chia màu theo cửa hàng, Plotly thường tạo một trace cho mỗi nhóm. Người xem có thể ẩn một trace qua legend. Thao tác đó thay đổi phần hiển thị chứ không xóa dữ liệu khỏi `Figure` hoặc file HTML (định dạng của trang web)."
        },
        {
         "type": "terminal",
@@ -23507,7 +23507,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Báo cáo có thể cho người xem chọn cửa hàng thay vì vẽ mọi đường chồng lên nhau. Có hai cách: lọc DataFrame trước khi tạo Figure, hoặc giữ nhiều trace rồi cho nút chọn thay đổi trace đang hiện. Cách thứ hai vẫn chứa toàn bộ các trace trong file."
+        "text": "Báo cáo có thể cho người xem chọn cửa hàng thay vì vẽ mọi đường chồng lên nhau. Có hai cách: lọc `DataFrame` trước khi tạo `Figure`, hoặc giữ nhiều trace rồi cho nút chọn thay đổi trace đang hiện. Cách thứ hai vẫn chứa toàn bộ các trace trong file."
        },
        {
         "type": "terminal",
@@ -23688,7 +23688,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Một Figure có thể chứa dữ liệu trong x, y, customdata, hover và trace đang ẩn. Trước khi gửi HTML, chỉ đưa các cột cần chia sẻ và tổng hợp hoặc ẩn danh theo yêu cầu thực tế. Ví dụ cuối dựng Figure từ số liệu đã cộng; nó không đưa tên khách vào Figure. Kiểm tra file xuất ở kích thước thật và thử zoom, hover, legend sau khi mở."
+        "text": "Một `Figure` có thể chứa dữ liệu trong x, y, customdata, hover và trace đang ẩn. Trước khi gửi HTML, chỉ đưa các cột cần chia sẻ và tổng hợp hoặc ẩn danh theo yêu cầu thực tế. Ví dụ cuối dựng `Figure` từ số liệu đã cộng; nó không đưa tên khách vào `Figure`. Kiểm tra file xuất ở kích thước thật và thử zoom, hover, legend sau khi mở."
        },
        {
         "type": "code",
@@ -24396,7 +24396,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bài trước nói về hình dễ gây hiểu lầm; bài này vẫn là hình, nhưng động. Để minh họa một đường được vẽ dần, bạn không cần tạo Figure mới ở mỗi khung hình. Tạo Line2D một lần rồi gọi set_data để thay các điểm đang hiển thị. Hàm update nhận chỉ số khung và trả các đối tượng vừa đổi; nó chỉ cập nhật hình, không chạy lại chương trình dữ liệu từ đầu."
+        "text": "Bài trước nói về hình dễ gây hiểu lầm; bài này vẫn là hình, nhưng động. Để minh họa một đường được vẽ dần, bạn không cần tạo `Figure` mới ở mỗi khung hình. Tạo Line2D một lần rồi gọi set_data để thay các điểm đang hiển thị. Hàm update nhận chỉ số khung và trả các đối tượng vừa đổi; nó chỉ cập nhật hình, không chạy lại chương trình dữ liệu từ đầu."
        },
        {
         "type": "code",
@@ -25919,7 +25919,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Mọi hình tới đây đều là hình tĩnh; ở bài này bạn bấm được vào nó. Một cửa sổ xem hình có thể cho bạn bấm vào điểm để đọc dữ liệu. Matplotlib gửi sự kiện qua canvas; callback nhận thông tin như Axes đang bấm và tọa độ dữ liệu. Cơ chế này cần backend tương tác khi dùng chuột thật, nhưng phần xử lý có thể được kiểm tra riêng mà không mở cửa sổ."
+        "text": "Mọi hình tới đây đều là hình tĩnh; ở bài này bạn bấm được vào nó. Một cửa sổ xem hình có thể cho bạn bấm vào điểm để đọc dữ liệu. Matplotlib gửi sự kiện qua canvas; callback nhận thông tin như `Axes` đang bấm và tọa độ dữ liệu. Cơ chế này cần backend tương tác khi dùng chuột thật, nhưng phần xử lý có thể được kiểm tra riêng mà không mở cửa sổ."
        },
        {
         "type": "code",
@@ -26102,7 +26102,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Callback nên xử lý trường hợp người xem bấm ngoài Axes, khi xdata và ydata có thể không có giá trị. Đừng cho một cú bấm chỉ vào khoảng trống biến thành một quan sát có thật. Ví dụ tiếp chỉ nhận một hàng đã có trong dữ liệu và đổi nhãn của điểm đang chọn."
+        "text": "Callback nên xử lý trường hợp người xem bấm ngoài `Axes`, khi xdata và ydata có thể không có giá trị. Đừng cho một cú bấm chỉ vào khoảng trống biến thành một quan sát có thật. Ví dụ tiếp chỉ nhận một hàng đã có trong dữ liệu và đổi nhãn của điểm đang chọn."
        },
        {
         "type": "code",
@@ -33529,7 +33529,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Stata có format nhị phân riêng; read_stata trả DataFrame. SAS7BDAT khác SAS XPORT, dù đều thuộc hệ SAS. Bộ tài liệu có fixture test1.sas7bdat từ bộ test công khai của pandas, kèm CSV đối chiếu và giấy phép. Hai ví dụ tiếp theo chạy từ thư mục gốc dự án PE USTH; khi chuyển dự án, chỉnh đường dẫn fixture tương ứng."
+        "text": "Stata có format nhị phân riêng; read_stata trả `DataFrame`. SAS7BDAT khác SAS XPORT, dù đều thuộc hệ SAS. Bộ tài liệu có fixture test1.sas7bdat từ bộ test công khai của pandas, kèm CSV đối chiếu và giấy phép. Hai ví dụ tiếp theo chạy từ thư mục gốc dự án PE USTH; khi chuyển dự án, chỉnh đường dẫn fixture tương ứng."
        },
        {
         "type": "code",
@@ -33980,7 +33980,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`fetchmany` lấy một nhóm dòng ở vị trí hiện tại; fetchall sau đó chỉ còn những dòng chưa lấy. result.keys cho tên cột. `with engine.connect()` đóng connection khi rời block; `dispose` thu dọn nhóm kết nối do engine quản lý (connection pool) khi đã làm xong. Chỉ tạo DataFrame từ các `tuple` mà bỏ tên cột sẽ làm mất ý nghĩa dữ liệu."
+        "text": "`fetchmany` lấy một nhóm dòng ở vị trí hiện tại; fetchall sau đó chỉ còn những dòng chưa lấy. result.keys cho tên cột. `with engine.connect()` đóng connection khi rời block; `dispose` thu dọn nhóm kết nối do engine quản lý (connection pool) khi đã làm xong. Chỉ tạo `DataFrame` từ các `tuple` mà bỏ tên cột sẽ làm mất ý nghĩa dữ liệu."
        },
        {
         "type": "code",
@@ -33990,7 +33990,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Pandas giữ kết quả cùng tên cột trong DataFrame. Với SQLAlchemy mới, dùng text cho câu SQL như trên thay cách execute chuỗi trần trong sheet cũ. Dữ liệu người dùng đưa vào params; không ghép nó thẳng vào SQL bằng f-string. ORDER BY là nơi công bố thứ tự kết quả, không mặc định database luôn trả thứ tự chèn."
+        "text": "Pandas giữ kết quả cùng tên cột trong `DataFrame`. Với SQLAlchemy mới, dùng text cho câu SQL như trên thay cách execute chuỗi trần trong sheet cũ. Dữ liệu người dùng đưa vào params; không ghép nó thẳng vào SQL bằng f-string. ORDER BY là nơi công bố thứ tự kết quả, không mặc định database luôn trả thứ tự chèn."
        }
       ]
      ],
@@ -46295,7 +46295,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`ax.text(x, y, ...)` mặc định hiểu x/y theo dữ liệu. `transform=ax.transAxes` đổi sang tỷ lệ Axes: (0,0) là góc dưới trái và (1,1) là góc trên phải. Trong ví dụ, chữ cách trái 5%, cách dưới 95%; va=\"top\" neo cạnh trên của chữ vào vị trí đó."
+        "text": "`ax.text(x, y, ...)` mặc định hiểu x/y theo dữ liệu. `transform=ax.transAxes` đổi sang tỷ lệ `Axes`: (0,0) là góc dưới trái và (1,1) là góc trên phải. Trong ví dụ, chữ cách trái 5%, cách dưới 95%; va=\"top\" neo cạnh trên của chữ vào vị trí đó."
        },
        {
         "type": "code",

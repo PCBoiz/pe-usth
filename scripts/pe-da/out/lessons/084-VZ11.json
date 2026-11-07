@@ -56,7 +56,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn có thể ẩn viền trên, chỉnh tick hoặc tăng khoảng đệm bằng margins để hình thoáng hơn. Tỷ lệ equal giữ một đơn vị x dài bằng một đơn vị y; điều này cần khi hình học có ý nghĩa. Tránh hai trục y tùy ý chỉ để hai đường trông đi cùng nhau; cùng dữ liệu có thể tạo nhiều cảm giác khác nhau khi đổi giới hạn. margins(x=0.1,y=0.1) thêm đệm dựa trên phạm vi dữ liệu tự co giãn; nó không đặt giới hạn cố định. Khi cần miền x cụ thể, gọi `ax.set_xlim(0, 3)` hoặc `ax.set(xlim=(0, 3))`. set_aspect(\"equal\") kiểm soát độ dài một đơn vị dữ liệu, khác tỷ lệ cao/rộng của cả Figure."
+      "text": "Bạn có thể ẩn viền trên, chỉnh tick hoặc tăng khoảng đệm bằng margins để hình thoáng hơn. Tỷ lệ equal giữ một đơn vị x dài bằng một đơn vị y; điều này cần khi hình học có ý nghĩa. Tránh hai trục y tùy ý chỉ để hai đường trông đi cùng nhau; cùng dữ liệu có thể tạo nhiều cảm giác khác nhau khi đổi giới hạn. margins(x=0.1,y=0.1) thêm đệm dựa trên phạm vi dữ liệu tự co giãn; nó không đặt giới hạn cố định. Khi cần miền x cụ thể, gọi `ax.set_xlim(0, 3)` hoặc `ax.set(xlim=(0, 3))`. set_aspect(\"equal\") kiểm soát độ dài một đơn vị dữ liệu, khác tỷ lệ cao/rộng của cả `Figure`."
      },
      {
       "type": "code",

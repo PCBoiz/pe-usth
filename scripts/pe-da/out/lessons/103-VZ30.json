@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Mọi hình tới đây đều là hình tĩnh; ở bài này bạn bấm được vào nó. Một cửa sổ xem hình có thể cho bạn bấm vào điểm để đọc dữ liệu. Matplotlib gửi sự kiện qua canvas; callback nhận thông tin như Axes đang bấm và tọa độ dữ liệu. Cơ chế này cần backend tương tác khi dùng chuột thật, nhưng phần xử lý có thể được kiểm tra riêng mà không mở cửa sổ."
+      "text": "Mọi hình tới đây đều là hình tĩnh; ở bài này bạn bấm được vào nó. Một cửa sổ xem hình có thể cho bạn bấm vào điểm để đọc dữ liệu. Matplotlib gửi sự kiện qua canvas; callback nhận thông tin như `Axes` đang bấm và tọa độ dữ liệu. Cơ chế này cần backend tương tác khi dùng chuột thật, nhưng phần xử lý có thể được kiểm tra riêng mà không mở cửa sổ."
      },
      {
       "type": "code",
@@ -205,7 +205,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Callback nên xử lý trường hợp người xem bấm ngoài Axes, khi xdata và ydata có thể không có giá trị. Đừng cho một cú bấm chỉ vào khoảng trống biến thành một quan sát có thật. Ví dụ tiếp chỉ nhận một hàng đã có trong dữ liệu và đổi nhãn của điểm đang chọn."
+      "text": "Callback nên xử lý trường hợp người xem bấm ngoài `Axes`, khi xdata và ydata có thể không có giá trị. Đừng cho một cú bấm chỉ vào khoảng trống biến thành một quan sát có thật. Ví dụ tiếp chỉ nhận một hàng đã có trong dữ liệu và đổi nhãn của điểm đang chọn."
      },
      {
       "type": "code",
