@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Phép tính đã gọn trong một gói rồi, nhưng người đứng quầy cần một màn hình để bấm. Thực đơn của quán có thể hiện ngay trong terminal. Người dùng nhấn phím để chọn, màn hình được cập nhật thay vì in liên tục xuống dưới. Module curses hỗ trợ loại giao diện này. Một số hàm hỗ trợ ký tự không cần mở màn hình:"
+      "text": "Phép tính đã gọn trong một gói rồi, nhưng người đứng quầy cần một màn hình để bấm. Thực đơn của quán có thể hiện ngay trong terminal. Người dùng nhấn phím để chọn, màn hình được cập nhật thay vì in liên tục xuống dưới. Module `curses` hỗ trợ loại giao diện này. Một số hàm hỗ trợ ký tự không cần mở màn hình:"
      },
      {
       "type": "terminal",
@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Phần tương tác cần terminal thật có hỗ trợ curses. Trên Windows, nhiều bản Python cần gói windows-curses; không chạy bài này trong ô output không nhận phím. `wrapper` chuẩn bị màn hình và khôi phục terminal khi hàm kết thúc."
+      "text": "Phần tương tác cần terminal thật có hỗ trợ `curses`. Trên Windows, nhiều bản Python cần gói windows-curses; không chạy bài này trong ô output không nhận phím. `wrapper` chuẩn bị màn hình và khôi phục terminal khi hàm kết thúc."
      },
      {
       "type": "terminal",
@@ -53,7 +53,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Ở PW4, các thao tác curses thuộc output.py; dữ liệu Item/Ingredient/RecipeLine thuộc domains. Terminal có kích thước giới hạn: khi làm tiếp, xử lý resize và không ghi vượt hàng/cột. Curses là UI terminal, khác Tkinter tạo cửa sổ đồ họa."
+      "text": "Ở PW4, các thao tác `curses` thuộc output.py; dữ liệu Item/Ingredient/RecipeLine thuộc domains. Terminal có kích thước giới hạn: khi làm tiếp, xử lý resize và không ghi vượt hàng/cột. `curses` là UI terminal, khác Tkinter tạo cửa sổ đồ họa."
      }
     ]
    ],

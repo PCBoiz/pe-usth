@@ -59,7 +59,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Slide còn liệt kê các API os để tham khảo. os.system chạy một command string qua shell và chờ; os.popen mở luồng đọc/ghi tới command. os.pipe tạo cặp descriptor đọc/ghi, không tự tạo process. os.fork tạo con trên hệ hỗ trợ; os.kill(pid, signal.SIGTERM) gửi tín hiệu/yêu cầu kết thúc theo nền tảng. Không chạy kill vào PID tùy ý khi học. Module os vẫn được hỗ trợ; câu slide nói cả module đã deprecated là sai. Với khởi chạy thông thường, dùng subprocess để quản lý đối số, luồng và lỗi. CT08 phân biệt chạy chờ, chạy tiếp sau Popen, timeout và kết thúc process con do chính mình tạo."
+      "text": "Slide còn liệt kê các API os để tham khảo. os.system chạy một command string qua shell và chờ; os.popen mở luồng đọc/ghi tới command. os.pipe tạo cặp descriptor đọc/ghi, không tự tạo process. os.fork tạo con trên hệ hỗ trợ; os.kill(pid, signal.SIGTERM) gửi tín hiệu/yêu cầu kết thúc theo nền tảng. Không chạy kill vào PID tùy ý khi học. Module os vẫn được hỗ trợ; câu slide nói cả module đã deprecated là sai. Với khởi chạy thông thường, dùng `subprocess` để quản lý đối số, luồng và lỗi. CT08 phân biệt chạy chờ, chạy tiếp sau `Popen`, timeout và kết thúc process con do chính mình tạo."
      }
     ]
    ],

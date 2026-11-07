@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "tar gom nhiều thành viên; mode w:gz thêm nén gzip, còn w tạo tar không nén. Phân biệt format thực với tên đuôi: đổi .zip thành .dat không biến nó thành định dạng khác."
+      "text": "tar gom nhiều thành viên; mode w:gz thêm nén `gzip`, còn w tạo tar không nén. Phân biệt format thực với tên đuôi: đổi .zip thành .dat không biến nó thành định dạng khác."
      },
      {
       "type": "code",

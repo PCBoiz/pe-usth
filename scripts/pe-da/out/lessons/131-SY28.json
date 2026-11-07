@@ -125,7 +125,7 @@
     [
      {
       "type": "paragraph",
-      "text": "gzip.open ghép file IO và nén; pickle.dump vẫn ghi binary. Mã load chỉ dùng file do lab tạo và tin cậy. Nếu đổi version hoặc class không còn tương thích, hãy thông báo cần migration thay vì đoán cấu trúc."
+      "text": "`gzip.open` ghép file IO và nén; pickle.dump vẫn ghi binary. Mã load chỉ dùng file do lab tạo và tin cậy. Nếu đổi version hoặc class không còn tương thích, hãy thông báo cần migration thay vì đoán cấu trúc."
      },
      {
       "type": "code",

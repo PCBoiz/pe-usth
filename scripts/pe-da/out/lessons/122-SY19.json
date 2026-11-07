@@ -86,7 +86,7 @@
     [
      {
       "type": "paragraph",
-      "text": "bz2 thường gắn đuôi .bz2; lzma với định dạng mặc định ở đây là .xz; gzip là .gz. Mỗi cách nén đánh đổi tốc độ, bộ nhớ và kích thước. Không có một cách nén (codec) luôn tốt nhất cho mọi bảng dữ liệu."
+      "text": "bz2 thường gắn đuôi .bz2; lzma với định dạng mặc định ở đây là .xz; `gzip` là .gz. Mỗi cách nén đánh đổi tốc độ, bộ nhớ và kích thước. Không có một cách nén (codec) luôn tốt nhất cho mọi bảng dữ liệu."
      },
      {
       "type": "code",

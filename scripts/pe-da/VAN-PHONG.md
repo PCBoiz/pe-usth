@@ -447,7 +447,7 @@ Format phải đồng nhất `N lỗi · N cb` cho MỌI hàng; bản cũ viết
 | L5 | Cấm `được/bị + V + bởi` | LỖI | 0 lỗi · 0 cb |
 | L6 | Từ cấm hành chính (danh sách ĐÓNG 20 tính từ) | LỖI | 0 lỗi · 0 cb |
 | L7 | Chỉ "bạn" | LỖI | 0 lỗi · 17 cb |
-| **L8** | **Mật độ thuật ngữ ≤ 40/1000 tiếng** | CB/LỖI | **26 lỗi · 24 cb** |
+| **L8** | **Mật độ thuật ngữ ≤ 40/1000 tiếng** | CB/LỖI | **24 lỗi · 26 cb** |
 | L9 | ≤ 3 thuật ngữ mới mỗi màn — *hàng rào* | CB/LỖI | 0 lỗi · 0 cb |
 | L10 | Thuật ngữ lần đầu phải có chú giải | LỖI | 0 lỗi · 0 cb |
 | L11 | Một thuật ngữ một cách gọi, khoá (thuật ngữ, ngữ cảnh) | LỖI | 0 lỗi · 0 cb |
@@ -457,14 +457,14 @@ Format phải đồng nhất `N lỗi · N cb` cho MỌI hàng; bản cũ viết
 | L15 | Đoạn mở bài phải nối với bài trước | CẢNH BÁO | 0 lỗi · 0 cb |
 | TB | Bất biến termbank: `baiDauTien` khớp corpus | LỖI | 0 lỗi · 0 cb |
 | TL | Số đo trong đặc tả phải khớp số đo thật (§1 · §2 · §8 · §12 · bảng này) | LỖI | 0 lỗi · 0 cb |
-| §4-A | Định danh nhóm A phải nằm trong backtick | CẢNH BÁO | 0 lỗi · 59 cb |
+| §4-A | Định danh nhóm A phải nằm trong backtick | CẢNH BÁO | 0 lỗi · 39 cb |
 | **M1** | **3 phương án mặc định** | **LỖI** | — (do `check.py --strict`) |
 | **M2** | **Trộn vị trí có phân tầng** | **LỖI** | — (do `check.py --strict`) |
 | M3 | Nhiễu phải có lý do lưu kèm | LỖI | — (do `check.py --strict`) |
 | M4 | Không bài nào 3 câu cùng một ô Block Model | LỖI | — (do `check.py --strict`) |
 | M5 | Một lần trả lời, rồi đi tiếp | LỖI | — (do `check.py --strict`) |
 
-**Tổng trên corpus thật: 93 lỗi · 467 cảnh báo.**
+**Tổng trên corpus thật: 91 lỗi · 449 cảnh báo.**
 
 **Nếu chỉ làm được một việc:** L10. Cụ thể: `py -I scripts/pe-da/check_vanphong.py
 --luat L10 --chi-tiet 0` in ra đúng danh sách bài + câu phải sửa.
@@ -474,7 +474,7 @@ Format phải đồng nhất `N lỗi · N cb` cho MỌI hàng; bản cũ viết
 
 ## 12. Đừng bật `--strict` trong CI ngày đầu
 
-`check_vanphong.py` hôm nay cho **93 lỗi**. Nối thẳng vào `check.py --strict` là
+`check_vanphong.py` hôm nay cho **91 lỗi**. Nối thẳng vào `check.py --strict` là
 làm CI đỏ ngay, và một CI đỏ thường trực thì không ai đọc nữa.
 
 Dùng đúng khuôn mà repo đã có cho lint backend: **một mốc trần, CHỈ ĐƯỢC HẠ**

@@ -116,7 +116,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Chỉ unpickle dữ liệu do bạn tạo và tin cậy: unpickle có thể thực thi mã. Đuôi .dat hay nén gzip không làm file lạ an toàn. Để trao đổi dữ liệu với hệ khác, JSON thường tiện hơn; để lưu state Python trong lab, pickle có thể phù hợp nếu bạn quản lý phiên bản schema và nơi tạo file."
+      "text": "Chỉ unpickle dữ liệu do bạn tạo và tin cậy: unpickle có thể thực thi mã. Đuôi .dat hay nén `gzip` không làm file lạ an toàn. Để trao đổi dữ liệu với hệ khác, JSON thường tiện hơn; để lưu state Python trong lab, pickle có thể phù hợp nếu bạn quản lý phiên bản schema và nơi tạo file."
      },
      {
       "type": "paragraph",

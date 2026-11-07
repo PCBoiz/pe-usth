@@ -10646,7 +10646,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Điều kiện `if __name__ == \"__main__\"` được gọi là main guard. Nó chỉ gọi run khi bạn chạy file trực tiếp làm điểm bắt đầu của chương trình. Import main để dùng hàm không tự khởi chạy giao diện. PW4 dùng main.py điều phối, input.py cho nhập liệu, output.py cho curses, domains cho class; đặt trách nhiệm rõ còn quan trọng hơn số file."
+          "text": "Điều kiện `if __name__ == \"__main__\"` được gọi là main guard. Nó chỉ gọi run khi bạn chạy file trực tiếp làm điểm bắt đầu của chương trình. Import main để dùng hàm không tự khởi chạy giao diện. PW4 dùng main.py điều phối, input.py cho nhập liệu, output.py cho `curses`, domains cho class; đặt trách nhiệm rõ còn quan trọng hơn số file."
         },
         {
           "type": "paragraph",
@@ -10793,7 +10793,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Phép tính đã gọn trong một gói rồi, nhưng người đứng quầy cần một màn hình để bấm. Thực đơn của quán có thể hiện ngay trong terminal. Người dùng nhấn phím để chọn, màn hình được cập nhật thay vì in liên tục xuống dưới. Module curses hỗ trợ loại giao diện này. Một số hàm hỗ trợ ký tự không cần mở màn hình:"
+          "text": "Phép tính đã gọn trong một gói rồi, nhưng người đứng quầy cần một màn hình để bấm. Thực đơn của quán có thể hiện ngay trong terminal. Người dùng nhấn phím để chọn, màn hình được cập nhật thay vì in liên tục xuống dưới. Module `curses` hỗ trợ loại giao diện này. Một số hàm hỗ trợ ký tự không cần mở màn hình:"
         },
         {
           "type": "code",
@@ -10803,7 +10803,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Phần tương tác cần terminal thật có hỗ trợ curses. Trên Windows, nhiều bản Python cần gói windows-curses; không chạy bài này trong ô output không nhận phím. `wrapper` chuẩn bị màn hình và khôi phục terminal khi hàm kết thúc."
+          "text": "Phần tương tác cần terminal thật có hỗ trợ `curses`. Trên Windows, nhiều bản Python cần gói windows-curses; không chạy bài này trong ô output không nhận phím. `wrapper` chuẩn bị màn hình và khôi phục terminal khi hàm kết thúc."
         },
         {
           "type": "code",
@@ -10823,7 +10823,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Ở PW4, các thao tác curses thuộc output.py; dữ liệu Item/Ingredient/RecipeLine thuộc domains. Terminal có kích thước giới hạn: khi làm tiếp, xử lý resize và không ghi vượt hàng/cột. Curses là UI terminal, khác Tkinter tạo cửa sổ đồ họa."
+          "text": "Ở PW4, các thao tác `curses` thuộc output.py; dữ liệu Item/Ingredient/RecipeLine thuộc domains. Terminal có kích thước giới hạn: khi làm tiếp, xử lý resize và không ghi vượt hàng/cột. `curses` là UI terminal, khác Tkinter tạo cửa sổ đồ họa."
         }
       ],
       "drills": [
@@ -11306,7 +11306,7 @@
         },
         {
           "type": "paragraph",
-          "text": "bz2 thường gắn đuôi .bz2; lzma với định dạng mặc định ở đây là .xz; gzip là .gz. Mỗi cách nén đánh đổi tốc độ, bộ nhớ và kích thước. Không có một cách nén (codec) luôn tốt nhất cho mọi bảng dữ liệu."
+          "text": "bz2 thường gắn đuôi .bz2; lzma với định dạng mặc định ở đây là .xz; `gzip` là .gz. Mỗi cách nén đánh đổi tốc độ, bộ nhớ và kích thước. Không có một cách nén (codec) luôn tốt nhất cho mọi bảng dữ liệu."
         },
         {
           "type": "code",
@@ -11391,7 +11391,7 @@
         },
         {
           "type": "paragraph",
-          "text": "tar gom nhiều thành viên; mode w:gz thêm nén gzip, còn w tạo tar không nén. Phân biệt format thực với tên đuôi: đổi .zip thành .dat không biến nó thành định dạng khác."
+          "text": "tar gom nhiều thành viên; mode w:gz thêm nén `gzip`, còn w tạo tar không nén. Phân biệt format thực với tên đuôi: đổi .zip thành .dat không biến nó thành định dạng khác."
         },
         {
           "type": "code",
@@ -11488,7 +11488,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Chỉ unpickle dữ liệu do bạn tạo và tin cậy: unpickle có thể thực thi mã. Đuôi .dat hay nén gzip không làm file lạ an toàn. Để trao đổi dữ liệu với hệ khác, JSON thường tiện hơn; để lưu state Python trong lab, pickle có thể phù hợp nếu bạn quản lý phiên bản schema và nơi tạo file."
+          "text": "Chỉ unpickle dữ liệu do bạn tạo và tin cậy: unpickle có thể thực thi mã. Đuôi .dat hay nén `gzip` không làm file lạ an toàn. Để trao đổi dữ liệu với hệ khác, JSON thường tiện hơn; để lưu state Python trong lab, pickle có thể phù hợp nếu bạn quản lý phiên bản schema và nơi tạo file."
         },
         {
           "type": "paragraph",
@@ -11933,7 +11933,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Đây là sơ đồ file cần tạo, không phải một package do dictionary tự sinh ra. PW4 đặt class trong domains, nhập liệu trong input.py, curses output trong output.py và main.py nối các phần. Sau khi tách, chạy lại đúng những ca PW1 để kiểm việc đổi cấu trúc không làm mất chức năng."
+          "text": "Đây là sơ đồ file cần tạo, không phải một package do dictionary tự sinh ra. PW4 đặt class trong domains, nhập liệu trong input.py, `curses` output trong output.py và main.py nối các phần. Sau khi tách, chạy lại đúng những ca PW1 để kiểm việc đổi cấu trúc không làm mất chức năng."
         },
         {
           "type": "paragraph",
@@ -12117,7 +12117,7 @@
         },
         {
           "type": "paragraph",
-          "text": "gzip.open ghép file IO và nén; pickle.dump vẫn ghi binary. Mã load chỉ dùng file do lab tạo và tin cậy. Nếu đổi version hoặc class không còn tương thích, hãy thông báo cần migration thay vì đoán cấu trúc."
+          "text": "`gzip.open` ghép file IO và nén; pickle.dump vẫn ghi binary. Mã load chỉ dùng file do lab tạo và tin cậy. Nếu đổi version hoặc class không còn tương thích, hãy thông báo cần migration thay vì đoán cấu trúc."
         },
         {
           "type": "code",
@@ -12377,7 +12377,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Đây là mô hình của exec: thay image chương trình trong process hiện tại, giữ PID và không tạo process thứ ba. Trong tên họ hàm, l nhận các đối số riêng, v nhận vector argv; p tìm chương trình qua PATH và e nhận environment tường minh. Vì thế execl/execv khác cách truyền đối số, execlp/execvp thêm tìm PATH, execle thêm environment. Trong ví dụ C của slide, argv gồm \"/bin/ps\", \"-ef\", rồi NULL kết thúc danh sách. Python subprocess nhận một `list` đối số thay cho việc bạn tự chép nguyên chữ ký C."
+          "text": "Đây là mô hình của exec: thay image chương trình trong process hiện tại, giữ PID và không tạo process thứ ba. Trong tên họ hàm, l nhận các đối số riêng, v nhận vector argv; p tìm chương trình qua PATH và e nhận environment tường minh. Vì thế execl/execv khác cách truyền đối số, execlp/execvp thêm tìm PATH, execle thêm environment. Trong ví dụ C của slide, argv gồm \"/bin/ps\", \"-ef\", rồi NULL kết thúc danh sách. Python `subprocess` nhận một `list` đối số thay cho việc bạn tự chép nguyên chữ ký C."
         },
         {
           "type": "code",
@@ -12386,7 +12386,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Cha có thể wait để thu trạng thái kết thúc của con. Trong ví dụ thật này, process con thoát với mã 3; wait và poll sau khi kết thúc đều cho mã đó. Trên UNIX, kết hợp fork/exec/wait là nền tảng của shell; bài Python sẽ dùng subprocess để thực hành trên cả Windows và UNIX. Quán của bạn sẽ gọi những lệnh này khi cần chạy một việc nền."
+          "text": "Cha có thể wait để thu trạng thái kết thúc của con. Trong ví dụ thật này, process con thoát với mã 3; wait và poll sau khi kết thúc đều cho mã đó. Trên UNIX, kết hợp fork/exec/wait là nền tảng của shell; bài Python sẽ dùng `subprocess` để thực hành trên cả Windows và UNIX. Quán của bạn sẽ gọi những lệnh này khi cần chạy một việc nền."
         }
       ],
       "drills": [
@@ -12906,7 +12906,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Slide còn liệt kê các API os để tham khảo. os.system chạy một command string qua shell và chờ; os.popen mở luồng đọc/ghi tới command. os.pipe tạo cặp descriptor đọc/ghi, không tự tạo process. os.fork tạo con trên hệ hỗ trợ; os.kill(pid, signal.SIGTERM) gửi tín hiệu/yêu cầu kết thúc theo nền tảng. Không chạy kill vào PID tùy ý khi học. Module os vẫn được hỗ trợ; câu slide nói cả module đã deprecated là sai. Với khởi chạy thông thường, dùng subprocess để quản lý đối số, luồng và lỗi. CT08 phân biệt chạy chờ, chạy tiếp sau Popen, timeout và kết thúc process con do chính mình tạo."
+          "text": "Slide còn liệt kê các API os để tham khảo. os.system chạy một command string qua shell và chờ; os.popen mở luồng đọc/ghi tới command. os.pipe tạo cặp descriptor đọc/ghi, không tự tạo process. os.fork tạo con trên hệ hỗ trợ; os.kill(pid, signal.SIGTERM) gửi tín hiệu/yêu cầu kết thúc theo nền tảng. Không chạy kill vào PID tùy ý khi học. Module os vẫn được hỗ trợ; câu slide nói cả module đã deprecated là sai. Với khởi chạy thông thường, dùng `subprocess` để quản lý đối số, luồng và lỗi. CT08 phân biệt chạy chờ, chạy tiếp sau `Popen`, timeout và kết thúc process con do chính mình tạo."
         }
       ],
       "drills": [
@@ -12971,7 +12971,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một chương trình con cần nhận văn bản đầu vào rồi trả kết quả. Popen cho phép tạo process trước, sau đó trao đổi dữ liệu bằng communicate:"
+          "text": "Một chương trình con cần nhận văn bản đầu vào rồi trả kết quả. `Popen` cho phép tạo process trước, sau đó trao đổi dữ liệu bằng communicate:"
         },
         {
           "type": "code",
@@ -12980,7 +12980,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Popen trả về sau khi khởi tạo, không chờ toàn bộ công việc xong như run. Với `text=True`, communicate nhận chuỗi; ở chế độ nhị phân, nó nhận `bytes`. communicate giúp gửi đầu vào, đọc đầu ra và chờ kết thúc mà không tự viết các lần đọc/ghi dễ làm đầy pipe."
+          "text": "`Popen` trả về sau khi khởi tạo, không chờ toàn bộ công việc xong như run. Với `text=True`, communicate nhận chuỗi; ở chế độ nhị phân, nó nhận `bytes`. communicate giúp gửi đầu vào, đọc đầu ra và chờ kết thúc mà không tự viết các lần đọc/ghi dễ làm đầy pipe."
         },
         {
           "type": "code",
@@ -12998,7 +12998,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Timeout của Popen.communicate không tự bảo đảm đã dừng process. Ví dụ chủ động kill rồi communicate lại để thu hồi. terminate yêu cầu kết thúc theo cơ chế nền tảng; kill mạnh hơn trên POSIX, nhưng trên Windows hai phương thức cùng dẫn tới cơ chế kết thúc process của Windows. Không dựa vào terminate để chắc chắn chạy phần cleanup của chương trình con. run(timeout=...) có quản lý kill/wait riêng khi hết hạn."
+          "text": "Timeout của `Popen.communicate` không tự bảo đảm đã dừng process. Ví dụ chủ động kill rồi communicate lại để thu hồi. terminate yêu cầu kết thúc theo cơ chế nền tảng; kill mạnh hơn trên POSIX, nhưng trên Windows hai phương thức cùng dẫn tới cơ chế kết thúc process của Windows. Không dựa vào terminate để chắc chắn chạy phần cleanup của chương trình con. run(timeout=...) có quản lý kill/wait riêng khi hết hạn."
         }
       ],
       "drills": [
@@ -13564,7 +13564,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Đây là phần mở rộng cho Data Analyst. Chương Multi Processing trong slide chủ yếu dạy process của hệ điều hành và subprocess, còn bài này dùng module multiprocessing. Nếu thư viện native, tức thư viện có phần code biên dịch như C/C++, đã dùng nhiều thread bên trong, hãy kiểm tra trước khi tạo thêm nhiều process. Quá nhiều worker ở cả hai tầng có thể cùng tranh CPU và làm chương trình chậm hơn."
+          "text": "Đây là phần mở rộng cho Data Analyst. Chương Multi Processing trong slide chủ yếu dạy process của hệ điều hành và `subprocess`, còn bài này dùng module multiprocessing. Nếu thư viện native, tức thư viện có phần code biên dịch như C/C++, đã dùng nhiều thread bên trong, hãy kiểm tra trước khi tạo thêm nhiều process. Quá nhiều worker ở cả hai tầng có thể cùng tranh CPU và làm chương trình chậm hơn."
         }
       ],
       "drills": [
@@ -14948,7 +14948,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Khi lưu, giao diện tạo một bản chụp dữ liệu nhất quán rồi giao cho worker. Worker ghi pickle nén gzip vào file tạm, thay thế file đích khi ghi xong và gửi kết quả qua queue. Giao diện dùng after để đọc kết quả. Chỉ nạp pickle từ nguồn mà ứng dụng và người dùng tin cậy, vì quá trình nạp có thể thực thi code."
+          "text": "Khi lưu, giao diện tạo một bản chụp dữ liệu nhất quán rồi giao cho worker. Worker ghi pickle nén `gzip` vào file tạm, thay thế file đích khi ghi xong và gửi kết quả qua queue. Giao diện dùng after để đọc kết quả. Chỉ nạp pickle từ nguồn mà ứng dụng và người dùng tin cậy, vì quá trình nạp có thể thực thi code."
         },
         {
           "type": "paragraph",
@@ -15310,7 +15310,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Ở POSIX, fork trả PID con ở cha và 0 ở con, sau đó hai nhánh tiếp tục từ vị trí sau fork. exec thay image của process hiện tại. Hậu tố l nhận danh sách đối số riêng, v nhận một vector/`list` đối số, p tìm executable qua PATH, e nhận environment tường minh. execl, execle, execlp, execv và execvp là các biến thể được nhắc trong slide. Windows có CreateProcess và API cũ WinExec; tên và cờ WinAPI trong đoạn C không phải cú pháp Python. Dùng subprocess nếu muốn bài thực hành chạy trên cả Windows và UNIX."
+          "text": "Ở POSIX, fork trả PID con ở cha và 0 ở con, sau đó hai nhánh tiếp tục từ vị trí sau fork. exec thay image của process hiện tại. Hậu tố l nhận danh sách đối số riêng, v nhận một vector/`list` đối số, p tìm executable qua PATH, e nhận environment tường minh. execl, execle, execlp, execv và execvp là các biến thể được nhắc trong slide. Windows có CreateProcess và API cũ WinExec; tên và cờ WinAPI trong đoạn C không phải cú pháp Python. Dùng `subprocess` nếu muốn bài thực hành chạy trên cả Windows và UNIX."
         },
         {
           "type": "code",
@@ -15490,7 +15490,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Hết ca, quán cần lưu một bản nén mà ứng dụng mở lại được. Trước khi đưa việc lưu sang thread, kiểm hai chiều ghi và nạp trên file thật. pickle biến object thành `bytes`; gzip nén `bytes`; hai bước không thay thế nhau. Chỉ nạp pickle từ nguồn bạn tin cậy."
+          "text": "Hết ca, quán cần lưu một bản nén mà ứng dụng mở lại được. Trước khi đưa việc lưu sang thread, kiểm hai chiều ghi và nạp trên file thật. pickle biến object thành `bytes`; `gzip` nén `bytes`; hai bước không thay thế nhau. Chỉ nạp pickle từ nguồn bạn tin cậy."
         },
         {
           "type": "code",

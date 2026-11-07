@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một chương trình con cần nhận văn bản đầu vào rồi trả kết quả. Popen cho phép tạo process trước, sau đó trao đổi dữ liệu bằng communicate:"
+      "text": "Một chương trình con cần nhận văn bản đầu vào rồi trả kết quả. `Popen` cho phép tạo process trước, sau đó trao đổi dữ liệu bằng communicate:"
      },
      {
       "type": "code",
@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Popen trả về sau khi khởi tạo, không chờ toàn bộ công việc xong như run. Với `text=True`, communicate nhận chuỗi; ở chế độ nhị phân, nó nhận `bytes`. communicate giúp gửi đầu vào, đọc đầu ra và chờ kết thúc mà không tự viết các lần đọc/ghi dễ làm đầy pipe."
+      "text": "`Popen` trả về sau khi khởi tạo, không chờ toàn bộ công việc xong như run. Với `text=True`, communicate nhận chuỗi; ở chế độ nhị phân, nó nhận `bytes`. communicate giúp gửi đầu vào, đọc đầu ra và chờ kết thúc mà không tự viết các lần đọc/ghi dễ làm đầy pipe."
      },
      {
       "type": "code",
@@ -53,7 +53,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Timeout của Popen.communicate không tự bảo đảm đã dừng process. Ví dụ chủ động kill rồi communicate lại để thu hồi. terminate yêu cầu kết thúc theo cơ chế nền tảng; kill mạnh hơn trên POSIX, nhưng trên Windows hai phương thức cùng dẫn tới cơ chế kết thúc process của Windows. Không dựa vào terminate để chắc chắn chạy phần cleanup của chương trình con. run(timeout=...) có quản lý kill/wait riêng khi hết hạn."
+      "text": "Timeout của `Popen.communicate` không tự bảo đảm đã dừng process. Ví dụ chủ động kill rồi communicate lại để thu hồi. terminate yêu cầu kết thúc theo cơ chế nền tảng; kill mạnh hơn trên POSIX, nhưng trên Windows hai phương thức cùng dẫn tới cơ chế kết thúc process của Windows. Không dựa vào terminate để chắc chắn chạy phần cleanup của chương trình con. run(timeout=...) có quản lý kill/wait riêng khi hết hạn."
      }
     ]
    ],

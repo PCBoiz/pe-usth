@@ -59,7 +59,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Đây là phần mở rộng cho Data Analyst. Chương Multi Processing trong slide chủ yếu dạy process của hệ điều hành và subprocess, còn bài này dùng module multiprocessing. Nếu thư viện native, tức thư viện có phần code biên dịch như C/C++, đã dùng nhiều thread bên trong, hãy kiểm tra trước khi tạo thêm nhiều process. Quá nhiều worker ở cả hai tầng có thể cùng tranh CPU và làm chương trình chậm hơn."
+      "text": "Đây là phần mở rộng cho Data Analyst. Chương Multi Processing trong slide chủ yếu dạy process của hệ điều hành và `subprocess`, còn bài này dùng module multiprocessing. Nếu thư viện native, tức thư viện có phần code biên dịch như C/C++, đã dùng nhiều thread bên trong, hãy kiểm tra trước khi tạo thêm nhiều process. Quá nhiều worker ở cả hai tầng có thể cùng tranh CPU và làm chương trình chậm hơn."
      }
     ]
    ],

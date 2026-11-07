@@ -56,7 +56,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Điều kiện `if __name__ == \"__main__\"` được gọi là main guard. Nó chỉ gọi run khi bạn chạy file trực tiếp làm điểm bắt đầu của chương trình. Import main để dùng hàm không tự khởi chạy giao diện. PW4 dùng main.py điều phối, input.py cho nhập liệu, output.py cho curses, domains cho class; đặt trách nhiệm rõ còn quan trọng hơn số file."
+      "text": "Điều kiện `if __name__ == \"__main__\"` được gọi là main guard. Nó chỉ gọi run khi bạn chạy file trực tiếp làm điểm bắt đầu của chương trình. Import main để dùng hàm không tự khởi chạy giao diện. PW4 dùng main.py điều phối, input.py cho nhập liệu, output.py cho `curses`, domains cho class; đặt trách nhiệm rõ còn quan trọng hơn số file."
      },
      {
       "type": "paragraph",
