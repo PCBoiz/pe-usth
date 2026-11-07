@@ -213,6 +213,10 @@ const DOI_CHIEU = [
   ['luyenTap', /([\d\s ]+?) câu luyện tập/, 'số câu luyện tập'],
   ['baiTap', /\*\*(\d+) bài tập được chấm \/ \d+ ca\*\*/, 'số bài tập được chấm'],
   ['ca', /\*\*\d+ bài tập được chấm \/ (\d+) ca\*\*/, 'số ca chấm'],
+  // BẢN SAO THỨ HAI của cùng con số ca chấm, ở hàng "pe-da chấm BÀI TẬP". Canh
+  // một bản là đủ để cổng xanh trong khi bản kia trôi — đúng chuyện đã xảy ra
+  // với số ca test frontend (574 ở một hàng, 573 ở hàng khác, hai vòng liền).
+  ['caDat', /\*\*(\d+) ca đạt\*\*/, 'số ca chấm (bản sao ở hàng "pe-da chấm BÀI TẬP")'],
   ['phut', /ca\*\*, ([\d\s ]+?) phút;/, 'tổng thời lượng (phút)'],
   ['pyodide', /; (\d+) bài chạy trong trình duyệt/, 'số bài chạy trong trình duyệt'],
   ['honHop', /bài chạy trong trình duyệt \/ (\d+) hỗn hợp/, 'số bài hỗn hợp'],
@@ -225,9 +229,14 @@ const DOI_CHIEU = [
   ['caFigures', /check-figures\.mjs` → (\d+) ca/, 'số ca của bộ xuất hình'],
   // Neo vào CHÍNH hàng "Đã nạp DB chưa": "N/179 khớp" xuất hiện cả ở chỗ khác.
   ['khopDaNap', /\| Đã nạp DB chưa \|[^|\n]*?(\d+)\/\d+ (?:bài )?khớp/, 'số bài khớp biên nhận nạp DB'],
+  ['mucDoiChieu', /check-moc-nen\.mjs` → \*\*(\d+) mục đối chiếu được\*\*/, 'số mục cổng này đối chiếu'],
 ];
 // `tenMayBoQua` dùng khoá khác để regex không đụng nhau; ánh xạ lại ở đây.
-const ANH_XA = { tenMayBoQua: 'tenMay' };
+const ANH_XA = { tenMayBoQua: 'tenMay', caDat: 'ca' };
+// Con số "N mục đối chiếu được" trong bảng là một con số của chính cổng này, và
+// cho tới 07/11/2026 KHÔNG GÌ canh nó — nên nó trôi được đúng như mọi con số
+// khác trong bảng. Tự đối chiếu với độ dài danh sách (gồm cả mục này).
+doDuoc.mucDoiChieu = DOI_CHIEU.length;
 doDuoc.tenMay = doDuoc.trenMay ?? doDuoc.tenMay ?? mode.local ?? 0;
 
 const loi = [];

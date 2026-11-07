@@ -94,8 +94,8 @@ học nó.
 | Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **32 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
 | Wheel vendored | `node scripts/check-wheel.mjs` → **16 wheel · 5 gói bài khai · 16 sau đóng bao phụ thuộc**, 0 lỗi |
-| Mốc phải CHẠY mới biết | `node scripts/check-moc-chay.mjs` → **3 mục** (frontend 573 · backend 35 bộ/501 · tracer 65), 0 trượt, 0 lỗi; nó CHẠY chính ba lệnh đó nên THAY cả ba bước trong CI — MỘT THAM SỐ mỗi job, vì chúng ở ba job chạy song song. Hai con số LINT cố ý ngoài tầm: chúng phải đi XUỐNG |
-| Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **18 mục đối chiếu được** (thêm hàng "Đã nạp DB chưa", gọi `check-da-nap --json`), 0 lỗi; 3 nhóm khai NGOÀI TẦM |
+| Mốc phải CHẠY mới biết | `node scripts/check-moc-chay.mjs` → **3 mục** (frontend 574 · backend 35 bộ/501 · tracer 65), 0 trượt, 0 lỗi; nó CHẠY chính ba lệnh đó nên THAY cả ba bước trong CI — MỘT THAM SỐ mỗi job, vì chúng ở ba job chạy song song. Hai con số LINT cố ý ngoài tầm: chúng phải đi XUỐNG |
+| Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **20 mục đối chiếu được** (thêm `caDat` — BẢN SAO của số ca chấm ở hàng "pe-da chấm BÀI TẬP" — và `mucDoiChieu`, tức chính con số này), 0 lỗi; 3 nhóm khai NGOÀI TẦM |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
 **pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 179
@@ -3223,6 +3223,34 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   bảng mốc nền ("143 bài tập được chấm / 480 ca" và "480 ca đạt"), mà `check-moc-nen` chỉ
   đối chiếu hàng ĐẦU: hàng thứ hai trôi độc lập được. Chưa làm, và đó là lựa chọn chứ
   không phải bỏ sót — nó là một con số khác, không phải lỗ hở này.
+
+- **CÙNG MỘT CON SỐ SỐNG Ở HAI HÀNG CỦA BẢNG MỐC NỀN, và canh một hàng là đủ để cổng
+  XANH trong khi hàng kia đã trôi.** Đo 07/11/2026, quét mọi con số của bảng rồi tìm con
+  số xuất hiện ở ≥2 hàng: hàng "Frontend unit test" ghi **574 ca**, hàng "Mốc phải CHẠY
+  mới biết" ghi **573** — lệch suốt **hai vòng**, và `check-moc-chay frontend` XANH cả hai
+  lần vì regex của nó neo vào `test:unit`, tức chỉ hàng ĐẦU. Con số sai là do chính commit
+  thêm ca thứ 574: nó sửa một hàng, bỏ hàng kia.
+  **Bốn cặp bản sao THẬT** (cùng một lượng, hai hàng): ca test frontend 574/**573** ·
+  backend 35 bộ + 501 ca · tracer 65 · số ca chấm 480 ở "Giáo trình pe-da" và "pe-da chấm
+  BÀI TẬP". **Các trùng khác là trùng GIÁ TRỊ của hai lượng khác nhau** (16 wheel với 16 ca
+  xuất hình; 11 module với ngày 11; 48 tệp test với 48 bài pe-v4) — đừng gộp chúng vào, một
+  cổng canh chúng sẽ báo oan ngay lần đổi tiếp theo.
+  Nay `check-moc-chay.mjs` có `bang2` cho cả ba mục: mỗi bản sao so RIÊNG với con số CHẠY
+  RA (chạy-ra là thẩm quyền, không phải hàng này so với hàng kia), nên thông điệp chỉ đúng
+  vào bản SAI. `check-moc-nen.mjs` thêm `caDat` cho bản sao của số ca chấm, 18 → **20 mục**.
+  **VÀ MỤC THỨ 20 CANH CHÍNH CON SỐ CỦA CỔNG ẤY:** "N mục đối chiếu được" cũng là một con
+  số trong bảng, và cho tới hôm nay **không gì canh nó** — nó trôi được đúng như mọi con số
+  khác. `doDuoc.mucDoiChieu = DOI_CHIEU.length`, tự đối chiếu, gồm cả chính nó.
+  Ablate 5 chiều: hạ bản sao tracer 65 → 60 → **1 lỗi** nói rõ "bản sao ở hàng Mốc phải
+  CHẠY mới biết" · **gỡ `bang2` của tracer ra, giữ nguyên bản sao sai → 0 LỖI, exit 0**
+  (chiều này là bằng chứng cổng RỖNG ở đúng chỗ đó, và nó là trạng thái đã sống hai vòng)
+  · đổi CHỮ của bản sao (`tracer` → `bo-ghi-vet`) → 1 lỗi "KHÔNG CÒN DÒNG … BẢN SAO THỨ
+  HAI", không im lặng xanh · hạ "480 ca đạt" → 477 → 1 lỗi đúng tên bản sao · hạ "20 mục"
+  → 19 → 1 lỗi.
+  **GIỚI HẠN PHẢI NÓI RA:** phép quét tìm bản sao chạy BẰNG TAY một lần, không thành cổng.
+  Một con số thứ ba của cùng lượng, thêm vào bảng ngày mai, sẽ lại không ai canh — và cách
+  duy nhất thấy nó là quét lại. Dựng cổng cho việc đó đòi biết hai con số có cùng NGHĨA hay
+  không, mà đúng ba cặp trùng-giá-trị ở trên cho thấy phép suy đó sai bằng phép so chữ.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

@@ -50,6 +50,13 @@ const KIEM = {
       const m = MD.match(/test:unit[^|\n]*?\*\*([\d  ]+) ca\*\*/);
       return m ? { ca: so(m[1]) } : null;
     },
+    // BẢN SAO THỨ HAI của cùng con số, ở hàng "Mốc phải CHẠY mới biết". Nó là
+    // thứ đã TRÔI: hàng kia ghi 574 còn hàng này ghi 573 suốt hai vòng, và cổng
+    // vẫn xanh vì nó chỉ đọc hàng đầu.
+    bang2: () => {
+      const m = MD.match(/check-moc-chay[^|\n]*?frontend ([\d  ]+)/);
+      return m ? { ca: so(m[1]) } : null;
+    },
     doc: (ra) => {
       const dat = [...ra.matchAll(/\bpass (\d+)[ \t\r]*$/gm)].at(-1);
       const hong = [...ra.matchAll(/\bfail (\d+)[ \t\r]*$/gm)].at(-1);
@@ -64,6 +71,10 @@ const KIEM = {
     cwd: '.',
     bang: () => {
       const m = MD.match(/\*\*(\d+) bộ, ([\d  ]+) ca\*\*/);
+      return m ? { bo: Number(m[1]), ca: so(m[2]) } : null;
+    },
+    bang2: () => {
+      const m = MD.match(/check-moc-chay[^|\n]*?backend (\d+) bộ\/([\d  ]+)/);
       return m ? { bo: Number(m[1]), ca: so(m[2]) } : null;
     },
     doc: (ra) => {
@@ -81,6 +92,10 @@ const KIEM = {
     cwd: '.',
     bang: () => {
       const m = MD.match(/\*\*(\d+) phép kiểm\*\*/);
+      return m ? { ca: Number(m[1]) } : null;
+    },
+    bang2: () => {
+      const m = MD.match(/check-moc-chay[^|\n]*?tracer (\d+)/);
       return m ? { ca: Number(m[1]) } : null;
     },
     doc: (ra) => {
@@ -125,17 +140,38 @@ for (const k of ten) {
     );
     continue;
   }
+  // BẢN SAO THỨ HAI, nếu mục này có. Cùng con số sống ở HAI hàng của bảng mốc
+  // nền, và canh một hàng là đủ để cổng xanh trong khi hàng kia đã trôi — đo
+  // được 07/11/2026: "Frontend unit test" ghi 574, "Mốc phải CHẠY mới biết" ghi
+  // 573, hai vòng liền, 0 lỗi. KHÔNG CÒN DÒNG cũng là LỖI, vì im lặng ở đây
+  // đúng là cách con số 204 sống sót.
+  const khai2 = c.bang2 ? c.bang2() : null;
+  if (c.bang2 && !khai2) {
+    loi.push(
+      `AGENTS.md KHÔNG CÒN DÒNG nào khớp BẢN SAO THỨ HAI của mốc "${c.nhan}" `
+      + '(hàng "Mốc phải CHẠY mới biết"). Đổi chữ hàng đó thì phải sửa cổng này.',
+    );
+  }
+
   const phan = Object.keys(khai).map((f) => `${f} ${khai[f]}/${that[f]}`).join(' · ');
   console.log(`${c.nhan}: bảng/chạy ra → ${phan}`
     + (that.truot ? ` · ${that.truot} TRƯỢT` : ' · 0 trượt'));
   if (that.truot) loi.push(`${c.nhan}: ${that.truot} ca TRƯỢT — con số chỉ đúng khi bộ test xanh.`);
   for (const f of Object.keys(khai)) {
-    if (khai[f] !== that[f]) {
-      const d = that[f] - khai[f];
-      loi.push(
-        `${c.nhan}: bảng ghi ${f} = ${khai[f]}, chạy ra ${that[f]} (lệch ${d > 0 ? '+' : ''}${d}). `
-        + 'Thêm/bớt thì chạy lệnh, lấy số THẬT, sửa bảng TRONG CÙNG commit.',
-      );
+    // Con số CHẠY RA là thẩm quyền; mỗi bản sao so RIÊNG với nó, nên thông điệp
+    // chỉ đúng vào bản sai thay vì nói chung "bảng ghi sai".
+    for (const [nhanBang, ghi] of [
+      ['bảng', khai[f]],
+      ...(khai2 ? [['bản sao ở hàng "Mốc phải CHẠY mới biết"', khai2[f]]] : []),
+    ]) {
+      if (ghi !== that[f]) {
+        const d = that[f] - ghi;
+        loi.push(
+          `${c.nhan}: ${nhanBang} ghi ${f} = ${ghi}, chạy ra ${that[f]} `
+          + `(lệch ${d > 0 ? '+' : ''}${d}). Thêm/bớt thì chạy lệnh, lấy số THẬT, sửa `
+          + 'MỌI bản sao trong bảng TRONG CÙNG commit.',
+        );
+      }
     }
   }
 }
