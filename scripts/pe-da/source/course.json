@@ -6764,7 +6764,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Một biểu đồ cần trả lời một câu hỏi cụ thể. Với thời gian chờ của nhiều đơn hàng, histogram cho biết các khoảng có bao nhiêu đơn. Ba loại biểu đồ ở đây không thay thế nhau chỉ vì cùng vẽ được các con số. Các ví dụ dùng plt.show() để hiện hình; trong notebook, hình cũng có thể tự hiện sau khi chạy cell. Bản code đầy đủ để kiểm tra và lưu ảnh được giữ riêng; bạn sẽ học xuất file ở VZ14."
+          "text": "Một biểu đồ cần trả lời một câu hỏi cụ thể. Với thời gian chờ của nhiều đơn hàng, histogram cho biết các khoảng có bao nhiêu đơn. Ba loại biểu đồ ở đây không thay thế nhau chỉ vì cùng vẽ được các con số. Các ví dụ dùng `plt.show()` để hiện hình; trong notebook, hình cũng có thể tự hiện sau khi chạy cell. Bản code đầy đủ để kiểm tra và lưu ảnh được giữ riêng; bạn sẽ học xuất file ở VZ14."
         },
         {
           "type": "code",
@@ -6840,7 +6840,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn cần một hình có tiêu đề, trục và đường bán hàng. plt.subplots() trả về hai đối tượng: Figure là toàn bộ hình, Axes là vùng vẽ bên trong. Dùng fig để lưu hình và ax để thêm dữ liệu hoặc đổi nhãn sẽ giúp bạn biết mình đang sửa phần nào."
+          "text": "Bạn cần một hình có tiêu đề, trục và đường bán hàng. `plt.subplots()` trả về hai đối tượng: Figure là toàn bộ hình, Axes là vùng vẽ bên trong. Dùng `fig` để lưu hình và `ax` để thêm dữ liệu hoặc đổi nhãn sẽ giúp bạn biết mình đang sửa phần nào."
         },
         {
           "type": "code",
@@ -6851,7 +6851,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Có thể tạo Figure trước rồi thêm vùng vẽ bằng add_subplot(111). Ba chữ số lần lượt chỉ số hàng, số cột và vị trí: 111 nghĩa là một hàng, một cột, ô thứ nhất. add_axes([left, bottom, width, height]) lại đặt vùng vẽ theo phần tỷ lệ của Figure, phù hợp khi bạn cần điều khiển vị trí cụ thể. Lệnh add_axes() thiếu tọa độ trong tờ tóm tắt không đủ để tạo ví dụ hoàn chỉnh. pyplot giữ trạng thái Figure/Axes hiện tại: plt.plot(...) vẽ vào Axes hiện tại, còn ax.plot(...) chỉ rõ đối tượng cần vẽ. Quy trình thường là chuẩn bị dữ liệu → tạo Figure/Axes → vẽ → chỉnh nhãn và bố trí → lưu nếu cần → show. Nếu có nhiều Axes, viết rõ ax giúp tránh vẽ nhầm vùng."
+          "text": "Có thể tạo Figure trước rồi thêm vùng vẽ bằng add_subplot(111). Ba chữ số lần lượt chỉ số hàng, số cột và vị trí: 111 nghĩa là một hàng, một cột, ô thứ nhất. add_axes([left, bottom, width, height]) lại đặt vùng vẽ theo phần tỷ lệ của Figure, phù hợp khi bạn cần điều khiển vị trí cụ thể. Lệnh add_axes() thiếu tọa độ trong tờ tóm tắt không đủ để tạo ví dụ hoàn chỉnh. pyplot giữ trạng thái Figure/Axes hiện tại: `plt.plot(...)` vẽ vào Axes hiện tại, còn `ax.plot(...)` chỉ rõ đối tượng cần vẽ. Quy trình thường là chuẩn bị dữ liệu → tạo Figure/Axes → vẽ → chỉnh nhãn và bố trí → lưu nếu cần → show. Nếu có nhiều Axes, viết rõ `ax` giúp tránh vẽ nhầm vùng."
         },
         {
           "type": "code",
@@ -7636,7 +7636,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Khi gửi hình, thêm mô tả bằng chữ nêu xu hướng và con số quan trọng; một caption chỉ nói “biểu đồ” không đủ. Kiểm tra cỡ chữ ở kích thước thật, độ tương phản và bản in đen trắng. setp cho phép sửa đồng thời các đường đã vẽ thay vì tạo lại dữ liệu. plot trả về một `list` các Line2D, mỗi phần tử là một đường đã vẽ. plt.setp(lines, linewidth=2.5) thay thuộc tính các đường trong `list` đó, không thay các con số gốc. color chọn màu cố định; trong scatter, c còn có thể nhận dãy số để ánh xạ qua cmap. alpha=0 là trong suốt, alpha=1 là đục hoàn toàn."
+          "text": "Khi gửi hình, thêm mô tả bằng chữ nêu xu hướng và con số quan trọng; một caption chỉ nói “biểu đồ” không đủ. Kiểm tra cỡ chữ ở kích thước thật, độ tương phản và bản in đen trắng. setp cho phép sửa đồng thời các đường đã vẽ thay vì tạo lại dữ liệu. plot trả về một `list` các Line2D, mỗi phần tử là một đường đã vẽ. `plt.setp(lines, linewidth=2.5)` thay thuộc tính các đường trong `list` đó, không thay các con số gốc. color chọn màu cố định; trong scatter, c còn có thể nhận dãy số để ánh xạ qua cmap. alpha=0 là trong suốt, alpha=1 là đục hoàn toàn."
         },
         {
           "type": "code",
@@ -7741,7 +7741,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Bạn có thể ẩn viền trên, chỉnh tick hoặc tăng khoảng đệm bằng margins để hình thoáng hơn. Tỷ lệ equal giữ một đơn vị x dài bằng một đơn vị y; điều này cần khi hình học có ý nghĩa. Tránh hai trục y tùy ý chỉ để hai đường trông đi cùng nhau; cùng dữ liệu có thể tạo nhiều cảm giác khác nhau khi đổi giới hạn. margins(x=0.1,y=0.1) thêm đệm dựa trên phạm vi dữ liệu tự co giãn; nó không đặt giới hạn cố định. Khi cần miền x cụ thể, gọi ax.set_xlim(0,3) hoặc ax.set(xlim=(0,3)). set_aspect(\"equal\") kiểm soát độ dài một đơn vị dữ liệu, khác tỷ lệ cao/rộng của cả Figure."
+          "text": "Bạn có thể ẩn viền trên, chỉnh tick hoặc tăng khoảng đệm bằng margins để hình thoáng hơn. Tỷ lệ equal giữ một đơn vị x dài bằng một đơn vị y; điều này cần khi hình học có ý nghĩa. Tránh hai trục y tùy ý chỉ để hai đường trông đi cùng nhau; cùng dữ liệu có thể tạo nhiều cảm giác khác nhau khi đổi giới hạn. margins(x=0.1,y=0.1) thêm đệm dựa trên phạm vi dữ liệu tự co giãn; nó không đặt giới hạn cố định. Khi cần miền x cụ thể, gọi `ax.set_xlim(0, 3)` hoặc `ax.set(xlim=(0, 3))`. set_aspect(\"equal\") kiểm soát độ dài một đơn vị dữ liệu, khác tỷ lệ cao/rộng của cả Figure."
         },
         {
           "type": "code",
@@ -8051,7 +8051,7 @@
         },
         {
           "type": "paragraph",
-          "text": "savefig lưu hình; show mở hình qua backend tương tác. Trong script, thường lưu trước khi show và đóng Figure sau khi dùng để không giữ nhiều hình trong bộ nhớ. cla xóa nội dung Axes hiện tại, clf xóa nội dung Figure hiện tại, close đóng Figure. Khi đã có ax và fig, dùng ax.clear() hoặc fig.clear() sẽ rõ đối tượng hơn các lệnh phụ thuộc trạng thái hiện tại."
+          "text": "savefig lưu hình; show mở hình qua backend tương tác. Trong script, thường lưu trước khi show và đóng Figure sau khi dùng để không giữ nhiều hình trong bộ nhớ. cla xóa nội dung Axes hiện tại, clf xóa nội dung Figure hiện tại, close đóng Figure. Khi đã có `ax` và `fig`, dùng `ax.clear()` hoặc `fig.clear()` sẽ rõ đối tượng hơn các lệnh phụ thuộc trạng thái hiện tại."
         },
         {
           "type": "code",
@@ -8505,7 +8505,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Quan hệ hai cột đã vẽ xong rồi, nhưng mỗi quầy của quán có thể có một dạng riêng. Khi cửa hàng A và B phục vụ hai nhóm khách khác nhau, trộn tất cả điểm vào một hình có thể che khác biệt giữa cửa hàng. Facet chia dữ liệu thành các ô có cùng cách vẽ, mỗi ô cho một nhóm. seaborn.relplot tạo cả Figure và các Axes; bạn không cần tạo fig, ax trước."
+          "text": "Quan hệ hai cột đã vẽ xong rồi, nhưng mỗi quầy của quán có thể có một dạng riêng. Khi cửa hàng A và B phục vụ hai nhóm khách khác nhau, trộn tất cả điểm vào một hình có thể che khác biệt giữa cửa hàng. Facet chia dữ liệu thành các ô có cùng cách vẽ, mỗi ô cho một nhóm. seaborn.relplot tạo cả Figure và các Axes; bạn không cần tạo `fig`, `ax` trước."
         },
         {
           "type": "code",
@@ -9579,7 +9579,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Khi đóng hoặc tạo lại giao diện, ngắt các callback không còn dùng để tránh nhiều lần xử lý cho một thao tác. Tách hàm tạo biểu đồ khỏi callback giúp bạn dùng cùng code cho báo cáo tĩnh, notebook và GUI. Backend Agg trong ví dụ chỉ dùng để kiểm tra logic và lưu ảnh; muốn bấm chuột thật, chạy với backend tương tác và gọi plt.show()."
+          "text": "Khi đóng hoặc tạo lại giao diện, ngắt các callback không còn dùng để tránh nhiều lần xử lý cho một thao tác. Tách hàm tạo biểu đồ khỏi callback giúp bạn dùng cùng code cho báo cáo tĩnh, notebook và GUI. Backend Agg trong ví dụ chỉ dùng để kiểm tra logic và lưu ảnh; muốn bấm chuột thật, chạy với backend tương tác và gọi `plt.show()`."
         },
         {
           "type": "code",
@@ -15742,7 +15742,7 @@
         },
         {
           "type": "paragraph",
-          "text": "ax.text(x,y,...) mặc định hiểu x/y theo dữ liệu. transform=ax.transAxes đổi sang tỷ lệ Axes: (0,0) là góc dưới trái và (1,1) là góc trên phải. Trong ví dụ, chữ cách trái 5%, cách dưới 95%; va=\"top\" neo cạnh trên của chữ vào vị trí đó."
+          "text": "`ax.text(x, y, ...)` mặc định hiểu x/y theo dữ liệu. `transform=ax.transAxes` đổi sang tỷ lệ Axes: (0,0) là góc dưới trái và (1,1) là góc trên phải. Trong ví dụ, chữ cách trái 5%, cách dưới 95%; va=\"top\" neo cạnh trên của chữ vào vị trí đó."
         },
         {
           "type": "code",
@@ -15764,7 +15764,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Chữ ở ví dụ cuối nằm cao hơn điểm 12 điểm in. Chuỗi raw r\"...\" giữ dấu gạch chéo cho các lệnh toán như r\"$\\sigma$\"; dấu $ bật Mathtext. Mathtext định dạng ký hiệu chứ không tính giá trị. Khi chạy để xem hình, gọi plt.show() trước plt.close(fig); các ví dụ ở đây đóng hình sau khi kiểm các thuộc tính."
+          "text": "Chữ ở ví dụ cuối nằm cao hơn điểm 12 điểm in. Chuỗi raw r\"...\" giữ dấu gạch chéo cho các lệnh toán như r\"$\\sigma$\"; dấu $ bật Mathtext. Mathtext định dạng ký hiệu chứ không tính giá trị. Khi chạy để xem hình, gọi `plt.show()` trước `plt.close(fig)`; các ví dụ ở đây đóng hình sau khi kiểm các thuộc tính."
         }
       ],
       "drills": [

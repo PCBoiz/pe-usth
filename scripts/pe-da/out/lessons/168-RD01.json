@@ -39,7 +39,7 @@
     [
      {
       "type": "paragraph",
-      "text": "ax.text(x,y,...) mặc định hiểu x/y theo dữ liệu. transform=ax.transAxes đổi sang tỷ lệ Axes: (0,0) là góc dưới trái và (1,1) là góc trên phải. Trong ví dụ, chữ cách trái 5%, cách dưới 95%; va=\"top\" neo cạnh trên của chữ vào vị trí đó."
+      "text": "`ax.text(x, y, ...)` mặc định hiểu x/y theo dữ liệu. `transform=ax.transAxes` đổi sang tỷ lệ Axes: (0,0) là góc dưới trái và (1,1) là góc trên phải. Trong ví dụ, chữ cách trái 5%, cách dưới 95%; va=\"top\" neo cạnh trên của chữ vào vị trí đó."
      },
      {
       "type": "code",
@@ -71,7 +71,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Chữ ở ví dụ cuối nằm cao hơn điểm 12 điểm in. Chuỗi raw r\"...\" giữ dấu gạch chéo cho các lệnh toán như r\"$\\sigma$\"; dấu $ bật Mathtext. Mathtext định dạng ký hiệu chứ không tính giá trị. Khi chạy để xem hình, gọi plt.show() trước plt.close(fig); các ví dụ ở đây đóng hình sau khi kiểm các thuộc tính."
+      "text": "Chữ ở ví dụ cuối nằm cao hơn điểm 12 điểm in. Chuỗi raw r\"...\" giữ dấu gạch chéo cho các lệnh toán như r\"$\\sigma$\"; dấu $ bật Mathtext. Mathtext định dạng ký hiệu chứ không tính giá trị. Khi chạy để xem hình, gọi `plt.show()` trước `plt.close(fig)`; các ví dụ ở đây đóng hình sau khi kiểm các thuộc tính."
      }
     ]
    ],

@@ -222,7 +222,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi đóng hoặc tạo lại giao diện, ngắt các callback không còn dùng để tránh nhiều lần xử lý cho một thao tác. Tách hàm tạo biểu đồ khỏi callback giúp bạn dùng cùng code cho báo cáo tĩnh, notebook và GUI. Backend Agg trong ví dụ chỉ dùng để kiểm tra logic và lưu ảnh; muốn bấm chuột thật, chạy với backend tương tác và gọi plt.show()."
+      "text": "Khi đóng hoặc tạo lại giao diện, ngắt các callback không còn dùng để tránh nhiều lần xử lý cho một thao tác. Tách hàm tạo biểu đồ khỏi callback giúp bạn dùng cùng code cho báo cáo tĩnh, notebook và GUI. Backend Agg trong ví dụ chỉ dùng để kiểm tra logic và lưu ảnh; muốn bấm chuột thật, chạy với backend tương tác và gọi `plt.show()`."
      },
      {
       "type": "code",

@@ -56,7 +56,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi gửi hình, thêm mô tả bằng chữ nêu xu hướng và con số quan trọng; một caption chỉ nói “biểu đồ” không đủ. Kiểm tra cỡ chữ ở kích thước thật, độ tương phản và bản in đen trắng. setp cho phép sửa đồng thời các đường đã vẽ thay vì tạo lại dữ liệu. plot trả về một `list` các Line2D, mỗi phần tử là một đường đã vẽ. plt.setp(lines, linewidth=2.5) thay thuộc tính các đường trong `list` đó, không thay các con số gốc. color chọn màu cố định; trong scatter, c còn có thể nhận dãy số để ánh xạ qua cmap. alpha=0 là trong suốt, alpha=1 là đục hoàn toàn."
+      "text": "Khi gửi hình, thêm mô tả bằng chữ nêu xu hướng và con số quan trọng; một caption chỉ nói “biểu đồ” không đủ. Kiểm tra cỡ chữ ở kích thước thật, độ tương phản và bản in đen trắng. setp cho phép sửa đồng thời các đường đã vẽ thay vì tạo lại dữ liệu. plot trả về một `list` các Line2D, mỗi phần tử là một đường đã vẽ. `plt.setp(lines, linewidth=2.5)` thay thuộc tính các đường trong `list` đó, không thay các con số gốc. color chọn màu cố định; trong scatter, c còn có thể nhận dãy số để ánh xạ qua cmap. alpha=0 là trong suốt, alpha=1 là đục hoàn toàn."
      },
      {
       "type": "code",

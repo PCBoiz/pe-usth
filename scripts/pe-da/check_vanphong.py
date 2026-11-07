@@ -367,8 +367,7 @@ def kiem_termbank(bank: list[Muc], bai: list[dict]) -> None:
     # ba hằng vừa bọc GIỮ NGUYÊN giá trị cũ — dấu hiệu ngữ nghĩa này mới đúng.
     thuc = {}
     for l in bai:
-        tho = [k['text'] for k in (l.get('reading') or [])
-               if k.get('type') == 'paragraph' and (k.get('text') or '').strip()]
+        tho = raw_doan(l)
         for m in bank:
             if m.khoa in thuc or not m.trong_bai(l['id']):
                 continue
@@ -394,6 +393,19 @@ def doan_cua(l: dict) -> list[str]:
     giao diện. Đo văn phong trên mã là đo sai thứ.
     """
     return [chuan(k['text']) for k in (l.get('reading') or [])
+            if k.get('type') == 'paragraph' and (k.get('text') or '').strip()]
+
+
+def raw_doan(l: dict) -> list[str]:
+    """Cùng các đoạn ấy nhưng CHƯA bỏ backtick.
+
+    Thuật ngữ nhóm A phải được tìm trên bản này: chỗ ĐÚNG của một định danh
+    code LÀ trong backtick (§4-A), nên tìm nó trên bản đã bỏ backtick là đòi
+    đúng cái §4-A cấm, và tín hiệu đó mù dần khi §4-A được thoả. HAI luật cần
+    nó — bất biến TB và dấu hiệu B của L15 — nên nó là MỘT hàm; hai bản chép
+    sẽ trôi khỏi nhau, và L15 mắc đúng lỗi này vì nó không có bản nào.
+    """
+    return [k['text'] for k in (l.get('reading') or [])
             if k.get('type') == 'paragraph' and (k.get('text') or '').strip()]
 
 
@@ -943,6 +955,19 @@ def kiem_noi_bai(bai: list[dict], bank: list[Muc]) -> None:
         dau = doan[0]
         if any(rx.search(dau) for rx in CUM_NOI):
             continue
+        # NHÓM A đọc RAW, hai nhóm kia đọc bản đã bỏ backtick — cùng phép chia
+        # và cùng lý lẽ với bất biến TB ở trên, và L15 là luật THỨ HAI trong
+        # file này mắc nó. Chỗ ĐÚNG của một định danh code LÀ trong backtick
+        # (§4-A), nên tìm dấu hiệu B chỉ trên phần TRẦN làm L15 mù dần ĐÚNG
+        # theo mức §4-A được thoả — một tín hiệu xuống cấp đơn điệu khi dự án
+        # tốt lên, tức một khiếm khuyết, không phải một phép siết. Đo được: vừa
+        # bọc backtick cho `plt.subplots()` ở VZ02 và `plt.show()` ở VZ01 là
+        # L15 đi 0 → 1 cảnh báo *"VZ02 không nối gì với VZ01"*, trong khi khái
+        # niệm mang sang (`plt`) vẫn nằm đó, chỉ là nằm trong backtick.
+        # Nhóm B/C KHÔNG đổi: §4-A không đòi backtick cho chúng nên đứng trần
+        # là trạng thái bình thường, không có sự xuống cấp nào để chữa.
+        tho_dau = raw_doan(l)
+        tho_truoc = ' '.join(raw_doan(truoc))
         # Termbank lọc theo phạm vi của TỪNG bài: một thuật ngữ chỉ tính là
         # "mang sang" khi nghĩa đó áp cho cả hai bài.
         truoc_van = ' '.join(doan_cua(truoc))
@@ -955,8 +980,10 @@ def kiem_noi_bai(bai: list[dict], bank: list[Muc]) -> None:
         # đã chốt.
         def mang_sang(m) -> bool:
             res = [m.re_tn] + ([m.re_tv] if m.re_tv is not None else [])
-            return (any(r.search(dau) for r in res)
-                    and any(r.search(truoc_van) for r in res)
+            a = tho_dau[0] if m.nhom == 'A' and tho_dau else dau
+            b = tho_truoc if m.nhom == 'A' else truoc_van
+            return (any(r.search(a) for r in res)
+                    and any(r.search(b) for r in res)
                     and m.trong_bai(l['id']) and m.trong_bai(truoc['id']))
         if any(mang_sang(m) for m in bank):
             continue

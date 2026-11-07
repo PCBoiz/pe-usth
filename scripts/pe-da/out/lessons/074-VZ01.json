@@ -56,7 +56,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một biểu đồ cần trả lời một câu hỏi cụ thể. Với thời gian chờ của nhiều đơn hàng, histogram cho biết các khoảng có bao nhiêu đơn. Ba loại biểu đồ ở đây không thay thế nhau chỉ vì cùng vẽ được các con số. Các ví dụ dùng plt.show() để hiện hình; trong notebook, hình cũng có thể tự hiện sau khi chạy cell. Bản code đầy đủ để kiểm tra và lưu ảnh được giữ riêng; bạn sẽ học xuất file ở VZ14."
+      "text": "Một biểu đồ cần trả lời một câu hỏi cụ thể. Với thời gian chờ của nhiều đơn hàng, histogram cho biết các khoảng có bao nhiêu đơn. Ba loại biểu đồ ở đây không thay thế nhau chỉ vì cùng vẽ được các con số. Các ví dụ dùng `plt.show()` để hiện hình; trong notebook, hình cũng có thể tự hiện sau khi chạy cell. Bản code đầy đủ để kiểm tra và lưu ảnh được giữ riêng; bạn sẽ học xuất file ở VZ14."
      },
      {
       "type": "code",
