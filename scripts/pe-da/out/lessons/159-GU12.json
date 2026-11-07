@@ -525,6 +525,20 @@
       }
      },
      "expected": 12.5
+    },
+    {
+     "name": "Trung bình lẻ vô hạn — không làm tròn thì sai",
+     "input": {
+      "luong": {
+       "ca-phe-hat": 10.0,
+       "sua-tuoi": 15.0
+      },
+      "so_coc": {
+       "ca-phe-hat": 1,
+       "sua-tuoi": 2
+      }
+     },
+     "expected": 13.33
     }
    ],
    "hints": [

@@ -235,7 +235,7 @@ test('harness khai contract_json và phân nhánh theo trường có mặt', () 
 
 // ─────────────────────────────────────────────────── số đo, để không tụt mốc
 
-test('bản dựng có 143 bài tập được chấm và 479 ca', () => {
+test('bản dựng có 143 bài tập được chấm và 480 ca', () => {
   // Con số này phải đo lại mỗi lần đổi nguồn hoặc đổi cổng lọc, không được
   // đoán — xem AGENTS.md, dòng "204 ca test tưởng có mà không có".
   //
@@ -273,8 +273,14 @@ test('bản dựng có 143 bài tập được chấm và 479 ca', () => {
   // liệu đã khai (đường chưa khai không vào mẫu số), món chưa khai gì trả None
   // chứ không 0. Đây là bài cuối chạy trong trình duyệt mà chưa chấm; còn
   // PY02/PY03 cố ý không làm (xem 129063a).
+  //
+  // 479 -> 480 ngày 7/11/2026: GU12 nhận ca thứ NĂM. Bốn ca cũ đều ra thương
+  // CHẴN (16.4 · 17.5 · None · 12.5), nên yêu cầu "làm tròn 2 chữ số" trong đề
+  // không ca nào kiểm — ablate bỏ round khỏi lời giải mẫu vẫn ĐẠT 4/4. Ca mới
+  // là 40/3: bỏ round thì trả 13.333333333333334, lệch 0,0033 > dung sai 1e-6
+  // của bộ chấm. Ablate lại: 4/5 đạt, 1 trượt.
   assert.equal(coBaiTap.length, 143, 'số bài có bài tập được chấm');
-  assert.equal(ca, 479, 'tổng số ca chấm');
+  assert.equal(ca, 480, 'tổng số ca chấm');
 });
 
 test('mọi bài tập được chấm đều có lời giải mẫu KHÁC khung đề', () => {
