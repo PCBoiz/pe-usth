@@ -67,7 +67,12 @@ jobs:
           }
           "
 
-      - run: npx jest --ci
+      # Cổng này CHẠY `npx jest --ci --runInBand` rồi so "35 bộ, 501 ca" với bảng
+      # mốc nền — nên nó THAY bước jest cũ, không chạy thêm một lượt nữa. Có ca nào
+      # trượt là nó đỏ, và không đọc được dòng tổng kết cũng đỏ (fail-closed).
+      # `--runInBand` chứ không `--ci` trần: chạy song song làm 15/15 bộ báo trượt
+      # với 0 ca chạy — tranh CPU, không phải lỗi thật (bẫy đã ghi ở AGENTS.md).
+      - run: node scripts/check-moc-chay.mjs backend
       - run: npm run build
 
   frontend:
@@ -97,7 +102,7 @@ jobs:
       # Vì sao cần: con số đó từng ghi 204 trong khi cây mã chỉ có 134 — 70 ca
       # tưởng có mà không có — và `check-moc-nen` cố ý không chạy bộ test nào nên
       # nó bắt số TỆP rồi bỏ qua số CA.
-      - run: node ../scripts/check-so-ca-test.mjs
+      - run: node ../scripts/check-moc-chay.mjs frontend
 
       - run: npm run build
 
@@ -448,4 +453,6 @@ jobs:
       # chỉ chạy tay, nên một bản sửa làm tracer chạy SAI mà vẫn sinh lại đúng
       # thì không có gì đỏ: phép canh sha chỉ bắt được chuyện "sửa .py mà quên
       # sinh lại". `python`, không phải `py` — đây là runner Linux.
-      - run: python scripts/tracer/pe_tracer_test.py
+      # Qua cổng mốc nền: nó chạy chính lệnh trên rồi so "65 phép kiểm" với bảng,
+      # nên nó THAY bước cũ. Cổng tự chọn `python` ngoài Windows.
+      - run: node scripts/check-moc-chay.mjs tracer

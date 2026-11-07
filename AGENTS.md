@@ -35,7 +35,7 @@ node scripts/check-duong-toi.mjs --json  # bản máy đọc
 node scripts/check-tai-nguyen-chet.mjs  # TỆP/COMPONENT nào KHÔNG ai tới được
 node scripts/check-da-nap.mjs           # BÀI nào đã dựng mà CHƯA nạp vào DB
 node scripts/check-moc-nen.mjs          # BẢNG MỐC NỀN dưới đây có nói đúng không
-node scripts/check-so-ca-test.mjs       # SỐ CA test frontend trong bảng có đúng không (chạy bộ test)
+node scripts/check-moc-chay.mjs         # MỐC phải CHẠY mới biết: frontend | backend | tracer
 node scripts/check-doi-hoi.mjs          # KHỐI CODE màn đọc nào chưa có lời đòi
 node scripts/check-nguong.mjs           # NGƯỠNG một chiều có ai nới ngược không
 node scripts/check-wheel.mjs            # WHEEL vendored: thừa megabyte chết / thiếu gói bài cần
@@ -91,10 +91,10 @@ học nó.
 | Tài nguyên chết | `node scripts/check-tai-nguyen-chet.mjs` → **1 mục chết, 1 khai giữ, 0 chưa khai**, 0 lỗi; quét JS/CSS tĩnh + component + **14 CSS module trong `src/`** |
 | Đã nạp DB chưa | `node scripts/check-da-nap.mjs` → **ĐỎ (exit 1): 164/179 khớp, 15 bài đã đổi sau lần nạp cuối** — VZ24, SY24, SY26, EX01, EX08 từ `80dee65` (mở khoá SY24 + `goi_can_tai` quét mã bài đọc), PY01 (bài tập đầu tiên của khoá), SY11 (math.floor), RC01 (đếm process/thread) và GU12 (trung bình có trọng số) cùng 04/11, CT03 + GU01 + CT01 + CT15 + PY09 + SY18 (câu nhồi mệnh đề thành BẢNG / bọc backtick) 07/11; đỏ cho tới khi chủ dự án nạp. Biên nhận 03/11/2026 18:48 UTC. Hàng này từng ghi "179/179, 0 lỗi" suốt lúc cổng đỏ; nay `check-moc-nen` đối chiếu nó — nạp xong thì SỬA số ở đây, không thì cổng đó đỏ |
 | Lời đòi ở màn đọc | `node scripts/check-doi-hoi.mjs` → **392/508 khối (77,2%) có một lời đòi**, 116 im lặng đều đã khai lý do, 0 lỗi |
-| Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **27 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
+| Ngưỡng một chiều | `node scripts/check-nguong.mjs` → **30 ngưỡng**, 0 nới ngược chiều, 0 lỗi |
 | Đã deploy chưa | `node scripts/check-da-deploy.mjs` → cảnh báo nếu production lệch `tester/main`; đỏ khi gọi kèm `--doi-hoi-moi-nhat` |
 | Wheel vendored | `node scripts/check-wheel.mjs` → **16 wheel · 5 gói bài khai · 16 sau đóng bao phụ thuộc**, 0 lỗi |
-| Số ca test frontend | `node scripts/check-so-ca-test.mjs` → bảng **573** / chạy ra **573** · 0 trượt, 0 lỗi; nó CHẠY `npm run test:unit` nên THAY bước test trong CI. Số ca backend vẫn NGOÀI TẦM |
+| Mốc phải CHẠY mới biết | `node scripts/check-moc-chay.mjs` → **3 mục** (frontend 573 · backend 35 bộ/501 · tracer 65), 0 trượt, 0 lỗi; nó CHẠY chính ba lệnh đó nên THAY cả ba bước trong CI — MỘT THAM SỐ mỗi job, vì chúng ở ba job chạy song song. Hai con số LINT cố ý ngoài tầm: chúng phải đi XUỐNG |
 | Bảng mốc nền | `node scripts/check-moc-nen.mjs` → **18 mục đối chiếu được** (thêm hàng "Đã nạp DB chưa", gọi `check-da-nap --json`), 0 lỗi; 3 nhóm khai NGOÀI TẦM |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
@@ -186,7 +186,7 @@ Dòng này từng ghi **204** trong khi cây mã chỉ có 134 — một con s�
 chú thích lỗi thời vô hại, nó là 70 ca test tưởng có mà không có. Thêm/bớt ca ⇒ chạy lệnh,
 lấy số thật, sửa bảng TRONG CÙNG commit.
 
-Nay `node scripts/check-so-ca-test.mjs` làm đúng phép so đó bằng MỘT lệnh, và nó có trong
+Nay `node scripts/check-moc-chay.mjs` làm đúng phép so đó bằng MỘT lệnh, và nó có trong
 CI — vòng lặp lấy TỔNG thì dùng nó, vòng `sed` ở trên chỉ còn để lấy số TỪNG FILE.
 
 Backend chạy riêng mới ra số đúng: chạy `npx jest --ci` song song với bộ test frontend thì
@@ -2718,7 +2718,7 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **HAI CỔNG, VÀ ABLATE CHỨNG MINH KHÔNG CÁI NÀO THAY ĐƯỢC CÁI KIA.** Đó là phần đáng ghi
   nhất của vòng này, vì trước khi đo thì một cái trông như đủ:
 
-  | Chiều ablate | `check-so-ca-test` | `check-nguong` |
+  | Chiều ablate | `check-moc-chay` | `check-nguong` |
   |---|---|---|
   | nguyên bản | 0 | 0 |
   | 1. bảng ghi 580, bộ test vẫn 573 | **1** | 0 |
@@ -2749,15 +2749,57 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
     `null` nghĩa là không chạy được LỆNH, không phải bộ test hỏng". Thiếu câu ấy thì người
     đọc đi tìm sai chỗ, đúng bệnh "một dữ kiện ĐÚNG mà im lặng về giới hạn của nó".
   **HÀNG MỚI TRONG BẢNG CHỨA CHỮ `test:unit`, và đó là một bẫy suýt tự gài.** Ba regex
-  đang neo vào hàng đó (`check-so-ca-test`, mục sổ ngưỡng, `tepTest` của `check-moc-nen`),
+  đang neo vào hàng đó (`check-moc-chay`, mục sổ ngưỡng, `tepTest` của `check-moc-nen`),
   và sổ ngưỡng đòi khớp ĐÚNG MỘT LẦN. Đã đếm lại sau khi thêm hàng: **1 / 1 / 1** — thoát
   được chỉ vì `[^|\n]*?` dừng ở dấu `|` của ô bảng. Thêm chữ vào bảng mốc nền thì đếm lại
   số lần khớp, đừng tin là còn một.
-  **GIỚI HẠN PHẢI NÓI RA, và cổng tự in nó mỗi lần chạy:** nó chỉ canh bộ FRONTEND. Số ca
-  **backend (501)** vẫn NGOÀI TẦM — `npx jest --ci --runInBand` chạy lâu hơn nhiều và máy
+  **~~GIỚI HẠN~~ — LÁT SAU ĐÃ ĐÓNG PHẦN NÀY, xem đoạn dưới.** Vòng đó chỉ canh bộ FRONTEND; số ca
+  **backend (501)** khi ấy còn NGOÀI TẦM — `npx jest --ci --runInBand` chạy lâu hơn nhiều và máy
   dự án chạy song song việc khác. Đó là một lát riêng, không phải bỏ sót. Và con số 573
   hôm nay không có dấu cách ngăn nhóm nghìn; ngày nó vượt 1000 thì regex `(\d+)` của sổ
   hết khớp — sửa regex, đừng bỏ mục.
+
+  **LÁT SAU, cùng ngày: ĐÓNG ba trong năm con số NGOÀI TẦM — và phép đo nói ĐỪNG dựng cái
+  tôi định dựng.** Vòng này mở ra với ý định làm bảng kỷ luật của vòng lặp (mục 7c + 8c của
+  bảng xếp hạng). Đo trước đã, trên 60 commit gần nhất: nhắc "ablate" **50/60 (83%)** ·
+  ablate KÈM SỐ ca đỏ **42/60 (70%)** · chạm CẢ code lẫn hàng rào **28/60** (báo cáo xếp
+  hạng ghi 21/60, tức đã TĂNG) · chỉ chạm hàng rào 17 · **chỉ chạm code, không hàng rào
+  nào: 7** · docs/gói 8 · **revert: 0**. Và **6 trong 7** commit "chỉ code" là cùng ngày
+  04/11, trong đó có `4d5f86d` — đúng commit mà chính file này đã ghi là *"tôi push mà không
+  chạy bậc thang"* (6 ca đỏ + 2 lỗi cổng). Phép đo tự tìm lại đúng chỗ đã biết, nên nó đo
+  đúng thứ nó nói. **Nhưng nó KHÔNG đáng thành cổng:** một bảng phần trăm trên cửa sổ trượt
+  60 commit thì không có răng và gài được bằng cách nhồi chữ vào mô tả commit; còn chiều
+  NGUY HIỂM mà ImpossibleBench chỉ ra (sửa/cắt test) thì đã bị khoá từ lát trước —
+  `check-moc-chay` bắt ca biến mất, sổ ngưỡng bắt con số bị hạ, `check-nguong` bắt trần bị nới.
+  **PHÉP ĐO ĐÓ SUÝT NÓI DỐI THEO CHIỀU TỰ KHEN, lần thứ hai trong một phiên.** Bản đầu in
+  "chạm CẢ code lẫn hàng rào: **0/60**" và "chỉ chạm code: **0/60**" — đọc ra thành "mọi
+  commit đều ship kèm cổng của nó", một kết luận dễ nghe và SAI. Nguyên nhân: `git log
+  --format=…%b…` kết thúc mỗi bản ghi bằng một NEWLINE, nên sau khi cắt theo dấu phân cách
+  thì sha của **59/60** bản ghi mang `
+` ở đầu ⇒ `git show` trả RỖNG ⇒ mọi con số theo-file
+  thành rác, mà bản ghi ĐẦU tiên vẫn đúng nên bảng trông có vẻ chạy. Phải `.strip()` sha và
+  `assert` mọi sha khớp `[0-9a-f]{40}` TRƯỚC khi đếm. Cùng họ bẫy `grep -E "^. fail"` ở trên:
+  **một phép đo trả về 0 là thứ phải nghi ngờ trước nhất**, vì 0 thường là "không đọc được"
+  chứ không phải "không có".
+  **VÀ LÁT NÀY LÀ: đóng ba con số.** Đo lại cả bốn mục NGOÀI TẦM thì **không cái nào đang
+  trôi** — tracer 65/trượt 0 · backend lint 104 lỗi/2 cảnh báo (bằng ĐÚNG lệnh CI) · backend
+  **35 bộ / 501 ca** trong 54 s · frontend lint 146 cảnh báo. Nên đây không phải sửa một lỗi
+  đang sống, mà là gắn răng cho một tín hiệu dừng. `check-so-ca-test.mjs` đổi tên thành
+  **`check-moc-chay.mjs`** (tên cũ nói dối ngay khi nó canh thêm thứ không phải "số ca test")
+  và nhận **MỘT THAM SỐ mỗi job** — ba lệnh đó nằm ở BA job CI chạy SONG SONG, gộp lại là tự
+  serialize; nó THAY cả ba bước nên không chạy thêm lượt nào.
+  **HAI CON SỐ LINT CỐ Ý Ở NGOÀI, và lý do không phải tiết kiệm:** chúng phải ĐI XUỐNG. Ghim
+  bằng phép so BẰNG thì mỗi đợt dọn `any` là một lần cổng đỏ — đúng cái "dạy người ta THÔI
+  SIẾT" mà `check-nguong` đã tránh bằng dòng `GHI SỔ`. Chiều của chúng đã có sổ canh
+  (`ci-lint-backend`, trần 115).
+  **MỘT LỖI SẼ CHỈ HIỆN TRÊN CI, bắt được nhờ ĐỌC chú thích CI chứ không nhờ chạy:** cổng ghi
+  cứng `py -I …`, mà chú thích ngay cạnh bước tracer nói nguyên văn *"`python`, không phải
+  `py` — đây là runner Linux"*. `py` là launcher CHỈ có trên Windows, nên bản đầu chạy được ở
+  đúng một nửa số chỗ gọi nó và sẽ đỏ ở nửa kia. Nay chọn theo `process.platform`.
+  Ablate 5 chiều (`tracer` cho các chiều chung vì nó chạy 5 s, `backend` cho chiều có hai
+  trường): bảng ghi 70 chạy ra 65 → **1 đỏ** · đổi CHỮ của hàng → 1 kèm câu "KHÔNG CÒN DÒNG" ·
+  tham số lạ → 1 · bảng ghi "36 bộ, 520 ca" → **2 đỏ**, mỗi trường một lỗi · lệnh trỏ vào file
+  không có → 1 kèm "spawn hỏng". Sổ ngưỡng 27 → **30** (thêm sàn 501 · 35 · 65).
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
